@@ -525,7 +525,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
             } else if (subinfo == 'resp.var') {
               return(get_formal_data(obj)@data.species)
             } else if (subinfo == 'eval.resp.var') {
-              return(as.numeric(get_formal_data(obj)@eval.data.species))
+              return(get_formal_data(obj)@eval.data.species)
             } else if (subinfo == 'eval.expl.var') {
               return(as.data.frame(get_formal_data(obj)@eval.data.env.var))
             } else { stop("Unknown subinfo tag")}
@@ -841,26 +841,30 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 limits <- NULL
               }
               
-              # if(x@data.type == "ordinal"){
-              #   breaks = 1:maxi
-              #   labels = c("a","b","c","d")
-              # } else {
-              #   breaks = waiver()
-              #   labels = waiver() 
-              # }
+              if (x@data.type %in% c("multiclass", "ordinal") && !(all(grepl("EMfreq|EMcv", names(proj))))){
+                if (any(grepl("EMfreq|EMcv", names(proj)))){ # But EMmode, EMmean, ... before 
+                  proj <- c(proj[[!grepl("EMfreq|EMcv", names(proj))]], proj[[grepl("EMfreq|EMcv", names(proj))]])
+                }
+                args_scale_fill <- list(NULL, limits = NULL, discrete = TRUE, na.translate = FALSE)
+              } else {
+                args_scale_fill <- list(NULL, limits = limits, discrete = FALSE)
+              }
+            
               
               if (plot.output == "facet") {
                 g <- ggplot() +
                   tidyterra::geom_spatraster(data = proj,
                                              maxcell = maxcell) +
-                  scale_fill_viridis_c(NULL, limits = limits) +
+                  #scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
+                  do.call(viridis::scale_fill_viridis, args_scale_fill) +
                   facet_wrap(~lyr)
               } else if (plot.output == "list") {
                 g <- lapply(names(proj), function(thislayer){
                   ggplot() +
                     tidyterra::geom_spatraster(data = subset(proj, thislayer),
                                                maxcell = maxcell) +
-                    scale_fill_viridis_c(NULL, limits = limits) +
+                    #scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
+                    do.call(viridis::scale_fill_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }
@@ -873,17 +877,26 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               } else {
                 limits <- NULL
               }
+              
+              if (x@data.type %in% c("multiclass", "ordinal") && !(all(grepl("EMfreq|EMcv", names(proj))))){
+                args_scale_fill <- list(NULL, limits = NULL, discrete = TRUE, na.translate = FALSE)
+              } else {
+                args_scale_fill <- list(NULL, limits = limits, discrete = FALSE)
+              }
+              
               plot.df <- merge(proj, coord, by = c("points"))
               if (plot.output == "facet") {
                 g <- ggplot(plot.df)+
                   geom_point(aes(x = x, y = y, color = pred), size = size) +
-                  scale_colour_viridis_c(NULL, limits = limits) +
+                  # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
+                  do.call(viridis::scale_fill_viridis, args_scale_fill) +
                   facet_wrap(~full.name)
               } else if (plot.output == "list"){
                 g <- lapply(unique(plot.df$full.name), function(thislayer) {
                   ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
                     geom_point(aes(x = x, y = y, color = pred), size = size) +
-                    scale_colour_viridis_c(NULL, limits = limits) +
+                    # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
+                    do.call(viridis::scale_fill_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }

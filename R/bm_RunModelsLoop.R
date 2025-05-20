@@ -34,7 +34,7 @@
 ##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 ##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
 ##' (\emph{abundance / count / relative data}), 
-##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})
+##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{multiclass/ordinal data})
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -333,7 +333,6 @@ bm_RunModel <- function(model, run.name
     model.call <- paste0(bm.opt@package, "::", bm.opt@func)
     model.sp <- try(do.call(eval(parse(text = model.call)), bm.opt.val))
     
-    
     ## GET results --------------------------------------------------
     if (!inherits(model.sp, "try-error")) {
       
@@ -371,6 +370,9 @@ bm_RunModel <- function(model, run.name
       #   rownames(model.sp) <- rownames(bm.opt.val$expl.var)
       #   model.bm@extremal_conditions = model.sp
       # }
+      if (data.type %in% c("ordinal", "multiclass")){
+        model.bm@levels_factor <- levels(data_sp)
+      }
     }
     
     ## POSTLIMINAR --------------------------------------------------
@@ -518,14 +520,14 @@ bm_RunModel <- function(model, run.name
   }
   
   ## Find good format of prediction for ordinal
-  if (data.type == "ordinal") {
+  if (data.type %in% c("ordinal", "multiclass")) {
     if (model %in% c("GLM", "GAM", "XGBOOST")) {
-      optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "Accuracy")
-      g.pred <- optimized_pred$fit_factor
-      model.bm@thresholds_ordinal <- optimized_pred$limits
-      # g.pred <- .numeric2factor(g.pred, data_sp)
+      # optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "Accuracy")
+      # g.pred <- optimized_pred$fit_factor
+      # model.bm@thresholds_ordinal <- optimized_pred$limits
+      g.pred <- .numeric2factor(g.pred, data_sp, ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
     } else {
-      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = TRUE)
+      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
     }
   } else {
     g.pred <- as.numeric(g.pred) 
@@ -552,24 +554,11 @@ bm_RunModel <- function(model, run.name
               temp_workdir = temp_workdir)
     )
     
-    if (data.type == "ordinal") {
+    if (data.type %in% c("ordinal", "multiclass")) {
       if (model %in% c("GLM", "GAM", "XGBOOST")) {
-        limits <- model.bm@thresholds_ordinal
-        nblevels <- length(levels(data_sp))
-        g.pred.eval[g.pred.eval < 1] <- 1
-        g.pred.eval[g.pred.eval > nblevels] <- nblevels
-        
-        for (j in 1:(nblevels - 1)) {
-          g.pred.eval[g.pred.eval <= j + limits[j] & g.pred.eval >= j ] <- j
-          g.pred.eval[g.pred.eval > j + limits[j] & g.pred.eval < j + 1 ] <- j + 1
-        }
-        levels <- 1:nblevels
-        names(levels) <- levels(data_sp)
-        g.pred.eval <- factor(g.pred.eval, levels = levels, ordered = TRUE)
-        
-      } else {
-        g.pred.eval <- factor(g.pred.eval, levels = levels(data_sp), ordered = TRUE)
-      }
+        g.pred.eval <- .numeric2factor(g.pred.eval, data_sp, ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
+      } 
+      g.pred.eval <- factor(g.pred.eval, levels = levels(data_sp), ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
     } else {
       g.pred.eval <- as.numeric(g.pred.eval) 
     }
@@ -698,11 +687,11 @@ bm_RunModel <- function(model, run.name
   
   ## 1. Check data.type -------------------------------------------------------
   data.type <- bm.options@options[[1]]@type
-  avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance')
+  avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance', 'multiclass')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
   
   on_0_1000 <- TRUE
-  if (data.type %in% c("abundance", "count", "ordinal", "relative")) {
+  if (data.type %in% c("abundance", "count", "multiclass", "ordinal", "relative")) {
     on_0_1000 <- FALSE
   }
   

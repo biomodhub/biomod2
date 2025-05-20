@@ -264,7 +264,7 @@ be among <code>AUCroc</code>, <code>AUCprg</code>, <code>TSS</code>, <code>KAPPA
 <code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
 <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
 (<em>abundance / count / relative data</em>),
-<code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code> (<em>ordinal data</em>)</p></dd>
+<code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code> (<em>multiclass / ordinal data</em>)</p></dd>
 
 
 <dt id="arg-var-import">var.import<a class="anchor" aria-label="anchor" href="#arg-var-import"></a></dt>
@@ -349,7 +349,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p><code>RFd</code> : Random Forest downsampled (<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>)</p></li>
 <li><p><code>SRE</code> : Surface Range Envelop or usually called BIOCLIM (<code><a href="bm_SRE.html">bm_SRE</a></code>)</p></li>
 <li><p><code>XGBOOST</code> : eXtreme Gradient Boosting Training (<code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>)</p></li>
-</ul><p></p><table class="table table"><tr><td></td><td><strong>ANN</strong></td><td><strong>CTA</strong></td><td><strong>FDA</strong></td><td><strong>GAM</strong></td><td><strong>GBM</strong></td><td><strong>GLM</strong></td><td><strong>MARS</strong></td><td><strong>MAXENT</strong></td><td><strong>MAXNET</strong></td><td><strong>RF</strong></td><td><strong>RFd</strong></td><td><strong>SRE</strong></td><td><strong>XGBOOST</strong></td></tr><tr><td>binary</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td></tr><tr><td>ordinal</td><td></td><td>x</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>abundance / count / relative</td><td></td><td>x</td><td></td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr></table><p></p></dd>
+</ul><p></p><table class="table table"><tr><td></td><td><strong>ANN</strong></td><td><strong>CTA</strong></td><td><strong>FDA</strong></td><td><strong>GAM</strong></td><td><strong>GBM</strong></td><td><strong>GLM</strong></td><td><strong>MARS</strong></td><td><strong>MAXENT</strong></td><td><strong>MAXNET</strong></td><td><strong>RF</strong></td><td><strong>RFd</strong></td><td><strong>SRE</strong></td><td><strong>XGBOOST</strong></td></tr><tr><td>binary</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td></tr><tr><td>multiclass</td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>ordinal</td><td></td><td>x</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>abundance / count / relative</td><td></td><td>x</td><td></td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr></table><p></p></dd>
 
 
   <dt>models.pa</dt>
@@ -421,7 +421,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p><code>Max_error</code> : Maximum error</p></li>
 </ul><p></p></dd>
 
-    <dt>ordinal data</dt>
+    <dt>multiclass/ordinal data</dt>
 <dd><p></p><ul><li><p><code>Accuracy</code> : Accuracy</p></li>
 <li><p><code>Recall</code> : Macro average Recall</p></li>
 <li><p><code>Precision</code> : Macro average Precision</p></li>
@@ -580,7 +580,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

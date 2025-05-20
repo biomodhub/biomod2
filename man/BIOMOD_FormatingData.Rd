@@ -54,7 +54,7 @@ or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variab
 A \code{character} corresponding to the modeling folder}
 
 \item{data.type}{a \code{character}, corresponding to the response data type to be used, 
-must be either \code{binary}, \code{count}, \code{ordinal}, \code{relative}, or 
+must be either \code{binary}, \code{count}, \code{multiclass}, \code{ordinal}, \code{relative}, or 
 \code{abundance}, and match the data contained in \code{resp.var} 
 \cr \emph{If not provided, \code{biomod2} will try to guess.}}
 
@@ -206,6 +206,7 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
     \emph{If no true absences are available, pseudo-absence selection must be done.}
     }
     \item{count}{positive \code{integer} values}
+    \item{multiclass}{\code{factor} values}
     \item{ordinal}{ordered \code{factor} values}
     \item{relative}{\code{numeric} values between \code{0} and \code{1}}
     \item{abundance}{positive \code{numeric} values}

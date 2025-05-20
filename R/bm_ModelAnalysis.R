@@ -124,7 +124,7 @@ bm_ModelAnalysis <- function(bm.mod,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  models.coherent <- grep("GAM|MARS|GLM|CTA", models.chosen, value = TRUE)
+  #models.coherent <- grep("GAM|MARS|GLM|CTA", models.chosen, value = TRUE)
   
   cat("\n> Residuals computation")
   predictions <- get_predictions(bm.mod, full.name = models.chosen)
@@ -271,6 +271,10 @@ bm_ModelAnalysis <- function(bm.mod,
 .bm_ModelAnalysis.check.args <- function(bm.mod, models.chosen, color.by, do.plot)
 {
   .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
+  
+  if(bm.mod@data.type == "multiclass"){
+    stop("bm_ModelAnalysis is not available for multiclass data models.")
+  }
   
   ## Stop if ordinal -------------------------------------------------------
   # if (bm.mod@data.type %in% c("ordinal", "binary")){

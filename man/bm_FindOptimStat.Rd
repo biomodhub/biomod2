@@ -32,7 +32,7 @@ be either \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
 (\emph{abundance / count / relative data}), 
-\code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})}
+\code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{multiclass/ordinal data})}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
@@ -124,7 +124,7 @@ Optimal value of each method can be obtained with the \code{\link{get_optim_valu
     \item \code{Max_error} : Maximum error
   }
   }
-  \item{ordinal data}{
+  \item{multiclass/ordinal data}{
   \itemize{
     \item \code{Accuracy} : Accuracy
     \item \code{Recall} : Macro average Recall

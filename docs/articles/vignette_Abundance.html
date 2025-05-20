@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-3</span>
       </span>
     </div>
 
@@ -219,11 +219,16 @@ guess your data type but you can specify it with the argument
 <td>poisson</td>
 </tr>
 <tr class="even">
+<td>multiclass</td>
+<td>Factor response (More than 2 factors)</td>
+<td>classification</td>
+</tr>
+<tr class="odd">
 <td>ordinal</td>
 <td>Ordered factor response</td>
 <td>classification</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>relative</td>
 <td>Numeric response between 0 and 1</td>
 <td>beta</td>
@@ -336,8 +341,8 @@ models are available. We have :<br>
 implemented : <code>RMSE</code>, <code>MSE</code>, <code>MAE</code>,
 <code>Max_error</code>, <code>Rsquared</code> and
 <code>Rsquared_aj</code> (see <code><a href="../reference/BIOMOD_Modeling.html">?BIOMOD_Modeling</a></code>)</p>
-<p>For ordinal data, we have <code>Accuracy</code>, <code>Recall</code>,
-<code>Precision</code> and <code>F1</code>.</p>
+<p>For multiclass and ordinal data, we have <code>Accuracy</code>,
+<code>Recall</code>, <code>Precision</code> and <code>F1</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model single models</span></span>
 <span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -373,6 +378,10 @@ implemented : <code>RMSE</code>, <code>MSE</code>, <code>MAE</code>,
 <h4 id="ensemble-models">
 <i class="fa-solid fa-cubes"></i> Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models"></a>
 </h4>
+<p>Two new ensemble models have been added: <code>EMmode</code> and
+<code>EMfreq</code> (for the mode of the response and the frequency of
+that mode) for <code>multiclass</code> and <code>ordinal</code>
+datatypes.</p>
 <p><strong>! Warning !</strong> The selection of single models for the
 ensemble modeling is different for the metrics <code>RMSE</code>,
 <code>MSE</code>, <code>MAE</code> and <code>Max_error</code>.</p>
@@ -517,7 +526,7 @@ types of data !</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

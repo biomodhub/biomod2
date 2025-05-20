@@ -16,7 +16,7 @@ bm_ModelingOptions(
 }
 \arguments{
 \item{data.type}{a \code{character} corresponding to the data type to be used, must be either 
-\code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{ordinal}}
+\code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{multiclass}, \code{ordinal}}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 

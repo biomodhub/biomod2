@@ -157,6 +157,9 @@
 
 .check_formating_resp.var.bin <- function(resp.var, is.eval = FALSE)
 {
+  if (is.factor(resp.var)){
+    resp.var <- as.numeric(as.character(resp.var)) 
+  }
   if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
     cat("\n      ! ", ifelse(is.eval, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
     resp.var[which(resp.var > 0)] <- 1
@@ -175,8 +178,8 @@
   if (!is.numeric(resp.var)) {
     if (!is.factor(resp.var)) {
       stop("biomod2 accept only numeric or factor values : please check your response data.")
-    } else if (!is.ordered(resp.var)) {
-      stop("Your ordinal data doesn't seem ordered : please check your response data.")
+    # } else if (!is.ordered(resp.var)) {
+    #   stop("Your ordinal data doesn't seem ordered : please check your response data.")
     }
   } else {
     if (-Inf %in% resp.var | Inf %in% resp.var) {
@@ -1054,7 +1057,8 @@ rast.has.values <- function(x)
 .which.data.type <- function(resp.var)
 {
   if (is.factor(resp.var)) {
-    data.type <- ifelse(nlevels(resp.var) <= 2, "binary", "ordinal")
+    data.type <- ifelse(nlevels(resp.var) <= 2, "binary", 
+                        ifelse(is.ordered(resp.var), "ordinal", "multiclass"))
   } else {
     element <- sort(unique(resp.var))
     if (identical(as.numeric(element), c(0, 1)) | identical(as.numeric(element), 1)) {
@@ -1071,14 +1075,18 @@ rast.has.values <- function(x)
 }
 
 ## used in bm_RunModelsLoop
-.numeric2factor <- function(pred, obs)
+.numeric2factor <- function(pred, obs, ordered = FALSE)
 {
   nblevels <- length(levels(obs))
   pred <- round(pred)
   pred[pred > nblevels] <- nblevels
   pred[pred < 1] <- 1
-  newlevels <- levels(obs)[sort(unique(pred))]
-  pred <- factor(pred, labels = newlevels, ordered = TRUE)
+  if (inherits(pred, "SpatRaster")){
+    pred <- terra::subst(pred, 1:length(levels(obs)), levels(obs))
+  } else {
+    newlevels <- levels(obs)[sort(unique(pred))]
+    pred <- factor(pred, labels = newlevels, ordered = ordered)
+  }
   return(pred)
 }
 
@@ -1123,4 +1131,20 @@ rast.has.values <- function(x)
   fit_factor <- factor(fit_factor, levels = levels, ordered = TRUE)
   
   return(list(limits = limits, fit_factor = fit_factor))
+}
+
+## Used in predict of EMmode-biomod2-model
+.find_mode <- function(x) {
+  if (all(is.na(x))) {return(NA)}
+  freq_table <- table(x, useNA = "no")
+  mode <- names(freq_table[freq_table == max(freq_table)])
+  return(mode[1]) #If double, we take the first one ?? 
+}
+
+## Used in predict of EMfreq-biomod2-model
+.find_freq_mode <- function(x) {
+  if (all(is.na(x))) {return(NA)}
+  freq_table <- table(x, useNA = "no")
+  freq <- as.numeric(max(freq_table)/length(x))
+  return(freq)
 }

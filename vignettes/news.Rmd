@@ -14,6 +14,27 @@ vignette: >
 
 ### <i class="fas fa-pen-alt"></i> 2025
 
+##### 4.3-3 Multiclass datatype (2025-05-20) 
+
+- Add the datatype `multiclass`. It is now possible to model with a factorial response (not ordered).
+- Two new ensemble models have been added: `EMmode` and `EMfreq` (for the mode of the response and the frequency of that mode).
+
+- In _biomod2_classes_0_ file :
+  + add new data types : _"multiclass"_
+  + adaptation of `.BIOMOD.options.default.correct` function 
+- In _biomod2_classes_1_ file :
+  + adaptation of `plot` method for `BIOMOD.projection.out` object 
+- In _biomod2_classes_3_ file :
+  + adaptation of `.BIOMOD.formated.data.check_data`, `.plot.BIOMOD.formated.data.abundance`, `summary` and `show` function 
+- In _biomod2_classes_4_ file :
+  + `factor_levels` slot for `biomod2_model` class
+  + update all `predict2` functions for single models to deal with the different data types
+- In `bm_RunModelsLoop`, `BIOMOD_Projection`, `BIOMOD_EnsembleModeling` and `BIOMOD_EnsembleForecasting` functions :
+  + management of the format of model predictions, in particular for ordinal and multiclass cases.
+- In _biomod2_classes_5_ file :
+  + definition of `EMmode` and `EMfreq` with `predict` methods
+
+
 ##### Bugfix
 
 - 4.3-2-3 : fix `data.type` in `bm_ModelingOptions`

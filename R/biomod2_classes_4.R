@@ -92,7 +92,7 @@ NULL
 ##' @slot model_options a \code{list} containing the model options
 ##' @slot model the corresponding model object
 ##' @slot scaling_model the corresponding scaled model object
-##' @slot thresholds_ordinal the optimized limits for the different ordinal categories
+##' @slot levels_factor the levels of the original data for ordinal and multiclass
 ##' @slot dir_name a \code{character} corresponding to the modeling folder
 ##' @slot resp_name a \code{character} corresponding to the species name
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
@@ -160,7 +160,7 @@ setClass('biomod2_model',
                         model_options = 'BIOMOD.options.dataset',
                         model = 'ANY',
                         scaling_model = 'ANY',
-                        thresholds_ordinal = 'ANY',
+                        levels_factor = 'ANY',
                         dir_name = 'character',
                         resp_name = 'character',
                         expl_var_names = 'character',
@@ -490,8 +490,8 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
             type = 'prob'
             n <- 2
             rep <- 2
-            if (data.type != "binary") { type = "matrix"; n <- 1 }
-            if (data.type == "ordinal") { type = "class"; n <- 1; rep = 1 } 
+            if (data.type != "binary") { type = "matrix"; n = 1 }
+            if (data.type %in% c("ordinal", "multiclass")) { type = "class"; n = 1; rep = 1 } 
             predfun <- function(object, newdata, mod.name) {
               proj <- subset(predict(newdata,
                                      model = get_formal_model(object), 
@@ -517,7 +517,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.fr
             type = 'prob'
             n <- 2
             if (data.type != "binary") { type = "matrix"; n <- 1 }
-            if (data.type == "ordinal") {
+            if (data.type %in% c("ordinal", "multiclass")) {
               predfun <- function(object, newdata, not_na_rows) {
                 predict(get_formal_model(object), 
                         as.data.frame(newdata[not_na_rows, , drop = FALSE]),
@@ -561,7 +561,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
           {
             predfun <- function(object, newdata, mod.name) {
               # new predict command used with terra
-              if (object@model_type == "ordinal" ) { 
+              if (object@model_type %in% c("ordinal", "multiclass")) { 
                 proj <- subset(predict(newdata, 
                                        model = get_formal_model(object), 
                                        na.rm = TRUE,
@@ -591,7 +591,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.fr
           function(object, newdata, ...)
           {
             predfun <- function(object, newdata, not_na_rows) {
-              if (object@model_type == "ordinal") {
+              if (object@model_type %in% c("ordinal", "multiclass")) {
                 predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'class')
               } else {
                 as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])
@@ -814,7 +814,7 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "SpatRa
             predfun <- function(object, newdata, mod.name) {
               pred <- predict(newdata, model = get_formal_model(object),
                               type = "response", wopt = list(names = mod.name))
-              if (object@model_type == "ordinal") {
+              if (object@model_type %in% c("ordinal", "multiclass")) {
                 pred <- which.max(pred)
                 names(pred) <- mod.name
               }
@@ -832,7 +832,7 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "SpatRa
 setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...)
           {
-            type <- ifelse(object@model_type == "ordinal", "class", "response")
+            type <- ifelse(object@model_type %in% c("ordinal", "multiclass"), "class", "response")
             predfun <- function(object, newdata, not_na_rows) {
               predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = type)
             }
@@ -1378,9 +1378,9 @@ setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "Spa
 setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...)
           {
-            reshape <- ifelse(object@model_type == "ordinal", TRUE, FALSE)
+            reshape <- ifelse(object@model_type %in% c("ordinal", "multiclass"), TRUE, FALSE)
             predfun <- function(object, newdata, not_na_rows) {
-              as.numeric(predict(get_formal_model(object), as.matrix(newdata[not_na_rows, , drop = FALSE]), reshape = reshape))
+              predict(get_formal_model(object), as.matrix(newdata[not_na_rows, , drop = FALSE]), reshape = reshape)
             }
             # redirect to predict2.biomod2_model.data.frame
             callNextMethod(object, newdata, predfun = predfun, ...)

@@ -37,6 +37,8 @@ NULL
 ##' @aliases EMci_biomod2_model-class
 ##' @aliases EMca_biomod2_model-class
 ##' @aliases EMwmean_biomod2_model-class
+##' @aliases EMmode_biomod2_model-class
+##' @aliases EMfreq_biomod2_model-class
 ##' @author Damien Georges
 ##' 
 ##' @title Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})
@@ -74,6 +76,8 @@ NULL
 ##'   \item \code{EMci_biomod2_model} : \code{model_class} is \code{EMci}
 ##'   \item \code{EMca_biomod2_model} : \code{model_class} is \code{EMca}
 ##'   \item \code{EMwmean_biomod2_model} : \code{model_class} is \code{EMwmean}
+##'   \item \code{EMmode_biomod2_model} : \code{model_class} is \code{EMmode}
+##'   \item \code{EMfreq_biomod2_model} : \code{model_class} is \code{EMfreq}
 ##' }
 ##' 
 ##' 
@@ -90,6 +94,8 @@ NULL
 ##' showClass("EMci_biomod2_model")
 ##' showClass("EMca_biomod2_model")
 ##' showClass("EMwmean_biomod2_model")
+##' showClass("EMmode_biomod2_model")
+##' showClass("EMfreq_biomod2_model")
 ##' 
 ##' 
 NULL
@@ -136,6 +142,10 @@ setMethod('show', signature('biomod2_ensemble_model'), function(object) { callNe
 ##' @aliases predict2.EMca_biomod2_model.data.frame
 ##' @aliases predict2.EMwmean_biomod2_model.SpatRaster
 ##' @aliases predict2.EMwmean_biomod2_model.data.frame
+##' @aliases predict2.EMmode_biomod2_model.SpatRaster
+##' @aliases predict2.EMmode_biomod2_model.data.frame
+##' @aliases predict2.EMfreq_biomod2_model.SpatRaster
+##' @aliases predict2.EMfreq_biomod2_model.data.frame
 ##' @author Remi Patin
 ##' 
 ##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
@@ -262,7 +272,11 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
               newdata <- newdata[ , object@model, drop = FALSE]
             } else {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
-              newdata <- apply(newdata, 2, as.numeric) ## problem with MARS
+              if (object@model_class %in% c("EMmode", "EMfreq")){
+                newdata <- apply(newdata, 2, as.character)
+              } else {
+                newdata <- apply(newdata, 2, as.numeric)
+              }
             }
             
             out <- predfun(newdata,
@@ -702,3 +716,114 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "dat
           }
 )
 
+### -------------------------------------------------------------------------- #
+### 10.7 EMmode_biomod2_model ------------------------------------------------
+### -------------------------------------------------------------------------- #
+##' @name EMmode_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
+
+setClass('EMmode_biomod2_model',
+         representation(),
+         contains = 'biomod2_ensemble_model',
+         prototype = list(model_class = 'EMmode'),
+         validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict2.em
+##' 
+
+setMethod('predict2', signature(object = 'EMmode_biomod2_model', newdata = "SpatRaster"),
+          function(object, newdata, ...)
+          {
+            predfun <- function(newdata, on_0_1000, mod.name, na.rm, ...) {
+              if (nlyr(newdata) == 1) {
+                return(newdata)
+              } else {
+                # return(
+                #   app(newdata, .find_freq_mode, wopt = list(names = mod.name))
+                # )
+              
+                levels <- unlist(unique(values(newdata[[1]], dataframe = T, na.rm = T)))## On assume qu'il les a tous....
+                levels <- levels(levels)
+                
+                pred <- app(newdata, function(x){
+                  m <- .find_mode(x)
+                  m <- as.numeric(m)
+                  return(m)
+                }, wopt = list(names = mod.name))
+                pred <- terra::subst(pred, 1:length(levels), levels)
+                return(pred)
+              }
+            }
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
+##' 
+##' @rdname predict2.em
+##' 
+
+setMethod('predict2', signature(object = 'EMmode_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...)
+          {
+            predfun <- function(newdata, on_0_1000, na.rm, ...) {
+              out <- unlist(apply(newdata, 1, .find_mode))
+              out
+            }
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
+
+### -------------------------------------------------------------------------- #
+### 10.8 EMfreq_biomod2_model ------------------------------------------------
+### -------------------------------------------------------------------------- #
+##' @name EMfreq_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
+
+setClass('EMfreq_biomod2_model',
+         representation(),
+         contains = 'biomod2_ensemble_model',
+         prototype = list(model_class = 'EMfreq'),
+         validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict2.em
+##' 
+
+setMethod('predict2', signature(object = 'EMfreq_biomod2_model', newdata = "SpatRaster"),
+          function(object, newdata, ...)
+          {
+            predfun <- function(newdata, on_0_1000, mod.name, na.rm, ...) {
+              if (nlyr(newdata) == 1) {
+                return(newdata)
+              } else {
+                return(
+                  app(newdata, .find_freq_mode, wopt = list(names = mod.name))
+                )
+              }
+            }
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
+##' 
+##' @rdname predict2.em
+##' 
+
+setMethod('predict2', signature(object = 'EMfreq_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...)
+          {
+            predfun <- function(newdata, on_0_1000, na.rm, ...) {
+              out <- unlist(apply(newdata, 1, .find_freq_mode))
+              out
+            }
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)

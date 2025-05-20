@@ -79,7 +79,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  avail.types.list <- c('binary', 'abundance', 'count', 'ordinal', 'relative')
+  avail.types.list <- c('binary', 'abundance', 'count', 'multiclass', 'ordinal', 'relative')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {
@@ -193,6 +193,13 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "poisson"
     FDAmethod <- NULL
     XGBOOSTobjective <- "count:poisson"
+  } else if (typ == "multiclass") {
+    RFtype <- "classification"
+    MODfamily <- quasibinomial() #for MARS
+    CTAmethod <- "class"
+    GBMdistribution <- "multinomial"
+    FDAmethod <- "mars"
+    XGBOOSTobjective <- NULL
   } else if (typ == "ordinal") {
     RFtype <- "classification"
     MODfamily <- quasibinomial() 
@@ -586,7 +593,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               
               if(typ == "binary"){
                 metric <- ifelse(mod == "MAXENT", "auc.val.avg", "TSS")
-              } else if (typ == "ordinal") {
+              } else if (typ %in% c("multiclass", "ordinal")) {
                 metric <- "Accuracy"
               } else {metric <- "Rsquared"}
               

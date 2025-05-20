@@ -255,6 +255,10 @@ bm_PlotResponseCurves <- function(bm.out
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000
                                 , do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
+            if(bm.out@data.type == "multiclass" && grepl("XGBOOST", mod.name)) {
+              proj.tmp <- .numeric2factor(proj.tmp, get_formal_data(bm.out, 'resp.var'))
+            }
+            
             res = data.frame(pts.tmp, proj.tmp)
             colnames(res) = c(vari, mod.name)
             
@@ -311,6 +315,10 @@ bm_PlotResponseCurves <- function(bm.out
             
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000
                                 , do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
+            
+            if(bm.out@data.type == "multiclass" && grepl("XGBOOST", mod.name)) {
+              proj.tmp <- .numeric2factor(proj.tmp, get_formal_data(bm.out, 'resp.var'))
+            }
             
             res = data.frame(pts.tmp1, pts.tmp2, proj.tmp)
             colnames(res) = c(vari1, vari2, mod.name)
@@ -380,7 +388,15 @@ bm_PlotResponseCurves <- function(bm.out
     gg <- gg + labs(title = main)
   }
   
-  if (do.plot){ print(gg) }
+  if (do.plot){ 
+    # if (bm.out@data.type == "multiclass"){
+    #   levels <- mod@levels_factor
+    #   cat("\nThe levels are represent as : ")
+    #   for (i in 1:length(levels)){
+    #     cat("\n\t ", i, " : ", levels[i])
+    #   }
+    # }
+    print(gg) }
   return(list(tab = ggdat, plot = invisible(gg)))
 }
 

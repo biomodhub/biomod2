@@ -432,7 +432,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
                    na.rm = TRUE, filter.raster = FALSE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
-            if (data.type == "ordinal") {
+            if (data.type %in% c("ordinal", "multiclass")) {
               sp <- as.factor(unlist(sp))
             } else {
               sp <- as.numeric(unlist(sp))
@@ -1113,6 +1113,14 @@ setMethod('show', signature('BIOMOD.formated.data'),
                   sum(is.na(object@data.species), na.rm = TRUE),
                   'undefined points in dataset',
                   fill = .Options$width)
+            } else if (object@data.type %in% c("ordinal", "multiclass")){
+              cat("\n\t",
+                  length(object@data.species),
+                  'points, with ',
+                  length(levels(object@data.species)),
+                  'levels : ',
+                  levels(object@data.species),      
+                  fill = .Options$width)
             } else {
               cat("\n\t",
                   length(object@data.species),
@@ -1138,6 +1146,14 @@ setMethod('show', signature('BIOMOD.formated.data'),
                     'true absences and ',
                     sum(is.na(object@eval.data.species), na.rm = TRUE),
                     'undefined points in dataset',
+                    fill = .Options$width)
+              } else if (object@data.type %in% c("ordinal", "multiclass")){
+                cat("\n\t",
+                    length(object@eval.data.species),
+                    'points, with ',
+                    length(levels(object@eval.data.species)),
+                    'levels : ',
+                    levels(object@eval.data.species),      
                     fill = .Options$width)
               } else {
                 cat("\n\t",
@@ -1253,6 +1269,11 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                    "True_Absences" = length(which(object@data.species == 0)),
                                    "Pseudo_Absences" = 0,
                                    "Undefined" = length(which(is.na(object@data.species))))
+            } else if (object@data.type %in% c("ordinal", "multiclass")){
+              output <- data.frame("dataset" = "initial",
+                                   "run" = NA,
+                                   "Points" = length(object@data.species),
+                                   "levels" = length(levels(object@data.species)))
             } else {
               output <- data.frame("dataset" = "initial",
                                    "run" = NA,
@@ -1271,6 +1292,12 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                            "True_Absences" = length(which(object@eval.data.species == 0)),
                                            "Pseudo_Absences" = 0,
                                            "Undefined" = length(which(is.na(object@eval.data.species)))))
+              } else if (object@data.type %in% c("ordinal", "multiclass")){
+                output <- rbind(output,
+                                data.frame("dataset" = "evaluation",
+                                     "run" = NA,
+                                     "Points" = length(object@eval.data.species),
+                                     "levels" = length(levels(object@eval.data.species))))
               } else {
                 output <- rbind(output,
                                 data.frame("dataset" = "evaluation",

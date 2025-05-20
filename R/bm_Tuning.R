@@ -523,7 +523,7 @@ bm_Tuning <- function(model,
                 
                 if (!inherits(tuned.form, "try-error") && !inherits(tuned.form, "data.frame")) {
                   fit <- predict(tuned.form)
-                  if (bm.format@data.type == "ordinal") {
+                  if (bm.format@data.type %in% c("multiclass","ordinal")) {
                     if (model %in% c("GAM", "GLM")) { 
                       fit <- .threshold_ordinal(myObs, fit, metric.bm)$fit_factor 
                     } else if (model %in% c("CTA", "MARS")) {
@@ -535,7 +535,7 @@ bm_Tuning <- function(model,
                     fit <- as.numeric(fit) - 1
                   }
                   if (model == "MARS") {
-                    if (bm.format@data.type == "ordinal") {
+                    if (bm.format@data.type %in% c("multiclass","ordinal")) {
                       fit <- as.factor(fit[, 1])
                     } else if (bm.format@data.type == "binary") {
                       fit <- as.numeric(fit[, 1])
@@ -690,7 +690,7 @@ bm_Tuning <- function(model,
   } else if (bm.format@data.type == "binary") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
     metric.bm <- metric.eval
-  } else if (bm.format@data.type == "ordinal") {
+  } else if (bm.format@data.type %in% c("multiclass","ordinal")) {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("Accuracy"))
     metric.bm <- "Accuracy"
   } else {
@@ -744,7 +744,7 @@ bm_Tuning <- function(model,
   ## get criteria -------------------------------------------------------------
   if (do.stepAIC &&
       (model == "GLM" || (model == "GAM" && bm.options@package == "gam")) && 
-      !bm.format@data.type %in% c("ordinal", "relative")) {
+      !bm.format@data.type %in% c("multiclass", "ordinal", "relative")) {
     .fun_testIfIn(TRUE, "metric.AIC", metric.AIC, c("AIC", "BIC"))
     if (metric.AIC == "AIC") { criteria.AIC <- 2 }
     if (metric.AIC == "BIC")  { criteria.AIC <- log(ncol(bm.format@data.env.var)) }

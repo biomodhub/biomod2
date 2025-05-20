@@ -315,8 +315,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
   }
+
   if (!proj_is_raster) {
-    formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
+    if (bm.em@data.type %in% c("multiclass", "ordinal")){
+      formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = function(x){as.character(x[1])})
+    } else {
+      formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
+    }
     formal_pred <- as.data.frame(formal_pred[, models.needed])
   }
   
@@ -339,11 +344,20 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , filename = filename
                         , mod.name = em.name
                         , na.rm = na.rm)
-      
+
       ## cleaning 
       if (bm.em@data.type %in% c("count", "abundance")) {
         ef.tmp[ef.tmp < 0] <- 0
         ef.tmp <- round(ef.tmp, digits = digits)
+      }
+      
+      if(bm.em@data.type == "ordinal" && !grepl("EMfreq|EMcv", em.name)){
+        data_sp <- get_formal_data(bm.em, subinfo = "resp.var")
+        if(proj_is_raster){
+          ef.tmp <- terra::subst(ef.tmp, 1:length(levels(data_sp)), levels(data_sp))
+        } else {
+          ef.tmp <- factor(ef.tmp, levels = levels(data_sp))
+        }
       }
       
       if (do.stack) {
@@ -700,7 +714,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 12.on_0_1000 --------------------------------
   on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
-  if (bm.em@data.type  %in% c("count", "abundance", "ordinal")) { on_0_1000 <- FALSE }
+  if (bm.em@data.type  %in% c("count", "abundance", "ordinal", "multiclass")) { on_0_1000 <- FALSE }
   
   return(list(bm.em = bm.em,
               bm.proj = bm.proj,

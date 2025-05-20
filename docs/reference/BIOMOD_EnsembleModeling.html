@@ -166,7 +166,7 @@ the ensemble models, must be among <code>all</code>, <code>algo</code>, <code>PA
 <dt id="arg-em-algo">em.algo<a class="anchor" aria-label="anchor" href="#arg-em-algo"></a></dt>
 <dd><p>a <code>vector</code> corresponding to the ensemble models that will be computed,
 must be among <code>EMmean</code>, <code>EMmedian</code>, <code>EMcv</code>, <code>EMci</code>,
-<code>EMca</code>, <code>EMwmean</code></p></dd>
+<code>EMca</code>, <code>EMwmean</code>, <code>EMmode</code>, <code>EMfreq</code></p></dd>
 
 
 <dt id="arg-metric-select">metric.select<a class="anchor" aria-label="anchor" href="#arg-metric-select"></a></dt>
@@ -390,6 +390,19 @@ respectively). <br><br><br></p>
   <em>The lower is the score, the better are the models.</em></p></dd>
 
 
+  <dt>EMmode</dt>
+<dd><p>mode of the predictions over the selected models <br></p>
+<p>For multiclass and ordinal data, EMmode will return the most frequent class found for each point.
+  This is the only <em>ensemble</em> model that will return categorical data and not numeric values.</p></dd>
+
+
+  <dt>EMfreq</dt>
+<dd><p>mode frequency of the predictions over the selected models <br></p>
+<p>For multiclass and ordinal data, EMfreq will return the frequency of the mode found for each point.
+  This is a way of assessing the uncertainty between models: the higher the frequency, the lower the uncertainty.</p></dd>
+
+
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -514,7 +527,7 @@ respectively). <br><br><br></p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-3</span>
       </span>
     </div>
 
@@ -149,6 +149,67 @@
 <h3 id="section">
 <i class="fas fa-pen-alt"></i> 2025<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
+<div class="section level5">
+<h5 id="multiclass-datatype-2025-05-20">4.3-3 Multiclass datatype (2025-05-20)<a class="anchor" aria-label="anchor" href="#multiclass-datatype-2025-05-20"></a>
+</h5>
+<ul>
+<li><p>Add the datatype <code>multiclass</code>. It is now possible to
+model with a factorial response (not ordered).</p></li>
+<li><p>Two new ensemble models have been added: <code>EMmode</code> and
+<code>EMfreq</code> (for the mode of the response and the frequency of
+that mode).</p></li>
+<li>
+<p>In <em>biomod2_classes_0</em> file :</p>
+<ul>
+<li>add new data types : <em>“multiclass”</em>
+</li>
+<li>adaptation of <code>.BIOMOD.options.default.correct</code>
+function</li>
+</ul>
+</li>
+<li>
+<p>In <em>biomod2_classes_1</em> file :</p>
+<ul>
+<li>adaptation of <code>plot</code> method for
+<code>BIOMOD.projection.out</code> object</li>
+</ul>
+</li>
+<li>
+<p>In <em>biomod2_classes_3</em> file :</p>
+<ul>
+<li>adaptation of <code>.BIOMOD.formated.data.check_data</code>,
+<code>.plot.BIOMOD.formated.data.abundance</code>, <code>summary</code>
+and <code>show</code> function</li>
+</ul>
+</li>
+<li>
+<p>In <em>biomod2_classes_4</em> file :</p>
+<ul>
+<li>
+<code>factor_levels</code> slot for <code>biomod2_model</code>
+class</li>
+<li>update all <code>predict2</code> functions for single models to deal
+with the different data types</li>
+</ul>
+</li>
+<li>
+<p>In <code>bm_RunModelsLoop</code>, <code>BIOMOD_Projection</code>,
+<code>BIOMOD_EnsembleModeling</code> and
+<code>BIOMOD_EnsembleForecasting</code> functions :</p>
+<ul>
+<li>management of the format of model predictions, in particular for
+ordinal and multiclass cases.</li>
+</ul>
+</li>
+<li>
+<p>In <em>biomod2_classes_5</em> file :</p>
+<ul>
+<li>definition of <code>EMmode</code> and <code>EMfreq</code> with
+<code>predict</code> methods</li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section level5">
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
@@ -1609,7 +1670,7 @@ coherence between functions)</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

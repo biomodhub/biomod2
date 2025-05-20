@@ -340,27 +340,40 @@ BIOMOD_Projection <- function(bm.mod,
                           filename = filename, omit.na = omit.na, 
                           temp_workdir = temp_workdir, seedval = seed.val, 
                           overwrite = overwrite, mod.name = mod.name)
-      
+
       
       ## Cleaning 
       if (bm.mod@data.type %in% c("count", "abundance")) {
         pred.tmp[pred.tmp < 0] <- 0
         pred.tmp <- round(pred.tmp,digits = digits)
-      } else if (bm.mod@data.type == "ordinal") {
-        data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
-        nblevels <- length(levels(data_sp))
-        pred.tmp[pred.tmp < 1] <- 1
-        pred.tmp[pred.tmp > nblevels] <- nblevels
         
-        #pred.tmp <- round(as.numeric(pred.tmp))
+      } else if (bm.mod@data.type %in% c("ordinal", "multiclass")) {
+        data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
+        #nblevels <- length(levels(data_sp))
         if (length(grep("GAM$|GLM$|XGBOOST$", mod.name)) == 1) {
-          limits <- mod@thresholds_ordinal
-          for (j in 1:(nblevels - 1)) {
-            pred.tmp[pred.tmp <= j + limits[j] & pred.tmp >= j ] <- j
-            pred.tmp[pred.tmp > j + limits[j] & pred.tmp < j + 1 ] <- j + 1
+          # pred.tmp[pred.tmp < 1] <- 1
+          # pred.tmp[pred.tmp > nblevels] <- nblevels
+          # pred.tmp <- round(as.numeric(pred.tmp))
+          # if (inherits(pred.tmp, "SpatRaster")){
+          #   pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
+          # } else {
+          #   pred.tmp <- factor(pred.tmp, labels = levels(data_sp))
+          # }
+          pred.tmp <- .numeric2factor(pred.tmp, data_sp, ordered = (bm.mod@data.type == "ordinal"))
+        } else if ((length(grep("MARS$", mod.name)) == 1)){
+          if (!inherits(pred.tmp, "SpatRaster")){
+            pred.tmp <- factor(pred.tmp, levels = levels(data_sp))
+          } else {
+            pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
+          }
+        } else {
+          if (!inherits(pred.tmp, "SpatRaster")){
+            pred.tmp <- factor(pred.tmp, levels = 1:length(levels(data_sp)), labels = levels(data_sp),
+                               ordered = ifelse(bm.mod@data.type == "ordinal", TRUE, FALSE))
           }
         }
       }
+      
       
       if (do.stack) {
         if (proj_is_raster) {
@@ -716,7 +729,7 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 10. Check on_0_1000 ------------------------------------------------------
   on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
-  if (bm.mod@data.type %in% c("count", "abundance", "ordinal")) { on_0_1000 <- FALSE }
+  if (bm.mod@data.type %in% c("count", "abundance", "ordinal", "multiclass")) { on_0_1000 <- FALSE }
   
   ## 11.Check overwrite -------------------------------------------------------
   overwrite <- ifelse(is.null(args$overwrite), ifelse(do.stack, TRUE, FALSE), args$overwrite)

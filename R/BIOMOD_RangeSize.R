@@ -234,6 +234,10 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
   .fun_testIfInherits(TRUE, "proj.current", proj.current, "BIOMOD.projection.out")
   .fun_testIfInherits(TRUE, "proj.future", proj.future, "BIOMOD.projection.out")
   
+  if(proj.current@data.type == "multiclass"){
+    stop("BIOMOD_RangeSize is not available for multiclass data models.")
+  }
+  
   ## Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {
     models.chosen <- proj.future@models.projected

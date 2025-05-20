@@ -199,7 +199,6 @@
   data_shape <- c(shape_fit,
                   shape_eval,
                   rep(shape_fit,length(colnames(calib.lines)) ))
-  data_alpha <- c()
   data_background <- "#FFFFFF00"
   
   
@@ -229,6 +228,7 @@
 
   ## 3.1 Raster plot --------------------------------------------------------
   if(plot.type == "raster"){
+    print(full.df.vect)
 
     rast.plot <- foreach(this_dataset = unique(full.df.vect$dataset), .combine = 'c') %do% {
       this_rast  <-
@@ -236,8 +236,9 @@
                          full.df.vect$dataset == this_dataset), 
                   plot_mask[[this_dataset]],
                   field = "resp", by = "part", fun = mean, background = 0)
+      print(this_rast)
       if (this_dataset == "Initial dataset"){
-        names(this_rast) <- this_dataset
+        names(this_rast) <- paste(names(this_rast), "Data", sep = "_")
       } else {
         names(this_rast) <- paste(this_dataset, c("calibration","validation"), sep = "_")
       }
@@ -246,7 +247,7 @@
     
     data_colors <- c("#004488")
     if(plot.eval){
-      data_colors <- c(data.color,"#994455")
+      data_colors <- c("#994455", data_colors,)
     }
     if(!is.null(calib.lines)){
       nb_run <- ncol(calib.lines)
@@ -309,9 +310,13 @@
     datasets <- c("Initial dataset", datasets[-length(datasets)])
     data.df$dataset <- factor(data.df$dataset, datasets)
     
-    if (x@data.type == "ordinal"){
-      labels_ordinal <- levels(x@data.species)
-    } else {labels_ordinal <- waiver() }
+    if (x@data.type %in% c("ordinal", "multiclass")){
+      labels_factor <- levels(x@data.species)
+      breaks_factor <- 1:length(labels_factor)
+    } else {
+      labels_factor <- waiver()
+      breaks_factor <- waiver()
+    }
     
     if(plot.output == "facet"){
       base_g <-  ggplot(data.df)
@@ -327,9 +332,11 @@
                        size = resp),
                    shape = 18)+ #size = point.size
         facet_wrap(~dataset)+
-        scale_size(range =c(0.5,3), 
-                  labels = labels_ordinal
-                   )+
+        scale_size(
+          range =c(0.5,3), 
+          labels = labels_factor,
+          breaks = breaks_factor
+        )+
         scale_color_manual(
           NULL,
           breaks = data_breaks,
@@ -343,7 +350,8 @@
           labels = data_labels,
           na.value = data_background)+
         scale_alpha(
-          labels = labels_ordinal
+          labels = labels_factor,
+          breaks = breaks_factor
         )+
         xlab(NULL)+ ylab(NULL)+
         guides(color = guide_legend(override.aes = list(size = 3)))+
