@@ -9,6 +9,8 @@
 \alias{predict2.ANN_biomod2_model.data.frame}
 \alias{predict2.CTA_biomod2_model.SpatRaster}
 \alias{predict2.CTA_biomod2_model.data.frame}
+\alias{predict2.DNN_biomod2_model.SpatRaster}
+\alias{predict2.DNN_biomod2_model.data.frame}
 \alias{predict2.FDA_biomod2_model.SpatRaster}
 \alias{predict2.FDA_biomod2_model.data.frame}
 \alias{predict2.GAM_biomod2_model.SpatRaster}
@@ -34,6 +36,8 @@
 \alias{predict2,ANN_biomod2_model,data.frame-method}
 \alias{predict2,CTA_biomod2_model,SpatRaster-method}
 \alias{predict2,CTA_biomod2_model,data.frame-method}
+\alias{predict2,DNN_biomod2_model,SpatRaster-method}
+\alias{predict2,DNN_biomod2_model,data.frame-method}
 \alias{predict2,FDA_biomod2_model,SpatRaster-method}
 \alias{predict2,FDA_biomod2_model,data.frame-method}
 \alias{predict2,GAM_biomod2_model,SpatRaster-method}
@@ -71,6 +75,10 @@ predict2(object, newdata, ...)
 \S4method{predict2}{CTA_biomod2_model,SpatRaster}(object, newdata, ...)
 
 \S4method{predict2}{CTA_biomod2_model,data.frame}(object, newdata, ...)
+
+\S4method{predict2}{DNN_biomod2_model,SpatRaster}(object, newdata, ...)
+
+\S4method{predict2}{DNN_biomod2_model,data.frame}(object, newdata, ...)
 
 \S4method{predict2}{FDA_biomod2_model,SpatRaster}(object, newdata, ...)
 

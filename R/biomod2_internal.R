@@ -1074,6 +1074,33 @@ rast.has.values <- function(x)
   return(data.type)
 }
 
+## get good models ou metrics depending of the data.type 
+## used in BIOMOD.Modeling, bm_ModelingOptions, bm_RunModelsLoop
+
+.avail.models.list <- function(data.type){
+  switch(data.type,
+    binary = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
+    ordinal = c('CTA', 'DNN', 'FDA',  'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+    multiclass = c('CTA', 'DNN', 'FDA', 'MARS', 'RF', 'XGBOOST'),
+    abundance = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+    count = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+    relative = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
+  )
+}
+
+.avail.eval.meth.list <- function(data.type){
+  switch(data.type,
+         binary = c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
+                    , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', 'AUCprg'
+                    , 'BOYCE', 'MPA'),
+         ordinal = c('Accuracy', 'Recall', 'Precision', 'F1'),
+         multiclass = c('Accuracy', 'Recall', 'Precision', 'F1'),
+         abundance = c('RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error'),
+         count = c('RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error'),
+         relative = c('RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error')
+  )
+}
+
 ## used in bm_RunModelsLoop
 .numeric2factor <- function(pred, obs, ordered = FALSE)
 {

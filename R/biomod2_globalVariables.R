@@ -80,7 +80,7 @@ utils::globalVariables(names = c("i.abs"))
 
 ## bm_Tuning ------------
 utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params"
-                                 , "tuning.grid", "criteria.AIC", "metric.bm"))
+                                 , "tuning.grid", "criteria.AIC", "metric.bm", "tuned.DNN"))
 
 ## bm_ModelingOptions ------------
 utils::globalVariables(names = c("ModelsTable"))

@@ -17,24 +17,27 @@ bm_Tuning(
   weights = NULL,
   ctrl.train = NULL,
   params.train = list(ANN.size = c(2, 4, 6, 8), ANN.decay = c(0.01, 0.05, 0.1), ANN.bag =
-    FALSE, FDA.degree = 1:2, FDA.nprune = 2:25, GAM.select = c(TRUE, FALSE), GAM.method =
+    FALSE, DNN.hidden = list(depth = 3, width = 100), DNN.bias = TRUE, DNN.lambda =
+    0.001, DNN.alpha = 1, DNN.lr = c(1e-04, 0.1), DNN.batchsize = 100, DNN.epochs = 150,
+    FDA.degree = 1:2, FDA.nprune = 2:25, GAM.select = c(TRUE, FALSE), GAM.method =
     c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GAM.span = c(0.3, 0.5, 0.7),
     GAM.degree = 1, GBM.n.trees = c(500, 1000, 2500), GBM.interaction.depth = seq(2, 8,
-    by = 3), GBM.shrinkage = c(0.001, 0.01, 0.1), GBM.n.minobsinnode = 10, MARS.degree =
-    1:2, MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1), MAXENT.algorithm
-    = "maxnet", 
-     MAXENT.parallel = TRUE, MAXENT.tune.args = list(rm = seq(0.5, 1,
-    0.5), fc = c("L")), MAXENT.partitions = "randomkfold", MAXENT.kfolds = 10,
-    MAXENT.user.grp = NULL, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)), RFd.mtry =
-    1:min(10, ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
-    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma
-    = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight = 1,
-    XGBOOST.subsample = 0.5)
+    by = 3), GBM.shrinkage = c(0.001, 
+     0.01, 0.1), GBM.n.minobsinnode = 10,
+    MARS.degree = 1:2, MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
+    MAXENT.algorithm = "maxnet", MAXENT.parallel = TRUE, MAXENT.tune.args = list(rm =
+    seq(0.5, 1, 0.5), fc = c("L")), MAXENT.partitions = "randomkfold", MAXENT.kfolds =
+    10, MAXENT.user.grp = NULL, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+    RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125, 0.025,
+    0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, 
+     XGBOOST.eta = c(0.3,
+    0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6, 0.8),
+    XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
 )
 }
 \arguments{
 \item{model}{a \code{character} corresponding to the  algorithm to be tuned, must be either 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{tuning.fun}{a \code{character} corresponding to the model function name to be called 
@@ -105,6 +108,7 @@ Currently, the available parameters to be tuned are the following :
 \describe{
   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
   \item{CTA}{\code{maxdepth}}
+  \item{DNN}{\code{hidden} , \code{bias}, \code{lambda}, \code{alpha}, \code{lr}, \code{batchsize}, \code{150}}
   \item{FDA}{\code{degree}, \code{nprune}}
   \item{GAM.gam}{\code{span}, \code{degree}}
   \item{GAM.mgcv}{\code{select}, \code{method}}
@@ -133,9 +137,12 @@ combinations of parameters to be tested.
     \item Java version of Maxent defined in \pkg{dismo} package (by defining 
     \code{MAXENT.algorithm = 'maxent.jar'})
   }
+  \item \code{DNN} is tuned through \code{\link[cito]{tune}} function. 
+  The values include in \code{params.train} are the lower or upper range which hyperparameters are sampled.
+  If there is only one value, the hyperparameter is fixed by biomod2 (inclunding the width and depth of \code{hidden} parameters.) 
   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
   \item All other models are tuned through \code{\link[caret]{train}} function
-  \item No optimization of formula for \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
+  \item No optimization of formula for \code{DNN}, \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
   \code{XGBOOST}
   \item No interaction included in formula for \code{CTA}
   \item Variables selection only for \code{GAM.gam} and \code{GLM}

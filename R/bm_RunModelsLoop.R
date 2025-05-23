@@ -15,7 +15,7 @@
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among 
-##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
@@ -55,7 +55,7 @@
 ##' 
 ##' 
 ##' @param model a \code{character} corresponding to the model name to be computed, must be either 
-##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param run.name a \code{character} corresponding to the model to be run (sp.name + pa.id + 
 ##' run.id)
@@ -88,7 +88,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models formula options CTA GLM GBM GAM RF ANN FDA SRE MARS MAXENT XGBOOST
+##' @keywords models formula options CTA GLM GBM GAM RF ANN DNN FDA SRE MARS MAXENT XGBOOST
 ##' 
 ##' 
 ##' @seealso \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
@@ -263,7 +263,7 @@ bm_RunModel <- function(model, run.name
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
-    if (model %in% c("ANN", "MARS", "RF", "RFd") && is.null(bm.opt.val$formula)) { #add all models (not XGBOOST)? 
+    if (model %in% c("ANN", "DNN", "MARS", "RF", "RFd") && is.null(bm.opt.val$formula)) { #add all models (not XGBOOST)? 
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
                                            , type = 'simple'
@@ -292,6 +292,13 @@ bm_RunModel <- function(model, run.name
     ## FILL data parameter ------------------------------------------
     if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF", "RFd")) {
       bm.opt.val$data <- data_mod[calib.lines.vec, , drop = FALSE]
+    } else if (model == "DNN"){
+      categorical_var <- .get_categorical_names(data_env)
+      to_scale <- setdiff(names(data_env), categorical_var)
+      scale_data <- scale(data_mod[calib.lines.vec, to_scale, drop = FALSE])
+      bm.opt.val$data <- cbind(data_mod[calib.lines.vec, 1, drop = FALSE],                 #resp
+                               as.data.frame(scale_data),                                  #standarzise values
+                               data_mod[calib.lines.vec, categorical_var, drop = FALSE] )  #categorical data
     } else if (model == "GLM") {
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
                                data.frame("weights" = weights.vec[calib.lines.vec]))
@@ -322,7 +329,7 @@ bm_RunModel <- function(model, run.name
     }
     
     ## REORGANIZE order of parameters -------------------------------
-    if (model %in% c("ANN", "MARS", "RF", "RFd")) {
+    if (model %in% c("ANN", "DNN", "MARS", "RF", "RFd")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
     }
     if (model %in% c("FDA")) {
@@ -365,6 +372,7 @@ bm_RunModel <- function(model, run.name
       if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
       if (model == "GBM" && exists("best.iter")) { model.bm@n.trees_optim = best.iter }
       if (model == "SRE" && bm.opt.val$do.extrem == TRUE) { model.bm@extremal_conditions = model.sp }
+      if (model == "DNN") {model.bm@scaling_attributes <- attributes(scale_data)}
       # if (model == "SRE") {
       #   model.sp <- as.data.frame(model.sp)
       #   rownames(model.sp) <- rownames(bm.opt.val$expl.var)

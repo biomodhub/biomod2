@@ -15,7 +15,7 @@
 ##' 
 ##' 
 ##' @param mod a \code{character} corresponding to the model name to be computed, must be either 
-##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param typ a \code{character} corresponding to the data type to be used, must be either 
 ##' \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
@@ -75,7 +75,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
 {
   ## check if model is supported
-  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
@@ -186,6 +186,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "bernoulli"
     FDAmethod <- "mars"
     XGBOOSTobjective <- "binary:logistic"
+    DNNloss <- "binomial"
   } else if(typ == "count") {
     RFtype <- "regression"
     MODfamily <- poisson(link = "log")
@@ -193,6 +194,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "poisson"
     FDAmethod <- NULL
     XGBOOSTobjective <- "count:poisson"
+    DNNloss <- "mse"
   } else if (typ == "multiclass") {
     RFtype <- "classification"
     MODfamily <- quasibinomial() #for MARS
@@ -200,6 +202,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "multinomial"
     FDAmethod <- "mars"
     XGBOOSTobjective <- NULL
+    DNNloss <- "softmax"
   } else if (typ == "ordinal") {
     RFtype <- "classification"
     MODfamily <- quasibinomial() 
@@ -207,6 +210,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "multinomial"
     FDAmethod <- "mars"
     XGBOOSTobjective <- NULL
+    DNNloss <- "softmax"
   } else if (typ == "relative") {
     RFtype <- "regression"
     MODfamily <- quasibinomial(link = 'logit')
@@ -215,6 +219,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "gaussian"
     FDAmethod <- NULL
     XGBOOSTobjective <- "reg:squarederror"
+    DNNloss <- "mse"
   } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"
     MODfamily <- gaussian(link = 'identity')
@@ -222,6 +227,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     GBMdistribution <- "gaussian"
     FDAmethod <- NULL
     XGBOOSTobjective <- "reg:squarederror"
+    DNNloss <- "mse"
   }
   
   ## Correct default options
@@ -230,6 +236,11 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     argstmp$size = 2
   }
   if (mod == "CTA") { argstmp$method <- CTAmethod }
+  if (mod == "DNN") { 
+    argstmp$loss = DNNloss
+    argstmp$plot = FALSE
+    argstmp$verbose = FALSE
+  }
   if (mod == "FDA") {
     argstmp$dimension = NULL
     argstmp$keep.fitted = NULL

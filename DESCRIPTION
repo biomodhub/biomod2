@@ -60,6 +60,8 @@ Suggests:
     nnet,
     randomForest,
     xgboost,
+    cito,
+    torch,
     car,
     caret,
     dismo,

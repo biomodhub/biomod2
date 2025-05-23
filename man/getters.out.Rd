@@ -185,7 +185,7 @@ function}
 
 \item{algo}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{character} containing algorithm to be loaded, must be either 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{model.as.col}{(\emph{optional, default} \code{FALSE}) \cr
@@ -207,7 +207,7 @@ A \code{vector} containing explanatory variables to be kept, that can be obtaine
 
 \item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{character} containing merged algorithm to be loaded, must be among 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}, \code{mergedAlgo}}
 
 \item{merged.by.run}{(\emph{optional, default} \code{NULL}) \cr 

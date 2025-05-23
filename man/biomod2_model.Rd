@@ -6,6 +6,7 @@
 \alias{biomod2_model-class}
 \alias{ANN_biomod2_model-class}
 \alias{CTA_biomod2_model-class}
+\alias{DNN_biomod2_model-class}
 \alias{FDA_biomod2_model-class}
 \alias{GAM_biomod2_model-class}
 \alias{GBM_biomod2_model-class}
@@ -36,6 +37,7 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 \itemize{
   \item \code{ANN_biomod2_model} : \code{model_class} is \code{ANN}
   \item \code{CTA_biomod2_model} : \code{model_class} is \code{CTA}
+  \item \code{DNN_biomod2_model} : \code{model_class} is \code{DNN}
   \item \code{FDA_biomod2_model} : \code{model_class} is \code{FDA}
   \item \code{GBM_biomod2_model} : \code{model_class} is \code{GBM}
   \item \code{GLM_biomod2_model} : \code{model_class} is \code{GLM}
@@ -85,6 +87,7 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 showClass("biomod2_model")
 showClass("ANN_biomod2_model")
 showClass("CTA_biomod2_model")
+showClass("DNN_biomod2_model")
 showClass("FDA_biomod2_model")
 showClass("GAM_biomod2_model")
 showClass("GBM_biomod2_model")
