@@ -306,9 +306,11 @@ bm_Tuning <- function(model,
   argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib, dataset.i = combi$name_dataset) %do%
     {
       cat(paste0("\n\t\t> Dataset ", dataset.i))
-      argstmp <- bm.options@args.default
-      if(inherits(bm.options, "BIOMOD.options.dataset")){
-        argstmp$formula <- bm.options@args.values[[dataset.i]]$formula
+      
+      if(inherits(bm.options, "BIOMOD.options.dataset") && !is.null(bm.options@args.values[[dataset.i]])){
+        argstmp <- bm.options@args.values[[dataset.i]]
+      } else {
+        argstmp <- bm.options@args.default
       }
       
       
