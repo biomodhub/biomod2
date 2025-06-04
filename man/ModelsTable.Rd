@@ -19,6 +19,7 @@ All single models available are the following :
 \itemize{
   \item ANN (\code{\link[nnet]{nnet}})
   \item CTA (\code{\link[rpart]{rpart}})
+  \item DNN (\code{\link[cito]{cito}})
   \item FDA (\code{\link[mda]{fda}})
   \item GAM (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} or \code{\link[mgcv]{bam}})
   \item GBM (\code{\link[gbm]{gbm}})
@@ -27,6 +28,7 @@ All single models available are the following :
   \item MAXENT (\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{see Maxent website})
   \item MAXNET (\code{\link[maxnet]{maxnet}})
   \item RF (\code{\link[randomForest]{randomForest}})
+  \item RFd (\code{\link[randomForest]{randomForest} downsampled})
   \item SRE (\code{\link{bm_SRE}})
   \item XGBOOST (\code{\link[xgboost]{xgboost}})
 }

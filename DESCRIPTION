@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.3-3
-Date: 2025-05-20
+Version: 4.3-4
+Date: 2025-06-04
 Authors@R: c(person("Maya", "Guéguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
              person("Hélène", "Blancheteau", role = "aut"
@@ -60,6 +60,8 @@ Suggests:
     nnet,
     randomForest,
     xgboost,
+    cito,
+    torch,
     car,
     caret,
     dismo,

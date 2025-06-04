@@ -23,6 +23,20 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{cost = NULL}
      }
    }
+   \item{\code{DNN.cito.dnn}}{
+     \itemize{
+       \item \code{batchsize = 100L}
+       \item \code{epochs = 150L}
+       \item \code{hidden = c(100L, 100L) }
+       \item \code{lr = 0.05}
+       \item \code{optimizer = "adam"}
+       \item \code{lambda = 0.001}
+       \item \code{alpha = 1.0}
+       \item \code{validation = 0.2}
+       \item \code{lr_scheduler = config_lr_scheduler("reduce_on_plateau", patience = 7)}
+       \item \code{early_stopping = 14}
+     }
+   }
    \item{\code{FDA.mda.fda}}{
    }
    \item{\code{GAM.gam.gam}}{

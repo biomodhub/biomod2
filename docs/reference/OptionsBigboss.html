@@ -18,7 +18,7 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4</span>
       </span>
     </div>
 
@@ -134,6 +134,19 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
    <dt><code>CTA.rpart.rpart</code></dt>
 <dd><p></p><ul><li><p><code>control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)</code></p></li>
 <li><p><code>cost = NULL</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>DNN.cito.dnn</code></dt>
+<dd><p></p><ul><li><p><code>batchsize = 100L</code></p></li>
+<li><p><code>epochs = 150L</code></p></li>
+<li><p><code>hidden = c(100L, 100L) </code></p></li>
+<li><p><code>lr = 0.05</code></p></li>
+<li><p><code>optimizer = "adam"</code></p></li>
+<li><p><code>lambda = 0.001</code></p></li>
+<li><p><code>alpha = 1.0</code></p></li>
+<li><p><code>validation = 0.2</code></p></li>
+<li><p><code>lr_scheduler = config_lr_scheduler("reduce_on_plateau", patience = 7)</code></p></li>
+<li><p><code>early_stopping = 14</code></p></li>
 </ul><p></p></dd>
 
    <dt><code>FDA.mda.fda</code></dt>

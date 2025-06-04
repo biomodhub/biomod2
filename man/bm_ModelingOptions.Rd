@@ -19,7 +19,7 @@ bm_ModelingOptions(
 \code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{multiclass}, \code{ordinal}}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{strategy}{a \code{character} corresponding to the method to select models' parameters 
@@ -212,7 +212,7 @@ cv.k <- bm_CrossValidation(bm.format = myBiomodData,
 
 
 # ---------------------------------------------------------------#
-allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+allModels <- c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
                , 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
 
 # default parameters

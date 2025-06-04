@@ -18,6 +18,7 @@
 #' \itemize{
 #'   \item ANN (\code{\link[nnet]{nnet}})
 #'   \item CTA (\code{\link[rpart]{rpart}})
+#'   \item DNN (\code{\link[cito]{cito}})
 #'   \item FDA (\code{\link[mda]{fda}})
 #'   \item GAM (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} or \code{\link[mgcv]{bam}})
 #'   \item GBM (\code{\link[gbm]{gbm}})
@@ -26,6 +27,7 @@
 #'   \item MAXENT (\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{see Maxent website})
 #'   \item MAXNET (\code{\link[maxnet]{maxnet}})
 #'   \item RF (\code{\link[randomForest]{randomForest}})
+#'   \item RFd (\code{\link[randomForest]{randomForest} downsampled})
 #'   \item SRE (\code{\link{bm_SRE}})
 #'   \item XGBOOST (\code{\link[xgboost]{xgboost}})
 #' }
@@ -34,22 +36,22 @@
 
 "ModelsTable"
 
-ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+ModelsTable <- data.frame(model = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 
-                                    'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+                                    'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
                                     , 'MARS', 'RF', 'XGBOOST')
-                          , type = c(rep('binary',15), rep('nonbinary',10))
-                          , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+                          , type = c(rep('binary',16), rep('nonbinary',11))
+                          , package = c('nnet', 'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 
-                                        'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+                                        'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
                                         , 'earth', 'randomForest', 'xgboost')
-                          , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+                          , func = c('nnet', 'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost',
-                                     'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+                                     'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
                                      , 'earth', 'randomForest', 'xgboost')
-                          , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
+                          , train = c('avNNet', 'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
                                       , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree',
-                                      'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
+                                      'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
                                       , 'earth', 'rf', 'xgbTree'))
 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
@@ -78,6 +80,20 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 #'      \itemize{
 #'        \item \code{control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)}
 #'        \item \code{cost = NULL}
+#'      }
+#'    }
+#'    \item{\code{DNN.cito.dnn}}{
+#'      \itemize{
+#'        \item \code{batchsize = 100L}
+#'        \item \code{epochs = 150L}
+#'        \item \code{hidden = c(100L, 100L) }
+#'        \item \code{lr = 0.05}
+#'        \item \code{optimizer = "adam"}
+#'        \item \code{lambda = 0.001}
+#'        \item \code{alpha = 1.0}
+#'        \item \code{validation = 0.2}
+#'        \item \code{lr_scheduler = config_lr_scheduler("reduce_on_plateau", patience = 7)}
+#'        \item \code{early_stopping = 14}
 #'      }
 #'    }
 #'    \item{\code{FDA.mda.fda}}{
@@ -185,6 +201,16 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$method = "class"
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$cost = NULL
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$batchsize = 100L
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$epochs = 150L
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$hidden = c(100L, 100L) ## To wide ?
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lr = 0.05
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$optimizer = "adam"
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lambda = 0.001
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$alpha = 1.0 #L2 regularization
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$validation = 0.2
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lr_scheduler = config_lr_scheduler("reduce_on_plateau", patience = 7)
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$early_stopping = 14
 # # bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']]$method = "mars"
 # # bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
 # bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$method = "GCV.Cp"
@@ -230,6 +256,7 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 
 # # Remove things to be adapted to "count", "abundance" and "compositional"
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']] <- bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']][-which(names(bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]) == "method")]
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']] <- bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']][-which(names(bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]) == "loss")]
 # bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']] <- bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']][-which(names(bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']]) == "method")]
 # bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']] <- bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']][-which(names(bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]) == "family")]
 # bm.opt@options$GAM.binary.mgcv.bam@args.values[['_allData_allRun']] <- bm.opt@options$GAM.binary.mgcv.bam@args.values[['_allData_allRun']][-which(names(bm.opt@options$GAM.binary.mgcv.bam@args.values[['_allData_allRun']]) == "family")]

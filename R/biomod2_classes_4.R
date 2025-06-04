@@ -68,6 +68,7 @@ NULL
 ##' @aliases biomod2_model-class
 ##' @aliases ANN_biomod2_model-class
 ##' @aliases CTA_biomod2_model-class
+##' @aliases DNN_biomod2_model-class
 ##' @aliases FDA_biomod2_model-class
 ##' @aliases GAM_biomod2_model-class
 ##' @aliases GBM_biomod2_model-class
@@ -112,6 +113,7 @@ NULL
 ##' \itemize{
 ##'   \item \code{ANN_biomod2_model} : \code{model_class} is \code{ANN}
 ##'   \item \code{CTA_biomod2_model} : \code{model_class} is \code{CTA}
+##'   \item \code{DNN_biomod2_model} : \code{model_class} is \code{DNN}
 ##'   \item \code{FDA_biomod2_model} : \code{model_class} is \code{FDA}
 ##'   \item \code{GBM_biomod2_model} : \code{model_class} is \code{GBM}
 ##'   \item \code{GLM_biomod2_model} : \code{model_class} is \code{GLM}
@@ -134,6 +136,7 @@ NULL
 ##' showClass("biomod2_model")
 ##' showClass("ANN_biomod2_model")
 ##' showClass("CTA_biomod2_model")
+##' showClass("DNN_biomod2_model")
 ##' showClass("FDA_biomod2_model")
 ##' showClass("GAM_biomod2_model")
 ##' showClass("GBM_biomod2_model")
@@ -265,6 +268,8 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @aliases predict2.ANN_biomod2_model.data.frame
 ##' @aliases predict2.CTA_biomod2_model.SpatRaster
 ##' @aliases predict2.CTA_biomod2_model.data.frame
+##' @aliases predict2.DNN_biomod2_model.SpatRaster
+##' @aliases predict2.DNN_biomod2_model.data.frame
 ##' @aliases predict2.FDA_biomod2_model.SpatRaster
 ##' @aliases predict2.FDA_biomod2_model.data.frame
 ##' @aliases predict2.GAM_biomod2_model.SpatRaster
@@ -536,9 +541,77 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.fr
 )
 
 
+#----------------------------------------------------------------------------- #
+## 8.3 DNN_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
+##' @name DNN_biomod2_model-class
+##' @rdname biomod2_model
+##' @export
+
+setClass('DNN_biomod2_model',
+         representation(scaling_attributes = 'list'),
+         contains = 'biomod2_model',
+         prototype = list(model_class = 'DNN'),
+         validity = function(object) { 
+           if (!inherits(object@model, "citodnn")) {
+             return(FALSE)
+           } else {
+             return(TRUE)
+           }})
+
+##' 
+##' @rdname predict2.bm
+##' 
+
+setMethod('predict2', signature(object = 'DNN_biomod2_model', newdata = "SpatRaster"),
+          function(object, newdata, ...)
+          {
+            predfun <- function(object, newdata, mod.name) {
+              type = ifelse(object@model_type %in% c("ordinal", "multiclass"), 'class', 'response')
+              
+              categorical_var <- .get_categorical_names(as.data.frame(newdata))
+              to_scale <- setdiff(names(newdata), categorical_var)
+              scale_data <- terra::scale(newdata[[to_scale]],
+                                  center = object@scaling_attributes$`scaled:center`,
+                                  scale = object@scaling_attributes$`scaled:scale`)
+              newdata <- c(scale_data, newdata[[categorical_var]])
+
+              predict(newdata, get_formal_model(object), type = type, na.rm = T,
+                      wopt = list(names = mod.name))
+            }
+            # redirect to predict2.biomod2_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
+##' 
+##' @rdname predict2.bm
+##' 
+
+setMethod('predict2', signature(object = 'DNN_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...)
+          {
+            predfun <- function(object, newdata, not_na_rows){
+              type = ifelse(object@model_type %in% c("ordinal", "multiclass"), 'class', 'response')
+              categorical_var <- .get_categorical_names(newdata)
+              to_scale <- setdiff(names(newdata), categorical_var)
+              scale_data <- scale(newdata[,to_scale],
+                               center = object@scaling_attributes$`scaled:center`,
+                               scale = object@scaling_attributes$`scaled:scale`)
+              newdata <- cbind(as.data.frame(scale_data),            
+                               newdata[, categorical_var])
+              names(newdata) <- c(names(as.data.frame(scale_data)), categorical_var)
+
+              as.vector(predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE], reduce = "none", type = type))            
+            }
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
 
 #----------------------------------------------------------------------------- #
-## 8.3 FDA_biomod2_model -----------------------------------------------------
+## 8.4 FDA_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name FDA_biomod2_model-class
 ##' @rdname biomod2_model
@@ -603,7 +676,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.fr
 )
 
 #----------------------------------------------------------------------------- #
-## 8.4 GAM_biomod2_model -----------------------------------------------------
+## 8.5 GAM_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name GAM_biomod2_model-class
 ##' @rdname biomod2_model
@@ -671,7 +744,7 @@ setMethod('predict2', signature(object = 'GAM_biomod2_model', newdata = "data.fr
 
 
 #----------------------------------------------------------------------------- #
-## 8.5 GBM_biomod2_model -----------------------------------------------------
+## 8.6 GBM_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name GBM_biomod2_model-class
 ##' @rdname biomod2_model
@@ -724,7 +797,7 @@ setMethod('predict2', signature(object = 'GBM_biomod2_model', newdata = "data.fr
 
 
 #----------------------------------------------------------------------------- #
-## 8.6 GLM_biomod2_model -----------------------------------------------------
+## 8.7 GLM_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name GLM_biomod2_model-class
 ##' @rdname biomod2_model
@@ -790,7 +863,7 @@ setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "data.fr
 
 
 #----------------------------------------------------------------------------- #
-## 8.7 MARS_biomod2_model ----------------------------------------------------
+## 8.8 MARS_biomod2_model ----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name MARS_biomod2_model-class
 ##' @rdname biomod2_model
@@ -842,7 +915,7 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.f
 )
 
 #----------------------------------------------------------------------------- #
-## 8.8 MAXENT_biomod2_model -----------------------------------------
+## 8.9 MAXENT_biomod2_model -----------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name MAXENT_biomod2_model-class
 ##' @rdname biomod2_model
@@ -1032,7 +1105,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
 )
 
 #----------------------------------------------------------------------------- #
-## 8.9 MAXNET_biomod2_model ---------------------------------------
+## 8.10 MAXNET_biomod2_model ---------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name MAXNET_biomod2_model-class
 ##' @rdname biomod2_model
@@ -1126,7 +1199,7 @@ setMethod('predict2', signature(object = 'MAXNET_biomod2_model', newdata = "data
 )
 
 #----------------------------------------------------------------------------- #
-## 8.10 RF_biomod2_model -----------------------------------------------------
+## 8.11 RF_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name RF_biomod2_model-class
 ##' @rdname biomod2_model
@@ -1211,7 +1284,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.fra
 )
 
 #----------------------------------------------------------------------------- #
-## 8.10_bis RFd_biomod2_model -----------------------------------------------------
+## 8.12 RFd_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name RFd_biomod2_model-class
 ##' @rdname biomod2_model
@@ -1284,7 +1357,7 @@ setMethod('predict2', signature(object = 'RFd_biomod2_model', newdata = "data.fr
 
 
 #----------------------------------------------------------------------------- #
-## 8.11 SRE_biomod2_model ----------------------------------------------------
+## 8.13 SRE_biomod2_model ----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name SRE_biomod2_model-class
 ##' @rdname biomod2_model
@@ -1333,7 +1406,7 @@ setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "data.fr
 
 
 #----------------------------------------------------------------------------- #
-## 8.12 XGBOOST_biomod2_model -----------------------------------------------------
+## 8.14 XGBOOST_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
 ##' @name XGBOOST_biomod2_model-class
 ##' @rdname biomod2_model

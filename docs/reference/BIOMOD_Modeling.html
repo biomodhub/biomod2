@@ -20,7 +20,7 @@ metrics (see Details)."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4</span>
       </span>
     </div>
 
@@ -167,7 +167,7 @@ object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_Formatin
 
 <dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>
 <dd><p>a <code>vector</code> containing model names to be computed, must be among
-<code>ANN</code>, <code>CTA</code>, <code>FDA</code>, <code>GAM</code>, <code>GBM</code>, <code>GLM</code>, <code>MARS</code>,
+<code>ANN</code>, <code>CTA</code>, <code>DNN</code>, <code>FDA</code>, <code>GAM</code>, <code>GBM</code>, <code>GLM</code>, <code>MARS</code>,
 <code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code>, <code>SRE</code>, <code>XGBOOST</code></p></dd>
 
 
@@ -334,6 +334,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <dd><p>The set of models to be calibrated on the data. 12 modeling techniques
   are currently available :</p><ul><li><p><code>ANN</code> : Artificial Neural Network (<code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>)</p></li>
 <li><p><code>CTA</code> : Classification Tree Analysis (<code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code>)</p></li>
+<li><p><code>DNN</code> : Deep Neural Network (<code><a href="https://citoverse.github.io/cito/reference/cito.html" class="external-link">cito</a></code>)</p></li>
 <li><p><code>FDA</code> : Flexible Discriminant Analysis (<code><a href="https://rdrr.io/pkg/mda/man/fda.html" class="external-link">fda</a></code>)</p></li>
 <li><p><code>GAM</code> : Generalized Additive Model (<code><a href="https://rdrr.io/pkg/gam/man/gam.html" class="external-link">gam</a></code>, <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></code>
     or <code><a href="https://rdrr.io/pkg/mgcv/man/bam.html" class="external-link">bam</a></code>) <br>
@@ -349,7 +350,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p><code>RFd</code> : Random Forest downsampled (<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>)</p></li>
 <li><p><code>SRE</code> : Surface Range Envelop or usually called BIOCLIM (<code><a href="bm_SRE.html">bm_SRE</a></code>)</p></li>
 <li><p><code>XGBOOST</code> : eXtreme Gradient Boosting Training (<code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>)</p></li>
-</ul><p></p><table class="table table"><tr><td></td><td><strong>ANN</strong></td><td><strong>CTA</strong></td><td><strong>FDA</strong></td><td><strong>GAM</strong></td><td><strong>GBM</strong></td><td><strong>GLM</strong></td><td><strong>MARS</strong></td><td><strong>MAXENT</strong></td><td><strong>MAXNET</strong></td><td><strong>RF</strong></td><td><strong>RFd</strong></td><td><strong>SRE</strong></td><td><strong>XGBOOST</strong></td></tr><tr><td>binary</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td></tr><tr><td>multiclass</td><td></td><td>x</td><td>x</td><td></td><td></td><td></td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>ordinal</td><td></td><td>x</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>abundance / count / relative</td><td></td><td>x</td><td></td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr></table><p></p></dd>
+</ul><p></p><table class="table table"><tr><td></td><td><strong>ANN</strong></td><td><strong>CTA</strong></td><td><strong>DNN</strong></td><td><strong>FDA</strong></td><td><strong>GAM</strong></td><td><strong>GBM</strong></td><td><strong>GLM</strong></td><td><strong>MARS</strong></td><td><strong>MAXENT</strong></td><td><strong>MAXNET</strong></td><td><strong>RF</strong></td><td><strong>RFd</strong></td><td><strong>SRE</strong></td><td><strong>XGBOOST</strong></td></tr><tr><td>binary</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td></tr><tr><td>multiclass</td><td></td><td>x</td><td>x</td><td>x</td><td></td><td></td><td></td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>ordinal</td><td></td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>abundance / count / relative</td><td></td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr></table><p></p></dd>
 
 
   <dt>models.pa</dt>
@@ -467,7 +468,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code>, <code><a href="https://rdrr.io/pkg/gam/man/gam.html" class="external-link">gam</a></code>,
   <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></code>, <code><a href="https://rdrr.io/pkg/mgcv/man/bam.html" class="external-link">bam</a></code>, <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></code>,
-  <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code>, <code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>,
+  <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code>, <code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>, <code><a href="https://citoverse.github.io/cito/reference/cito.html" class="external-link">cito</a></code>,
   <code><a href="https://rdrr.io/pkg/mda/man/fda.html" class="external-link">fda</a></code>, <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code>,
   <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>, <code><a href="https://rdrr.io/pkg/maxnet/man/maxnet.html" class="external-link">maxnet</a></code>,
   <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>, <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>,

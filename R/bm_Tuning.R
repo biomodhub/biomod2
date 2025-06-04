@@ -9,7 +9,7 @@
 ##' 
 ##'
 ##' @param model a \code{character} corresponding to the  algorithm to be tuned, must be either 
-##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param tuning.fun a \code{character} corresponding to the model function name to be called 
 ##' through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
@@ -69,6 +69,7 @@
 ##' \describe{
 ##'   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
 ##'   \item{CTA}{\code{maxdepth}}
+##'   \item{DNN}{\code{hidden} , \code{bias}, \code{lambda}, \code{alpha}, \code{lr}, \code{batchsize}, \code{150}}
 ##'   \item{FDA}{\code{degree}, \code{nprune}}
 ##'   \item{GAM.gam}{\code{span}, \code{degree}}
 ##'   \item{GAM.mgcv}{\code{select}, \code{method}}
@@ -97,9 +98,12 @@
 ##'     \item Java version of Maxent defined in \pkg{dismo} package (by defining 
 ##'     \code{MAXENT.algorithm = 'maxent.jar'})
 ##'   }
+##'   \item \code{DNN} is tuned through \code{\link[cito]{tune}} function. 
+##'   The values include in \code{params.train} are the lower or upper range which hyperparameters are sampled.
+##'   If there is only one value, the hyperparameter is fixed by biomod2 (inclunding the width and depth of \code{hidden} parameters.) 
 ##'   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
 ##'   \item All other models are tuned through \code{\link[caret]{train}} function
-##'   \item No optimization of formula for \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
+##'   \item No optimization of formula for \code{DNN}, \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
 ##'   \code{XGBOOST}
 ##'   \item No interaction included in formula for \code{CTA}
 ##'   \item Variables selection only for \code{GAM.gam} and \code{GLM}
@@ -206,7 +210,15 @@ bm_Tuning <- function(model,
                       ctrl.train = NULL,
                       params.train = list(ANN.size = c(2, 4, 6, 8),
                                           ANN.decay = c(0.01, 0.05, 0.1),
-                                          ANN.bag = FALSE, 
+                                          ANN.bag = FALSE,
+                                          DNN.hidden = list(depth = 3,
+                                                            width = 100),
+                                          DNN.bias = TRUE,
+                                          DNN.lambda = 0.001,
+                                          DNN.alpha = 1, 
+                                          DNN.lr = c(0.0001, 0.1),
+                                          DNN.batchsize = 100,
+                                          DNN.epochs = 150,
                                           FDA.degree = 1:2, 
                                           FDA.nprune = 2:25,
                                           GAM.select = c(TRUE, FALSE),
@@ -318,7 +330,7 @@ bm_Tuning <- function(model,
         warning("No tuning available for that model. Sorry.")
       } else {
         ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
-        if (model %in% c("MAXENT", "SRE")) {
+        if (model %in% c("MAXENT", "SRE", "DNN")) {
           cat("\n\t\t\t> Tuning parameters...")
           
           ## create dataset ---------------------------------------------------------
@@ -391,6 +403,49 @@ bm_Tuning <- function(model,
             tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")]
                              , by = list(quant = tune.SRE$quant), mean)
             argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
+          } else { ## DNN case
+
+            ## Preparation of data 
+            scale_data <- scale(myExpl)
+            argstmp$data <- cbind(myResp, as.data.frame(scale_data))
+            argstmp$formula <- as.formula( "myResp ~.")
+            
+            ## Preparation of the tune parameters
+            params.train = params.train[grep(paste0(model,"\\."), names(params.train))]
+            for (param.n in names(params.train)){
+              real.name <- unlist(strsplit(param.n, split = "\\."))[2]
+              
+              if (real.name == "hidden"){
+                if (length(params.train$DNN.hidden$depth) == 1 && length(params.train$DNN.hidden$width) == 1){
+                  argstmp$hidden <- rep(params.train$DNN.hidden$width, params.train$DNN.hidden$depth)
+                } else if(length(params.train$DNN.hidden$depth) == 1){
+                  argstmp$hidden <- cito::tune(params.train$DNN.hidden$width, fixed = 'depth')
+                } else if(length(params.train$DNN.hidden$width) == 1){
+                  argstmp$hidden <- cito::tune(params.train$DNN.hidden$depth, fixed = 'width')
+                } else {
+                  argstmp$hidden <- cito::tune(params.train$DNN.hidden$depth, params.train$DNN.hidden$width)
+                }
+              } else {
+                if (length(params.train[[param.n]]) == 1)
+                  argstmp[[real.name]] <- params.train[[param.n]]
+                else {
+                  argstmp[[real.name]] <- cito::tune(values = params.train[[param.n]])
+                }
+              }
+            }
+            argstmp$tuning <- cito::config_tuning(steps = 5)
+            
+            ## Tune model
+            tune.DNN <- do.call(cito::dnn, argstmp)
+            
+            ## Keep the tuned parameters
+            argstmp$hidden = tuned.DNN$model_properties$hidden
+            argstmp$bias = tuned.DNN$model_properties$bias
+            argstmp$lambda = tuned.DNN$training_properties$lambda
+            argstmp$alpha = tuned.DNN$training_properties$alpha 
+            argstmp$lr = as.numeric(tuned.DNN$training_properties$lr)
+            argstmp$batchsize = tuned.DNN$training_properties$batchsize
+            argstmp$epochs = tuned.DNN$training_properties$epochs
           }
           
         } else {
@@ -618,7 +673,7 @@ bm_Tuning <- function(model,
                                   , weights = NULL, params.train)
 {
   ## check model --------------------------------------------------------------
-  .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM"
+  .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "DNN", "FDA", "GAM", "GBM", "GLM"
                                         , "MARS", "MAXENT", "MAXNET", "RF", "RFd", "SRE", "XGBOOST"))
   
   ## check namespace ----------------------------------------------------------
@@ -644,7 +699,15 @@ bm_Tuning <- function(model,
   ## check params.train -------------------------------------------------------
   params.train_init = list(ANN.size = c(2, 4, 6, 8),
                            ANN.decay = c(0.01, 0.05, 0.1),
-                           ANN.bag = FALSE, 
+                           ANN.bag = FALSE,
+                           DNN.hidden = list(depth = 3,
+                                             width = 100),
+                           DNN.bias = TRUE,
+                           DNN.lambda = 0.001,
+                           DNN.alpha = 1, 
+                           DNN.lr = c(0.0001, 0.1),
+                           DNN.batchsize = 100,
+                           DNN.epochs = 150,
                            FDA.degree = 1:2, 
                            FDA.nprune = 2:25,
                            GAM.select = c(TRUE, FALSE),
@@ -713,7 +776,7 @@ bm_Tuning <- function(model,
   }
   names(all.params) <- all.fun
   
-  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
+  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet", "tune"))
   .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, unique(ModelsTable$train[which(ModelsTable$model == model)]))
   train.params <- all.params[[tuning.fun]]
   
@@ -738,7 +801,7 @@ bm_Tuning <- function(model,
   if (model == "RF" | model == "RFd") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
   ## Do formula ---------------------------------------------------------------
-  if (model %in% c("MAXENT", "MAXNET", "SRE", "XGBOOST") && do.formula == TRUE) {
+  if (model %in% c("DNN", "MAXENT", "MAXNET", "SRE", "XGBOOST") && do.formula == TRUE) {
     do.formula <- FALSE 
     cat("\n No optimization of formula for", model)
   }

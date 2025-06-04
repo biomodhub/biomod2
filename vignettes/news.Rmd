@@ -14,6 +14,12 @@ vignette: >
 
 ### <i class="fas fa-pen-alt"></i> 2025
 
+##### 4.3-4 DNN model (2025-06-04) 
+
+- Add `DNN` : Deep Neural Network with `cito` package
+- New `ModelsTable` and `OptionsBigBoss` 
+- Tuning made with the `tune` function of `cito` package
+
 ##### 4.3-3 Multiclass datatype (2025-05-20) 
 
 - Add the datatype `multiclass`. It is now possible to model with a factorial response (not ordered).

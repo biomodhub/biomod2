@@ -11,7 +11,7 @@
 }
 \arguments{
 \item{mod}{a \code{character} corresponding to the model name to be computed, must be either 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{typ}{a \code{character} corresponding to the data type to be used, must be either 

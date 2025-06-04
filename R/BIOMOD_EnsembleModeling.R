@@ -1003,15 +1003,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     metric.eval <- unique(metric.eval)
   }
   
-  if (bm.mod@data.type == "binary"){
-    avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', 'AUCprg'
-                              , 'BOYCE', 'MPA')
-  } else if (bm.mod@data.type %in% c("ordinal", "multiclass")){
-    avail.eval.meth.list <- c("Accuracy", "Recall", "Precision", "F1")
-  } else {
-    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsquared","Rsquared_aj","Max_error")
-  }
+  avail.eval.meth.list <- .avail.eval.meth.list(bm.mod@data.type)
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.mod@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
   

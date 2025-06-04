@@ -47,7 +47,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 (\emph{a random number by default})}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
@@ -91,7 +91,7 @@ An \code{integer} value corresponding to the new seed value to be set}
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
 \item{model}{a \code{character} corresponding to the model name to be computed, must be either 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{run.name}{a \code{character} corresponding to the model to be run (sp.name + pa.id + 
@@ -164,6 +164,7 @@ Damien Georges
 \concept{Secondary functions}
 \keyword{ANN}
 \keyword{CTA}
+\keyword{DNN}
 \keyword{FDA}
 \keyword{GAM}
 \keyword{GBM}

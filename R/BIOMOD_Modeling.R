@@ -15,7 +15,7 @@
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among 
-##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
@@ -124,6 +124,7 @@
 ##'   \itemize{
 ##'     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
 ##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+##'     \item \code{DNN} : Deep Neural Network (\code{\link[cito]{cito}})
 ##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
 ##'     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
 ##'     or \code{\link[mgcv]{bam}}) \cr 
@@ -140,14 +141,14 @@
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }
-##'   \tabular{rccccccccccccc}{
-##'     \tab \strong{ANN} \tab \strong{CTA} \tab \strong{FDA} \tab \strong{GAM} \tab \strong{GBM} 
+##'   \tabular{rcccccccccccccc}{
+##'     \tab \strong{ANN} \tab \strong{CTA} \tab \strong{DNN} \tab \strong{FDA} \tab \strong{GAM} \tab \strong{GBM} 
 ##'     \tab \strong{GLM} \tab \strong{MARS} \tab \strong{MAXENT} \tab \strong{MAXNET} 
 ##'     \tab \strong{RF} \tab \strong{RFd} \tab \strong{SRE} \tab \strong{XGBOOST} \cr
-##'    binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
-##'    multiclass \tab  \tab x \tab x \tab  \tab  \tab  \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
-##'    ordinal \tab  \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
-##'    abundance / count / relative \tab  \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x
+##'    binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
+##'    multiclass \tab  \tab x \tab x \tab x \tab  \tab  \tab  \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
+##'    ordinal \tab  \tab x \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
+##'    abundance / count / relative \tab  \tab x \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x 
 ##'   }
 ##'   }
 ##'   
@@ -277,7 +278,7 @@
 ##' 
 ##' @seealso \code{\link[stats]{glm}}, \code{\link[gam]{gam}},
 ##'   \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}},
-##'   \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}},
+##'   \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}}, \code{\link[cito]{cito}},
 ##'   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
 ##'   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 ##'   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
@@ -615,15 +616,7 @@ BIOMOD_Modeling <- function(bm.format,
   models.switch.off <- NULL
   
   ## check if model is supported
-  if (bm.format@data.type == "binary"){
-    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-  } else if (bm.format@data.type == "ordinal") {
-    avail.models.list <- c('CTA', 'FDA', 'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-  } else if (bm.format@data.type == "multiclass") {
-    avail.models.list <- c('CTA', 'FDA', 'MARS', 'RF', 'XGBOOST')
-  } else {
-    avail.models.list <- c('CTA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-  }
+  avail.models.list <- .avail.models.list(bm.format@data.type)
   .fun_testIfIn(TRUE, paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
   
   
@@ -633,6 +626,14 @@ BIOMOD_Modeling <- function(bm.format,
   }
   if ('MAXNET' %in% models && ncol(bm.format@data.env.var) == 1) {
     warning('MAXNET might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("mrmaxent/maxnet")')
+  }
+  
+  ## Specific case of cito
+  if ('DNN' %in% models){
+    if (!requireNamespace("torch")) {
+      stop("Package `torch` is missing. It necessary for DNN model. Please install it with `install.packages('torch')`.")
+    }
+    # if(!torch::torch_is_installed()) torch::install_torch() ## ? 
   }
   
   ## 1.1 Remove models not supporting categorical variables --------------------
@@ -755,15 +756,7 @@ BIOMOD_Modeling <- function(bm.format,
     metric.eval <- unique(metric.eval)
   }
   
-  if (bm.format@data.type == "binary") {
-    avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', 'AUCprg'
-                              , 'BOYCE', 'MPA')
-  } else if (bm.format@data.type %in% c("multiclass", "ordinal")) {
-    avail.eval.meth.list <- c('Accuracy', 'Recall', 'Precision', 'F1')
-  } else {
-    avail.eval.meth.list <- c('RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error')
-  }
+  avail.eval.meth.list <- .avail.eval.meth.list(bm.format@data.type)
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
   

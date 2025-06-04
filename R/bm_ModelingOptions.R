@@ -10,7 +10,7 @@
 ##' @param data.type a \code{character} corresponding to the data type to be used, must be either 
 ##' \code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{multiclass}, \code{ordinal}
 ##' @param models a \code{vector} containing model names to be computed, must be among 
-##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param strategy a \code{character} corresponding to the method to select models' parameters 
 ##' values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned} 
@@ -209,7 +209,7 @@
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------#
-##' allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+##' allModels <- c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
 ##'                , 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
 ##' 
 ##' # default parameters
@@ -281,15 +281,7 @@ bm_ModelingOptions <- function(data.type = "binary"
   .bm_cat("Build Modeling Options")
   
   if (missing(models)) {
-    if (data.type == "binary"){
-      models <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
-    } else if (data.type == "ordinal"){
-      models <- c('CTA', 'FDA', 'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-    } else if (data.type == "multiclass") {
-      models <- c('CTA', 'FDA', 'MARS', 'RF', 'XGBOOST')
-    } else {
-      models <- c('CTA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-    }
+    models <- .avail.models.list(data.type)
   }
   
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -377,16 +369,8 @@ bm_ModelingOptions <- function(data.type = "binary"
   } 
   
   ## check if model is supported
-  if (data.type == "binary") {
-    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
-                           , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
-  } else if (data.type == "ordinal") {
-    avail.models.list <- c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST')
-  } else if (data.type == "multiclass") {
-    avail.models.list <- c('CTA', 'FDA', 'MARS', 'RF', 'XGBOOST')
-  } else {
-    avail.models.list <- c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-  }
+  avail.models.list <- .avail.models.list(data.type)
+  if (data.type != "multiclass") {avail.models.list <- c(avail.models.list, "GAM.gam.gam", "GAM.mgcv.gam", "GAM.mgcv.bam")}
   .fun_testIfIn(TRUE, paste0("Models with ", data.type, " data type"), models, avail.models.list)
   
   if (length(grep('GAM', models)) > 1) {

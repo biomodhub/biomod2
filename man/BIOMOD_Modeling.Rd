@@ -41,7 +41,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 (\emph{a random number by default})}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
@@ -169,6 +169,7 @@ metrics (see Details).
   \itemize{
     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+    \item \code{DNN} : Deep Neural Network (\code{\link[cito]{cito}})
     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
     or \code{\link[mgcv]{bam}}) \cr 
@@ -185,14 +186,14 @@ metrics (see Details).
     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }
-  \tabular{rccccccccccccc}{
-    \tab \strong{ANN} \tab \strong{CTA} \tab \strong{FDA} \tab \strong{GAM} \tab \strong{GBM} 
+  \tabular{rcccccccccccccc}{
+    \tab \strong{ANN} \tab \strong{CTA} \tab \strong{DNN} \tab \strong{FDA} \tab \strong{GAM} \tab \strong{GBM} 
     \tab \strong{GLM} \tab \strong{MARS} \tab \strong{MAXENT} \tab \strong{MAXNET} 
     \tab \strong{RF} \tab \strong{RFd} \tab \strong{SRE} \tab \strong{XGBOOST} \cr
-   binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
-   multiclass \tab  \tab x \tab x \tab  \tab  \tab  \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
-   ordinal \tab  \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
-   abundance / count / relative \tab  \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x
+   binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
+   multiclass \tab  \tab x \tab x \tab x \tab  \tab  \tab  \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
+   ordinal \tab  \tab x \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
+   abundance / count / relative \tab  \tab x \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x 
   }
   }
   
@@ -396,7 +397,7 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 \seealso{
 \code{\link[stats]{glm}}, \code{\link[gam]{gam}},
   \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}},
-  \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}},
+  \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}}, \code{\link[cito]{cito}},
   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
