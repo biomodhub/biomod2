@@ -11,7 +11,7 @@
     RFver <- read.dcf(file = system.file("DESCRIPTION", package = pkgname), fields = "Version")
     mess <- paste(pkgname, RFver, "loaded.\n")
     mess <- paste(mess, "/!\\ Welcome to augmented biomod2 with abundance modeling available! (*o*)\n",
-                  "Take a look at the Abundance vignette on the website.\n")
+                  "Take a look at the README and news section on the website to see all the amazing new features!\n")
     packageStartupMessage(mess)
     
     toLoad <- unique(ModelsTable$package[-which(ModelsTable$package %in% c("MAXENT", "biomod2"))])

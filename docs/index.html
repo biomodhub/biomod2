@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4</span>
       </span>
     </div>
 
@@ -169,7 +169,7 @@ z-index: 10;
 <p><br></p>
 <ul>
 <li>
-<strong>Development version</strong> <a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--3-blue.svg" alt="v"></a> from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
+<strong>Development version</strong> <a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--4-blue.svg" alt="v"></a> from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -179,8 +179,8 @@ z-index: 10;
 <p><br><br></p>
 </div>
 <div class="section level3">
-<h3 id="id_-biomod-43-3---abundance-modelling">
-<i class="fas fa-envelope-open-text"></i> <code>biomod 4.3-3</code> - Abundance modelling<a class="anchor" aria-label="anchor" href="#id_-biomod-43-3---abundance-modelling"></a>
+<h3 id="id_-biomod-43-4---abundance-modelling-but-better-">
+<i class="fas fa-envelope-open-text"></i> <code>biomod 4.3-4</code> - Abundance modelling, but better !<a class="anchor" aria-label="anchor" href="#id_-biomod-43-4---abundance-modelling-but-better-"></a>
 </h3>
 <p><i class="fas fa-exclamation-triangle"></i> Please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
 <div class="section level4">
@@ -188,7 +188,6 @@ z-index: 10;
 <i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed-"></a>
 </h4>
 <ul>
-<li>Nothing for presences/absences (or presence-only) modelling.</li>
 <li>
 <code>BIOMOD_RangeSize</code> becomes <code>bm_RangeSize</code> and the new <code>BIOMOD_RangeSize</code> accepts <code>BIOMOD.projection.out</code> objects. See <a href="https://biomodhub.github.io/biomod2/articles/news.html" class="external-link">News</a> for more information.</li>
 </ul>
@@ -197,7 +196,31 @@ z-index: 10;
 <h4 id="id_-what-is-new-">
 <i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new-"></a>
 </h4>
-<p>You can now use non-binary data four your modelling. All the information can be found in the <a href="https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html" class="external-link">Abundance Vignette</a>. It comes with two news ensemble models: <code>EMmode</code> and <code>EMfreq</code> (for the mode of the response and the frequency of that mode).</p>
+<ul>
+<li><p>There is now a new data.type : <strong><code>multiclass</code></strong> for factor data but not ordered. It comes with two news ensemble models: <code>EMmode</code> and <code>EMfreq</code> (for the mode of the response and the frequency of that mode).</p></li>
+<li><p>You can also welcome a new model <strong>DNN</strong> (for Deep Neural Network) with the package <code>cito</code>. It can be use for all datatypes. Be sure to have a look at the <a href="https://citoverse.github.io/cito/reference/cito.html" class="external-link">documentation of cito</a> before, especially the part about the installation of <code>torch</code>.</p></li>
+<li><p>Discover <code>BIOMOD_Report</code>, a new function to help you summarize all your modeling steps. Check the <a href="https://biomodhub.github.io/biomod2/reference/BIOMOD_Report.html" class="external-link">documentation</a> and produce a beautiful report with all the information you need.</p></li>
+</ul>
+<p><br><br><br></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_-biomod-43---abundance-modelling">
+<i class="fas fa-envelope-open-text"></i> <code>biomod 4.3</code> - Abundance modelling<a class="anchor" aria-label="anchor" href="#id_-biomod-43---abundance-modelling"></a>
+</h3>
+<div class="section level4">
+<h4 id="id_-what-is-changed--1">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--1"></a>
+</h4>
+<ul>
+<li>Nothing for presences/absences (or presence-only) modelling.</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="id_-what-is-new--1">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--1"></a>
+</h4>
+<p>You can now use non-binary data four your modelling. All the information can be found in the <a href="https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html" class="external-link">Abundance Vignette</a>.</p>
 <p><br><br><br></p>
 <p><br><br></p>
 </div>
@@ -207,8 +230,8 @@ z-index: 10;
 <i class="fas fa-envelope-open-text"></i> <code>biomod 4.2-6</code> - Improved OptionsBigBoss and new model<a class="anchor" aria-label="anchor" href="#id_-biomod-42-6---improved-optionsbigboss-and-new-model"></a>
 </h3>
 <div class="section level4">
-<h4 id="id_-what-is-changed--1">
-<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--1"></a>
+<h4 id="id_-what-is-changed--2">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--2"></a>
 </h4>
 <ul>
 <li>To improve the models, we made some change in the options for <a href="https://biomodhub.github.io/biomod2/reference/OptionsBigboss.html" class="external-link"><strong><code>OptionsBigboss</code></strong></a>. (This only affects the ANN, CTA and RF models.) You can check all your options with the <code><a href="reference/getters.out.html">get_options()</a></code> function.</li>
@@ -216,8 +239,8 @@ z-index: 10;
 </ul>
 </div>
 <div class="section level4">
-<h4 id="id_-what-is-new--1">
-<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--1"></a>
+<h4 id="id_-what-is-new--2">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--2"></a>
 </h4>
 <ul>
 <li>
@@ -240,8 +263,8 @@ z-index: 10;
 <i class="fas fa-envelope"></i> <code>biomod 4.2-5</code> - Modeling options &amp; Tuning Update<a class="anchor" aria-label="anchor" href="#id_-biomod-42-5---modeling-options--tuning-update"></a>
 </h3>
 <div class="section level4">
-<h4 id="id_-what-is-changed--2">
-<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--2"></a>
+<h4 id="id_-what-is-changed--3">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--3"></a>
 </h4>
 <ul>
 <li>modeling options are now automatically retrieved from single models functions, normally allowing the use of all arguments taken into account by these functions</li>
@@ -250,8 +273,8 @@ z-index: 10;
 </ul>
 </div>
 <div class="section level4">
-<h4 id="id_-what-is-new--2">
-<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--2"></a>
+<h4 id="id_-what-is-new--3">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--3"></a>
 </h4>
 <ul>
 <li>
@@ -275,8 +298,8 @@ z-index: 10;
 <i class="fas fa-envelope"></i> <code>biomod 4.2</code> - Terra Update<a class="anchor" aria-label="anchor" href="#id_-biomod-42---terra-update"></a>
 </h3>
 <div class="section level4">
-<h4 id="id_-what-is-changed--3">
-<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--3"></a>
+<h4 id="id_-what-is-changed--4">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--4"></a>
 </h4>
 <ul>
 <li>
@@ -295,8 +318,8 @@ z-index: 10;
 </h3>
 <p><code>/!\</code> Package fresh start… meaning some changes in function names and parameters. We apologize for the trouble <code>&gt;{o.o}&lt;</code> <br> Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
 <div class="section level4">
-<h4 id="id_-what-is-changed--4">
-<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--4"></a>
+<h4 id="id_-what-is-changed--5">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--5"></a>
 </h4>
 <ul>
 <li>all code functions have been cleaned, and old / unused functions have been removed</li>
@@ -306,8 +329,8 @@ z-index: 10;
 </ul>
 </div>
 <div class="section level4">
-<h4 id="id_-what-is-new--3">
-<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--3"></a>
+<h4 id="id_-what-is-new--4">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--4"></a>
 </h4>
 <ul>
 <li>plot functions have been re-written with <code>ggplot2</code>
@@ -374,7 +397,7 @@ z-index: 10;
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://cran.r-project.org/package=biomod2" class="external-link"><img src="https://www.r-pkg.org/badges/version/biomod2?color=yellow" alt="Cran Version"></a></li>
-<li><a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--3-blue.svg" alt="Github Version"></a></li>
+<li><a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--4-blue.svg" alt="Github Version"></a></li>
 <li><a href="https://github.com/biomodhub/biomod2/commits/master" class="external-link"><img src="https://img.shields.io/github/last-commit/biomodhub/biomod2.svg" alt="Last Commit"></a></li>
 <li><a href="https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
