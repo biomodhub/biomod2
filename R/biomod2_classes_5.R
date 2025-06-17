@@ -267,7 +267,6 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             # additional arg retrived for EMwmean
             penalization_scores <- args$penalization_scores
             
-            
             if (data_as_formal_predictions) { 
               newdata <- newdata[ , object@model, drop = FALSE]
             } else {
@@ -704,7 +703,11 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "dat
               stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
             }
             predfun <- function(newdata, on_0_1000, penalization_scores, na.rm, ...) {
-              out <- as.vector(rowSums(t(apply(as.matrix(newdata), 1, function(x) penalization_scores*x)), na.rm = na.rm))
+              out <- apply(as.matrix(newdata), 1, function(x) penalization_scores*x)
+              if (ncol(newdata) == 1) {
+                out <- matrix(out, nrow = 1)
+              }
+              out <- as.vector(rowSums(t(out), na.rm = na.rm))
               if (on_0_1000) { out <- round(out) }
               out
             }
