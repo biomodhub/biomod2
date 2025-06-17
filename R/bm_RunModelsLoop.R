@@ -197,14 +197,18 @@ bm_RunModelsLoop <- function(bm.format,
                   do.progress = TRUE)
     }
   
-  for (iii in 1:length(out)){
-    if (names(out[[iii]][1]) == "message") {
-      out[[iii]] <- list(model = NULL,
-                       calib.failure = names(list.data)[iii],
-                       pred = NULL,
-                       pred.eval = NULL,
-                       evaluation = NULL,
-                       var.import = NULL)
+  if (length(out) > 0) {
+    for (iii in 1:length(out)){
+      if (length(names(out[[iii]][1])) > 0 && 
+          nchar(names(out[[iii]][1])) > 0 && 
+          names(out[[iii]][1]) == "message") {
+        out[[iii]] <- list(model = NULL,
+                           calib.failure = names(list.data)[iii],
+                           pred = NULL,
+                           pred.eval = NULL,
+                           evaluation = NULL,
+                           var.import = NULL)
+      }
     }
   }
   
