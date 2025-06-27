@@ -889,14 +889,14 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 g <- ggplot(plot.df)+
                   geom_point(aes(x = x, y = y, color = pred), size = size) +
                   # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
-                  do.call(viridis::scale_fill_viridis, args_scale_fill) +
+                  do.call(viridis::scale_color_viridis, args_scale_fill) +
                   facet_wrap(~full.name)
               } else if (plot.output == "list"){
                 g <- lapply(unique(plot.df$full.name), function(thislayer) {
                   ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
                     geom_point(aes(x = x, y = y, color = pred), size = size) +
                     # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
-                    do.call(viridis::scale_fill_viridis, args_scale_fill) +
+                    do.call(viridis::scale_color_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }
