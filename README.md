@@ -24,7 +24,7 @@ z-index: 10;
 
 
 <div align="center">
-<p><img src="articles/pictures/LogoBiomod.png" alt="Logo biomod2" width=150px></img></p>
+<p><img src="docs/articles/pictures/LogoBiomod.png" alt="Logo biomod2" width=150px></img></p>
 
 <b>------------------------------------------------------------<br/>
 Species distribution modeling, <br/>
