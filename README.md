@@ -9,20 +9,6 @@ badge for github version :
 badger::badge_github_version("biomodhub/biomod2", "blue") 
 -->
 
-<style>
-.zoom p {
-width:800px;
-margin-left: auto;
-margin-right: auto;
-}
-.zoom p:hover {
-width:1500px;
-position: relative;
-z-index: 10;
-}
-</style>
-
-
 <div align="center">
 <p><img src="docs/articles/pictures/LogoBiomod.png" alt="Logo biomod2" width=150px></img></p>
 
