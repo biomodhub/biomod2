@@ -331,7 +331,6 @@ bm_ModelAnalysis <- function(bm.mod,
     if (!isNamespaceLoaded("patchwork")) {
       if(!requireNamespace('patchwork', quietly = TRUE)) stop("Package 'patchwork' not found")
     }
-    library(patchwork)
   }
   
   return(list(models.chosen = models.chosen,

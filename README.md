@@ -59,56 +59,41 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 <i class="fas fa-exclamation-triangle"></i> All changes between versions are detailed in [News](https://biomodhub.github.io/biomod2/articles/news.html).
 <br/><br/>
-<i class="fab fa-youtube"></i> **NEW** video tutorial in [Videos](https://biomodhub.github.io/biomod2/articles/vignette_videos.html) !
-
-
-<br/><br/><br/>
-
 <br/><br/>
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-4` - Abundance modelling, but better !
 
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-4-1` - Abundance modelling, but better !
 
 <i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
-- `BIOMOD_RangeSize` becomes `bm_RangeSize` and the new `BIOMOD_RangeSize` accepts `BIOMOD.projection.out` objects. See [News](https://biomodhub.github.io/biomod2/articles/news.html) for more information.
+- Nothing for presence/absence (or presence-only) modelling.
+- `bm_RangeSize` computes the difference between binary predictions, and is called by `BIOMOD_RangeSize` which can take as input `BIOMOD.projection.out` objects.
  
 #### <i class="fas fa-plus-square"></i> What is new ?
 
-- There is now a new data.type : **`multiclass`** for factor data but not ordered. 
-It comes with two news ensemble models: `EMmode` and `EMfreq` (for the mode of the response and the frequency of that mode).
-
-- You can also welcome a new model **DNN** (for Deep Neural Network) with the package `cito`. It can be use for all datatypes. Be sure to have a look at the [documentation of cito](https://citoverse.github.io/cito/reference/cito.html) before, especially the part about the installation of `torch`. 
-
-- Discover `BIOMOD_Report`, a new function to help you summarize all your modeling steps. Check the [documentation](https://biomodhub.github.io/biomod2/reference/BIOMOD_Report.html) and produce a beautiful report with all the information you need. 
- 
-
-<br/><br/><br/>
-
-
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.3` - Abundance modelling
-
-
-#### <i class="fas fa-exchange-alt"></i> What is changed ?
-
-- Nothing for presences/absences (or presence-only) modelling.
-
- 
-#### <i class="fas fa-plus-square"></i> What is new ?
-
- You can now use non-binary data four your modelling. All the information can be found in the [Abundance Vignette](https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html). 
-
- 
-
-<br/><br/><br/>
+- You can now use **non-binary** data ! All the information can be found in the [Abundance Vignette](https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html). 
+- 6 values can be given to `data.type` new parameter in `BIOMOD_FormatingData` : <br/> *binary*, *count*, *multiclass*, *ordinal*, *relative*, *abundance*.
+- 2 new ensemble models have been added, to deal with qualitative data type : `EMmode` and `EMfreq`.
+- **DNN** (Deep Neural Network) model has been added with the `cito` package. It can be used with all data types. <br/>
+Be sure to have a look at [cito documentation](https://citoverse.github.io/cito/reference/cito.html) before, especially the part about the `torch` installation. 
+- `bm_ModelAnalysis` provides classical graphics to explore the quality of your single models.
+- Discover `BIOMOD_Report`, a new function to help you summarize all your modeling steps.
 
 <br/><br/>
 
+<div class="zoom">
+<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
+</div>
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-6` - Improved OptionsBigBoss and new model
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<br/><br/>
 
+
+### <i class="fas fa-envelope"></i> `biomod 4.2-6` - Improved OptionsBigBoss and new model
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
@@ -123,14 +108,6 @@ It comes with two news ensemble models: `EMmode` and `EMfreq` (for the mode of t
 - Possibility to give the same options for all datasets with _"for_all_datasets"_ in `bm_ModelingOptions()`.
 
 <br/>
-
-<div class="zoom">
-<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
-</div>
-
-<br/><br/><br/>
-
-<br/><br/>
 
 
 ### <i class="fas fa-envelope"></i> `biomod 4.2-5` - Modeling options & Tuning Update
@@ -151,6 +128,7 @@ It comes with two news ensemble models: `EMmode` and `EMfreq` (for the mode of t
 
 <br/>
 
+
 ### <i class="fas fa-envelope"></i> `biomod 4.2` - Terra Update
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
@@ -159,15 +137,13 @@ It comes with two news ensemble models: `EMmode` and `EMfreq` (for the mode of t
 - `biomod2` is still compatible with old format such as `RasterStack`and `SpatialPointsDataFrame`.
 - `biomod2` function will sometimes return `SpatRaster` from package `terra` that you can always convert into `RasterStack` using function `stack` in `raster`.
 
-<br/><br/>
-
+<br/>
 
 
 ### <i class="fas fa-envelope"></i> `biomod 4.1` is now available
 
 `/!\` Package fresh start... meaning some changes in function names and parameters. We apologize for the trouble `>{o.o}<` <br/>
 Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviors** !
-
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
