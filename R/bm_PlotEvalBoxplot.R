@@ -140,7 +140,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
     ggdat = scores
     
     ## 2. PLOT graphic ------------------------------------------------------------------------------
-    gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data[[dataset]], fill = .data[[group.by[2]]])) +
+    gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data[[dataset]], color = .data[[group.by[2]]])) +
       geom_boxplot() + ## add boxplot
       facet_wrap("metric.eval", scales = scales) +
       labs(x = "", y = ""
@@ -182,7 +182,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
     }
   } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
     for (i in 1:length(group.by)) {
-      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo"))
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "filtered.by"))
     }
   } 
   
