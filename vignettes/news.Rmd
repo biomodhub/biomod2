@@ -14,19 +14,28 @@ vignette: >
 
 ### <i class="fas fa-pen-alt"></i> 2025
 
-##### 4.3-4 DNN model (2025-06-04) 
+##### Bugfix
+
+- 4.3-4-1 : change `color` to `fill`, and add `filtered.by` in `bm_Plot[...]Boxplot` functions (*Eval* and *VarImp*)
+
+#### 4.3-4 DNN model (2025-06-04) 
 
 - Add `DNN` : Deep Neural Network with `cito` package
 - New `ModelsTable` and `OptionsBigBoss` 
 - Tuning made with the `tune` function of `cito` package
 
-##### 4.3-3 Multiclass datatype (2025-05-20) 
+##### Bugfix
 
-- Add the datatype `multiclass`. It is now possible to model with a factorial response (not ordered).
-- Two new ensemble models have been added: `EMmode` and `EMfreq` (for the mode of the response and the frequency of that mode).
+- Fix `EMwmean` when only one model selected
+- Fix `bm_RunModelsLoop` output list
+- Fix plot function of `BIOMOD.projection.out` object
+
+#### 4.3-3 Multiclass datatype (2025-05-20) 
+
+##### Major Changes
 
 - In _biomod2_classes_0_ file :
-  + add new data types : _"multiclass"_
+  + add new data type : _"multiclass"_
   + adaptation of `.BIOMOD.options.default.correct` function 
 - In _biomod2_classes_1_ file :
   + adaptation of `plot` method for `BIOMOD.projection.out` object 
@@ -36,17 +45,16 @@ vignette: >
   + `factor_levels` slot for `biomod2_model` class
   + update all `predict2` functions for single models to deal with the different data types
 - In `bm_RunModelsLoop`, `BIOMOD_Projection`, `BIOMOD_EnsembleModeling` and `BIOMOD_EnsembleForecasting` functions :
-  + management of the format of model predictions, in particular for ordinal and multiclass cases.
+  + management of model predictions format, in particular for _"ordinal"_ and _"multiclass"_ cases
 - In _biomod2_classes_5_ file :
   + definition of `EMmode` and `EMfreq` with `predict` methods
-
 
 ##### Bugfix
 
 - 4.3-2-3 : fix `data.type` in `bm_ModelingOptions`
 - 4.3-2-2 : 
-  + change the name of the metric `ROC` to `AUCroc`. It will switch automatically if you use `ROC`.
-  + add the metric `AUCprg` : Area Under Curve of the Precision-Recall-Gain curve. 
+  + change the name of the metric `ROC` to `AUCroc`. It will switch automatically if you use `ROC`
+  + add the metric `AUCprg` : Area Under Curve of the Precision-Recall-Gain curve
 
 - 4.3-2-1 :
   + add `togglelayerselected`, `maximumbackground`, `maximumiterations`, `convergencethreshold`, `autofeature`, `jackknife`, `writeclampgrid`, `writemess`, `logfile` and `verbose` parameters in `MAXENT` parameters

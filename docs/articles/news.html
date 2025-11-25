@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-1</span>
       </span>
     </div>
 
@@ -150,8 +150,17 @@
 <i class="fas fa-pen-alt"></i> 2025<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level5">
-<h5 id="dnn-model-2025-06-04">4.3-4 DNN model (2025-06-04)<a class="anchor" aria-label="anchor" href="#dnn-model-2025-06-04"></a>
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
+<ul>
+<li>4.3-4-1 : change <code>color</code> to <code>fill</code>, and add
+<code>filtered.by</code> in <code>bm_Plot[...]Boxplot</code> functions
+(<em>Eval</em> and <em>VarImp</em>)</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="dnn-model-2025-06-04">4.3-4 DNN model (2025-06-04)<a class="anchor" aria-label="anchor" href="#dnn-model-2025-06-04"></a>
+</h4>
 <ul>
 <li>Add <code>DNN</code> : Deep Neural Network with <code>cito</code>
 package</li>
@@ -160,42 +169,45 @@ package</li>
 <li>Tuning made with the <code>tune</code> function of <code>cito</code>
 package</li>
 </ul>
-</div>
 <div class="section level5">
-<h5 id="multiclass-datatype-2025-05-20">4.3-3 Multiclass datatype (2025-05-20)<a class="anchor" aria-label="anchor" href="#multiclass-datatype-2025-05-20"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
-<li><p>Add the datatype <code>multiclass</code>. It is now possible to
-model with a factorial response (not ordered).</p></li>
-<li><p>Two new ensemble models have been added: <code>EMmode</code> and
-<code>EMfreq</code> (for the mode of the response and the frequency of
-that mode).</p></li>
-<li>
-<p>In <em>biomod2_classes_0</em> file :</p>
+<li>Fix <code>EMwmean</code> when only one model selected</li>
+<li>Fix <code>bm_RunModelsLoop</code> output list</li>
+<li>Fix plot function of <code>BIOMOD.projection.out</code> object</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="multiclass-datatype-2025-05-20">4.3-3 Multiclass datatype (2025-05-20)<a class="anchor" aria-label="anchor" href="#multiclass-datatype-2025-05-20"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
 <ul>
-<li>add new data types : <em>“multiclass”</em>
+<li>In <em>biomod2_classes_0</em> file :
+<ul>
+<li>add new data type : <em>“multiclass”</em>
 </li>
 <li>adaptation of <code>.BIOMOD.options.default.correct</code>
 function</li>
 </ul>
 </li>
-<li>
-<p>In <em>biomod2_classes_1</em> file :</p>
+<li>In <em>biomod2_classes_1</em> file :
 <ul>
 <li>adaptation of <code>plot</code> method for
 <code>BIOMOD.projection.out</code> object</li>
 </ul>
 </li>
-<li>
-<p>In <em>biomod2_classes_3</em> file :</p>
+<li>In <em>biomod2_classes_3</em> file :
 <ul>
 <li>adaptation of <code>.BIOMOD.formated.data.check_data</code>,
 <code>.plot.BIOMOD.formated.data.abundance</code>, <code>summary</code>
 and <code>show</code> function</li>
 </ul>
 </li>
-<li>
-<p>In <em>biomod2_classes_4</em> file :</p>
+<li>In <em>biomod2_classes_4</em> file :
 <ul>
 <li>
 <code>factor_levels</code> slot for <code>biomod2_model</code>
@@ -204,17 +216,15 @@ class</li>
 with the different data types</li>
 </ul>
 </li>
-<li>
-<p>In <code>bm_RunModelsLoop</code>, <code>BIOMOD_Projection</code>,
+<li>In <code>bm_RunModelsLoop</code>, <code>BIOMOD_Projection</code>,
 <code>BIOMOD_EnsembleModeling</code> and
-<code>BIOMOD_EnsembleForecasting</code> functions :</p>
+<code>BIOMOD_EnsembleForecasting</code> functions :
 <ul>
-<li>management of the format of model predictions, in particular for
-ordinal and multiclass cases.</li>
+<li>management of model predictions format, in particular for
+<em>“ordinal”</em> and <em>“multiclass”</em> cases</li>
 </ul>
 </li>
-<li>
-<p>In <em>biomod2_classes_5</em> file :</p>
+<li>In <em>biomod2_classes_5</em> file :
 <ul>
 <li>definition of <code>EMmode</code> and <code>EMfreq</code> with
 <code>predict</code> methods</li>
@@ -223,7 +233,7 @@ ordinal and multiclass cases.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>4.3-2-3 : fix <code>data.type</code> in
@@ -233,9 +243,10 @@ ordinal and multiclass cases.</li>
 <ul>
 <li>change the name of the metric <code>ROC</code> to
 <code>AUCroc</code>. It will switch automatically if you use
-<code>ROC</code>.</li>
+<code>ROC</code>
+</li>
 <li>add the metric <code>AUCprg</code> : Area Under Curve of the
-Precision-Recall-Gain curve.</li>
+Precision-Recall-Gain curve</li>
 </ul>
 </li>
 <li>4.3-2-1 :
@@ -263,6 +274,7 @@ parameters in <code>MAXENT</code> parameters</li>
 </ul>
 </li>
 </ul>
+</div>
 </div>
 <div class="section level4">
 <h4 id="report-2025-03-11">4.3-2 Report (2025-03-11)<a class="anchor" aria-label="anchor" href="#report-2025-03-11"></a>
@@ -299,7 +311,7 @@ objects</li>
 <h4 id="abundance-2025-01-30">4.3-0 Abundance (2025-01-30)<a class="anchor" aria-label="anchor" href="#abundance-2025-01-30"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>In <em>biomod2_classes_0</em> file :
@@ -408,7 +420,7 @@ datatypes available</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>Fix stratified cross-validation strategy in
@@ -430,7 +442,7 @@ to run the step AIC with the user formula)</li>
 <i class="fas fa-pencil-alt"></i> 2024<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h3>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>4.2-6-2 :
@@ -477,7 +489,7 @@ the environment.</li>
 <em>“for_all_datasets”</em> in <code>bm_ModelingOptions</code>.</li>
 </ul>
 <div class="section level5">
-<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>4.2-5-2 :
@@ -508,7 +520,7 @@ in <code>BIOMOD_Projection</code> and
 <h4 id="modeling-options-and-tuning-2024-05-02">4.2-5 Modeling options and Tuning (2024-05-02)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2024-05-02"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>Add print function for <code>BIOMOD.options.dataset</code> and
@@ -550,7 +562,7 @@ the new way of parameterizing single models</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
 </h5>
 <ul>
 <li>Add <code>try</code> and error message in call for models in
@@ -574,7 +586,7 @@ the new way of parameterizing single models</em>)</li>
 <h4 id="modeling-options-and-tuning-2023-09-12">4.2-5 Modeling options and Tuning (2023-09-12)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2023-09-12"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
+<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
 </h5>
 <ul>
 <li>Reformat modeling options, how they are created and how they are
@@ -619,7 +631,7 @@ yourself before modeling</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
+<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
 </h5>
 <ul>
 <li>4.2-4-10 : fixed <code>wrap</code> applied to a
@@ -663,7 +675,7 @@ models merged by algo (for Maxent)</li>
 <h4 id="xgboost-2023-06-21">4.2-4 XGBOOST (2023-06-21)<a class="anchor" aria-label="anchor" href="#xgboost-2023-06-21"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
+<h5 id="major-changes-4">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
 </h5>
 <ul>
 <li>added XGBOOST as a possible algorithm in
@@ -681,7 +693,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
+<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
 </h5>
 <ul>
 <li>4.2-3-5 :
@@ -715,7 +727,7 @@ not in the given PA dataset are now properly transformed into NA)</li>
 <h4 id="cross-validation-and-pseudo-absences-2023-05-09">4.2-3 Cross-Validation and Pseudo-Absences (2023-05-09)<a class="anchor" aria-label="anchor" href="#cross-validation-and-pseudo-absences-2023-05-09"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-4">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
+<h5 id="major-changes-5">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-5"></a>
 </h5>
 <ul>
 <li>Improved pseudo-absence management: it is now possible to have
@@ -758,7 +770,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
+<h5 id="bugfix-9">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -823,7 +835,7 @@ are standardised (no more <code>calibLines</code> or
 <h4 id="improvement-patch-2023-01-13">4.2-2 Improvement patch (2023-01-13)<a class="anchor" aria-label="anchor" href="#improvement-patch-2023-01-13"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-5">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-5"></a>
+<h5 id="major-changes-6">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-6"></a>
 </h5>
 <ul>
 <li>
@@ -883,7 +895,7 @@ Building all possible ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
+<h5 id="bugfix-10">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -922,7 +934,7 @@ evaluations.</li>
 <h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-6">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-6"></a>
+<h5 id="major-changes-7">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-7"></a>
 </h5>
 <ul>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
@@ -945,7 +957,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-9">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
+<h5 id="bugfix-11">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-11"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -994,7 +1006,7 @@ dataset</li>
 <h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-7">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-7"></a>
+<h5 id="major-changes-8">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-8"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -1041,7 +1053,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-10">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
+<h5 id="bugfix-12">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-12"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -1111,7 +1123,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-4">4.1-3<a class="anchor" aria-label="anchor" href="#section-4"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-11">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-11"></a>
+<h5 id="bugfix-13">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-13"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -1140,7 +1152,7 @@ models.</li>
 <h4 id="section-5">4.1-2 (2022-09-29)<a class="anchor" aria-label="anchor" href="#section-5"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-8">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-8"></a>
+<h5 id="major-changes-9">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-9"></a>
 </h5>
 <ul>
 <li>
@@ -1677,12 +1689,12 @@ coherence between functions)</li>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="https://mayagueguen.github.io" class="external-link">Maya Guéguen</a>, Hélène Blancheteau, <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>.</p>
+<p>Developed by <a href="https://mayagueguen.github.io" class="external-link">Maya Guéguen</a>, Hélène Blancheteau, Rémi Lemaire-Patin, <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer>
