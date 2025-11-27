@@ -14,9 +14,7 @@ utils::globalVariables(names = c("this_PA",
                                  "this_dataset",
                                  "has.mask",
                                  "has.mask.eval",
-                                 "y"))
-## biomod2_classes_1_bis -------
-utils::globalVariables(names = c("data.color", "lyr", "part"))
+                                 "y", "lyr", "part"))
 
 ## biomod2_classes_3 ------------
 utils::globalVariables(names = c("i"))
