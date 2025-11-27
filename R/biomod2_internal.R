@@ -615,7 +615,7 @@ rast.has.values <- function(x)
 ## used in biomod2_classes_3
 
 ##' @name .transform_model.as.col
-##' @author Remi Patin
+##' @author Rémi Lemaire-Patin
 ##' 
 ##' @title Transform predictions data.frame from long to wide with models as columns
 ##' 

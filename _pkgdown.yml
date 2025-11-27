@@ -134,5 +134,8 @@ reference:
   - subtitle: Reporting results
     contents:
       - "ODMAP"
+  - title: Deprecated
+    contents:
+      - "biomod2-deprecated"
 
 

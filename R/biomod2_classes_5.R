@@ -146,7 +146,7 @@ setMethod('show', signature('biomod2_ensemble_model'), function(object) { callNe
 ##' @aliases predict2.EMmode_biomod2_model.data.frame
 ##' @aliases predict2.EMfreq_biomod2_model.SpatRaster
 ##' @aliases predict2.EMfreq_biomod2_model.data.frame
-##' @author Remi Patin
+##' @author Rémi Lemaire-Patin
 ##' 
 ##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
 ##' 

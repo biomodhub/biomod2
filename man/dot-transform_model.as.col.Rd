@@ -23,6 +23,6 @@ into a wide \code{data.frame} with each column corresponding to a single model.
 made available for compatibility with \pkg{ecospat}}
 }
 \author{
-Remi Patin
+Rémi Lemaire-Patin
 }
 \keyword{internal}

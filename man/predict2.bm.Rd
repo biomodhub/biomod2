@@ -161,7 +161,7 @@ Other Toolbox functions:
 \code{\link{setters}}
 }
 \author{
-Remi Patin
+Rémi Lemaire-Patin
 }
 \concept{Toolbox functions}
 \keyword{internal}

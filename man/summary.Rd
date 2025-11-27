@@ -62,5 +62,5 @@ summary(myBiomodData)
 
 }
 \author{
-Remi Patin
+Rémi Lemaire-Patin
 }

@@ -289,7 +289,7 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @aliases predict2.RFd_biomod2_model.data.frame
 ##' @aliases predict2.SRE_biomod2_model.SpatRaster
 ##' @aliases predict2.SRE_biomod2_model.data.frame
-##' @author Remi Patin
+##' @author Rémi Lemaire-Patin
 ##' 
 ##' @title Functions to get predictions from \code{\link{biomod2_model}} objects
 ##' 

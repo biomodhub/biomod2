@@ -16,6 +16,7 @@ vignette: >
 
 ##### Bugfix
 
+- 4.3-4-2 : merge `BIOMOD.formated.data` `plot` functions to deal with all data types, add `plot.valid` parameter
 - 4.3-4-1 : change `color` to `fill`, and add `filtered.by` in `bm_Plot[...]Boxplot` functions (*Eval* and *VarImp*)
 
 #### 4.3-4 DNN model (2025-06-04) 
