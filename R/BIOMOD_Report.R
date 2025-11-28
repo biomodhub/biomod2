@@ -71,8 +71,7 @@
 ##'   Fandos Guzman G, Feng X, Guillera-Arroita G, Guisan A, Leitão PJ, Lahoz-Monfort JJ, 
 ##'   Park DS, Peterson AT, Rapacciuolo G, Schmatz DR, Schröder B, Thuiller W, Yates KL, 
 ##'   Zimmermann NE, Merow C (2020) A standard protocol for describing species distribution 
-##'   models. \emph{Ecography} \bold{43}: 1261-1277. DOI: 
-##'   \href{https://doi.org/10.1111/ecog.04960}{10.1111/ecog.04960}
+##'   models. \emph{Ecography} \bold{43}: 1261-1277. \doi{10.1111/ecog.04960}
 ##' }
 ##'
 ##' @keywords report ODMAP markdown html

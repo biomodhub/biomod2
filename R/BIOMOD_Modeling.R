@@ -629,7 +629,7 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   ## Specific case of cito
-  if ('DNN' %in% models){
+  if ('DNN' %in% models) {
     if (!requireNamespace("torch")) {
       stop("Package `torch` is missing. It necessary for DNN model. Please install it with `install.packages('torch')`.")
     }

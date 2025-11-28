@@ -53,7 +53,7 @@ global counts or proportions of gains / losses, as well as spatial representatio
   and gained, taking the majoritary value across single distribution models (and representing 
   the percentage of models' agreement)}
 }
-\emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
+\emph{Please see \code{\link{bm_RangeSize}} function for more details about the values.}
 }
 \examples{
 library(terra)
@@ -151,6 +151,7 @@ Other Secondary functions:
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelAnalysis}()},
 \code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},
@@ -166,6 +167,7 @@ Other Secondary functions:
 \code{\link{bm_VariablesImportance}()}
 
 Other Plot functions: 
+\code{\link{bm_ModelAnalysis}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},
 \code{\link{bm_PlotResponseCurves}()},

@@ -118,8 +118,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_ModelAnalysis</span><span class="op">(</span></span>
 <span>  <span class="va">bm.mod</span>,</span>
 <span>  models.chosen <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  color.by <span class="op">=</span> <span class="st">"full.name"</span></span>
+<span>  color.by <span class="op">=</span> <span class="st">"full.name"</span>,</span>
+<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -128,42 +128,87 @@
 
 
 <dl><dt id="arg-bm-mod">bm.mod<a class="anchor" aria-label="anchor" href="#arg-bm-mod"></a></dt>
-<dd><p>a <code>BIOMOD.models.out</code></p></dd>
+<dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object returned by the
+<code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function</p></dd>
 
 
 <dt id="arg-models-chosen">models.chosen<a class="anchor" aria-label="anchor" href="#arg-models-chosen"></a></dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either
 <code>all</code> or a sub-selection of model names that can be obtained with the
-<code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
-
-
-<dt id="arg-do-plot">do.plot<a class="anchor" aria-label="anchor" href="#arg-do-plot"></a></dt>
-<dd><p>a <code>logical</code>, print the plots or not</p></dd>
+<code><a href="getters.out.html">get_built_models</a></code> function applied to <code>bm.mod</code></p></dd>
 
 
 <dt id="arg-color-by">color.by<a class="anchor" aria-label="anchor" href="#arg-color-by"></a></dt>
-<dd><p>a <code>character</code> between "full.name", "species", "PA", "RUN" or "algo"
-to select the color parameter of the plots.</p></dd>
+<dd><p>a <code>character</code> corresponding to the way plots will be colored, must be
+among <code>full.name</code>, <code>PA</code>, <code>run</code> or <code>algo</code></p></dd>
+
+
+<dt id="arg-do-plot">do.plot<a class="anchor" aria-label="anchor" href="#arg-do-plot"></a></dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
+A <code>logical</code> value defining whether the plot is to be rendered or not</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with:</p><ol><li><p>a dataframe with the observation data, the fitted values and the residuals for all models</p></li>
-<li><p>a dataframe with the compilation of the R scores</p></li>
-<li><p>A to E plots (see details)</p></li>
+    <p>A <code>list</code> containing :</p><ol><li><p>a <code>data.frame</code> with variables, predicted values and model residuals</p></li>
+<li><p>a <code>data.frame</code> with the R score values</p></li>
+<li><p>5 <code>ggplot</code> objects (from A to E) representing the different analyses.</p></li>
 </ol></div>
     <div id="details">
     <h2>Details</h2>
-    <p>All the plots will be made for all the models, independently to the different models assumptions.
-It is up to the user to interpret the graphs in the light of the model assumptions.</p>
-<ol><li><p>Plot A: residuals ~ observations number. This plot helps to detect one or several outliers.
-  The x-axis only helps to find the outlier number.</p></li>
-<li><p>Plot B and C: These are two representation of the distribution of the residuals. If your residuals must follow a normal distribution,
-  the points should follow the black line in the Q-Q plot and present a gaussian distribution on the histogram.</p></li>
-<li><p>Plot D residuals ~ fitted values. This plot helps to detect an heteroscedasticity of the residuals.</p></li>
-<li><p>Plot E : a plot of the different Rsquared values available (Rsquared, Rsquared_aj).
-   An big gap between the calibration and validation values can be the sign of an overfitting.</p></li>
-</ol></div>
+    <p>5 plots can be obtained with this function :</p><dl><dt>residuals ~ observations number</dt>
+<dd><p>to detect outliers. The x-axis only helps to find
+  the outlier number.</p></dd>
+
+  <dt>residuals Q-Q plot</dt>
+<dd><p>to check if residuals follow a normal distribution. Points
+  should follow the black line.</p></dd>
+
+  <dt>residuals histogram</dt>
+<dd><p>to check if residuals follow a normal distribution. Histogram
+  should represent a gaussian distribution.</p></dd>
+
+  <dt>residuals ~ fitted values</dt>
+<dd><p>to detect an heteroscedasticity of the residuals. It
+  corresponds to the Tukey-Anscombe plot.</p></dd>
+
+  <dt>R scores</dt>
+<dd><p>to detect overfitting. Representing <code>Rsquared</code> and
+  <code>Rsquared_aj</code> values, there should not be a big gap between calibration and
+  validation values.</p></dd>
+
+
+</dl><p><em>Please not the all plots are made for all models, independently to the different
+models assumptions. It is up to the user to interpret the graphics.</em></p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p>Other Secondary functions:
+<code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
+<code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
+<code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a>()</code>,
+<code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a>()</code>,
+<code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
+<code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
+<code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
+<code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
+<code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
+<code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
+<code><a href="bm_RangeSize.html">bm_RangeSize</a>()</code>,
+<code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
+<code><a href="bm_SRE.html">bm_SRE</a>()</code>,
+<code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
+<code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
+<code><a href="bm_Tuning.html">bm_Tuning</a>()</code>,
+<code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a>()</code></p>
+<p>Other Plot functions:
+<code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
+<code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
+<code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
+<code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
+<code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code></p></div>
+    </div>
     <div id="author">
     <h2>Author</h2>
     <p>Hélène Blancheteau</p>
@@ -178,7 +223,7 @@ It is up to the user to interpret the graphs in the light of the model assumptio
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select the name of the studied species</span></span>
-<span><span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'VulpesVulpes'</span></span>
+<span><span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span></span>
 <span></span>
 <span><span class="co"># Get corresponding presence/absence data</span></span>
 <span><span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span></span>
@@ -190,11 +235,12 @@ It is up to the user to interpret the graphs in the light of the model assumptio
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_current</span><span class="op">)</span></span>
 <span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">bioclim_current</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Transform binary data as count data</span></span>
-<span><span class="va">poissonDistri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">myResp</span><span class="op">)</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">myResp</span><span class="op">[</span><span class="va">myResp</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">poissonDistri</span></span>
+<span><span class="fu">DONTSHOW</span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">myExtent</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span>,<span class="fl">45</span>,<span class="fl">70</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="va">file.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModels.models.out"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span></span>
@@ -204,29 +250,28 @@ It is up to the user to interpret the graphs in the light of the model assumptio
 <span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
 <span>                                       resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
-<span>                                       data.type <span class="op">=</span> <span class="st">'count'</span><span class="op">)</span></span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
-<span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'GAM'</span>, <span class="st">'GLM'</span>, <span class="st">'MARS'</span><span class="op">)</span>,</span>
+<span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
 <span>                                      CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Rsquared'</span>, <span class="st">'Rsquared_aj'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'AUCroc'</span><span class="op">)</span>,</span>
+<span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------</span></span>
-<span><span class="co"># bm_ModelAnalysis</span></span>
-<span><span class="va">analysis</span> <span class="op">&lt;-</span> <span class="fu">bm_ModelAnalysis</span><span class="op">(</span><span class="va">myBiomodModelOut</span>, color.by <span class="op">=</span> <span class="st">"RUN"</span><span class="op">)</span></span>
+<span><span class="co"># ---------------------------------------------------------------#</span></span>
+<span><span class="co"># Explore single models</span></span>
+<span><span class="va">myBiomodAnalysis</span> <span class="op">&lt;-</span> <span class="fu">bm_ModelAnalysis</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>, color.by <span class="op">=</span> <span class="st">"run"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">analysis</span><span class="op">$</span><span class="va">plotA</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodAnalysis</span><span class="op">$</span><span class="va">plot.outliers</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">myRespName</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

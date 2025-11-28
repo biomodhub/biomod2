@@ -36,23 +36,23 @@
 
 "ModelsTable"
 
-ModelsTable <- data.frame(model = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-                                    , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 
-                                    'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-                                    , 'MARS', 'RF', 'XGBOOST')
-                          , type = c(rep('binary',16), rep('nonbinary',11))
-                          , package = c('nnet', 'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-                                        , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 
-                                        'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-                                        , 'earth', 'randomForest', 'xgboost')
-                          , func = c('nnet', 'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-                                     , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost',
-                                     'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-                                     , 'earth', 'randomForest', 'xgboost')
-                          , train = c('avNNet', 'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
-                                      , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree',
-                                      'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
-                                      , 'earth', 'rf', 'xgbTree'))
+# ModelsTable <- data.frame(model = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+#                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 
+#                                     'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+#                                     , 'MARS', 'RF', 'XGBOOST')
+#                           , type = c(rep('binary',16), rep('nonbinary',11))
+#                           , package = c('nnet', 'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+#                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 
+#                                         'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+#                                         , 'earth', 'randomForest', 'xgboost')
+#                           , func = c('nnet', 'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+#                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost',
+#                                      'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+#                                      , 'earth', 'randomForest', 'xgboost')
+#                           , train = c('avNNet', 'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
+#                                       , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree',
+#                                       'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
+#                                       , 'earth', 'rf', 'xgbTree'))
 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)
@@ -312,7 +312,7 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'G
 #'
 #' A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
 #' used for SDM and describing current climate. Additional information available
-#' at \href{https://www.worldclim.org/data/bioclim.html}{worldclim}
+#' at \href{https://www.worldclim.org/data/bioclim.html}{worldclim}.
 #'
 #' @format A \code{\link[terra:rast]{SpatRaster}} with 5 layers:
 #' \describe{
@@ -391,68 +391,68 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'G
 
 "ODMAP"
 
-ODMAP <- data.frame(section = c(rep("Overview", 25)
-                                , rep("Data", 33)
-                                , rep("Model", 14)
-                                , rep("Assessment", 5)
-                                , rep("Prediction", 7))
-                    , subsection = c(rep("Authorship", 4)
-                                     , rep("Model objective", 2)
-                                     , "Focal Taxon", "Location"
-                                     , rep("Scale of Analysis", 5)
-                                     , rep("Biodiversity data", 2)
-                                     , "Predictors", "Hypotheses", "Assumptions"
-                                     , rep("Algorithms", 3)
-                                     , "Workflow"
-                                     , rep("Software", 3)
-                                     , rep("Biodiversity data", 12)
-                                     , rep("Data partitioning", 3)
-                                     , rep("Predictor variables", 10)
-                                     , rep("Transfer data", 8)
-                                     , "Variable pre-selection", "Multicollinearity"
-                                     , rep("Model settings", 2)
-                                     , rep("Model estimates", 3)
-                                     , rep("Model selection - model averaging - ensembles", 3)
-                                     , rep("Analysis and Correction of non-independence", 3)
-                                     , "Threshold selection"
-                                     , rep("Performance statistics", 3)
-                                     , rep("Plausibility check", 2)
-                                     , rep("Prediction output", 2)
-                                     , rep("Uncertainty quantification", 5))
-                    , element = c("Study title", "Author names", "Contact", "Study link"
-                                  , "Model objective", "Target output", "Focal Taxon"
-                                  , "Location", "Spatial extent", "Spatial resolution"
-                                  , "Temporal extent", "Temporal resolution", "Boundary"
-                                  , "Observation type", "Response data type", "Predictor types"
-                                  , "Hypotheses", "Model assumptions", "Modelling techniques"
-                                  , "Model complexity", "Model averaging", "Model workflow"
-                                  , "Software", "Code availability", "Data availability" ## OVERVIEW
-                                  , "Taxon names", "Taxonomic reference system", "Ecological level"
-                                  , "Data sources", "Sampling design", "Sample size"
-                                  , "Clipping", "Scaling", "Cleaning"
-                                  , "Absence data", "Background data", "Errors and biases"
-                                  , "Training data", "Validation data", "Test data"
-                                  , "Predictor variables"
-                                  , "Data sources", "Spatial extent", "Spatial resolution"
-                                  , "Coordinate reference system"
-                                  , "Temporal extent", "Temporal resolution"
-                                  , "Data processing", "Errors and biases", "Dimension reduction"
-                                  , "Data sources", "Spatial extent", "Spatial resolution"
-                                  , "Temporal extent", "Temporal resolution"
-                                  , "Models and scenarios", "Data processing", "Quantification of Novelty" ## DATA
-                                  , "Variable pre-selection", "Multicollinearity"
-                                  , "Model settings (fitting)", "Model settings (extrapolation)"
-                                  , "Coefficients", "Parameter uncertainty", "Variable importance"
-                                  , "Model selection", "Model averaging", "Model ensembles"
-                                  , "Spatial autocorrelation", "Temporal autocorrelation"
-                                  , "Nested data", "Threshold selection" ## MODEL
-                                  , "Performance on training data", "Performance on validation data"
-                                  , "Performance on test data", "Response shapes", "Expert judgement" ## ASSESSMENT
-                                  , "Prediction unit", "Post-processing"
-                                  , "Algorithmic uncertainty", "Input data uncertainty"
-                                  , "Parameter uncertainty", "Scenario uncertainty"
-                                  , "Novel environments") ## PREDICTION
-                    , value = NA)
+# ODMAP <- data.frame(section = c(rep("Overview", 25)
+#                                 , rep("Data", 33)
+#                                 , rep("Model", 14)
+#                                 , rep("Assessment", 5)
+#                                 , rep("Prediction", 7))
+#                     , subsection = c(rep("Authorship", 4)
+#                                      , rep("Model objective", 2)
+#                                      , "Focal Taxon", "Location"
+#                                      , rep("Scale of Analysis", 5)
+#                                      , rep("Biodiversity data", 2)
+#                                      , "Predictors", "Hypotheses", "Assumptions"
+#                                      , rep("Algorithms", 3)
+#                                      , "Workflow"
+#                                      , rep("Software", 3)
+#                                      , rep("Biodiversity data", 12)
+#                                      , rep("Data partitioning", 3)
+#                                      , rep("Predictor variables", 10)
+#                                      , rep("Transfer data", 8)
+#                                      , "Variable pre-selection", "Multicollinearity"
+#                                      , rep("Model settings", 2)
+#                                      , rep("Model estimates", 3)
+#                                      , rep("Model selection - model averaging - ensembles", 3)
+#                                      , rep("Analysis and Correction of non-independence", 3)
+#                                      , "Threshold selection"
+#                                      , rep("Performance statistics", 3)
+#                                      , rep("Plausibility check", 2)
+#                                      , rep("Prediction output", 2)
+#                                      , rep("Uncertainty quantification", 5))
+#                     , element = c("Study title", "Author names", "Contact", "Study link"
+#                                   , "Model objective", "Target output", "Focal Taxon"
+#                                   , "Location", "Spatial extent", "Spatial resolution"
+#                                   , "Temporal extent", "Temporal resolution", "Boundary"
+#                                   , "Observation type", "Response data type", "Predictor types"
+#                                   , "Hypotheses", "Model assumptions", "Modelling techniques"
+#                                   , "Model complexity", "Model averaging", "Model workflow"
+#                                   , "Software", "Code availability", "Data availability" ## OVERVIEW
+#                                   , "Taxon names", "Taxonomic reference system", "Ecological level"
+#                                   , "Data sources", "Sampling design", "Sample size"
+#                                   , "Clipping", "Scaling", "Cleaning"
+#                                   , "Absence data", "Background data", "Errors and biases"
+#                                   , "Training data", "Validation data", "Test data"
+#                                   , "Predictor variables"
+#                                   , "Data sources", "Spatial extent", "Spatial resolution"
+#                                   , "Coordinate reference system"
+#                                   , "Temporal extent", "Temporal resolution"
+#                                   , "Data processing", "Errors and biases", "Dimension reduction"
+#                                   , "Data sources", "Spatial extent", "Spatial resolution"
+#                                   , "Temporal extent", "Temporal resolution"
+#                                   , "Models and scenarios", "Data processing", "Quantification of Novelty" ## DATA
+#                                   , "Variable pre-selection", "Multicollinearity"
+#                                   , "Model settings (fitting)", "Model settings (extrapolation)"
+#                                   , "Coefficients", "Parameter uncertainty", "Variable importance"
+#                                   , "Model selection", "Model averaging", "Model ensembles"
+#                                   , "Spatial autocorrelation", "Temporal autocorrelation"
+#                                   , "Nested data", "Threshold selection" ## MODEL
+#                                   , "Performance on training data", "Performance on validation data"
+#                                   , "Performance on test data", "Response shapes", "Expert judgement" ## ASSESSMENT
+#                                   , "Prediction unit", "Post-processing"
+#                                   , "Algorithmic uncertainty", "Input data uncertainty"
+#                                   , "Parameter uncertainty", "Scenario uncertainty"
+#                                   , "Novel environments") ## PREDICTION
+#                     , value = NA)
 
 # usethis::use_data(ODMAP, overwrite = TRUE)
 # usethis::use_data(ODMAP, overwrite = TRUE, internal = TRUE)

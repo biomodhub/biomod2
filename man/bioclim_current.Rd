@@ -20,6 +20,6 @@ bioclim_current
 \description{
 A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
 used for SDM and describing current climate. Additional information available
-at \href{https://www.worldclim.org/data/bioclim.html}{worldclim}
+at \href{https://www.worldclim.org/data/bioclim.html}{worldclim}.
 }
 \keyword{datasets}

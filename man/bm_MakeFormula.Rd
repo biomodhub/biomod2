@@ -66,6 +66,7 @@ Other Secondary functions:
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
+\code{\link{bm_ModelAnalysis}()},
 \code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},

@@ -289,6 +289,7 @@ Other Secondary functions:
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelAnalysis}()},
 \code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},
@@ -305,6 +306,6 @@ Other Secondary functions:
 \code{\link{bm_VariablesImportance}()}
 }
 \author{
-Frank Breiner, Maya Guéguen
+Maya Guéguen
 }
 \concept{Secondary functions}

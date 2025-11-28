@@ -7,46 +7,53 @@
 bm_ModelAnalysis(
   bm.mod,
   models.chosen = "all",
-  do.plot = TRUE,
-  color.by = "full.name"
+  color.by = "full.name",
+  do.plot = TRUE
 )
 }
 \arguments{
-\item{bm.mod}{a \code{BIOMOD.models.out}}
+\item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
+\code{\link{BIOMOD_Modeling}} function}
 
 \item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
 \code{all} or a sub-selection of model names that can be obtained with the 
-\code{\link{get_built_models}} function}
+\code{\link{get_built_models}} function applied to \code{bm.mod}}
 
-\item{do.plot}{a \code{logical}, print the plots or not}
+\item{color.by}{a \code{character} corresponding to the way plots will be colored, must be 
+among \code{full.name}, \code{PA}, \code{run} or \code{algo}}
 
-\item{color.by}{a \code{character} between "full.name", "species", "PA", "RUN" or "algo" 
-to select the color parameter of the plots.}
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the plot is to be rendered or not}
 }
 \value{
-A list with: 
+A \code{list} containing :
 \enumerate{
-  \item a dataframe with the observation data, the fitted values and the residuals for all models
-  \item a dataframe with the compilation of the R scores
-  \item A to E plots (see details)
+  \item a \code{data.frame} with variables, predicted values and model residuals
+  \item a \code{data.frame} with the R score values
+  \item 5 \code{ggplot} objects (from A to E) representing the different analyses.
 }
 }
 \description{
 This function return several graphs to help analyse the single models.
 }
 \details{
-All the plots will be made for all the models, independently to the different models assumptions. 
-It is up to the user to interpret the graphs in the light of the model assumptions.
-
-\enumerate{
-  \item Plot A: residuals ~ observations number. This plot helps to detect one or several outliers.
-  The x-axis only helps to find the outlier number. 
-  \item Plot B and C: These are two representation of the distribution of the residuals. If your residuals must follow a normal distribution, 
-  the points should follow the black line in the Q-Q plot and present a gaussian distribution on the histogram. 
-  \item Plot D residuals ~ fitted values. This plot helps to detect an heteroscedasticity of the residuals. 
-  \item Plot E : a plot of the different Rsquared values available (Rsquared, Rsquared_aj).
-   An big gap between the calibration and validation values can be the sign of an overfitting.
+5 plots can be obtained with this function :
+\describe{
+  \item{residuals ~ observations number}{to detect outliers. The x-axis only helps to find 
+  the outlier number.}
+  \item{residuals Q-Q plot}{to check if residuals follow a normal distribution. Points 
+  should follow the black line.}
+  \item{residuals histogram}{to check if residuals follow a normal distribution. Histogram 
+  should represent a gaussian distribution.}
+  \item{residuals ~ fitted values}{to detect an heteroscedasticity of the residuals. It 
+  corresponds to the Tukey-Anscombe plot.}
+  \item{R scores}{to detect overfitting. Representing \code{Rsquared} and 
+  \code{Rsquared_aj} values, there should not be a big gap between calibration and 
+  validation values.}
 }
+
+\emph{Please not the all plots are made for all models, independently to the different 
+models assumptions. It is up to the user to interpret the graphics.}
 }
 \examples{
 library(terra)
@@ -56,7 +63,7 @@ data(DataSpecies)
 head(DataSpecies)
 
 # Select the name of the studied species
-myRespName <- 'VulpesVulpes'
+myRespName <- 'GuloGulo'
 
 # Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
@@ -68,11 +75,12 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 data(bioclim_current)
 myExpl <- terra::rast(bioclim_current)
 
-# Transform binary data as count data
-poissonDistri <- rpois(sum(myResp), 10)
-myResp[myResp == 1] <- poissonDistri
+\dontshow{
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
+}
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -82,35 +90,64 @@ if (file.exists(file.out)) {
   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
                                        resp.var = myResp,
                                        resp.xy = myRespXY,
-                                       expl.var = myExpl,
-                                       data.type = 'count')
+                                       expl.var = myExpl)
 
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
-                                      models = c('GAM', 'GLM', 'MARS'),
+                                      models = c('RF', 'GLM'),
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
                                       OPT.strategy = 'bigboss',
-                                      metric.eval = c('Rsquared', 'Rsquared_aj'),
+                                      metric.eval = c('TSS','AUCroc'),
+                                      var.import = 3,
                                       seed.val = 42)
 }
 
 
-# ---------------------------------------------------------------
-# bm_ModelAnalysis
-analysis <- bm_ModelAnalysis(myBiomodModelOut, color.by = "RUN")
+# ---------------------------------------------------------------#
+# Explore single models
+myBiomodAnalysis <- bm_ModelAnalysis(bm.mod = myBiomodModelOut, color.by = "run")
 
-plot(analysis$plotA)
-
-unlink(myRespName, recursive = TRUE)
+plot(myBiomodAnalysis$plot.outliers)
 
 
+
+}
+\seealso{
+Other Secondary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CrossValidation}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelingOptions}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_RangeSize}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_Tuning}()},
+\code{\link{bm_VariablesImportance}()}
+
+Other Plot functions: 
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()}
 }
 \author{
 Hélène Blancheteau
 }
+\concept{Plot functions}
+\concept{Secondary functions}
 \keyword{analyze}
 \keyword{models}
 \keyword{residuals}

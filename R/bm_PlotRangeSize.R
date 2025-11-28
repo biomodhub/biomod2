@@ -42,7 +42,7 @@
 ##'   and gained, taking the majoritary value across single distribution models (and representing 
 ##'   the percentage of models' agreement)}
 ##' }
-##' \emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
+##' \emph{Please see \code{\link{bm_RangeSize}} function for more details about the values.}
 ##' 
 ##' 
 ##' @keywords ggplot "species range change" projections gain loss
