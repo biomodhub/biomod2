@@ -236,7 +236,7 @@ bm_ModelAnalysis <- function(bm.mod,
       }
     # Rscore <- Rscore[which(!is.na(Rscore$value)), ]
     
-    gg.Rscore <- ggplot(Rscore, aes(y = value, x = full.name, color = .data[[color.by]], shape = metric)) +
+    gg.Rscore <- ggplot(Rscore, aes(y = value, x = full.name, color = .data[[color.by]], shape = metric.eval)) +
       geom_point(size = 2) +
       ylim(0, 1) +
       labs(x = "Models", y = "", title = "R scores") +
