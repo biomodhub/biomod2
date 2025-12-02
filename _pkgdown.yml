@@ -127,6 +127,7 @@ reference:
   - subtitle: Species data
     contents:
       - "DataSpecies"
+      - "DataSTOC"
   - subtitle: Environmental data
     contents:
       - "bioclim_current"

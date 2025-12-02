@@ -308,6 +308,85 @@
 
 
 ###################################################################################################
+#' Abundance to build test SDM
+#'
+#' A dataset covering France with abundance data for 20 bird species. Data comes from the French 
+#' Breeding Bird Survey (STOC program) of Vigie-Nature (Fontaine et al. 2020). The original 
+#' dataset contains 2,948 sites in which bird species have been observed from 2001 to 2024. 
+#' Original raw data is not provided here, but might be made available on request by contacting 
+#' \href{benoit.fontaine@mnhn.fr}{Benoît Fontaine}.
+#'
+#' @format A \code{data.frame} object with 2006 rows and XX variables:
+#' \describe{
+#'   \item{site}{Observation site ID}
+#'   \item{period}{yearly average headcounts have been computed over 2 times periods: 
+#'   2006-2011 and 2012-2017}
+#'   \item{x_wgs84}{Longitude}
+#'   \item{y_wgs84}{Latitude}
+#'   \item{temp}{annual mean temperature (CHELSA)}
+#'   \item{precip}{annual mean precipitation (CHELSA)}
+#'   \item{cover_agri}{percentage of agricultural habitat cover around each point 
+#'   (European Union’s Copernicus Land Monitoring Service information)}
+#'   \item{cover_water}{percentage of water habitat cover around each point 
+#'   (European Union’s Copernicus Land Monitoring Service information)}
+#'   \item{cover_wet}{percentage of wetland habitat cover around each point 
+#'   (European Union’s Copernicus Land Monitoring Service information)}
+#'   \item{sdiv_hab}{Shannon habitat diversity (CORINE)}
+#'   \item{Alauda.arvensis}{abundance data for Eurasian skylark}
+#'   \item{Cettia.cetti}{abundance data for Cetti's warbler}
+#'   \item{Coccothraustes.coccothraustes}{abundance data for hawfinch}
+#'   \item{Cuculus.canorus}{abundance data for common cuckoo}
+#'   \item{Emberiza.calandra}{abundance data for corn bunting}
+#'   \item{Emberiza.citrinella}{abundance data for yellowhammer}
+#'   \item{Erithacus.rubecula}{abundance data for European robin}
+#'   \item{Fulica.atra}{abundance data for Eurasian coot}
+#'   \item{Luscinia.megarhynchos}{abundance data for common nightingale}
+#'   \item{Passer.domesticus}{abundance data for house sparrow}
+#'   \item{Perdix.perdix}{abundance data for grey partridge}
+#'   \item{Periparus.ater}{abundance data for coal tit}
+#'   \item{Phylloscopus.bonelli}{abundance data for western Bonelli's warbler}
+#'   \item{Phylloscopus.trochilus}{abundance data for willow warbler}
+#'   \item{Regulus.regulus}{abundance data for goldcrest}
+#'   \item{Serinus.serinus}{abundance data for European serin}
+#'   \item{Sitta.europaea}{abundance data for Eurasian nuthatch}
+#'   \item{Streptopelia.decaocto}{abundance data for Eurasian collared dove}
+#'   \item{Sylvia.melanocephala}{abundance data for Sardinian warbler}
+#'   \item{Turdus.philomelos}{abundance data for song thrush}
+#' }
+#' 
+#' @references
+#' 
+#' \itemize{
+#'   \item \href{https://www.vigie-plume.fr/}{STOC EPS} - Vigie-Nature (2025). 
+#'   \emph{French Breeding Bird Monitoring Scheme.} Muséum National d’Histoire Naturelle 
+#'   (MNHN) - Office Français pour la Biodiversité (OFB) - Ligue pour la Protection des 
+#'   Oiseaux (LPO).
+#'   \item Fontaine B, Moussy C, Chiffard Carricaburu J, Dupuis J, Corolleur E, Schmaltz L, 
+#'   Lorrillière R, Loïs G, Gaudard C. (2020) Suivi des oiseaux communs en France 
+#'   1989-2019 : 30 ans de suivis participatifs. MNHN - Centre d'Ecologie et des Sciences 
+#'   de la Conservation, LPO BirdLife France - Service Connaissance, Ministère de la 
+#'   Transition écologique et solidaire. 46 pp.
+#'   \item  Brun P, Zimmermann NE, Hari C, Pellissier L, Karger DN. (2022) 
+#'   CHELSA-BIOCLIM+ A novel set of global climate-related predictors at 
+#'   kilometre-resolution. EnviDat. 
+#'   DOI: \href{https://www.doi.org/10.16904/envidat.332}{10.16904/envidat.332}
+#'   \item CORINE Land Cover 2018 (raster 100 m), Europe, 6-yearly - version 2020_20u1, 
+#'   May 2020. European Environment Agency. 
+#'   DOI: \href{https://doi.org/10.2909/960998c1-1870-4e82-8051-6485205ebbac}{10.2909/960998c1-1870-4e82-8051-6485205ebbac}
+#' }
+#' 
+###################################################################################################
+
+"DataSTOC"
+
+# DataSTOC <- read.csv("inst/external/DATA_biomod2_STOC.csv", header = TRUE, sep = ",")
+# DataSTOC <- cbind(DataSTOC[, 1:10], DataSTOC[, sort(colnames(DataSTOC)[11:ncol(DataSTOC)])])
+# 
+# usethis::use_data(DataSTOC, overwrite = TRUE)
+# usethis::use_data(DataSTOC, overwrite = TRUE, internal = TRUE)
+
+
+###################################################################################################
 #' Bioclimatic variables for SDM based on current condition
 #'
 #' A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
