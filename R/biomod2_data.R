@@ -316,7 +316,7 @@
 #' Original raw data is not provided here, but might be made available on request by contacting 
 #' \href{benoit.fontaine@mnhn.fr}{Benoît Fontaine}.
 #'
-#' @format A \code{data.frame} object with 2006 rows and XX variables:
+#' @format A \code{data.frame} object with 2006 rows and 30 columns (10 variables and 20 species):
 #' \describe{
 #'   \item{site}{Observation site ID}
 #'   \item{period}{yearly average headcounts have been computed over 2 times periods: 

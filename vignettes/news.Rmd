@@ -16,7 +16,9 @@ vignette: >
 
 ##### Bugfix
 
-- 4.3-4-3 : add `DataSTOC` data set
+- 4.3-4-3 :
+  + add `DataSTOC` data set
+  + fix `metric.eval` in `plot.Rscore` in `bm_ModelAnalysis` function
 - 4.3-4-2 :
   + merge `BIOMOD.formated.data` `plot` functions to deal with all data types, add `plot.valid` parameter
   + reformat `bm_ModelAnalysis` function
