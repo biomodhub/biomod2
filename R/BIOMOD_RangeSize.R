@@ -190,8 +190,8 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
                                  model.as.col = TRUE)
   
   coord <- proj.future@coord
-  if(is.data.frame(pred_future)){
-    if(nrow(pred_current) != nrow(pred_future)){
+  if (is.data.frame(pred_future)) {
+    if (nrow(pred_current) != nrow(pred_future)) {
       good <- intersect(rownames(pred_current), rownames(pred_future))
       pred_current <- as.data.frame(pred_current[rownames(pred_current) %in% good,])
       pred_future <- as.data.frame(pred_future[rownames(pred_future) %in% good,])

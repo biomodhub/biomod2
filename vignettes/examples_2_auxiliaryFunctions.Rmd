@@ -1,18 +1,18 @@
 ---
-title: "Secondary functions"
+title: "Auxiliary functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Secondary functions}
+  %\VignetteIndexEntry{Auxiliary functions}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 ## <i class="fa-solid fa-code"></i> Small code examples
 
-Here are presented, in small and unlinked examples, secondary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
+Here are presented, in small and unlinked examples, auxiliary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
 
 
 <br/><br/>
@@ -56,7 +56,7 @@ vec.d <- rnorm(100, 500, 100)
 
 
 
-#### <i class="fa-solid fa-eye"></i> Observations & explanatory variables
+#### <i class="fa-solid fa-eye"></i> Explanatory variables & Observations
 
 ```R
 library(biomod2)
@@ -67,11 +67,13 @@ library(terra)
 ## Create simple simulated data ---------------------------------------------------------
 myResp.sim <- sample(c(0, 1), 20, replace = TRUE)
 myExpl.sim <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
-                       var2 = rnorm(100),
-                       var3 = 1:100)
+                         var2 = rnorm(100),
+                         var3 = 1:100)
                        
 ## Create raster data -------------------------------------------------------------------
 ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
+
+## define 2 variables : 1 categorical, 1 numerical
 ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
 ras.1 <- as.factor(ras.1)
 ras.2[] <- rnorm(100)
@@ -86,18 +88,10 @@ mask.in <- list(ras.1, ras.1)
 mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
 mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
 
-## Load real data ---------------------------------------------------------
-data(DataSpecies)
-myResp.real <- as.numeric(DataSpecies[, 'GuloGulo'])
-
+## Load real data : CLIMATE -------------------------------------------------------------
 data(bioclim_current)
 myExpl.real <- rast(bioclim_current)
-
-myCoord.real <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
-myCoord.real.1 <- DataSpecies[which(myResp.real == 1), c('X_WGS84', 'Y_WGS84')]
-myResp.real.raster <- classify(subset(myExpl.real, 1), 
-                               matrix(c(-Inf, Inf, 0), ncol = 3))
-myResp.real.raster[cellFromXY(myResp.real.raster, myCoord.real.1)] <- 1
+tmp <- classify(subset(myExpl.real, 1), matrix(c(-Inf, Inf, 0), ncol = 3))
 ```
 
 <!-- library(foreach) -->
@@ -129,7 +123,25 @@ myResp.real.raster[cellFromXY(myResp.real.raster, myCoord.real.1)] <- 1
 <br/><br/>
 
 
-### <i class="fa-solid fa-square-check"></i> Secondary functions : vector data
+```R
+## Load real data : BINARY --------------------------------------------------------------
+data(DataSpecies)
+myResp.real <- as.numeric(DataSpecies[, 'GuloGulo'])
+myCoord.real <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+myCoord.real.1 <- DataSpecies[which(myResp.real == 1), c('X_WGS84', 'Y_WGS84')]
+myResp.real.raster <- tmp
+myResp.real.raster[cellFromXY(myResp.real.raster, myCoord.real.1)] <- 1
+
+## Load real data : ABUNDANCE -----------------------------------------------------------
+data(DataSTOC)
+myResp.AB <- as.numeric(DataSTOC[, 'Periparus.ater'])
+myCoord.AB <- DataSTOC[, c('X_WGS84', 'Y_WGS84')]
+```
+
+<br/><br/>
+
+
+### <i class="fa-solid fa-square-check"></i> Auxiliary functions : vector data
 
 #### <i class="fa-solid fa-scissors"></i> Generate calibration / evaluation datasets
 
@@ -151,13 +163,13 @@ bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 #### <i class="fa-solid fa-scale-balanced"></i> Find optimal threshold for a specific evaluation metric
 
 ```R
-# varying the number of thresholds to test
+# Vary the number of thresholds to test
 bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b, nb.thresh = 5)
 bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b, nb.thresh = 100)
 
-# different metrics
+# Compute different metrics
 bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.c)
-bm_FindOptimStat(metric.eval = 'ROC', obs = vec.a, fit = vec.c)
+bm_FindOptimStat(metric.eval = 'AUCroc', obs = vec.a, fit = vec.c)
 bm_FindOptimStat(metric.eval = 'BOYCE', obs = vec.a, fit = vec.c)
 ```
 
@@ -173,7 +185,7 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 <br/><br/>
 
 
-### <i class="fa-solid fa-square-check"></i> Secondary functions : explanatory variables
+### <i class="fa-solid fa-square-check"></i> Auxiliary functions : explanatory variables
 
 #### <i class="fa-solid fa-subscript"></i> Generate automatic formula
 
@@ -229,19 +241,30 @@ bm_VariablesImportance(bm.model = mod,
 <br/><br/>
 
 
-### <i class="fa-solid fa-square-check"></i> Secondary functions : `biomod2` data
+### <i class="fa-solid fa-square-check"></i> Auxiliary functions : `biomod2` data
+
 
 ```R
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp.real,
-                                     expl.var = myExpl.real,
+# Format count ABUNDANCE data
+myBiomodDataAB <- BIOMOD_FormatingData(resp.name = 'Virus', 
+                                       resp.var = myResp.AB,
+                                       resp.xy = myCoord.AB,
+                                       expl.var = myExpl.real,
+                                       data.type = 'count')
+``` 
+
+```R
+# Format BINARY data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.name = 'Alien', 
+                                     resp.var = myResp.real,
                                      resp.xy = myCoord.real,
-                                     resp.name = 'Alien')
+                                     expl.var = myExpl.real)
                                      
 # Transform true absences into potential pseudo-absences
 myResp.real.PA <- ifelse(myResp.real == 1, 1, NA)
 myResp.real.PA.vect <- vect(cbind(myCoord.real, myResp.real.PA), geom = c('X_WGS84','Y_WGS84'))
-```
+``` 
+
 
 #### <i class="fa-solid fa-shuffle"></i> Generate pseudo-absence datasets
 
@@ -392,7 +415,7 @@ opt.b <- bm_ModelingOptions(data.type = 'binary',
                             models = allModels,
                             strategy = 'bigboss')
 
-# user defined parameters
+# user.defined parameters
 user.SRE <- list('_allData_allRun' = list(quant = 0.01))
 user.XGBOOST <- list('_allData_allRun' = list(nrounds = 10))
 user.val <- list(SRE.binary.biomod2.bm_SRE = user.SRE
@@ -408,7 +431,7 @@ opt.u
 ```
 
 ```R
-# tune parameters for Random Forest model
+# Tune parameters for Random Forest model
 tuned.rf <- bm_Tuning(model = 'RF',
                       tuning.fun = 'rf', ## see in ModelsTable
                       do.formula = TRUE,
@@ -416,7 +439,7 @@ tuned.rf <- bm_Tuning(model = 'RF',
                       bm.format = myBiomodData)
 tuned.rf ## list object
 
-# tune parameters for GAM (from mgcv package) model
+# Tune parameters for GAM (from mgcv package) model
 tuned.gam <- bm_Tuning(model = 'GAM',
                        tuning.fun = 'gam', ## see in ModelsTable
                        do.formula = TRUE,
@@ -426,7 +449,7 @@ tuned.gam <- bm_Tuning(model = 'GAM',
 tuned.gam ##list object
 
                               
-# tuned parameters with formated data
+# Tune parameters with formated data
 opt.t <- bm_ModelingOptions(data.type = 'binary',
                             models = c('SRE', 'XGBOOST'),
                             strategy = 'tuned',

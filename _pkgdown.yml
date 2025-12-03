@@ -31,10 +31,12 @@ navbar:
       text: Examples
       icon: fas fa-stethoscope
       menu:
-        - text: Main functions
-          href: articles/examples_1_mainFunctions.html
+        - text: Main functions (bin)
+          href: articles/examples_1_mainFunctions_BIN.html
+        - text: Main functions (abund)
+          href: articles/examples_1_mainFunctions_AB.html
         - text: Secundary functions
-          href: articles/examples_2_secundaryFunctions.html
+          href: articles/examples_2_auxiliaryFunctions.html
         - text: "---------"
         - text: Data preparation
           href: articles/vignette_dataPreparation.html
@@ -46,8 +48,6 @@ navbar:
           href: articles/vignette_modelingOptions.html
         - text: Variability in results
           href: articles/vignette_variability.html
-        - text: Abundance modelling
-          href: articles/vignette_Abundance.html
     reference:
       text: Reference
       icon: fa-book fa-lg
@@ -73,7 +73,7 @@ reference:
       - "BIOMOD_RangeSize"
       - "BIOMOD_LoadModels"
       - "BIOMOD_Report"
-  - subtitle: Secundary functions
+  - subtitle: Auxiliary functions
     contents:
       - "bm_MakeFormula"
       - "bm_SampleBinaryVector"

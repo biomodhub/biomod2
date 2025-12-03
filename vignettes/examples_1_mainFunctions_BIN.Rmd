@@ -1,18 +1,20 @@
 ---
-title: "Main functions"
+title: "Main functions: binary data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Main functions}
+  %\VignetteIndexEntry{Main functions: binary data}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 ## <i class="fa-solid fa-code"></i> Complete code example
 
 Here are presented, in a full and complete example, all main functions (starting with `BIOMOD_[...]`) of `biomod2`.
+
+The data set used is the [DataSpecies](../reference/DataSpecies.html) containing presence/absence data. <br/> Similar examples are presented for count data on the [Main functions (abund) webpage](examples_1_mainFunctions_AB.html).
 
 
 <br/><br/>
@@ -25,7 +27,7 @@ library(biomod2)
 library(terra)
 
 # Load species occurrences (6 species available)
-data("DataSpecies")
+data('DataSpecies')
 head(DataSpecies)
 
 # Select the name of the studied species
@@ -38,7 +40,7 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-data("bioclim_current")
+data('bioclim_current')
 myExpl <- rast(bioclim_current)
 ```
 
@@ -51,24 +53,24 @@ myExpl <- rast(bioclim_current)
 #### <i class="fa-solid fa-spell-check"></i> Format data (observations & explanatory variables)
 
 ```R
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
+# Format data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+                                     resp.var = myResp,
                                      resp.xy = myRespXY,
-                                     resp.name = myRespName)
+                                     expl.var = myExpl)
 myBiomodData
 plot(myBiomodData)
 ```
 
 #### <i class="fa-solid fa-shuffle"></i> Pseudo-absences extraction
 
-Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function, which calls the [`bm_PseudoAbsences`](../reference/bm_PseudoAbsences.html) function to do so. More examples are presented on the [Secondary functions webpage](examples_2_secundaryFunctions.html).
+Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function, which calls the [`bm_PseudoAbsences`](../reference/bm_PseudoAbsences.html) function to do so. More examples are presented on the [Auxiliary functions webpage](examples_2_auxiliaryFunctions.html).
 
 ```R
 # # Transform true absences into potential pseudo-absences
 # myResp.PA <- ifelse(myResp == 1, 1, NA)
 # 
-# # Format Data with pseudo-absences : random method
+# # Format data with pseudo-absences : random method
 # myBiomodData.r <- BIOMOD_FormatingData(resp.var = myResp.PA,
 #                                        expl.var = myExpl,
 #                                        resp.xy = myRespXY,
@@ -102,28 +104,28 @@ Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_Form
 
 #### <i class="fa-solid fa-scissors"></i> Cross-validation datasets
 
-Several cross-validation methods are available and can be selected with the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_CrossValidation`](../reference/bm_CrossValidation.html) function to do so. More examples are presented on the [Secondary functions webpage](examples_2_secundaryFunctions.html).
+Several cross-validation methods are available and can be selected with the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_CrossValidation`](../reference/bm_CrossValidation.html) function to do so. More examples are presented on the [Auxiliary functions webpage](examples_2_auxiliaryFunctions.html).
 
 ```R
 # # k-fold selection
 # cv.k <- bm_CrossValidation(bm.format = myBiomodData,
-#                            strategy = "kfold",
+#                            strategy = 'kfold',
 #                            nb.rep = 2,
 #                            k = 3)
 # 
 # # stratified selection (geographic)
 # cv.s <- bm_CrossValidation(bm.format = myBiomodData,
-#                            strategy = "strat",
+#                            strategy = 'strat',
 #                            k = 2,
-#                            balance = "presences",
-#                            strat = "x")
+#                            balance = 'presences',
+#                            strat = 'x')
 # head(cv.k)
 # head(cv.s)
 ```
 
 #### <i class="fa-solid fa-rectangle-list"></i> Retrieve modeling options
 
-Modeling options are automatically retrieved from selected models within the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_ModelingOptions`](../reference/bm_ModelingOptions.html) function to do so. Model parameters can also be automatically tuned to a specific dataset, by calling the [`bm_Tuning`](../reference/bm_Tuning.html) function, however it can be quite long. More examples are presented on the [Secondary functions webpage](examples_2_secundaryFunctions.html).
+Modeling options are automatically retrieved from selected models within the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_ModelingOptions`](../reference/bm_ModelingOptions.html) function to do so. Model parameters can also be automatically tuned to a specific dataset, by calling the [`bm_Tuning`](../reference/bm_Tuning.html) function, however it can be quite long. More examples are presented on the [Auxiliary functions webpage](examples_2_auxiliaryFunctions.html).
 
 ```R
 # # bigboss parameters
@@ -156,8 +158,8 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     CV.nb.rep = 2,
                                     CV.perc = 0.8,
                                     OPT.strategy = 'bigboss',
-                                    var.import = 3,
-                                    metric.eval = c('TSS','AUCroc'))
+                                    metric.eval = c('TSS', 'AUCroc', 'BOYCE'),
+                                    var.import = 3)
                                     # seed.val = 123)
                                     # nb.cpu = 8)
 myBiomodModelOut
@@ -167,24 +169,29 @@ get_evaluations(myBiomodModelOut)
 get_variables_importance(myBiomodModelOut)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(bm.out = myBiomodModelOut)
-bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'algo'))
-bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotEvalMean(bm.out = myBiomodModelOut, dataset = 'calibration')
+bm_PlotEvalMean(bm.out = myBiomodModelOut, dataset = 'validation')
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, dataset = 'calibration', group.by = c('algo', 'algo'))
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, dataset = 'calibration', group.by = c('algo', 'run'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
 
 # Represent response curves
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1, 4, 8, 10, 13)],
                       fixed.var = 'median')
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1, 4, 8, 10, 13)],
                       fixed.var = 'min')
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[3],
+                      models.chosen = get_built_models(myBiomodModelOut)[4],
                       fixed.var = 'median',
                       do.bivariate = TRUE)
+                      
+# Explore models' outliers & residuals
+bm_ModelAnalysis(bm.mod = myBiomodModelOut,
+                 models.chosen = get_built_models(myBiomodModelOut)[c(1, 4, 8, 10, 13)])
 ```
 
 
@@ -195,10 +202,11 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
                                       em.by = 'all',
-                                      em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean'),
+                                      em.algo = c('EMmedian', 'EMmean', 'EMwmean',
+                                                  'EMca', 'EMci', 'EMcv'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
-                                      metric.eval = c('TSS', 'AUCroc'),
+                                      metric.eval = c('TSS', 'AUCroc', 'BOYCE'),
                                       var.import = 3,
                                       EMci.alpha = 0.05,
                                       EMwmean.decay = 'proportional')
@@ -209,8 +217,8 @@ get_evaluations(myBiomodEM)
 get_variables_importance(myBiomodEM)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'full.name')
-bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('full.name', 'full.name'))
+bm_PlotEvalMean(bm.out = myBiomodEM, dataset = 'calibration', group.by = 'full.name')
+bm_PlotEvalBoxplot(bm.out = myBiomodEM, dataset = 'calibration', group.by = c('full.name', 'full.name'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'full.name', 'full.name'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'merged.by.run'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'expl.var', 'merged.by.run'))
@@ -269,7 +277,6 @@ myBiomodEMProj
 plot(myBiomodEMProj)
 ```
 
-
 <br/><br/>
 
 
@@ -277,31 +284,31 @@ plot(myBiomodEMProj)
 
 ```R
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-data("bioclim_future")
+data('bioclim_future')
 myExplFuture = rast(bioclim_future)
 
 # Project onto future conditions
-myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+myBiomodProjFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               proj.name = 'Future',
                                               new.env = myExplFuture,
                                               models.chosen = 'all',
                                               metric.binary = 'TSS',
                                               build.clamping.mask = TRUE)
 
-
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = myBiomodProj, 
-                                      proj.future = myBiomodProjectionFuture,
+                                      proj.future = myBiomodProjFuture,
                                       metric.binary = 'TSS')
 
-myBiomodRangeSize$Compt.By.Models
-plot(myBiomodRangeSize$Diff.By.Pixel)
+myBiomodRangeSize@Compt.By.Models
+plot(myBiomodRangeSize@Diff.By.Pixel)
 
 # Represent main results 
-gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize, 
-                      do.count = TRUE,
-                      do.perc = TRUE,
-                      do.maps = TRUE,
-                      do.mean = TRUE,
-                      do.plot = TRUE)
+bm_PlotRangeSize(bm.range = myBiomodRangeSize, 
+                 do.count = TRUE,
+                 do.perc = TRUE,
+                 do.maps = TRUE,
+                 do.mean = TRUE)
 ```
+
+<br/><br/>
