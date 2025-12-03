@@ -211,8 +211,7 @@ bm_Tuning <- function(model,
                       params.train = list(ANN.size = c(2, 4, 6, 8),
                                           ANN.decay = c(0.01, 0.05, 0.1),
                                           ANN.bag = FALSE,
-                                          DNN.hidden = list(depth = 3,
-                                                            width = 100),
+                                          DNN.hidden = list(depth = 3, width = 100),
                                           DNN.bias = TRUE,
                                           DNN.lambda = 0.001,
                                           DNN.alpha = 1, 
@@ -403,7 +402,8 @@ bm_Tuning <- function(model,
             tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")]
                              , by = list(quant = tune.SRE$quant), mean)
             argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
-          } else { ## DNN case
+            
+          } else { ## DNN case  # -------------------------------------- #
 
             ## Preparation of data 
             scale_data <- scale(myExpl)
@@ -412,23 +412,24 @@ bm_Tuning <- function(model,
             
             ## Preparation of the tune parameters
             params.train = params.train[grep(paste0(model,"\\."), names(params.train))]
-            for (param.n in names(params.train)){
+            for (param.n in names(params.train)) {
               real.name <- unlist(strsplit(param.n, split = "\\."))[2]
               
-              if (real.name == "hidden"){
-                if (length(params.train$DNN.hidden$depth) == 1 && length(params.train$DNN.hidden$width) == 1){
+              if (real.name == "hidden") {
+                if (length(params.train$DNN.hidden$depth) == 1 &&
+                    length(params.train$DNN.hidden$width) == 1) {
                   argstmp$hidden <- rep(params.train$DNN.hidden$width, params.train$DNN.hidden$depth)
-                } else if(length(params.train$DNN.hidden$depth) == 1){
+                } else if (length(params.train$DNN.hidden$depth) == 1) {
                   argstmp$hidden <- cito::tune(params.train$DNN.hidden$width, fixed = 'depth')
-                } else if(length(params.train$DNN.hidden$width) == 1){
+                } else if (length(params.train$DNN.hidden$width) == 1) {
                   argstmp$hidden <- cito::tune(params.train$DNN.hidden$depth, fixed = 'width')
                 } else {
                   argstmp$hidden <- cito::tune(params.train$DNN.hidden$depth, params.train$DNN.hidden$width)
                 }
               } else {
-                if (length(params.train[[param.n]]) == 1)
+                if (length(params.train[[param.n]]) == 1) {
                   argstmp[[real.name]] <- params.train[[param.n]]
-                else {
+                } else {
                   argstmp[[real.name]] <- cito::tune(values = params.train[[param.n]])
                 }
               }
@@ -439,13 +440,13 @@ bm_Tuning <- function(model,
             tune.DNN <- do.call(cito::dnn, argstmp)
             
             ## Keep the tuned parameters
-            argstmp$hidden = tuned.DNN$model_properties$hidden
-            argstmp$bias = tuned.DNN$model_properties$bias
-            argstmp$lambda = tuned.DNN$training_properties$lambda
-            argstmp$alpha = tuned.DNN$training_properties$alpha 
-            argstmp$lr = as.numeric(tuned.DNN$training_properties$lr)
-            argstmp$batchsize = tuned.DNN$training_properties$batchsize
-            argstmp$epochs = tuned.DNN$training_properties$epochs
+            argstmp$hidden = tune.DNN$model_properties$hidden
+            argstmp$bias = tune.DNN$model_properties$bias
+            argstmp$lambda = tune.DNN$training_properties$lambda
+            argstmp$alpha = tune.DNN$training_properties$alpha 
+            argstmp$lr = as.numeric(tune.DNN$training_properties$lr)
+            argstmp$batchsize = tune.DNN$training_properties$batchsize
+            argstmp$epochs = tune.DNN$training_properties$epochs
           }
           
         } else {
@@ -700,8 +701,7 @@ bm_Tuning <- function(model,
   params.train_init = list(ANN.size = c(2, 4, 6, 8),
                            ANN.decay = c(0.01, 0.05, 0.1),
                            ANN.bag = FALSE,
-                           DNN.hidden = list(depth = 3,
-                                             width = 100),
+                           DNN.hidden = list(depth = 3, width = 100),
                            DNN.bias = TRUE,
                            DNN.lambda = 0.001,
                            DNN.alpha = 1, 

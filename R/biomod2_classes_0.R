@@ -393,7 +393,7 @@ setGeneric("BIOMOD.options.dataset",
   
   ## TUNING parameterisation --------------------
   if (strategy == "tuned") {
-    all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
+    all.fun <- c('avNNet', 'rpart', 'rpart2', 'tune', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
     .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
@@ -531,7 +531,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                    , tuning.fun = NULL
                    , bm.format = NULL, calib.lines = NULL)
           {
-            cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
+            cat('\n\t> ', mod, 'options ( datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
             
             args <- .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val
                                                        , user.base = user.base, tuning.fun = tuning.fun
@@ -641,7 +641,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
 setMethod('show', signature('BIOMOD.options.dataset'),
           function(object)
           {
-            cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
+            cat('\n\t> ', object@model, 'options ( datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
             # for (arg in object@args.names) { ## NOT working for bigboss for example, if new parameters
             dataset <- ifelse("_allData_allRun" %in% names(object@args.values)
                               , "_allData_allRun", names(object@args.values)[1])
@@ -650,6 +650,7 @@ setMethod('show', signature('BIOMOD.options.dataset'),
             for (arg in names(object@args.values[[dataset]])) {
               val.def = capture.output(object@args.default[[arg]])
               val.used = capture.output(object@args.values[[dataset]][[arg]])
+              if (arg == 'data') val.used = head(val.used)
               
               cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
               if (!is.null(val.used) && !is.null(val.def) &&
@@ -670,7 +671,7 @@ setMethod('print', signature('BIOMOD.options.dataset'),
           function(x, dataset = '_allData_allRun')
           {
             object = x
-            cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
+            cat('\n\t> ', object@model, 'options ( datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
             dataset <- ifelse(dataset %in% names(object@args.values)
                               , dataset, ifelse("_allData_allRun" %in% names(object@args.values)
                                                 , "_allData_allRun", names(object@args.values)[1]))

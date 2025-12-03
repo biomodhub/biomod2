@@ -321,8 +321,8 @@
 #'   \item{site}{Observation site ID}
 #'   \item{period}{yearly average headcounts have been computed over 2 times periods: 
 #'   2006-2011 and 2012-2017}
-#'   \item{x_wgs84}{Longitude}
-#'   \item{y_wgs84}{Latitude}
+#'   \item{X_WGS84}{Longitude}
+#'   \item{Y_WGS84}{Latitude}
 #'   \item{temp}{annual mean temperature (CHELSA)}
 #'   \item{precip}{annual mean precipitation (CHELSA)}
 #'   \item{cover_agri}{percentage of agricultural habitat cover around each point 
@@ -381,6 +381,7 @@
 
 # DataSTOC <- read.csv("inst/external/DATA_biomod2_STOC.csv", header = TRUE, sep = ",")
 # DataSTOC <- cbind(DataSTOC[, 1:10], DataSTOC[, sort(colnames(DataSTOC)[11:ncol(DataSTOC)])])
+# colnames(DataSTOC)[3:4] = toupper(colnames(DataSTOC)[3:4])
 # 
 # usethis::use_data(DataSTOC, overwrite = TRUE)
 # usethis::use_data(DataSTOC, overwrite = TRUE, internal = TRUE)

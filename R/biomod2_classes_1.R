@@ -663,7 +663,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             full.df.vect$part <- "Initial"
             
             ## 1.2 - Eval Dataset -----------------------------------------------
-            
             if (plot.eval) {
               eval.resp <- x@eval.data.species
               if (!doAbund) { eval.resp <- ifelse(eval.resp == 1, 12, 22) }
@@ -972,11 +971,11 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               
               datasets <- unique(data.df$dataset)
               datasets <- sort(datasets)
-              datasets <- c(grep("^Initial", datasets, value = TRUE), grep("^_", datasets, value = TRUE))
+              datasets <- c(grep("^Initial", datasets, value = TRUE), grep("^_|^PA", datasets, value = TRUE))
               data.df$dataset <- factor(data.df$dataset, datasets)
               
               data.df$lyrs <- data.df$dataset
-              if (plot.valid) {
+              if (plot.valid || plot.eval) {
                 data.df$lyrs <- ifelse(data.df$part == "Initial", "Initial dataset", paste(data.df$dataset, data.df$part))
                 lyrs <- unique(data.df$lyrs)
                 lyrs <- sort(lyrs)
