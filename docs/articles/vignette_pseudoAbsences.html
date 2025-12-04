@@ -68,10 +68,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/examples_1_mainFunctions.html">Main functions</a>
+      <a href="../articles/examples_1_mainFunctions_BIN.html">Main functions (bin)</a>
     </li>
     <li>
-      <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions</a>
+      <a href="../articles/examples_1_mainFunctions_AB.html">Main functions (abund)</a>
+    </li>
+    <li>
+      <a href="../articles/examples_2_auxiliaryFunctions.html">Secundary functions</a>
     </li>
     <li class="divider">
     </li>
@@ -89,9 +92,6 @@
     </li>
     <li>
       <a href="../articles/vignette_variability.html">Variability in results</a>
-    </li>
-    <li>
-      <a href="../articles/vignette_Abundance.html">Abundance modelling</a>
     </li>
   </ul>
 </li>
@@ -145,18 +145,22 @@
 <h3 id="definition">
 <i class="fa-solid fa-address-card"></i> Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h3>
-<p><code>biomod2</code> requires either <strong>presence / absence
+<p>When using <code>data.type ='binary'</code> in <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>,
+<code>biomod2</code> requires either <strong>presence / absence
 data</strong>, or <strong>presence-only data supplemented with
-pseudo-absences</strong> that can be generated with the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
+pseudo-absences</strong> that can be generated within the same
 function.</p>
-<p><em>Pseudo-absences</em> (sometimes also referred as <em>background
-data</em>) are NOT to be considered as absences, and rather represent
-the available environment in the studied area. They will be used to
-compare observed used environment (represented by the presences) against
-what is available.</p>
+<p>The general idea behind is to select points in the studied area that
+will be used to compare observed environment (represented by the
+presences) against what is available. Those points are NOT to be
+considered as absences, and rather represent the available environment.
+From a semantic point of view, several terms can be encountered in the
+literature for the same purpose : <em>background data</em> when it comes
+to MaxEnt mostly, <em>pseudo-absences</em>, or <em>quadrature
+points</em> when applying point-process model (PPM).</p>
 <p><strong>Note</strong> that it is NOT recommended to mix both absence
 and pseudo-absences data.</p>
-<p></p>
+<p><br><br></p>
 </div>
 <div class="section level3">
 <h3 id="how-to-select-them---methods">
@@ -164,22 +168,25 @@ and pseudo-absences data.</p>
 Methods<a class="anchor" aria-label="anchor" href="#how-to-select-them---methods"></a>
 </h3>
 <p>3 different methods are implemented within <code>biomod2</code> to
-select pseudo-absences (PA) :</p>
+select pseudo-absences (PA) through the <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>
+function :</p>
 <ol style="list-style-type: decimal">
-<li>the <strong>random</strong> method : PA are randomly selected over
-the studied area (excluding presence points)</li>
-<li>the <strong>disk</strong> method : PA are randomly selected within
-circles around presence points defined by a minimum and a maximum
-distance values (defined in the same projection system units as the
-presence points).</li>
-<li>the <strong>SRE</strong> method : a Surface Range Envelop model is
-used to randomly select PA outside this envelop, i.e. in conditions
-(combination of explanatory variables) that differ in a defined
-proportion from those of presence points.</li>
+<li>
+<strong>random</strong> : PA are randomly selected over the studied
+area (excluding presence points)</li>
+<li>
+<strong>disk</strong> : PA are randomly selected within circles
+around presence points defined by a minimum and a maximum distance
+values (same projection system units as the presence points)</li>
+<li>
+<strong>SRE</strong> : a Surface Range Envelop model is used to
+randomly select PA outside this envelop, i.e. in conditions (combination
+of explanatory variables) that differ in a defined proportion from those
+of presence points</li>
 </ol>
 <p>The selection of one or the other method will depend on a more
-important and underlying question : <em>how were obtained the dataset
-presence points ?</em></p>
+important and underlying question : <br><em>how were obtained the
+dataset presence points ?</em></p>
 <ul>
 <li>Was there a sampling design ?</li>
 <li>If yes, what was the objective of the study ? the scope ?</li>
@@ -237,9 +244,8 @@ either geographically or environmentally speaking.</p>
 extraction</strong></a></p>
 </div>
 <p><strong>Note</strong> that it is also possible for the user to select
-by himself its own pseudo-absence points, and to give them to the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
-function.</p>
-<p></p>
+by himself its own pseudo-absence points.</p>
+<p><br><br></p>
 </div>
 <div class="section level3">
 <h3 id="how-to-select-them---barbet-massin-et-al--2012">

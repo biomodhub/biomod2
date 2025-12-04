@@ -219,7 +219,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                 var.import = 2)
 ```
 
-*You can find more examples in the [Secondary functions vignette](examples_2_secundaryFunctions.html).*
+*You can find more examples in the [Auxiliary functions vignette](examples_2_auxiliaryFunctions.html).*
 
 
 

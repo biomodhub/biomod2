@@ -10,8 +10,8 @@ A \code{data.frame} object with 2006 rows and 30 columns (10 variables and 20 sp
   \item{site}{Observation site ID}
   \item{period}{yearly average headcounts have been computed over 2 times periods: 
   2006-2011 and 2012-2017}
-  \item{x_wgs84}{Longitude}
-  \item{y_wgs84}{Latitude}
+  \item{X_WGS84}{Longitude}
+  \item{Y_WGS84}{Latitude}
   \item{temp}{annual mean temperature (CHELSA)}
   \item{precip}{annual mean precipitation (CHELSA)}
   \item{cover_agri}{percentage of agricultural habitat cover around each point 

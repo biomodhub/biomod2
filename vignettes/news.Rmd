@@ -18,6 +18,7 @@ vignette: >
 
 - 4.3-4-3 :
   + add `DataSTOC` data set
+  + fix tuning function for DNN
   + fix `metric.eval` in `plot.Rscore` in `bm_ModelAnalysis` function
 - 4.3-4-2 :
   + merge `BIOMOD.formated.data` `plot` functions to deal with all data types, add `plot.valid` parameter
