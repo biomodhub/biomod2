@@ -314,7 +314,7 @@
 #' Breeding Bird Survey (STOC program) of Vigie-Nature (Fontaine et al. 2020). The original 
 #' dataset contains 2,948 sites in which bird species have been observed from 2001 to 2024. 
 #' Original raw data is not provided here, but might be made available on request by contacting 
-#' \href{benoit.fontaine@mnhn.fr}{Benoît Fontaine}.
+#' Benoît Fontaine (benoit.fontaine [at] mnhn.fr).
 #'
 #' @format A \code{data.frame} object with 2006 rows and 30 columns (10 variables and 20 species):
 #' \describe{
@@ -372,7 +372,7 @@
 #'   DOI: \href{https://www.doi.org/10.16904/envidat.332}{10.16904/envidat.332}
 #'   \item CORINE Land Cover 2018 (raster 100 m), Europe, 6-yearly - version 2020_20u1, 
 #'   May 2020. European Environment Agency. 
-#'   DOI: \href{https://doi.org/10.2909/960998c1-1870-4e82-8051-6485205ebbac}{10.2909/960998c1-1870-4e82-8051-6485205ebbac}
+#'   DOI: \doi{10.2909/960998c1-1870-4e82-8051-6485205ebbac}
 #' }
 #' 
 ###################################################################################################
