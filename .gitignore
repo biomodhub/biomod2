@@ -5,6 +5,10 @@
 .Ruserdata
 .tmp.pdf
 GuloGulo
+*GuloGulo.html
+*GuloGulo_table.csv
 Periparus.ater
+*Periparus.ater.html
+*Periparus.ater_table.csv
 maxent.jar
 revdep

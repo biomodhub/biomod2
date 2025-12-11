@@ -7,7 +7,11 @@
 .gitignore
 ^.github$
 ^GuloGulo$
+.*GuloGulo\.html
+.*GuloGulo_table\.csv
 ^Periparus.ater$
+.*Periparus.ater\.html
+.*Periparus.ater_table\.csv
 maxent.jar
 .tmp.pdf
 ^\.github$

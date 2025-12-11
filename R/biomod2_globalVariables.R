@@ -84,7 +84,7 @@ utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params
 utils::globalVariables(names = c("ModelsTable"))
 
 ## bm_ModelAnalysis ------------
-utils::globalVariables(names = c("met", "residuals", "points", "pred"))
+utils::globalVariables(names = c("met", "residuals", "points", "pred", "metric.eval"))
 
 ## bm_CrossValidation ------------
 utils::globalVariables(names = c("pa", "env", "this.colnames"))
