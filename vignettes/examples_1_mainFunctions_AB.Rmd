@@ -255,6 +255,7 @@ The `digits` parameter is used to define the number of digits after the decimal 
 myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Period1',
                                   new.env = myExpl[period1, ],
+                                  new.env.xy = myRespXY[period1, ],
                                   models.chosen = 'all',
                                   build.clamping.mask = TRUE, 
                                   digits = 1)
@@ -290,6 +291,7 @@ plot(myBiomodEMProj, coord = myRespXY[period1, ])
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               proj.name = 'Period2',
                                               new.env = myExpl[period2, ],
+                                              new.env.xy = myRespXY[period2, ],
                                               models.chosen = 'all',
                                               build.clamping.mask = TRUE)
 

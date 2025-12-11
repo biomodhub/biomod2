@@ -195,7 +195,7 @@ if (!hasDataEval) { rmCol = c("full.name", "evaluation") }
 DT::datatable(eval.mod[, -which(colnames(eval.mod) %in% rmCol)])
 ```
 
-```{r mod-eval-plot, echo=FALSE, eval=hasEvalMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=7, fig.width=10}
+```{r mod-eval-plot, echo=FALSE, eval=hasEvalMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=15}
 pp1 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "calibration", do.plot = FALSE)
 pp2 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "validation", do.plot = FALSE)
 pp3 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "evaluation", do.plot = FALSE)
@@ -229,7 +229,7 @@ pp$plot
 
 ### <font style="color:`r color2`;">Response curves</font>
 
-```{r mod-respCurves-plot, echo=FALSE, eval=hasBmMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
+```{r mod-respCurves-plot, echo=FALSE, eval=hasBmMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=7, fig.width=10}
 if (length(name.models.mod) > 9) {
   # mod.ind = seq(1, length(name.models.mod), 9)
   # mod.ind = c(mod.ind, length(name.models.mod))
@@ -249,13 +249,14 @@ for (mod.i in mod.sel) {
   pp = bm_PlotResponseCurves(bm.out = bm.mod
                              , fixed.var = "mean"
                              , models.chosen = mod.i
+                             , main = ""
                              , do.bivariate = FALSE
                              , do.plot = FALSE
                              , do.progress = FALSE)
   if(bm.mod@data.type == "binary"){
     pp = pp$plot + ylim(0, 1) + guides(color = guide_legend(ncol = 3))
   } else {
-    pp <- pp$plot
+    pp <- pp$plot + guides(color = guide_legend(ncol = 3))
   }
   print(pp)
 }
@@ -318,7 +319,7 @@ tab = knitr::kable(eval.ens[, -which(colnames(eval.ens) %in% rmCol)], format = "
 kable_styling(tab, bootstrap_options = "hover")
 ```
 
-```{r ens-eval-plot, echo=FALSE, eval=hasEvalEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=7, fig.width=10}
+```{r ens-eval-plot, echo=FALSE, eval=hasEvalEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=15}
 pp1 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "calibration", do.plot = FALSE)
 pp2 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "validation", do.plot = FALSE)
 pp3 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "evaluation", do.plot = FALSE)
@@ -352,7 +353,7 @@ pp$plot
 
 ### <font style="color:`r color2`;">Response curves</font>
 
-```{r ens-respCurves-plot, echo=FALSE, eval=hasBmEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
+```{r ens-respCurves-plot, echo=FALSE, eval=hasBmEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=7, fig.width=10}
 if (any(grepl("EMcv", name.models.ens))) {
   mod.sel = list(name.models.ens[!grepl("EMcv", name.models.ens)]
                  , name.models.ens[grepl("EMcv", name.models.ens)])
@@ -364,6 +365,7 @@ for (mod.i in mod.sel) {
   pp = bm_PlotResponseCurves(bm.out = bm.ens
                              , fixed.var = "mean"
                              , models.chosen = mod.i
+                             , main = ""
                              , do.bivariate = FALSE
                              , do.plot = FALSE
                              , do.progress = FALSE)
@@ -394,8 +396,25 @@ for (proj.i in name.proj) {
     if (inherits(try(bm.proj@data.type), "try-error")) {
       bm.proj@data.type <- "binary"
     }
+
     print(bm.proj)
-    plot(bm.proj)
+    tmp = get_predictions(bm.proj)
+    isDf = inherits(tmp, "data.frame")
+    if (isDf && nrow(bm.proj@coord) == 0) {
+      message("/!\\ Missing coordinates. Plot not rendered.")
+    } else {
+      if (length(get_projected_models(bm.proj)) > 9) {
+        pp = plot(bm.proj, do.plot = FALSE)
+        if (isDf) {
+          plot(pp + facet_wrap(~ full.name, ncol = 5))
+        } else {
+          plot(pp + facet_wrap(~ lyr, ncol = 5))
+        }
+      } else {
+        plot(bm.proj)
+      }
+    }
+
     ## + clamping mask ??
   }
 }
