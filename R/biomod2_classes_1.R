@@ -847,7 +847,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                      full.df.vect$dataset == this_dataset), 
                               plot_mask[[this_dataset]],
                               field = "resp", by = "part", fun = mean, background = ifelse(doAbund, 0, 1))
-                  if (this_dataset == "Initial dataset") {
+                  if (this_dataset %in% c("Initial dataset", "_allData_allRun")) {
                     names(this_rast) <- this_dataset
                   } else {
                     names(this_rast) <- paste(this_dataset, c("Calibration", "Validation"))
