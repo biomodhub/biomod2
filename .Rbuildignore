@@ -7,6 +7,7 @@
 .gitignore
 ^.github$
 ^GuloGulo$
+^Periparus.ater$
 maxent.jar
 .tmp.pdf
 ^\.github$

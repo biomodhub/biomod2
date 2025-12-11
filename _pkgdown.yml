@@ -31,7 +31,7 @@ navbar:
       text: Examples
       icon: fas fa-stethoscope
       menu:
-        - text: Main functions (bin)
+        - text: Main functions (binary)
           href: articles/examples_1_mainFunctions_BIN.html
         - text: Main functions (abund)
           href: articles/examples_1_mainFunctions_AB.html

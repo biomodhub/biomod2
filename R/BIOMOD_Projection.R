@@ -611,7 +611,7 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 4. Check new.env.xy ------------------------------------------------------
-  if (!is.null(new.env.xy)  & !inherits(new.env, 'SpatRaster')) {
+  if (!is.null(new.env.xy) & !inherits(new.env, 'SpatRaster')) {
     new.env.xy = as.data.frame(new.env.xy)
     if (ncol(new.env.xy) != 2 || nrow(new.env.xy) != nrow(new.env)) {
       stop("invalid xy coordinates argument given -- dimensions mismatch !")

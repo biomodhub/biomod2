@@ -17,8 +17,11 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-3 :
+  + split *Main functions* example in 2 : *binary* and *abund*
   + add `DataSTOC` data set
   + fix tuning function for DNN
+  + fix `biomod2_template_report.Rmd` to adapt to last plot changes and abundance data
+  + fix `plot` function for `BIOMOD.formated.data` with `plot.type == "raster" & plot.valid` for `_allData_allRun` case
   + fix `metric.eval` in `plot.Rscore` in `bm_ModelAnalysis` function
 - 4.3-4-2 :
   + merge `BIOMOD.formated.data` `plot` functions to deal with all data types, add `plot.valid` parameter
