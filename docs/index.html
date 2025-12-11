@@ -169,7 +169,7 @@ z-index: 10;
 <p><br></p>
 <ul>
 <li>
-<strong>Development version</strong> <a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--4-blue.svg" alt="v"></a> from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
+<strong>Development version</strong> <a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--4--3-blue.svg" alt="v"></a> from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -177,8 +177,8 @@ z-index: 10;
 <p><br><br><i class="fas fa-exclamation-triangle"></i> All changes between versions are detailed in <a href="https://biomodhub.github.io/biomod2/articles/news.html" class="external-link">News</a>. <br><br><br><br></p>
 </div>
 <div class="section level3">
-<h3 id="id_-biomod-43-4-1---abundance-modelling-but-better-">
-<i class="fas fa-envelope-open-text"></i> <code>biomod 4.3-4-1</code> - Abundance modelling, but better !<a class="anchor" aria-label="anchor" href="#id_-biomod-43-4-1---abundance-modelling-but-better-"></a>
+<h3 id="id_-biomod-43-4-3---abundance-modeling">
+<i class="fas fa-envelope-open-text"></i> <code>biomod 4.3-4-3</code> - Abundance modeling<a class="anchor" aria-label="anchor" href="#id_-biomod-43-4-3---abundance-modeling"></a>
 </h3>
 <p><i class="fas fa-exclamation-triangle"></i> Please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
 <div class="section level4">
@@ -188,7 +188,7 @@ z-index: 10;
 <ul>
 <li>Nothing for presence/absence (or presence-only) modelling.</li>
 <li>
-<code>bm_RangeSize</code> computes the difference between binary predictions, and is called by <code>BIOMOD_RangeSize</code> which can take as input <code>BIOMOD.projection.out</code> objects.</li>
+<code>bm_RangeSize</code> computes the difference between binary predictions, <br> and is called by <code>BIOMOD_RangeSize</code> which can take as input <code>BIOMOD.projection.out</code> objects.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -196,14 +196,18 @@ z-index: 10;
 <i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new-"></a>
 </h4>
 <ul>
-<li>You can now use <strong>non-binary</strong> data ! All the information can be found in the <a href="https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html" class="external-link">Abundance Vignette</a>.</li>
+<li>
+<strong>Non-binary</strong> data ! Check the <a href="https://biomodhub.github.io/biomod2/articles/examples_1_mainFunctions_AB.html" class="external-link">Main functions (abund)</a> page for examples.</li>
 <li>6 values can be given to <code>data.type</code> new parameter in <code>BIOMOD_FormatingData</code> : <br><em>binary</em>, <em>count</em>, <em>multiclass</em>, <em>ordinal</em>, <em>relative</em>, <em>abundance</em>.</li>
-<li>2 new ensemble models have been added, to deal with qualitative data type : <code>EMmode</code> and <code>EMfreq</code>.</li>
+<li>2 new ensemble models have been added to deal with qualitative data type : <code>EMmode</code> and <code>EMfreq</code>. <br><br>
+</li>
 <li>
-<strong>DNN</strong> (Deep Neural Network) model has been added with the <code>cito</code> package. It can be used with all data types. <br> Be sure to have a look at <a href="https://citoverse.github.io/cito/reference/cito.html" class="external-link">cito documentation</a> before, especially the part about the <code>torch</code> installation.</li>
+<strong>DNN</strong> (Deep Neural Network) model has been added through <code>cito</code> package. It can be used with all data types. <br> Be sure to have a look at <a href="https://citoverse.github.io/cito/reference/cito.html" class="external-link">cito documentation</a> before, especially the part about the <code>torch</code> installation. <br><br>
+</li>
 <li>
-<code>bm_ModelAnalysis</code> provides classical graphics to explore the quality of your single models.</li>
-<li>Discover <code>BIOMOD_Report</code>, a new function to help you summarize all your modeling steps.</li>
+<code>bm_ModelAnalysis</code> renders classical graphics to explore the quality of single models</li>
+<li>
+<code>BIOMOD_Report</code> renders <code>.html</code> reports to help summarize modeling steps</li>
 </ul>
 <p><br><br></p>
 <div class="zoom">
@@ -380,7 +384,7 @@ z-index: 10;
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://cran.r-project.org/package=biomod2" class="external-link"><img src="https://www.r-pkg.org/badges/version/biomod2?color=yellow" alt="Cran Version"></a></li>
-<li><a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--4-blue.svg" alt="Github Version"></a></li>
+<li><a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.3--4--3-blue.svg" alt="Github Version"></a></li>
 <li><a href="https://github.com/biomodhub/biomod2/commits/master" class="external-link"><img src="https://img.shields.io/github/last-commit/biomodhub/biomod2.svg" alt="Last Commit"></a></li>
 <li><a href="https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml" class="external-link"><img src="https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>

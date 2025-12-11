@@ -39,7 +39,7 @@ In the dataset [`ModelsTable`](../reference/ModelsTable.html), all the different
 <br/>
 
 *All the examples are made with the data of the package.* <br/>
-*For the beginning of the code, see the [main functions vignette](examples_1_mainFunctions.html).*
+*For the beginning of the code, see the [main functions vignette](examples_1_mainFunctions_BIN.html).*
 
 <br/>
 

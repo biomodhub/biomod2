@@ -1,5 +1,5 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
-[![Github Version](https://img.shields.io/badge/devel%20version-4.3--4-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.3--4--3-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml)
 
@@ -49,7 +49,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3--4-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3--4--3-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -62,24 +62,24 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-4-1` - Abundance modelling, but better !
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-4-3` - Abundance modeling
 
 <i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
 - Nothing for presence/absence (or presence-only) modelling.
-- `bm_RangeSize` computes the difference between binary predictions, and is called by `BIOMOD_RangeSize` which can take as input `BIOMOD.projection.out` objects.
+- `bm_RangeSize` computes the difference between binary predictions, <br/> and is called by `BIOMOD_RangeSize` which can take as input `BIOMOD.projection.out` objects.
  
 #### <i class="fas fa-plus-square"></i> What is new ?
 
-- You can now use **non-binary** data ! All the information can be found in the [Abundance Vignette](https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html). 
+- **Non-binary** data ! Check the [Main functions (abund)](https://biomodhub.github.io/biomod2/articles/examples_1_mainFunctions_AB.html) page for examples.
 - 6 values can be given to `data.type` new parameter in `BIOMOD_FormatingData` : <br/> *binary*, *count*, *multiclass*, *ordinal*, *relative*, *abundance*.
-- 2 new ensemble models have been added, to deal with qualitative data type : `EMmode` and `EMfreq`.
-- **DNN** (Deep Neural Network) model has been added with the `cito` package. It can be used with all data types. <br/>
-Be sure to have a look at [cito documentation](https://citoverse.github.io/cito/reference/cito.html) before, especially the part about the `torch` installation. 
-- `bm_ModelAnalysis` provides classical graphics to explore the quality of your single models.
-- Discover `BIOMOD_Report`, a new function to help you summarize all your modeling steps.
+- 2 new ensemble models have been added to deal with qualitative data type : `EMmode` and `EMfreq`. <br/><br/>
+- **DNN** (Deep Neural Network) model has been added through `cito` package. It can be used with all data types. <br/>
+Be sure to have a look at [cito documentation](https://citoverse.github.io/cito/reference/cito.html) before, especially the part about the `torch` installation. <br/><br/>
+- `bm_ModelAnalysis` renders classical graphics to explore the quality of single models
+- `BIOMOD_Report` renders `.html` reports to help summarize modeling steps
 
 <br/><br/>
 
