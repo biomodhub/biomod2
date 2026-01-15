@@ -7,123 +7,93 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+### <i class="fa-solid fa-address-card"></i> Definition
 
-### &#10008; Definition
+Whether independent data is available or not (`eval.[...]` parameters in [BIOMOD_FormatingData](../reference/BIOMOD_FormatingData.html)), **data-splitting** methods allow to divide input data into pieces to **calibrate** and **validate** the models on different parts.
 
-Whether independent data is available or not, **data-splitting** methods allow to divide input data into pieces to **calibrate** and **validate** the models on different parts.  
+The general idea behind is to assess how much a model is *stable* (low variability of results when changing the data), *accurate* (for predictions) and *able to predict new data* (to flag problems like overfitting or selection bias).
 
-Most common procedures either split randomly the original dataset in two parts (**random**) with higher proportion to calibrate the models ; or in k datasets of equal sizes (**k-fold**), each of them being used in turn to validate the model, while the remaining is used for calibration. For both methods, the splitting can be repeated several times.   
-Other procedures are available to test for model overfitting and to assess transferability either in geographic or environmental space : **block** method described in *Muscarella et al. 2014* partitions data in four bins of equal size (bottom-left, bottom-right, top-left and top-right), while **x-y-stratification** described in *Wenger and Olden 2012* uses k partitions along the x-(or y-) gradient and returns 2k partitions ; **environmental** partitioning returns k partitions for each environmental variable provided.  
+**Note** that there are pros and cons to the different methods, that can be dependent on your data and sampling.
+
+<br/><br/> 
+
+### <i class="fa-solid fa-scissors"></i> How to split data ? - Methods
+
+5 different methods are implemented within `biomod2` to split data through either [bm_CrossValidation](../reference/bm_CrossValidation.html) or [BIOMOD_Modeling](../reference/BIOMOD_Modeling.html).
+
+Most common procedures split randomly the original dataset either :
+
+1. **random** : in `2` parts with higher proportion for the calibration part (adjusted with `perc`)
+2. **kfold** : or in `k` data sets of equal sizes: <br/> each part is successively used for the validation while the other `k-1` parts are used for the calibration, <br/> leading to `k` calibration/validation sets.
+
+For both methods, the splitting can be repeated several times (`nb.rep`).
+
+Other procedures are available to test for model overfitting and to assess transferability either in geographic space :
+
+3. **block** : partitions data in `4` bins of equal size (*bottom-left, bottom-right, top-left and top-right*) ([Muscarella et al. 2014](vignette_crossValidation.html#references))
+4. **strat** : uses `k` partitions along the `x-` (or `y-`) gradient and returns `2k` partitions ([Wenger and Olden 2012](vignette_crossValidation.html#references))
+
+or environmental space :
+
+5. **env** : returns `k` partitions for each environmental variable provided
+
 These methods can be balanced over presences or absences to ensure equal distribution over space, especially if some data is clumped on an edge of the study area.  
-The user can also define its own data partitioning (**user.defined**). 
 
 <div style="text-align:center;">
 <p><img src="pictures/CVschema.png" alt="Cross-validation Picture Summary" style="width:600px;"></p>
 </div>
 
+**Note** that it is also possible for the user to define its own data partitioning.
 
-</br>
+<br/><br/> 
 
-### &#10016; How you can select methods 
+### <i class="fa-solid fa-list-check"></i> Calibration / Validation - Evaluation
 
-`biomod2` allows you to use different strategies to separate your data into a calibration dataset and a validation dataset for the cross-validation. With the argument `CV.strategy` in [`BIOMOD_Modeling`](../reference/BIOMOD_.html), you can select : 
-<br/>
-<dl>
-<dt>Random</dt>
-<dd>The most simple method to calibrate and validate a model is to split the original dataset in two datasets : one to calibrate the model and the other one to validate it. The splitting can be repeated `nb.rep` times. You can adjust the size of the splitting between calibration and validation with `perc`.</dd>
+Here is the terminology used within `biomod2` regarding data sets and their use.
 
-<dt>K-fold</dt>
-<dd>The `k-fold` method splits the original dataset in `k` datasets of equal sizes : each part is used successively as the validation dataset while the other `k-1` parts are used for the calibration, leading to `k` calibration/validation ensembles. This multiple splitting can be repeated `nb.rep` times.</dd>
-
-<dt>Block</dt>
-<dd>It may be used to test for model overfitting and to assess transferability in geographic space. `block` stratification was described in *Muscarella et al. 2014* (see References). Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and top-right).</dd>
-
-<dt>Stratified</dt>
-<dd>It may be used to test for model overfitting and to assess transferability in geographic space. `x` and `y` stratification was described in *Wenger and Olden 2012* (see References). `y` stratification uses `k` partitions along the y-gradient, `x` stratification does the same for the x-gradient. both returns `2k` partitions: `k` partitions stratified along the x-gradient and `k` partitions stratified along the y-gradient.
-You can choose `x`, `y` and `both` stratification with the argument `strat`. </dd>
-
-<dt>Environmental</dt>
-<dd>It may be used to test for model overfitting and to assess transferability in environmental space. It returns `k` partitions for each variable given in `env.var`.You can choose if the presences or the absences are balanced over the partitions with `balance`.</dd>
-
-<dt>User-defined</dt>
-<dd>Allow the user to give its own cross-validation table. For a presence-absence dataset, column names must be formatted as: `_allData_RUNx` with `x` an integer. For a presence-only dataset for which several pseudo-absence dataset were generated, column names must be formatted as: `_PAx_RUNy` with `x` an integer and `PAx` an existing pseudo-absence dataset and `y` an integer</dd>
-
-<br> 
-
-<fieldset>
-_If you are ensure about the strategy and want to make verification, [`get_calib_lines()`](../reference/getters.out.html) can help you to visualize the split. (`TRUE` for calibration and `FALSE` for validation)_
-</fieldset>
-
-
-</br>
-
-### &#10019; Evaluation
-
-`biomod2` allows to use a cross-validation method to build (**calibration**) and validate (**validation**) the model, but it can also be tested on another independent dataset if available (**evaluation**). This second independent dataset can be integrated with the `eval.resp`, `eval.xy` and `eval.env.data` parameters in the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function.
-
-
-<br>
-<fieldset>
-_For example :_ 
-
-- _*dataset 1* will be used to build the individual models,_ 
-_being split for instance 10 times into 70/30 percentages to cross-validate them._
-- _*dataset 2* will be used to evaluate all models (individual or ensemble)._
-</fieldset>
-</br>
-
-**Note that**, if you can have as many *evaluation* values (with *dataset 2*) as your number of cross-validation splitting for single models, you can have only one *evaluation* value for ensemble models.
-
-This can be circumvented by using `em.by = 'PA+run'` within the [`BIOMOD_EnsembleModeling`](../reference/BIOMOD_EnsembleModeling.html) function to build for each cross-validation fold an ensemble model across algorithms.
-You will obtain as many ensemble models as cross-validation split, and thus as many *evaluation* values. But you will also have several ensemble models, which may defeat your purpose of having a final single model.
-
-</br>
-
-### &#10012; Concretely
-
-_All the examples are made with the data of the package._ <br/> 
-_For the beginning of the code, see the [main functions vignette](examples_1_mainFunctions_BIN.html)._
-
-#### &#9938; Cross-validation
-
-To do a random cross-validation method with 2 runs and with a distribution 80/20 for calibration and validation.
-
-```R
-myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,  
-                                    modeling.id = 'Example',  
-                                    models = c('RF', 'GLM'),  
-                                    CV.strategy = 'random',  
-                                    CV.nb.rep = 2,  
-                                    CV.perc = 0.8,  
-                                    metric.eval = c('TSS','ROC'))
-```
 <br/>
 
-To get the cross-validation table and visualize it on your [`BIOMOD.formated.data`]( https://biomodhub.github.io/biomod2/reference/BIOMOD.formated.data.html) or [`BIOMOD.formated.data.PA`](https://biomodhub.github.io/biomod2/reference/BIOMOD.formated.data.PA.html) object.
+The *original* data set, given to the [BIOMOD_FormatingData](../reference/BIOMOD_FormatingData.html) function, is the one being split by cross-validation method in 2. <br/>
+**Calibration** is the part used to build the model, while **validation** is the remaining part used to project the model onto and compute metrics to assess model's quality.
 
-```R
-myCalibLines <- get_calib_lines(myBiomodModelOut)
-plot(myBiomodData, calib.lines = myCalibLines)
-```
-<div style="text-align:center;">
-<p><img src="pictures/MyBiomodData_With_CalibLines.png" alt="Visualization of the data with the different runs" style="width:750px;"></p>
-</div>
+A second *optional* data set can be given through `eval.[...]` parameters in [BIOMOD_FormatingData](../reference/BIOMOD_FormatingData.html) : the **evaluation** part. <br/>
+It is only used to project the model onto and compute metrics to asses model's quality and extrapolation capacity. <br/>
+The evaluation part is never split and all its data is always used.
 
-</br>
-To create a cross-validation table with [`bm_CrossValidation`](../reference/bm_CrossValidation.html). 
+**Note** that you will find this notation in the table returned by the [get_evaluations](../reference/getters.out.html) function.
 
-```R
-bm_CrossValidation(bm.format = myBiomodData,
-                   strategy = "strat",
-                   k = 2,
-                   balance = "presences",
-                   strat = "x")
-```
 <br/>
 
-Example of a table for the `user.defined` method : `myCVtable`.
+**Regarding ensemble modeling**, predictions of some single models are gathered together to obtain one ensemble prediction. <br/>
+But depending on the way single models are combined (`em.by` parameter in [BIOMOD_EnsembleModeling](../reference/BIOMOD_EnsembleModeling.html)), they may not rely on the same calibration part of the original data.
+
+- Example of same calibration : *all RUN1 models using different pseudo-absence data sets, or different algorithms.*
+- Example of different calibration : *all GLM + PA1 models using different calibration / validation data sets.*
+
+In consequence, there are 2 cases :
+
+1. `em.by = 'PA+run'` : one ensemble model is built for each cross-validation fold. <br/> It means that you will have metric values at the ensemble level **for both calibration and validation parts**.
+
+2. `em.by` is either `all`, `algo`, `PA`, `PA+algo` : single models with different cross-validation fold are merged together. <br/> As calibration and validation parts do not match anymore, all data is used to compute metrics : you will have metric values at the ensemble level **only for calibration column**.
+
+<br/><br/> 
+
+### <i class="fa-solid fa-circle-info"></i> Specifications
+
+Cross-validation tables returned by [bm_CrossValidation](../reference/bm_CrossValidation.html) and [get_calib_lines](../reference/getters.out.html) functions, or accepted by `CV.user.table` parameter in [BIOMOD_Modeling](../reference/BIOMOD_Modeling.html) when `CV.strategy = 'user.defined'` :
+
+- contain `TRUE`, `FALSE` or `NA` values :
+    + `TRUE` standing for observations to be included in the calibration part
+    + `FALSE` standing for observations to be included in the validation part
+    + `NA` used when building pseudo-absence sets with different sizes
+
+- as many columns as single models will be built for each selected algorithm
+
+- column names formatted as :
+    + for presence-absence / abundance data : `_allData_RUNy` with `y` the cross-validation fold
+    + for presence-only data : `_PAx_RUNy` with `x` the pseudo-absence set and `y` the cross-validation fold
 
 | _PA1_RUN1 | _PA1_RUN2 | _PA2_RUN1 | _PA2_RUN2 |
 | --------- | --------- | --------- | --------- |
@@ -132,60 +102,35 @@ Example of a table for the `user.defined` method : `myCVtable`.
 | TRUE      | TRUE      | TRUE      | TRUE      |
 | ...       | ...       | ...       | ...       |
 
-```R
-myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,  
-                                    modeling.id = 'Example',  
-                                    models = c('RF', 'GLM'),  
-                                    CV.strategy = 'user.defined',  
-                                    CV.user.table = myCVtable,
-                                    metric.eval = c('TSS','ROC'))
-```
 <br/>
 
-_You can find more examples in the [Auxiliary functions vignette](examples_2_auxiliaryFunctions.html)._
-
-<br/>
-
-
-#### &#9746; Evaluation
-
-To add an independent dataset for evaluation, you will need to provide the correspondent environment variable (`myEvalExpl`) as a raster, a matrix or a data.frame.
-
-<br/>
-
-_Case 1_ : If your evaluation response (`myEvalResp`) is a raster :
+**Note** that it is possible to provide your cross-validation table to the [plot](../reference/plot.html) function of a `BIOMOD.formated.data` object to visualize both observations and PA / cross-validation sets :
 
 ```R
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName, 
-                                     eval.resp.var = myEvalResp,
-                                     eval.expl.var = myEvalExpl)
+myCalibLines <- get_calib_lines(myBiomodModelOut)
+plot(myBiomodData, calib.lines = myCalibLines)
 ```
+<div style="text-align:center;">
+<p><img src="pictures/examples_3_plot1.png" alt="Formating data with cross-validation" style="width:900px;"></p>
+</div>
+
 <br/>
 
-_Case 2_ : If your evaluation response (`myEvalResp`) is a vector : 
+<div style="text-align:center;">
+See code examples : 
 
-- you also need the coordinates of your response points : `myEvalCoord`
-- if `myEvalExpl` is a data.frame or a matrix, be sure the points are in the same order.
+[MAIN functions, BINARY data, section **Prepare data & parameters / Cross-validation datasets**](examples_1_mainFunctions_BIN.html#cross-validation-datasets) <br/>
+[MAIN functions, ABUNDANCE data, section **Prepare data & parameters / Cross-validation datasets**](examples_1_mainFunctions_AB.html#cross-validation-datasets)
 
-```R                                    
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName, 
-                                     eval.resp.var = myEvalResp,
-                                     eval.expl.var = myEvalExpl,
-                                     eval.resp.xy = myEvalCoord)                                    
-```
+[AUXILIARY functions, section **Auxiliary functions : biomod2 data / Generate calibration - evaluation datasets**](examples_2_auxiliaryFunctions.html#generate-calibration-evaluation-datasets-1)
+</div>
 
 
+<br/><br/> 
 
-</br>
 
-###  &#10006; References
+### <i class="fa-solid fa-book-bookmark"></i> References
 
-- **Wenger, S.J.** and **Olden, J.D.** (**2012**), *Assessing transferability of ecological models: an underappreciated aspect of statistical validation.* Methods in Ecology and Evolution, 3: 260-267. https://doi.org/10.1111/j.2041-210X.2011.00170.x
+- Muscarella R, Galante PJ, Soley-Guardia M, Boria RA, Kass JM, Uriarte M, Anderson RP (**2014**). *ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models.* Methods in Ecology and Evolution, 5, 1198-1205. [10.1111/2041-210X.12261](https://doi.org/10.1111/2041-210X.12261)
+- Wenger SJ and Olden JD (**2012**). *Assessing transferability of ecological models: an underappreciated aspect of statistical validation.* Methods in Ecology and Evolution, 3, 260-267. [10.1111/j.2041-210X.2011.00170.x](https://doi.org/10.1111/j.2041-210X.2011.00170.x)
 
-- **Muscarella, R.**, Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M. and Anderson, R.P. (**2014**), *ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models.* Methods in Ecology and Evolution, 5: 1198-1205. https://doi.org/10.1111/2041-210X.12261

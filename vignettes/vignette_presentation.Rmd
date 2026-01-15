@@ -15,7 +15,7 @@ vignette: >
 <br/><br/>
 
 <div style="text-align:center;">
-<embed src="pictures/biomod2_presentation.workflow_05_2024.pdf" width="900" height="700" type="application/pdf" allowfullscreen webkitallowfullscreen>
+<embed src="pictures/biomod2_presentation.workflow_01_2026.pdf" width="900" height="700" type="application/pdf" allowfullscreen webkitallowfullscreen>
 </embed>
 </div>
 
@@ -23,7 +23,7 @@ vignette: >
 
 <div align="center">
 <p><a href="https://biomodhub.github.io/biomod2/articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.pdf">Download pdf of WORKFLOW GRAPHIC <i class="fas fa-download"></i></a></p>
-<p><a href="https://biomodhub.github.io/biomod2/articles/pictures/biomod2_presentation.workflow_05_2024.pdf">Download pdf of PRESENTATION <i class="fas fa-download"></i></a></p>
+<p><a href="https://biomodhub.github.io/biomod2/articles/pictures/biomod2_presentation.workflow_01_2026.pdf">Download pdf of PRESENTATION <i class="fas fa-download"></i></a></p>
 </div>
 
 
@@ -52,13 +52,25 @@ vignette: >
     
 #### <i class="fas fa-chart-bar"></i> Exploring outputs
 
+For single models:
+
+- Explore basic statistical assumptions like residuals' outliers, normality and heteroscedasticity (*through [bm_ModelAnalysis](../reference/bm_ModelAnalysis.html)*)
+
+For single / ensemble models:
+
 - Evaluation : [bm_PlotEvalMean](../reference/bm_PlotEvalMean.html), [bm_PlotEvalBoxplot](../reference/bm_PlotEvalBoxplot.html)
 - Variables' importance : [bm_PlotVarImpBoxplot](../reference/bm_PlotVarImpBoxplot.html)
 - Response curves : [bm_PlotResponseCurves](../reference/bm_PlotResponseCurves.html)
 
-#### <i class="fa-solid fa-earth-europe"></i> Projecting models : [BIOMOD_Projection](../reference/BIOMOD_Projection.html), [BIOMOD_EnsembleForecasting](../reference/BIOMOD_BIOMOD_EnsembleForecasting.html)
+#### <i class="fa-solid fa-earth-europe"></i> Projecting models : [BIOMOD_Projection](../reference/BIOMOD_Projection.html), [BIOMOD_EnsembleForecasting](../reference/BIOMOD_EnsembleForecasting.html)
 
 - Project models onto new conditions
 - Transform predicted probabilities in binary values (*through [bm_BinaryTransformation](../reference/bm_BinaryTransformation.html)*)
 
 #### <i class="fa-solid fa-ruler-combined"></i> Species range change : [BIOMOD_RangeSize](../reference/BIOMOD_RangeSize.html)
+
+#### <i class="fa-solid fa-file-export"></i> Report : [BIOMOD_Report](../reference/BIOMOD_Report.html)
+
+- Get all prints, summaries, biomod2 object outputs and plots
+- Extract modelling informations to pre-fill **ODMAP protocol**
+- Get command lines used to call main biomod2 functions
