@@ -127,8 +127,8 @@ This function allows to project ensemble models built with the
 }
 }
 \examples{
-
 library(terra)
+
 # Load species occurrences (6 species available)
 data(DataSpecies)
 head(DataSpecies)

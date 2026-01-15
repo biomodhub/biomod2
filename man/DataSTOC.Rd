@@ -55,22 +55,20 @@ Benoît Fontaine (benoit.fontaine [at] mnhn.fr).
 }
 \references{
 \itemize{
-  \item \href{https://www.vigie-plume.fr/}{STOC EPS} - Vigie-Nature (2025). 
+  \item \href{https://www.vigie-plume.fr/}{STOC EPS} - Vigie-Nature (\bold{2025}). 
   \emph{French Breeding Bird Monitoring Scheme.} Muséum National d’Histoire Naturelle 
   (MNHN) - Office Français pour la Biodiversité (OFB) - Ligue pour la Protection des 
   Oiseaux (LPO).
   \item Fontaine B, Moussy C, Chiffard Carricaburu J, Dupuis J, Corolleur E, Schmaltz L, 
-  Lorrillière R, Loïs G, Gaudard C. (2020) Suivi des oiseaux communs en France 
-  1989-2019 : 30 ans de suivis participatifs. MNHN - Centre d'Ecologie et des Sciences 
+  Lorrillière R, Loïs G, Gaudard C (\bold{2020}). \emph{Suivi des oiseaux communs en France 
+  1989-2019 : 30 ans de suivis participatifs.} MNHN - Centre d'Ecologie et des Sciences 
   de la Conservation, LPO BirdLife France - Service Connaissance, Ministère de la 
   Transition écologique et solidaire. 46 pp.
-  \item  Brun P, Zimmermann NE, Hari C, Pellissier L, Karger DN. (2022) 
-  CHELSA-BIOCLIM+ A novel set of global climate-related predictors at 
-  kilometre-resolution. EnviDat. 
-  DOI: \href{https://www.doi.org/10.16904/envidat.332}{10.16904/envidat.332}
-  \item CORINE Land Cover 2018 (raster 100 m), Europe, 6-yearly - version 2020_20u1, 
-  May 2020. European Environment Agency. 
-  DOI: \doi{10.2909/960998c1-1870-4e82-8051-6485205ebbac}
+  \item  Brun P, Zimmermann NE, Hari C, Pellissier L, Karger DN (\bold{2022}). 
+  \emph{CHELSA-BIOCLIM+ A novel set of global climate-related predictors at 
+  kilometre-resolution.} EnviDat. \doi{10.16904/envidat.332}
+  \item CORINE Land Cover 2018 (raster 100 m), Europe, 6-yearly - \bold{version 2020_20u1}, 
+  May 2020. European Environment Agency. \doi{10.2909/960998c1-1870-4e82-8051-6485205ebbac}
 }
 }
 \keyword{datasets}

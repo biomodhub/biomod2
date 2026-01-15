@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-4</span>
       </span>
     </div>
 
@@ -140,113 +140,155 @@
 
     
     
-<p><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></p>
+<p><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"></p>
 <div class="section level3">
-<h3 id="modeling-options">
-<i class="fa-solid fa-address-card"></i> Modeling options<a class="anchor" aria-label="anchor" href="#modeling-options"></a>
+<h3 id="how-it-works">
+<i class="fa-solid fa-phone"></i> How it works ?<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h3>
-<p><code>biomod2</code> is a wrapper calling for single models functions
-from external packages. Modeling options are automatically retrieved
-from these packages, allowing the use of all arguments taken into
-account by these functions.<br><strong>Default</strong> parameter values are unmodified and often
-non-adapted to species distribution modeling in general, and to specific
-dataset in particular. <strong>Bigboss</strong> options provided by
-biomod2 team tend to correct at least the species distribution modeling
-aspect, while <strong>tuned</strong> options allow to try and find more
-appropriate parameterization for user data through caret package mainly.
-The user can also defines its own modeling options parameterization
-(<strong>user.defined</strong>).</p>
-<p>Note that only binary data type and associated models are allowed
-currently, but the package structure has been changed to enable the
-addition of new data types in near future, such as absolute or relative
-abundances.</p>
-<p>In the dataset <a href="../reference/ModelsTable.html"><code>ModelsTable</code></a>, all
-the different algorithms are listed with their packages and functions
+<p><code>biomod2</code> is working as a wrapper, calling external
+packages to use their single model functions. Modeling options are
+automatically retrieved from these packages, allowing the use of all
+arguments taken into account by these functions.</p>
+<p><strong>Note</strong> that there are 2 exceptions : the Surface Range
+Envelop (SRE) model, which is directly coded within <code>biomod2</code>
+package, and MAXENT java software, whose executable file is required in
+the simulation folder to be used.</p>
+<div style="text-align:center;">
+<p>
+<img src="pictures/biomod2_options_2025_12.png" alt="Options phone call" style="width:600px;"></p>
+</div>
+<p><br><br></p>
+</div>
+<div class="section level3">
+<h3 id="model-id-name">
+<i class="fa-regular fa-id-card"></i> Model ID name<a class="anchor" aria-label="anchor" href="#model-id-name"></a>
+</h3>
+<p>All this information, about which single models are available, from
+which package they come from, which function is called, is stored within
+the <a href="../reference/ModelsTable.html">ModelsTable</a> data object
 :</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>           model   type      package         func       train</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="dv">1</span>            ANN binary         nnet         nnet      avNNet</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="dv">2</span>            CTA binary        rpart        rpart       rpart</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="dv">3</span>            FDA binary          mda          fda         fda</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="dv">4</span>            GAM binary          gam          gam    gamLoess</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="dv">5</span>            GAM binary         mgcv          bam         bam</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="dv">6</span>            GAM binary         mgcv          gam         gam</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="dv">7</span>            GBM binary          gbm          gbm         gbm</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="dv">8</span>            GLM binary        stats          glm         glm</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="dv">9</span>           MARS binary        earth        earth       earth</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="dv">10</span>        MAXENT binary       MAXENT       MAXENT ENMevaluate</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="dv">11</span>        MAXNET binary       maxnet       maxnet      maxnet</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="dv">12</span>            RF binary randomForest randomForest          rf</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="dv">13</span>           SRE binary      biomod2       bm_SRE      bm_SRE</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="dv">14</span>       XGBOOST binary      xgboost      xgboost     xgbTree</span></code></pre></div>
-<p><br></p>
-<p><em>All the examples are made with the data of the package.</em>
-<br><em>For the beginning of the code, see the <a href="examples_1_mainFunctions_BIN.html">main functions
-vignette</a>.</em></p>
-<p><br></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>     model      type      package         func       train</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>     </span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="dv">1</span>      ANN    binary         nnet         nnet      avNNet</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="dv">2</span>      CTA    binary        rpart        rpart       rpart</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="dv">3</span>      DNN    binary         cito          dnn        tune</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="dv">4</span>      FDA    binary          mda          fda         fda</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="dv">5</span>      GAM    binary          gam          gam    gamLoess</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="dv">6</span>      GAM    binary         mgcv          bam         bam</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="dv">7</span>      GAM    binary         mgcv          gam         gam</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="dv">8</span>      GBM    binary          gbm          gbm         gbm</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="dv">9</span>      GLM    binary        stats          glm         glm</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="dv">10</span>    MARS    binary        earth        earth       earth</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="dv">11</span>  MAXENT    binary       MAXENT       MAXENT ENMevaluate</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="dv">12</span>  MAXNET    binary       maxnet       maxnet      maxnet</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="dv">13</span>      RF    binary randomForest randomForest          rf</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="dv">14</span>     RFd    binary randomForest randomForest          rf</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="dv">15</span>     SRE    binary      biomod2       bm_SRE      bm_SRE</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="dv">16</span> XGBOOST    binary      xgboost      xgboost     xgbTree</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="dv">17</span>     CTA nonbinary        rpart        rpart       rpart</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="dv">18</span>     DNN nonbinary         cito          dnn        tune</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="dv">19</span>     FDA nonbinary          mda          fda         fda</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="dv">20</span>     GAM nonbinary          gam          gam    gamLoess</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="dv">21</span>     GAM nonbinary         mgcv          bam         bam</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="dv">22</span>     GAM nonbinary         mgcv          gam         gam</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="dv">23</span>     GBM nonbinary          gbm          gbm         gbm</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="dv">24</span>     GLM nonbinary        stats          glm         glm</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="dv">25</span>    MARS nonbinary        earth        earth       earth</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="dv">26</span>      RF nonbinary randomForest randomForest          rf</span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="dv">27</span> XGBOOST nonbinary      xgboost      xgboost     xgbTree</span></code></pre></div>
+<p>The <strong>ID name</strong> of each single models corresponds to the
+concatenation of the <code>model</code>, <code>package</code>,
+<code>func</code> and <code>train</code> columns. <br><em>For example
+: <code>ANN.nnet.nnet.avNNet</code> for the Artificial Neural Network
+model.</em></p>
+<p>The <code>type</code> column specifies the data category, and some
+models can be used for both possible cases :</p>
+<ul>
+<li>
+<em>binary</em>, which relates to <strong>presence-absence</strong>
+and <strong>presence-only</strong> data
+(<code>data.type = 'binary'</code> in <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>)</li>
+<li>
+<em>nonbinary</em>, which relates to all <strong>abundance</strong>
+data (<code>count</code>, <code>multiclass</code>, <code>ordinal</code>,
+<code>relative</code>, <code>abundance</code>)</li>
+</ul>
+<p><br><br></p>
 </div>
 <div class="section level3">
-<h3 id="default-options">
-<i class="fa-solid fa-database"></i> Default options<a class="anchor" aria-label="anchor" href="#default-options"></a>
+<h3 id="set-modeling-options">
+<i class="fa-solid fa-rectangle-list"></i> Set modeling options<a class="anchor" aria-label="anchor" href="#set-modeling-options"></a>
 </h3>
-<p><code>biomod2</code> has a set of <code>default</code> options,
-matching most of the time the algorithms’ default values, but with some
-minor modifications to allow the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
-function to run smoothly. <br></p>
-<p><em>Please be aware that this strategy can often lead to bad models
-or even some errors.</em></p>
+<div class="section level4">
+<h4 id="default">
+<i class="fa-solid fa-vial"></i> Default<a class="anchor" aria-label="anchor" href="#default"></a>
+</h4>
+<p><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a>
+function returns for each selected single model both its informations
+and its <strong>default</strong> parameter values retrieved from its
+corresponding package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
-<span>                                    modeling.id <span class="op">=</span> <span class="st">'Example'</span>,</span>
-<span>                                    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
-<span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
-<span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>                                    OPT.strategy <span class="op">=</span> <span class="st">'default'</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                    var.import <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
-<p>You can retrieve the models options with <a href="../reference/getters.out.html"><code>get_options</code></a></p>
+<code class="sourceCode R"><span><span class="va">myOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>, strategy <span class="op">=</span> <span class="st">'default'</span><span class="op">)</span></span>
+<span><span class="va">myOptions</span></span>
+<span><span class="fu">slotNames</span><span class="op">(</span><span class="va">myOptions</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">myOptions</span><span class="op">@</span><span class="va">options</span><span class="op">)</span></span></code></pre></div>
+<div style="text-align:center;">
+<p>
+<img src="pictures/examples_4_plot1.png" alt="Options 1" style="width:700px;"></p>
+<p>
+<img src="pictures/examples_4_plot2.png" alt="Options 2" style="width:700px;"></p>
+<p>
+<img src="pictures/examples_4_plot3.png" alt="Options 3" style="width:600px;"></p>
+</div>
+<p><strong>Note</strong> that some values are modified internally after
+retrieval to ensure <code>biomod2</code> proper functioning. However,
+this represents minimum service and this strategy will often lead to bad
+models or even some errors, as default values are often non-adapted to
+species distribution modeling in general, and to specific dataset in
+particular.</p>
+<p><strong>Note</strong> that <strong>MAXENT</strong> is a special case.
+As being called directly through its java executable software, the
+recovery of parameters is not automatic as for other algorithms relying
+on R packages and functions. Hence, the <em>set of available parameters
+for MAXENT is fixed</em>, and can be consulted within the documentation
+of <a href="../reference/bm_ModelingOptions.html#note-1">bm_ModelingOptions</a>
+function.</p>
+<p><br></p>
+</div>
+<div class="section level4">
+<h4 id="bigboss">
+<i class="fa-solid fa-vial-virus"></i> Bigboss<a class="anchor" aria-label="anchor" href="#bigboss"></a>
+</h4>
+<p><strong>bigboss</strong> is a modified set, provided by
+<code>biomod2</code> team, tends to correct at least the species
+distribution aspect. All parameter values for all single models are
+available within the <a href="../reference/OptionsBigboss.html">OptionsBigboss</a> data
+object.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/getters.out.html">get_options</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">myOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>, strategy <span class="op">=</span> <span class="st">'bigboss'</span><span class="op">)</span></span>
+<span><span class="va">myOptions</span></span></code></pre></div>
+<div style="text-align:center;">
+<p>
+<img src="pictures/examples_4_plot4.png" alt="Options 4" style="width:700px;"></p>
+</div>
+<p><strong>Note</strong> that this is still a general solution, not
+necessarily adapted to your data, and can show no significative
+improvements.</p>
 <p><br></p>
 </div>
-<div class="section level3">
-<h3 id="bigboss-options">
-<i class="fa-solid fa-hand-fist"></i> Bigboss options<a class="anchor" aria-label="anchor" href="#bigboss-options"></a>
-</h3>
-<p>The <code>bigboss</code> set of parameters is available in the
-dataset <a href="../reference/OptionsBigboss.html"><code>OptionsBigboss</code></a>.
-This set should give better results than the default set and will be
-continued to be optimized by the <code>biomod2</code> Team. <br></p>
-<p><em>Keep in mind that this is something general and dependent of your
-case, the results can be not better than the default set.</em></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
-<span>                                    modeling.id <span class="op">=</span> <span class="st">'Example'</span>,</span>
-<span>                                    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
-<span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
-<span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>                                    OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                    var.import <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
-<p><br></p>
-</div>
-<div class="section level3">
-<h3 id="tuned-options">
-<i class="fa-solid fa-gears"></i> Tuned options<a class="anchor" aria-label="anchor" href="#tuned-options"></a>
-</h3>
-<p>With <code>tuned</code> options, some algorithms can be trained over
-your dataset, and optimized parameters are returned to be used within
-the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
-function. This tuning is mostly based upon the <a href="http://topepo.github.io/caret/" class="external-link"><code>caret</code></a> package
-which calls a specific function to tune each algorithm (see column
-<code>train</code> in <code>ModelsTable</code>). As exception, the
-<code>ENMevaluate</code> function of the <a href="https://jamiemkass.github.io/ENMeval/" class="external-link"><code>ENMeval</code></a>
-package is called for <code>MAXENT</code> and the <code>biomod2</code>
-team wrote a special function for <code>SRE</code>.</p>
-<p>Here is the list of the parameters that can be tuned :</p>
+<div class="section level4">
+<h4 id="tuned">
+<i class="fa-solid fa-vial-circle-check"></i> Tuned<a class="anchor" aria-label="anchor" href="#tuned"></a>
+</h4>
+<p>With <strong>tuned</strong> options, some algorithms can be trained
+over your data sets, mostly using the <a href="http://topepo.github.io/caret/" class="external-link"><code>caret</code></a> package
+which calls a specific function to tune each model (see
+<code>train</code> column in <code>ModelsTable</code>). With the
+exception of SRE, which is internally optimized, and MAXENT, which can
+be tuned thanks to the <code>ENMevaluate</code> function from <a href="https://jamiemkass.github.io/ENMeval/" class="external-link"><code>ENMeval</code></a>
+package.</p>
+<p>Here is the list of the parameters that can be tuned when calling <a href="../reference/bm_Tuning.html">bm_Tuning</a> :</p>
 <table class="table">
 <colgroup>
 <col width="13%">
@@ -265,28 +307,45 @@ team wrote a special function for <code>SRE</code>.</p>
 </td>
 </tr>
 <tr class="even">
+<td>DNN</td>
+<td align="left">
+<code>hidden</code>, <code>bias</code>,
+<code>lambda</code>, <code>alpha</code>, <code>lr</code>,
+<code>batchsize</code>, <code>epochs</code>
+</td>
+</tr>
+<tr class="odd">
 <td>FDA</td>
 <td align="left">
 <code>degree</code>, <code>nprune</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>GAM</td>
 <td align="left">
-<code>select</code>, <code>method</code>
+<code>select</code>, <code>method</code>,
+<code>span</code>, <code>degree</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>GBM</td>
 <td align="left">
 <code>n.trees</code>, <code>interaction.depth</code>,
 <code>shrinkage</code>, <code>n.minobsinnode</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>MARS</td>
 <td align="left">
 <code>degree</code>, <code>nprune</code>
+</td>
+</tr>
+<tr class="odd">
+<td>MAXENT</td>
+<td align="left">
+<code>algorithm</code>, <code>parallel</code>,
+<code>tune.args</code>, <code>partitions</code>, <code>kfolds</code>,
+<code>user.grp</code>
 </td>
 </tr>
 <tr class="even">
@@ -294,10 +353,14 @@ team wrote a special function for <code>SRE</code>.</p>
 <td align="left"><code>mtry</code></td>
 </tr>
 <tr class="odd">
+<td>RFd</td>
+<td align="left"><code>mtry</code></td>
+</tr>
+<tr class="even">
 <td>SRE</td>
 <td align="left"><code>quant</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>XGBOOST</td>
 <td align="left">
 <code>nrounds</code>, <code>max_depth</code>,
@@ -307,119 +370,128 @@ team wrote a special function for <code>SRE</code>.</p>
 </tr>
 </tbody>
 </table>
-<p>For almost every algorithm (except <code>MAXENT</code>,
-<code>MAXNET</code> and <code>SRE</code>), you can choose to optimize
-the formula by setting <code>do.formula = TRUE</code>. The optimized
-formula will be chosen between the different type (<code>simple</code>,
-<code>quadratic</code>, <code>polynomial</code>,
-<code>s_smoother</code>) and for different interaction level.<br>
-In the same way, a variable selection can be run for <code>GLM</code>
-and <code>GAM</code> if <code>do.stepAIC = TRUE</code> (respectively,
-<code><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html" class="external-link">MASS::stepAIC</a></code> and <code><a href="https://rdrr.io/pkg/gam/man/step.gam.html" class="external-link">gam::step.Gam</a></code>). <br></p>
-<p><em>More information about the training can be found in the
-documentation of the <a href="../reference/bm_tuning.html"><code>bm_Tuning</code></a>
-function.</em></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
-<span>                                    modeling.id <span class="op">=</span> <span class="st">'Example'</span>,</span>
-<span>                                    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>,<span class="st">'SRE'</span><span class="op">)</span>,</span>
-<span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
-<span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>                                    OPT.strategy <span class="op">=</span> <span class="st">'tuned'</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                    var.import <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/getters.out.html">get_options</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span>, dataset <span class="op">=</span> <span class="st">'_allData_RUN1'</span><span class="op">)</span>                                    </span></code></pre></div>
+<p>For almost all algorithms (except <code>MAXENT</code>,
+<code>MAXNET</code> and <code>SRE</code>), you can choose to
+<strong>optimize the formula</strong> by setting
+<code>do.formula = TRUE</code>, testing for different type
+(<code>simple</code>, <code>quadratic</code>, <code>polynomial</code>,
+<code>s_smoother</code>) and interaction level.</p>
+<p>In the same way, <strong>variable selection</strong> can be run for
+<code>GLM</code> and <code>GAM</code> if <code>do.stepAIC = TRUE</code>
+(with <code><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html" class="external-link">MASS::stepAIC</a></code> and <code><a href="https://rdrr.io/pkg/gam/man/step.gam.html" class="external-link">gam::step.Gam</a></code>
+functions respectively).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">myTuning</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_Tuning.html">bm_Tuning</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">'RF'</span>,</span>
+<span>                      tuning.fun <span class="op">=</span> <span class="st">'rf'</span>, <span class="co">## see in ModelsTable</span></span>
+<span>                      do.formula <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                      bm.options <span class="op">=</span> <span class="va">myOptions</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">RF.binary.randomForest.randomForest</span>,</span>
+<span>                      bm.format <span class="op">=</span> <span class="va">myBiomodData</span><span class="op">)</span></span>
+<span><span class="va">myTuning</span></span></code></pre></div>
+<div style="text-align:center;">
+<p>
+<img src="pictures/examples_4_plot5.png" alt="Options 5" style="width:600px;"></p>
+</div>
 <p><br></p>
 </div>
-<div class="section level3">
-<h3 id="user-defined">
-<i class="fa-solid fa-pen"></i> User defined<a class="anchor" aria-label="anchor" href="#user-defined"></a>
-</h3>
-<p>The <code>user.defined</code> option allows you to adjust yourself
-the parameters of all the algorithms.</p>
-<p><em>Note that you can find information about the parameters of MAXENT
-within the documentation of the <a href="../reference/bm_ModelingOptions.html"><code>bm_ModelingOptions</code></a>
-function.</em></p>
+<div class="section level4">
+<h4 id="user-defined">
+<i class="fa-solid fa-flask-vial"></i> User-defined<a class="anchor" aria-label="anchor" href="#user-defined"></a>
+</h4>
+<p>The <code>user.defined</code> option allows to adjust yourself all
+algorithm parameters, which means it can be a mix of everything :</p>
+<ul>
+<li>default or bigboss options, through <code>user.base</code>
+parameter</li>
+<li>tuning of some algorithms</li>
+<li>manually defined parameter values, through <code>user.val</code>
+parameter</li>
+</ul>
 <p><br></p>
-<p><strong>Example :</strong></p>
-<ul>
-<li>You want to run 3 models : <code>RF</code>, <code>GLM</code> and
-<code>MARS.</code>
-</li>
-<li>You have your <code>BiomodData</code> and you set your <a href="vignette_crossValidation.html">cross-validation table</a>.</li>
-<li>Globally, you want to use the <code>bigboss</code> parameters as a
-base.</li>
-</ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">myCVtable</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_CrossValidation.html">bm_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
-<span>                                strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
-<span>                                nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                perc <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<p><strong>Example :</strong> <em>run 3 single models (<code>RF</code>,
+<code>GLM</code> and <code>MARS</code>), using the <code>bigboss</code>
+parameters as a basis and adapting them as much as possible to the data
+and cross-validation parts</em></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Create 2 sets of random splitting</span></span>
+<span><span class="va">myBiomodCV</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_CrossValidation.html">bm_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
+<span>                                 strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                                 nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                 perc <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co">## ----------------------------------------------------------------------------------- ##</span></span>
+<span><span class="co">## Extract bigboss parameters for the 3 models</span></span>
+<span><span class="co">## Provide formated data (for formula)</span></span>
+<span><span class="co">## Provide cross-validation table (to duplicate settings for each set)</span></span>
+<span><span class="va">opt.BB</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                              models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span>, <span class="st">'MARS'</span><span class="op">)</span>,</span>
+<span>                              strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
+<span>                              bm.format <span class="op">=</span> <span class="va">myBiomodData</span>, </span>
+<span>                              calib.lines <span class="op">=</span> <span class="va">myBiomodCV</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">myOpt</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
-<span>                             models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>,<span class="st">'GLM'</span>,<span class="st">'MARS'</span><span class="op">)</span>,</span>
-<span>                             strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                             bm.format <span class="op">=</span> <span class="va">myBiomodData</span>, </span>
-<span>                             calib.lines <span class="op">=</span> <span class="va">myCVtable</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOpt</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>You decide to tune the parameters for <code>RF</code> and you want
-to change the formula for <code>GLM</code>.</li>
-</ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tuned.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_Tuning.html">bm_Tuning</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">'RF'</span>,</span>
+<span><span class="co">## ----------------------------------------------------------------------------------- ##</span></span>
+<span><span class="co">## Tune RF parameters for each data set</span></span>
+<span><span class="va">tuned.RF</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_Tuning.html">bm_Tuning</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">'RF'</span>,</span>
 <span>                      tuning.fun <span class="op">=</span> <span class="st">'rf'</span>, <span class="co">## see in ModelsTable</span></span>
 <span>                      do.formula <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                      bm.options <span class="op">=</span> <span class="va">myOpt</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">RF.binary.randomForest.randomForest</span>,</span>
+<span>                      bm.options <span class="op">=</span> <span class="va">opt.BB</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">RF.binary.randomForest.randomForest</span>,</span>
 <span>                      bm.format <span class="op">=</span> <span class="va">myBiomodData</span>, </span>
-<span>                      calib.lines <span class="op">=</span> <span class="va">myCVtable</span><span class="op">)</span></span>
+<span>                      calib.lines <span class="op">=</span> <span class="va">myBiomodCV</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co">## ----------------------------------------------------------------------------------- ##</span></span>
+<span><span class="co">## Update GLM formula</span></span>
+<span><span class="co">## Apply it to both calibration sets</span></span>
 <span><span class="va">form.GLM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_MakeFormula.html">bm_MakeFormula</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myBiomodData</span><span class="op">@</span><span class="va">sp.name</span>,</span>
-<span>                           expl.var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span>,</span>
-<span>                           type <span class="op">=</span> <span class="st">'simple'</span>,</span>
-<span>                           interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span>                     </span>
+<span>                           expl.var <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span>,</span>
+<span>                           type <span class="op">=</span> <span class="st">'quadratic'</span>,</span>
+<span>                           interaction.level <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">user.GLM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_RUN1'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">form.GLM</span><span class="op">)</span>,</span>
-<span>                 <span class="st">'_allData_RUN2'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">form.GLM</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>As you have all the parameters ready, you can set your <a href="../reference/BIOMOD.models.options.html"><code>BIOMOD.models.options</code></a>
-object and run the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
-function.</li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## Gather in one list</span></span>
+<span>                 <span class="st">'_allData_RUN2'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">form.GLM</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## ----------------------------------------------------------------------------------- ##</span></span>
+<span><span class="co">## Gather in one list modified parameters</span></span>
 <span><span class="co">## Models names can be found in OptionsBigboss@models</span></span>
-<span><span class="va">user.val</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span> RF.binary.randomForest.randomForest <span class="op">=</span> <span class="va">tuned.rf</span>,</span>
-<span>                  GLM.binary.stats.glm<span class="op">=</span> <span class="va">user.GLM</span><span class="op">)</span></span>
+<span><span class="va">user.val</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>RF.binary.randomForest.randomForest <span class="op">=</span> <span class="va">tuned.RF</span>,</span>
+<span>                 GLM.binary.stats.glm <span class="op">=</span> <span class="va">user.GLM</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">myOpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
-<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>,<span class="st">'GLM'</span>,<span class="st">'MARS'</span><span class="op">)</span>,</span>
-<span>                            strategy <span class="op">=</span> <span class="st">"user.defined"</span>,</span>
-<span>                            user.val <span class="op">=</span> <span class="va">user.val</span>,</span>
-<span>                            user.base <span class="op">=</span> <span class="st">"bigboss"</span>,</span>
-<span>                            bm.format <span class="op">=</span> <span class="va">myBiomodData</span>, </span>
-<span>                            calib.lines <span class="op">=</span> <span class="va">myCVtable</span><span class="op">)</span></span>
+<span><span class="co">## Create the final modeling options set</span></span>
+<span><span class="co">## Using bigboss as base (user.base)</span></span>
+<span><span class="co">## Updating some elements (user.val)</span></span>
+<span><span class="va">myOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                                models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span>, <span class="st">'MARS'</span><span class="op">)</span>,</span>
+<span>                                strategy <span class="op">=</span> <span class="st">'user.defined'</span>,</span>
+<span>                                user.val <span class="op">=</span> <span class="va">user.val</span>,</span>
+<span>                                user.base <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
+<span>                                bm.format <span class="op">=</span> <span class="va">myBiomodData</span>, </span>
+<span>                                calib.lines <span class="op">=</span> <span class="va">myBiomodCV</span><span class="op">)</span></span>
 <span>                            </span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOpt</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOpt</span>, dataset <span class="op">=</span> <span class="st">'_allData_RUN1'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOpt</span>, dataset <span class="op">=</span> <span class="st">'_allData_RUN2'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOptions</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOptions</span>, dataset <span class="op">=</span> <span class="st">'_allData_RUN1'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">myOptions</span>, dataset <span class="op">=</span> <span class="st">'_allData_RUN2'</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co">## ----------------------------------------------------------------------------------- ##</span></span>
+<span><span class="co">## Give this final modeling options set to the modeling function</span></span>
 <span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
-<span>                                modeling.id <span class="op">=</span> <span class="st">'Example'</span>,</span>
-<span>                                models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>,<span class="st">'GLM'</span>,<span class="st">'MARS'</span><span class="op">)</span>,</span>
-<span>                                CV.strategy <span class="op">=</span> <span class="st">'user.defined'</span>,</span>
-<span>                                CV.user.table <span class="op">=</span> <span class="va">myCVtable</span>,</span>
-<span>                                OPT.user <span class="op">=</span> <span class="va">myOpt</span>,</span>
-<span>                                metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                var.import <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><em>You can find more examples in the <a href="examples_2_auxiliaryFunctions.html">Auxiliary functions
-vignette</a>.</em></p>
-<p><br></p>
+<span>                                    modeling.id <span class="op">=</span> <span class="st">'Example'</span>,</span>
+<span>                                    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span>, <span class="st">'MARS'</span><span class="op">)</span>,</span>
+<span>                                    CV.strategy <span class="op">=</span> <span class="st">'user.defined'</span>,</span>
+<span>                                    CV.user.table <span class="op">=</span> <span class="va">myBiomodCV</span>,</span>
+<span>                                    OPT.user <span class="op">=</span> <span class="va">myOptions</span>,</span>
+<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span>, <span class="st">'BOYCE'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/getters.out.html">get_options</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span></span></code></pre></div>
+<p><br><br></p>
+<div style="text-align:center;">
+<p>See code examples :</p>
+<p><a href="examples_1_mainFunctions_BIN.html#retrieve-modeling-options">MAIN
+functions, BINARY data, section <strong>Prepare data &amp; parameters /
+Retrieve modeling options</strong></a> <br><a href="examples_1_mainFunctions_AB.html#retrieve-modeling-options">MAIN
+functions, ABUNDANCE data, section <strong>Prepare data &amp; parameters
+/ Retrieve modeling options</strong></a></p>
+<p><a href="examples_2_auxiliaryFunctions.html#retrieve-modeling-options">AUXILIARY
+functions, section <strong>Auxiliary functions : biomod2 data / Retrieve
+modeling options</strong></a></p>
+</div>
+</div>
 </div>
   </div>
 

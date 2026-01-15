@@ -196,7 +196,6 @@ element returned by the \code{\link{bm_PseudoAbsences}} function}
 }}
 
 \examples{
-
 showClass("BIOMOD.formated.data.PA")
 
 ## ----------------------------------------------------------------------- #

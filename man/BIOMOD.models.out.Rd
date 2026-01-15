@@ -71,7 +71,6 @@ object containing models predictions for evaluation data}
 }}
 
 \examples{
-
 showClass("BIOMOD.models.out")
 
 ## ----------------------------------------------------------------------- #

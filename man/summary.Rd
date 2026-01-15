@@ -25,7 +25,6 @@ pseudo-absences among the different potential dataset (calibration,
 validation and evaluation).
 }
 \examples{
-
 library(terra)
 
 # Load species occurrences (6 species available)

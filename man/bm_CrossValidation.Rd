@@ -272,13 +272,13 @@ apply(cv.e, 2, table)
 }
 \references{
 \itemize{
-  \item Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M. 
-  & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent 
-  evaluations and estimating optimal model complexity for Maxent ecological niche models. 
-  \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
-  \item Wenger, S.J. & Olden, J.D. (2012). Assessing transferability of ecological models: an 
-  underappreciated aspect of statistical validation. \emph{Methods in Ecology and Evolution}, 
-  \bold{3}, 260-267.
+  \item Muscarella R, Galante PJ, Soley-Guardia M, Boria RA, Kass JM, Uriarte M, Anderson 
+  RP (\bold{2014}). \emph{ENMeval: An R package for conducting spatially independent 
+  evaluations and estimating optimal model complexity for Maxent ecological niche models.} 
+  Methods in Ecology and Evolution, 5, 1198-1205. \doi{10.1111/2041-210X.12261}
+  \item Wenger SJ and Olden JD (\bold{2012}). \emph{Assessing transferability of ecological 
+  models: an underappreciated aspect of statistical validation.} Methods in Ecology and 
+  Evolution, 3, 260-267. \doi{10.1111/j.2041-210X.2011.00170.x}
 }
 }
 \seealso{

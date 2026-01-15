@@ -162,9 +162,9 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 }
 \references{
 \itemize{
-  \item Elith, J., Ferrier, S., Huettmann, F., and Leathwick, J. R. 2005. The evaluation 
+  \item Elith J, Ferrier S, Huettmann F, Leathwick JR (\bold{2005}). \emph{The evaluation 
   strip: A new and robust method for plotting predicted responses from species distribution 
-  models. \emph{Ecological Modelling}, \bold{186}, 280-289.
+  models.} Ecological Modelling, 186, 280-289. \doi{10.1016/j.ecolmodel.2004.12.007}
 }
 }
 \seealso{

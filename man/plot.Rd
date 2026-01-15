@@ -76,7 +76,6 @@ validation and evaluation). Available only if coordinates were given to
 \code{\link{BIOMOD_FormatingData}}.
 }
 \examples{
-
 library(terra)
 
 # Load species occurrences (6 species available)

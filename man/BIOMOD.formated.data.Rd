@@ -188,7 +188,6 @@ A \code{data.frame} containing explanatory variables for evaluation data}
 }}
 
 \examples{
-
 showClass("BIOMOD.formated.data")
 
 ## ----------------------------------------------------------------------- #

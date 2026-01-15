@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-4</span>
       </span>
     </div>
 
@@ -145,31 +145,34 @@
 <h3 id="definition">
 <i class="fa-solid fa-address-card"></i> Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
 </h3>
-<p>When using <code>data.type ='binary'</code> in <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>,
+<p>When using <code>data.type = 'binary'</code> in <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>,
 <code>biomod2</code> requires either <strong>presence / absence
 data</strong>, or <strong>presence-only data supplemented with
-pseudo-absences</strong> that can be generated within the same
-function.</p>
+pseudo-absences</strong>. These pseudo-absences can be generated with
+the same function.</p>
 <p>The general idea behind is to select points in the studied area that
 will be used to compare observed environment (represented by the
 presences) against what is available. Those points are NOT to be
 considered as absences, and rather represent the available environment.
 From a semantic point of view, several terms can be encountered in the
-literature for the same purpose : <em>background data</em> when it comes
-to MaxEnt mostly, <em>pseudo-absences</em>, or <em>quadrature
-points</em> when applying point-process model (PPM).</p>
-<p><strong>Note</strong> that it is NOT recommended to mix both absence
-and pseudo-absences data.</p>
+literature for similar purposes : <em>pseudo-absences</em> ; and
+<em>background data</em> when it comes to MaxEnt mostly, or
+<em>quadrature points</em> when applying point-process model (PPM).
+These last two differ from pseudo-absences in the fact that they allow
+presence points to be selected as well, while pseudo-absences can not be
+selected over coordinates matching an observation.</p>
+<p><strong>Note</strong> that it is NOT allowed to mix both absences and
+pseudo-absences data.</p>
 <p><br><br></p>
 </div>
 <div class="section level3">
 <h3 id="how-to-select-them---methods">
-<i class="fa-solid fa-cookie"></i> How to select them ? -
+<i class="fa-solid fa-shuffle"></i> How to select them ? -
 Methods<a class="anchor" aria-label="anchor" href="#how-to-select-them---methods"></a>
 </h3>
 <p>3 different methods are implemented within <code>biomod2</code> to
-select pseudo-absences (PA) through the <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>
-function :</p>
+select pseudo-absences (PA) through either <a href="../reference/bm_PseudoAbsences.html">bm_PseudoAbsences</a> or <a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>
+:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>random</strong> : PA are randomly selected over the studied
@@ -185,12 +188,13 @@ of explanatory variables) that differ in a defined proportion from those
 of presence points</li>
 </ol>
 <p>The selection of one or the other method will depend on a more
-important and underlying question : <br><em>how were obtained the
-dataset presence points ?</em></p>
+important and underlying question : <br><em>how the data set presence
+points were obtained ?</em></p>
 <ul>
 <li>Was there a sampling design ?</li>
-<li>If yes, what was the objective of the study ? the scope ?</li>
-<li>In any case, what were the potential sources of bias ?
+<li>If yes, what was the objective of the study ? the scope ? Is it
+possible that this design allowed an exhaustive sampling ?</li>
+<li>Otherwise, were there any potential sources of bias ?
 <ul>
 <li>the question of interest</li>
 <li>the studied area, its extent and how this extent was defined
@@ -202,6 +206,10 @@ objective)</li>
 </ul>
 </li>
 </ul>
+<div style="text-align:center;">
+<p>
+<img src="pictures/biomod2_pseudoabsences_2024_07.png" alt="PA workflow"></p>
+</div>
 <p>The 3 methods proposed within <code>biomod2</code> do not depend on
 the same assumptions :</p>
 <table class="table">
@@ -238,13 +246,18 @@ information is available about the species ecology and/or the sampling
 design. The <strong>disk</strong> and <strong>SRE</strong> methods
 assume that the realized niche of the species has been fully sampled,
 either geographically or environmentally speaking.</p>
-<div style="text-align:center;">
-<p><a href="examples_1_mainFunctions.html">See code examples, section
-<strong>Prepare data &amp; parameters / Pseudo-absences
-extraction</strong></a></p>
-</div>
 <p><strong>Note</strong> that it is also possible for the user to select
-by himself its own pseudo-absence points.</p>
+by himself his own pseudo-absence points.</p>
+<p><br></p>
+<div style="text-align:center;">
+<p>See code examples :</p>
+<p><a href="examples_1_mainFunctions_BIN.html#pseudo-absences-extraction">MAIN
+functions, BINARY data, section <strong>Prepare data &amp; parameters /
+Pseudo-absences extraction</strong></a></p>
+<p><a href="examples_2_auxiliaryFunctions.html#generate-pseudo-absence-datasets">AUXILIARY
+functions, BINARY data, section <strong>Auxiliary functions : biomod2
+data / Generate pseudo-absence datasets</strong></a></p>
+</div>
 <p><br><br></p>
 </div>
 <div class="section level3">
@@ -252,10 +265,10 @@ by himself its own pseudo-absence points.</p>
 <i class="fa-solid fa-vial"></i> How to select them ? -
 Barbet-Massin et al. 2012<a class="anchor" aria-label="anchor" href="#how-to-select-them---barbet-massin-et-al--2012"></a>
 </h3>
-<p><strong>Barbet-Massin, M.</strong>, Jiguet, F., Albert, C.H. and
-Thuiller, W. (<strong>2012</strong>), <em>Selecting pseudo-absences for
-species distribution models: how, where and how many?</em>.
-<strong>Methods in Ecology and Evolution</strong>, 3: 327-338. <a href="https://doi.org/10.1111/j.2041-210X.2011.00172.x" class="external-link uri">https://doi.org/10.1111/j.2041-210X.2011.00172.x</a></p>
+<p>Barbet-Massin M, Jiguet F, Albert CH, Thuiller W
+(<strong>2012</strong>). <em>Selecting pseudo-absences for species
+distribution models: how, where and how many?</em>. Methods in Ecology
+and Evolution, 3: 327-338. <a href="https://doi.org/10.1111/j.2041-210X.2011.00172.x" class="external-link">10.1111/j.2041-210X.2011.00172.x</a></p>
 <p>This paper tried to estimate the relative effect of method and number
 of PA on predictive accuracy of common modelling techniques, using :</p>
 <ul>

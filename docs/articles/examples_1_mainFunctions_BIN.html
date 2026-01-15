@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-4</span>
       </span>
     </div>
 
@@ -464,6 +464,21 @@ webpage</a>.</p>
 <span>                 do.perc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                 do.maps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                 do.mean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><br><br></p>
+</div>
+<div class="section level3">
+<h3 id="export-a-report">
+<i class="fa-solid fa-file-export"></i> Export a report<a class="anchor" aria-label="anchor" href="#export-a-report"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get a summary report</span></span>
+<span><span class="fu"><a href="../reference/BIOMOD_Report.html">BIOMOD_Report</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, strategy <span class="op">=</span> <span class="st">'report'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get a pre-filled ODMAP</span></span>
+<span><span class="fu"><a href="../reference/BIOMOD_Report.html">BIOMOD_Report</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, strategy <span class="op">=</span> <span class="st">'ODMAP'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get a code report</span></span>
+<span><span class="fu"><a href="../reference/BIOMOD_Report.html">BIOMOD_Report</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, strategy <span class="op">=</span> <span class="st">'code'</span><span class="op">)</span></span></code></pre></div>
 <p><br><br></p>
 </div>
 </div>
