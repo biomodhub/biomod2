@@ -42,7 +42,7 @@ or environmental space :
 These methods can be balanced over presences or absences to ensure equal distribution over space, especially if some data is clumped on an edge of the study area.  
 
 <div style="text-align:center;">
-<p><img src="pictures/CVschema.png" alt="Cross-validation Picture Summary" style="width:600px;"></p>
+<p><img src="pictures/examples_3_plot1.png" alt="Cross-validation Picture Summary" style="width:600px;"></p>
 </div>
 
 **Note** that it is also possible for the user to define its own data partitioning.
@@ -111,7 +111,7 @@ myCalibLines <- get_calib_lines(myBiomodModelOut)
 plot(myBiomodData, calib.lines = myCalibLines)
 ```
 <div style="text-align:center;">
-<p><img src="pictures/examples_3_plot1.png" alt="Formating data with cross-validation" style="width:900px;"></p>
+<p><img src="pictures/examples_3_plot2.png" alt="Formating data with cross-validation" style="width:900px;"></p>
 </div>
 
 <br/>
