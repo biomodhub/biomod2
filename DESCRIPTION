@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.3-4-3
-Date: 2025-12-11
+Version: 4.3-4-4
+Date: 2026-01-15
 Authors@R: c(person("Maya", "Guéguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
              person("Hélène", "Blancheteau", role = "aut"),
@@ -63,6 +63,8 @@ Suggests:
     tidyterra,
     ggtext,
     patchwork,
+    kableExtra,
+    DT,
     R.utils,
     paletteer,
     viridis
