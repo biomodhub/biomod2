@@ -7,10 +7,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 ## <i class="fas fa-code"></i> Development updates
+
+
+### <i class="fa-solid fa-chess-rook"></i> 2026
+
+##### Bugfix
+
+- 4.3-4-4 : update vignettes
+
 
 ### <i class="fas fa-pen-alt"></i> 2025
 

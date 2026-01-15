@@ -1,5 +1,5 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
-[![Github Version](https://img.shields.io/badge/devel%20version-4.3--4--3-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.3--4--4-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml)
 
@@ -49,7 +49,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3--4--3-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3--4--4-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -62,7 +62,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-4-3` - Abundance modeling
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-4-4` - Abundance modeling
 
 <i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
 
@@ -70,6 +70,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 - Nothing for presence/absence (or presence-only) modelling.
 - `bm_RangeSize` computes the difference between binary predictions, <br/> and is called by `BIOMOD_RangeSize` which can take as input `BIOMOD.projection.out` objects.
+- Vignettes and example tutorials have been updated.
  
 #### <i class="fas fa-plus-square"></i> What is new ?
 

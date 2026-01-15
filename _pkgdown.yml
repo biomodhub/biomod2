@@ -35,7 +35,7 @@ navbar:
           href: articles/examples_1_mainFunctions_BIN.html
         - text: Main functions (abund)
           href: articles/examples_1_mainFunctions_AB.html
-        - text: Secundary functions
+        - text: Auxiliary functions
           href: articles/examples_2_auxiliaryFunctions.html
         - text: "---------"
         - text: Data preparation
