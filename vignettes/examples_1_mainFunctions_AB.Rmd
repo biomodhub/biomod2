@@ -304,3 +304,19 @@ myBiomodRangeSize@Compt.By.Models
 ```
 
 <br/><br/>
+
+
+### <i class="fa-solid fa-file-export"></i> Export a report
+
+```R
+# Get a summary report
+BIOMOD_Report(bm.out = myBiomodEM, strategy = 'report')
+
+# Get a pre-filled ODMAP
+BIOMOD_Report(bm.out = myBiomodEM, strategy = 'ODMAP')
+
+# Get a code report
+BIOMOD_Report(bm.out = myBiomodEM, strategy = 'code')
+```
+
+<br/><br/>
