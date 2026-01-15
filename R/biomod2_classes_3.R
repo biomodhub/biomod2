@@ -329,7 +329,6 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' showClass("BIOMOD.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -688,7 +687,6 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' showClass("BIOMOD.projection.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -1175,7 +1173,6 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' showClass("BIOMOD.ensemble.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #

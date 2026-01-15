@@ -46,7 +46,7 @@
 ##'   validation values.}
 ##' }
 ##' 
-##' \emph{Please not the all plots are made for all models, independently to the different 
+##' \emph{Please note that all plots are made for all models, independently to the different 
 ##' models assumptions. It is up to the user to interpret the graphics.}
 ##' 
 ##' 

@@ -105,7 +105,6 @@
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' showClass("BIOMOD.formated.data")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -578,7 +577,6 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
@@ -1376,7 +1374,6 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @export
 ##' 
 ##' @examples
-##' 
 ##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
@@ -1637,7 +1634,6 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' showClass("BIOMOD.formated.data.PA")
 ##' 
 ##' ## ----------------------------------------------------------------------- #

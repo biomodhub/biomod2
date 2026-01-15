@@ -66,12 +66,12 @@
 ##' @references
 ##' 
 ##' \itemize{
-##'   \item Nix, H.A., 1986. A biogeographic analysis of Australian elapid snakes. In: 
-##'   \emph{Atlas of Elapid Snakes of Australia.} (Ed.) R. Longmore, pp. 4-15. 
-##'   \bold{Australian Flora and Fauna Series Number 7.} 
+##'   \item Nix HA (\bold{1986}). \emph{A biogeographic analysis of Australian elapid snakes.} In: 
+##'   Atlas of Elapid Snakes of Australia. (Ed.) R. Longmore, pp. 4-15. 
+##'   Australian Flora and Fauna Series Number 7.
 ##'   Australian Government Publishing Service: Canberra.
-##'   \item Busby, Jeremy. BIOCLIM - a bioclimate analysis and prediction system. 
-##'   \emph{Plant protection quarterly} \bold{6} (1991): 8-9.
+##'   \item Busby J (\bold{1991}). \emph{BIOCLIM - a bioclimate analysis and prediction system.} 
+##'   Plant protection quarterly, 6, 8-9.
 ##' }
 ##' 
 ##' @keywords models "surface range envelop" sre quantile
@@ -83,8 +83,8 @@
 ##' @family Secondary functions
 ##' 
 ##' @examples
-##' 
 ##' library(terra)
+##' 
 ##' ## Load real data
 ##' data(DataSpecies)
 ##' myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])

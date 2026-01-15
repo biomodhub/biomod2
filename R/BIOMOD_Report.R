@@ -70,8 +70,8 @@
 ##'   \item Zurell D, Franklin J, König C, Bouchet PJ, Serra-Diaz JM, Dormann CF, Elith J, 
 ##'   Fandos Guzman G, Feng X, Guillera-Arroita G, Guisan A, Leitão PJ, Lahoz-Monfort JJ, 
 ##'   Park DS, Peterson AT, Rapacciuolo G, Schmatz DR, Schröder B, Thuiller W, Yates KL, 
-##'   Zimmermann NE, Merow C (2020) A standard protocol for describing species distribution 
-##'   models. \emph{Ecography} \bold{43}: 1261-1277. \doi{10.1111/ecog.04960}
+##'   Zimmermann NE, Merow C (\bold{2020}). \emph{A standard protocol for describing species 
+##'   distribution models.} Ecography 43: 1261-1277. \doi{10.1111/ecog.04960}
 ##' }
 ##'
 ##' @keywords report ODMAP markdown html
@@ -84,8 +84,92 @@
 ##' @examples
 ##' library(terra)
 ##' 
+##' # Load species occurrences (6 species available)
+##' data(DataSpecies)
+##' head(DataSpecies)
 ##' 
-# @importFrom foreach foreach %do% %:%
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
+##' 
+##' \dontshow{
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
+##' }
+##' 
+##'  
+##' # --------------------------------------------------------------- #
+##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+##' if (file.exists(file.out)) {
+##'   myBiomodModelOut <- get(load(file.out))
+##' } else {
+##' 
+##'   # Format Data with true absences
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
+##'                                        resp.xy = myRespXY,
+##'                                        expl.var = myExpl)
+##' 
+##'   # Model single models
+##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                       modeling.id = 'AllModels',
+##'                                       models = c('RF', 'GLM'),
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
+##'                                       metric.eval = c('TSS', 'AUCroc'),
+##'                                       var.import = 3,
+##'                                       seed.val = 42)
+##' }
+##' 
+##' 
+##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
+##' if (file.exists(file.proj)) {
+##'   myBiomodProj <- get(load(file.proj))
+##' } else {
+##' 
+##'   # Project single models
+##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+##'                                     proj.name = 'Current',
+##'                                     new.env = myExpl,
+##'                                     models.chosen = 'all',
+##'                                     build.clamping.mask = TRUE)
+##' }
+##' 
+##' 
+##' file.EM <- paste0(myRespName, "/", myRespName, ".AllModels.ensemble.models.out")
+##' if (file.exists(file.EM)) {
+##'   myBiomodEM <- get(load(file.EM))
+##' } else {
+##' 
+##'   # Model ensemble models
+##'   myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+##'                                         models.chosen = 'all',
+##'                                         em.by = 'all',
+##'                                         em.algo = c('EMmean', 'EMca'),
+##'                                         metric.select = c('TSS'),
+##'                                         metric.select.thresh = c(0.7),
+##'                                         metric.eval = c('TSS', 'AUCroc'),
+##'                                         var.import = 3,
+##'                                         seed.val = 42)
+##' }
+##' 
+##' 
+##' # --------------------------------------------------------------- #
+##' # Compile summary reports
+##' BIOMOD_Report(bm.out = myBiomodEM, strategy = 'report')
+##' BIOMOD_Report(bm.out = myBiomodEM, strategy = 'ODMAP')
+##' BIOMOD_Report(bm.out = myBiomodEM, strategy = 'code')
 ##' 
 ##' 
 ##' @export
