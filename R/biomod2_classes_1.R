@@ -214,12 +214,17 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   ## Check data.type
   if (is.eval == FALSE) {
     presumed.data.type = .which.data.type(sp)
-    if (presumed.data.type != "binary" &  !(is.null(PA.strategy) || PA.strategy == 'none')){
+    if (presumed.data.type != "binary" && !(is.null(PA.strategy) || PA.strategy == 'none')) {
       stop("PA selection is not available with non binary data !")
     }
+    if (presumed.data.type == "binary" && !(is.null(PA.strategy) || PA.strategy == 'none')) {
+      if (any(sp == 0, na.rm = TRUE)) {
+        stop("Your dataset contains true absences. This should not be mixed with pseudo absences selection")
+      }
+    }
     
-    if (!is.null(data.type)){
-      if (presumed.data.type != data.type){
+    if (!is.null(data.type)) {
+      if (presumed.data.type != data.type) {
         warning("The data.type doesn't seem to correspond to your data. Don't you want to use '", presumed.data.type, "' instead ?")
         #data.type <- presumed.data.type
       }

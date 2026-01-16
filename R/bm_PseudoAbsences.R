@@ -429,6 +429,10 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
     if (is.null(user.table)) {
       stop("You must give a table defining the pseudo absences you want")
     } else {
+      nbTrueAbs <- .get_nb_true_abs(resp.var)
+      if (nbTrueAbs) {
+        stop("Your dataset contains true absences. This should not be mixed with pseudo absences selection")
+      }
       if (!(is.matrix(user.table) | is.data.frame(user.table))) {
         stop("\n PA.user.table must be a matrix or a data.frame")
       }

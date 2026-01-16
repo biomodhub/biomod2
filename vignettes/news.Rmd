@@ -16,7 +16,9 @@ vignette: >
 
 ##### Bugfix
 
-- 4.3-4-4 : update vignettes
+- 4.3-4-4 :
+  + fix `bm_PseudoAbsences` with `strategy = 'user.defined'` and true absences in `resp.var`
+  + update vignettes
 
 
 ### <i class="fas fa-pen-alt"></i> 2025
