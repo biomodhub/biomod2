@@ -557,7 +557,7 @@ used is also indicated.</p>
 <span><span class="va">user.SRE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_allRun'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>quant <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">user.XGBOOST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_allRun'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">user.val</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>SRE.binary.biomod2.bm_SRE <span class="op">=</span> <span class="va">user.SRE</span></span>
-<span>                 , XGBOOST.binary.xgboost.xgboost <span class="op">=</span> <span class="va">user.XGBOOST</span><span class="op">)</span></span>
+<span>                 , XGBOOST.binary.xgboost.xgb_train <span class="op">=</span> <span class="va">user.XGBOOST</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">opt.u</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
 <span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
@@ -612,7 +612,7 @@ used is also indicated.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

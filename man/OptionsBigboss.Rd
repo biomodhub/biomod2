@@ -108,8 +108,7 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
    }
    \item{\code{XGBOOST.xgboost.xgboost}}{
      \itemize{
-       \item \code{params = list(max_depth = 2, eta = 1)}
-       \item \code{nthread = 2}
+       \item \code{params = list(max_depth = 2, eta = 1, nthread = 2)}
        \item \code{nrounds = 4}
      }
    }

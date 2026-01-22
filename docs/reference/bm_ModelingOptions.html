@@ -267,24 +267,24 @@ default parameters, and their values, are the following : <br><br></p>
 <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code>,
 <code><a href="bm_Tuning.html">bm_Tuning</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p>
 <p>Other Secondary functions:
-<code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
-<code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
-<code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a>()</code>,
-<code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
-<code><a href="bm_ModelAnalysis.html">bm_ModelAnalysis</a>()</code>,
-<code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
-<code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
-<code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
-<code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
-<code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
-<code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
-<code><a href="bm_RangeSize.html">bm_RangeSize</a>()</code>,
-<code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
-<code><a href="bm_SRE.html">bm_SRE</a>()</code>,
-<code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
-<code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
-<code><a href="bm_Tuning.html">bm_Tuning</a>()</code>,
-<code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a>()</code></p></div>
+<code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation()</a></code>,
+<code><a href="bm_CrossValidation.html">bm_CrossValidation()</a></code>,
+<code><a href="bm_FindOptimStat.html">bm_FindOptimStat()</a></code>,
+<code><a href="bm_MakeFormula.html">bm_MakeFormula()</a></code>,
+<code><a href="bm_ModelAnalysis.html">bm_ModelAnalysis()</a></code>,
+<code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot()</a></code>,
+<code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean()</a></code>,
+<code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize()</a></code>,
+<code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves()</a></code>,
+<code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot()</a></code>,
+<code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences()</a></code>,
+<code><a href="bm_RangeSize.html">bm_RangeSize()</a></code>,
+<code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop()</a></code>,
+<code><a href="bm_SRE.html">bm_SRE()</a></code>,
+<code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector()</a></code>,
+<code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels()</a></code>,
+<code><a href="bm_Tuning.html">bm_Tuning()</a></code>,
+<code><a href="bm_VariablesImportance.html">bm_VariablesImportance()</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -366,7 +366,7 @@ default parameters, and their values, are the following : <br><br></p>
 <span><span class="va">user.SRE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_allRun'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>quant <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">user.XGBOOST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_allRun'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">user.val</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>SRE.binary.biomod2.bm_SRE <span class="op">=</span> <span class="va">user.SRE</span></span>
-<span>                 , XGBOOST.binary.xgboost.xgboost <span class="op">=</span> <span class="va">user.XGBOOST</span><span class="op">)</span></span>
+<span>                 , XGBOOST.binary.xgboost.xgb_train <span class="op">=</span> <span class="va">user.XGBOOST</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">opt.u</span> <span class="op">&lt;-</span> <span class="fu">bm_ModelingOptions</span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
 <span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
@@ -400,7 +400,7 @@ default parameters, and their values, are the following : <br><br></p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>

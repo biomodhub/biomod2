@@ -296,9 +296,13 @@ to produce, based on <code>Rmarkdown</code> templates, standardized reports to h
 <span></span>
 <span><span class="co"># --------------------------------------------------------------- #</span></span>
 <span><span class="co"># Compile summary reports</span></span>
-<span><span class="fu">BIOMOD_Report</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, strategy <span class="op">=</span> <span class="st">'report'</span><span class="op">)</span></span>
-<span><span class="fu">BIOMOD_Report</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, strategy <span class="op">=</span> <span class="st">'ODMAP'</span><span class="op">)</span></span>
-<span><span class="fu">BIOMOD_Report</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, strategy <span class="op">=</span> <span class="st">'code'</span><span class="op">)</span></span>
+<span><span class="co"># BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'report')</span></span>
+<span><span class="co"># BIOMOD_Report(bm.out = myBiomodProj, strategy = 'report')</span></span>
+<span><span class="co"># BIOMOD_Report(bm.out = myBiomodEM, strategy = 'report')</span></span>
+<span> </span>
+<span><span class="fu">BIOMOD_Report</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, strategy <span class="op">=</span> <span class="st">'ODMAP'</span><span class="op">)</span></span>
+<span><span class="fu">BIOMOD_Report</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, strategy <span class="op">=</span> <span class="st">'code'</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>
@@ -314,7 +318,7 @@ to produce, based on <code>Rmarkdown</code> templates, standardized reports to h
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>

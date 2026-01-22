@@ -149,20 +149,45 @@
 <h3 id="section">
 <i class="fa-solid fa-chess-rook"></i> 2026<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
+<div class="section level4">
+<h4 id="clean-version-2026-01-22">4.3-4-4 Clean version (2026-01-22)<a class="anchor" aria-label="anchor" href="#clean-version-2026-01-22"></a>
+</h4>
+<ul>
+<li>Upgrade <code>xgboost</code> package from 1.7.10.1 to 3.1.3.1 :
+<ul>
+<li>change modelling function from <em>xgboost</em> to
+<em>xgb_train</em> in <code>ModelsTable</code>
+</li>
+<li>update default parameters with <code>xgb.params</code> (for
+<em>objective</em> and <em>verbosity</em>)</li>
+<li>update <code>OptionsBigboss</code> data</li>
+<li>deactivate tuning for XGBOOST until bug is fixed</li>
+<li>authorize categorical variables for XGBOOST</li>
+<li>change from <em>reshape</em> to <em>type</em> (<em>“response”</em>
+or <em>“class”</em> value) parameter in <code>xgboost::predict</code>
+function</li>
+<li>give data to <code>xgb.train</code> function through
+<code>xgb.DMatrix</code>
+</li>
+</ul>
+</li>
+<li>New <code>ModelsTable</code> and <code>OptionsBigBoss</code>
+</li>
+</ul>
 <div class="section level5">
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
 <ul>
-<li>4.3-4-4 :
-<ul>
-<li>fix <code>bm_PseudoAbsences</code> with
+<li>Remove obsolete parameter (<code>transpose</code>) in
+<code><a href="https://rdrr.io/pkg/pROC/man/coords.html" class="external-link">pROC::coords</a></code> function in <code>bm_FindOptimStat</code>
+</li>
+<li>Fix <code>bm_PseudoAbsences</code> with
 <code>strategy = 'user.defined'</code> and true absences in
 <code>resp.var</code>
 </li>
-<li>update vignettes</li>
+<li>Update vignettes</li>
 </ul>
-</li>
-</ul>
+</div>
 </div>
 </div>
 <div class="section level3">
@@ -1737,7 +1762,7 @@ coherence between functions)</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

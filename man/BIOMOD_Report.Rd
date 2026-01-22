@@ -157,9 +157,13 @@ if (file.exists(file.EM)) {
 
 # --------------------------------------------------------------- #
 # Compile summary reports
-BIOMOD_Report(bm.out = myBiomodEM, strategy = 'report')
-BIOMOD_Report(bm.out = myBiomodEM, strategy = 'ODMAP')
-BIOMOD_Report(bm.out = myBiomodEM, strategy = 'code')
+# BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'report')
+# BIOMOD_Report(bm.out = myBiomodProj, strategy = 'report')
+# BIOMOD_Report(bm.out = myBiomodEM, strategy = 'report')
+ 
+BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'ODMAP')
+BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'code')
+
 
 
 }

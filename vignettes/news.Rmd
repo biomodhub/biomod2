@@ -14,11 +14,23 @@ vignette: >
 
 ### <i class="fa-solid fa-chess-rook"></i> 2026
 
+#### 4.3-4-4 Clean version (2026-01-22) 
+
+- Upgrade `xgboost` package from 1.7.10.1 to 3.1.3.1 :
+    + change modelling function from _xgboost_ to _xgb\_train_ in `ModelsTable`
+    + update default parameters with `xgb.params` (for _objective_ and _verbosity_)
+    + update `OptionsBigboss` data
+    + deactivate tuning for XGBOOST until bug is fixed
+    + authorize categorical variables for XGBOOST
+    + change from _reshape_ to _type_ (_"response"_ or _"class"_ value) parameter in `xgboost::predict` function
+    + give data to `xgb.train` function through `xgb.DMatrix`
+- New `ModelsTable` and `OptionsBigBoss`
+
 ##### Bugfix
 
-- 4.3-4-4 :
-  + fix `bm_PseudoAbsences` with `strategy = 'user.defined'` and true absences in `resp.var`
-  + update vignettes
+- Remove obsolete parameter (_transpose_) in `pROC::coords` function in `bm_FindOptimStat`
+- Fix `bm_PseudoAbsences` with `strategy = 'user.defined'` and true absences in `resp.var`
+- Update vignettes
 
 
 ### <i class="fas fa-pen-alt"></i> 2025
