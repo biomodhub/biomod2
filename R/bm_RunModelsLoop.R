@@ -266,6 +266,8 @@ bm_RunModel <- function(model, run.name
   
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
+    bm.opt@func <- ifelse(bm.opt@func == "xgb_train", "xgb.train", bm.opt@func)
+    
     ## PRELIMINAR ---------------------------------------------------
     if (model %in% c("ANN", "DNN", "MARS", "RF", "RFd") && is.null(bm.opt.val$formula)) { #add all models (not XGBOOST)? 
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
@@ -301,7 +303,7 @@ bm_RunModel <- function(model, run.name
       to_scale <- setdiff(names(data_env), categorical_var)
       scale_data <- scale(data_mod[calib.lines.vec, to_scale, drop = FALSE])
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, 1, drop = FALSE],                 #resp
-                               as.data.frame(scale_data),                                  #standarzise values
+                               as.data.frame(scale_data),                                  #standardize values
                                data_mod[calib.lines.vec, categorical_var, drop = FALSE] )  #categorical data
     } else if (model == "GLM") {
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
@@ -319,8 +321,9 @@ bm_RunModel <- function(model, run.name
       bm.opt.val$resp.var <- data_sp[calib.lines.vec]
       bm.opt.val$expl.var <- data_env[calib.lines.vec, , drop = FALSE]
     } else if (model == "XGBOOST") {
-      bm.opt.val$label <- data_sp[calib.lines.vec]
-      bm.opt.val$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
+      bm.opt.val$data <- xgboost::xgb.DMatrix(data = data_env[calib.lines.vec, , drop = FALSE]
+                                              , label = data_sp[calib.lines.vec]
+                                              , weight = weights.vec[calib.lines.vec])
     }
     
     ## FILL weights parameter ---------------------------------------
@@ -328,8 +331,6 @@ bm_RunModel <- function(model, run.name
       bm.opt.val$weights <- quote(weights)
     } else if (model %in% c("FDA", "GAM")) {
       bm.opt.val$weights <- weights.vec[calib.lines.vec]
-    } else if (model %in% c("XGBOOST")) {
-      bm.opt.val$weight <- weights.vec[calib.lines.vec]
     }
     
     ## REORGANIZE order of parameters -------------------------------
@@ -376,7 +377,7 @@ bm_RunModel <- function(model, run.name
       if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
       if (model == "GBM" && exists("best.iter")) { model.bm@n.trees_optim = best.iter }
       if (model == "SRE" && bm.opt.val$do.extrem == TRUE) { model.bm@extremal_conditions = model.sp }
-      if (model == "DNN") {model.bm@scaling_attributes <- attributes(scale_data)}
+      if (model == "DNN") { model.bm@scaling_attributes <- attributes(scale_data) }
       # if (model == "SRE") {
       #   model.sp <- as.data.frame(model.sp)
       #   rownames(model.sp) <- rownames(bm.opt.val$expl.var)
@@ -389,7 +390,7 @@ bm_RunModel <- function(model, run.name
     
     ## POSTLIMINAR --------------------------------------------------
     if (model %in% c("RF", "RFd") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification" && data.type == "binary") {
-      # canceling occurences class modifications
+      # canceling occurrences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
       })
@@ -688,6 +689,13 @@ bm_RunModel <- function(model, run.name
 .bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines.vec, metric.eval
                                     , weights.vec, scale.models)
 {
+  ## check namespace ----------------------------------------------------------
+  if (model == "XGBOOST") {
+    if (!isNamespaceLoaded("xgboost")) { 
+      if (!requireNamespace('xgboost', quietly = TRUE)) stop("Package 'xgboost' not found")
+    }
+  }
+  
   ## 0. Do some cleaning over Data argument -----------------------------------
   data_sp <- Data[, 1]
   data_xy <- Data[, c("x", "y")]

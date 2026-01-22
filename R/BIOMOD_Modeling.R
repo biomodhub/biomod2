@@ -640,7 +640,7 @@ BIOMOD_Modeling <- function(bm.format,
   categorical_var <- .get_categorical_names(bm.format@data.env.var)
   
   if (length(categorical_var) > 0) {
-    models.fact.unsupport <- c("SRE", "XGBOOST")
+    models.fact.unsupport <- c("SRE")
     models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsupport))
     if (length(models.switch.off) > 0) {
       models <- setdiff(models, models.switch.off)

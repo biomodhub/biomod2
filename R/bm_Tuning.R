@@ -327,6 +327,8 @@ bm_Tuning <- function(model,
       
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
+      } else if (model == "XGBOOST") {
+        warning("Due to upgrade of xgboost package, currently, no tuning available for that model. Sorry.")
       } else {
         ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
         if (model %in% c("MAXENT", "SRE", "DNN")) {
@@ -505,12 +507,13 @@ bm_Tuning <- function(model,
               }
               
               if (model == "XGBOOST") {
-                for (param in train.params$params) {
-                  if (is.null(argstmp[[param]])){
-                    argstmp$params[[param]] <- tmp[selected, param]
-                  } else {
-                    argstmp[[param]] <- tmp[selected, param]}
-                }
+                ## TO CHECK
+                # for (param in train.params$params) {
+                #   if (is.null(argstmp[[param]])){
+                #     argstmp$params[[param]] <- tmp[selected, param]
+                #   } else {
+                #     argstmp[[param]] <- tmp[selected, param]}
+                # }
               } else {
                 for (param in train.params$params) {
                   argstmp[[param]] <- tmp[selected, param]

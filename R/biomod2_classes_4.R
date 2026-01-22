@@ -1451,9 +1451,9 @@ setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "Spa
 setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...)
           {
-            reshape <- ifelse(object@model_type %in% c("ordinal", "multiclass"), TRUE, FALSE)
+            reshape <- ifelse(object@model_type %in% c('ordinal', 'multiclass'), 'class', 'response')
             predfun <- function(object, newdata, not_na_rows) {
-              predict(get_formal_model(object), as.matrix(newdata[not_na_rows, , drop = FALSE]), reshape = reshape)
+              predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE], type = reshape)
             }
             # redirect to predict2.biomod2_model.data.frame
             callNextMethod(object, newdata, predfun = predfun, ...)
