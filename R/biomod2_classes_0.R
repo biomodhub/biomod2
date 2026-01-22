@@ -74,6 +74,13 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
 
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
 {
+  ## check namespace
+  if (mod == "XGBOOST") {
+    if (!isNamespaceLoaded("xgboost")) { 
+      if (!requireNamespace('xgboost', quietly = TRUE)) stop("Package 'xgboost' not found")
+    }
+  }
+  
   ## check if model is supported
   avail.models.list <- c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
@@ -91,7 +98,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
     
     ## check function exists
     avail.functions.list <- lsf.str(pos = paste0("package:", pkg))
-    .fun_testIfIn(TRUE, "fun", fun, avail.functions.list)
+    .fun_testIfIn(TRUE, "fun", ifelse(fun == "xgb_train", "xgb.train", fun), avail.functions.list)
   } else {
     if (!file.exists(file.path(getwd(), "maxent.jar"))) {
       warning(paste0("'maxent.jar' file is missing in current working directory ("
@@ -113,6 +120,8 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
           function(mod, typ, pkg, fun) 
           {
             .BIOMOD.options.default.check.args(mod, typ, pkg, fun)
+            fun2 <- ifelse(fun == "xgb_train", "xgb.train", fun)
+            
             if (mod != 'MAXENT') {
               BOM <- new(
                 'BIOMOD.options.default',
@@ -120,8 +129,8 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
                 type = typ,
                 package = pkg,
                 func = fun,
-                args.names = eval(parse(text = paste0("formalArgs(", pkg, "::", fun, ")"))),
-                args.default = eval(parse(text = paste0("as.list(formals(", pkg, "::", fun, "))")))
+                args.names = eval(parse(text = paste0("formalArgs(", pkg, "::", fun2, ")"))),
+                args.default = eval(parse(text = paste0("as.list(formals(", pkg, "::", fun2, "))")))
               )
             } else {
               params.MAXENT = list(path_to_maxent.jar = getwd(),
@@ -271,9 +280,8 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     argstmp$type <- RFtype
   }
   if (mod == "XGBOOST") { 
+    argstmp$params <- xgboost::xgb.params(objective = XGBOOSTobjective, verbosity = 0)
     argstmp$nrounds = 4
-    argstmp$verbose = 0
-    argstmp$objective = XGBOOSTobjective
   }
   
   argstmp[["..."]] = NULL
@@ -448,76 +456,6 @@ setGeneric("BIOMOD.options.dataset",
               user.val = user.val))
 }
 
-# .BIOMOD.options.dataset.test <- function(bm.opt)
-# {
-#   ## create false dataset
-#   mySp = "Hariba"
-#   myResp = c(rep(1, 100), rep(0, 100))
-#   myRespXY = data.frame(x = sample(1:100, 200, replace = TRUE)
-#                         , y = sample(1:100, 200, replace = TRUE))
-#   myExpl = data.frame(var1 = rnorm(200, mean = 3, sd = 0.4)
-#                       , var2 = runif(200)
-#                       , var3 = sample(1:5, 200, replace = TRUE))
-#   mySpExpl = cbind(myResp, myExpl)
-#   colnames(mySpExpl)[1] = mySp
-#   
-#   ## get options for specific model
-#   if (bm.opt@model == "GAM") {
-#     subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
-#     .load_gam_namespace(model_subclass = subclass_name)
-#   }
-#   
-#   ## 
-#   for (xx in 1:length(bm.opt@args.values)) { ## SHOULD BE MOVED to place when testing values ??
-#     if ('...' %in% names(bm.opt@args.values[[xx]])) {
-#       bm.opt@args.values[[xx]][['...']] <- NULL
-#     }
-#   }
-#   print(bm.opt)
-#   
-#   ## run test for each dataset
-#   for (dataset_name in names(bm.opt@args.values)) {
-#     bm.opt.val <- bm.opt@args.values[[dataset_name]]
-#     
-#     ## 2. CREATE MODELS -----------------------------------------------------------------------------
-#     set.seed(42)
-#     
-#     if (bm.opt@model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
-#       ## PRELIMINAR ---------------------------------------------------
-#       bm.opt.val$formula <- bm_MakeFormula(resp.name = mySp
-#                                            , expl.var = head(myExpl)
-#                                            , type = 'simple'
-#                                            , interaction.level = 0)
-#       
-#       if (bm.opt@model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == 'classification') {
-#         # defining occurences as factor for doing classification and not regression in RF
-#         mySpExpl <- mySpExpl %>% mutate_at(mySp, factor)
-#       }
-#       
-#       ## FILL data parameter ------------------------------------------
-#       if (bm.opt@model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF", "GLM")) {
-#         bm.opt.val$data <- mySpExpl
-#       } else if (bm.opt@model == "MAXNET") {
-#         bm.opt.val$p <- myResp
-#         bm.opt.val$data <- myExpl
-#       } else if (bm.opt@model == "SRE") {
-#         bm.opt.val$resp.var <- myResp
-#         bm.opt.val$expl.var <- myExpl
-#       } else if (bm.opt@model == "XGBOOST") {
-#         bm.opt.val$label <- myResp
-#         bm.opt.val$data <- as.matrix(myExpl)
-#       }
-#       
-#       ## RUN model ----------------------------------------------------
-#       print("you")
-#       model.sp <- do.call(bm.opt@func, bm.opt.val)
-#       print("pi")
-#     } else {
-#       ## STUFF MAXENT
-#     }
-#   }
-# }
-
 
 ## BIOMOD.options.dataset -----------------------------------------------------
 ##' 
@@ -573,7 +511,11 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                 
                 val <- OptionsBigboss@options[[paste0(c(mod, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
                 for (ii in names(val)) {
-                  if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
+                  if (mod == "XGBOOST" && ii == "params") {
+                    for (jj in names(val[[ii]])) {
+                      argstmp[[ii]][[jj]] <- val[[ii]][[jj]]
+                    }
+                  } else if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
                 }
               }
               

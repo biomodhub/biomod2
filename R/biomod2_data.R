@@ -37,23 +37,23 @@
 "ModelsTable"
 
 # ModelsTable <- data.frame(model = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-#                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 
+#                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST',
 #                                     'CTA', 'DNN', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
 #                                     , 'MARS', 'RF', 'XGBOOST')
 #                           , type = c(rep('binary',16), rep('nonbinary',11))
 #                           , package = c('nnet', 'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-#                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 
+#                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost',
 #                                         'rpart', 'cito', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
 #                                         , 'earth', 'randomForest', 'xgboost')
 #                           , func = c('nnet', 'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-#                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost',
+#                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgb_train',
 #                                      'rpart', 'dnn', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-#                                      , 'earth', 'randomForest', 'xgboost')
+#                                      , 'earth', 'randomForest', 'xgb_train')
 #                           , train = c('avNNet', 'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
 #                                       , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree',
 #                                       'rpart', 'tune', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
 #                                       , 'earth', 'rf', 'xgbTree'))
-
+# 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)
 
@@ -176,8 +176,7 @@
 #'    }
 #'    \item{\code{XGBOOST.xgboost.xgboost}}{
 #'      \itemize{
-#'        \item \code{params = list(max_depth = 2, eta = 1)}
-#'        \item \code{nthread = 2}
+#'        \item \code{params = list(max_depth = 2, eta = 1, nthread = 2)}
 #'        \item \code{nrounds = 4}
 #'      }
 #'    }
@@ -249,11 +248,9 @@
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
 # bm.opt@options$SRE.binary.biomod2.bm_SRE@args.values[['_allData_allRun']]$do.extrem = TRUE
-# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$params = list(max_depth = 2, eta = 1)
-# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nthread = 2
-# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nrounds = 4
-# # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
-
+# bm.opt@options$XGBOOST.binary.xgboost.xgb_train@args.values[['_allData_allRun']]$params = xgb.params(max_depth = 2, eta = 1, nthread = 2)
+# bm.opt@options$XGBOOST.binary.xgboost.xgb_train@args.values[['_allData_allRun']]$nrounds = 4
+# 
 # # Remove things to be adapted to "count", "abundance" and "compositional"
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']] <- bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']][-which(names(bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]) == "method")]
 # bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']] <- bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']][-which(names(bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]) == "loss")]
@@ -265,13 +262,12 @@
 # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']] <- bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']][-which(names(bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]) == "family")]
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']] <- bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']][-which(names(bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]) == "glm")]
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']] <- bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']][-which(names(bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]) == "type")]
-# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']] <- bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']][-which(names(bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]) == "objective")]
-
+# 
 # bm.opt@models <- sub(".binary", "", bm.opt@models)
 # names(bm.opt@options) <- bm.opt@models
-
+# 
 # OptionsBigboss <- bm.opt
-
+# 
 # usethis::use_data(OptionsBigboss, overwrite = TRUE)
 # usethis::use_data(OptionsBigboss, overwrite = TRUE, internal = TRUE)
 

@@ -243,7 +243,7 @@
 ##' user.SRE <- list('_allData_allRun' = list(quant = 0.01))
 ##' user.XGBOOST <- list('_allData_allRun' = list(nrounds = 10))
 ##' user.val <- list(SRE.binary.biomod2.bm_SRE = user.SRE
-##'                  , XGBOOST.binary.xgboost.xgboost = user.XGBOOST)
+##'                  , XGBOOST.binary.xgboost.xgb_train = user.XGBOOST)
 ##' 
 ##' opt.u <- bm_ModelingOptions(data.type = 'binary',
 ##'                             models = c('SRE', 'XGBOOST'),
