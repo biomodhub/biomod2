@@ -12,6 +12,9 @@
 #' 
 #' zzz_bm()
 
-zzz_bm <- function(){
+zzz_bm <- function() {
   unlink('GuloGulo', recursive = TRUE)
+  unlink('Periparus.ater', recursive = TRUE)
+  fi <- list.files(path = '.', pattern = 'GuloGulo|Periparus')
+  if (length(fi) > 0) file.remove(fi)
 }
