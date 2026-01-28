@@ -171,8 +171,8 @@
 ##' # BIOMOD_Report(bm.out = myBiomodProj, strategy = 'report')
 ##' # BIOMOD_Report(bm.out = myBiomodEM, strategy = 'report')
 ##'  
-##' BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'ODMAP')
-##' BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'code')
+##' # BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'ODMAP')
+##' # BIOMOD_Report(bm.out = myBiomodModelOut, strategy = 'code')
 ##' 
 ##' 
 ##' 

@@ -106,7 +106,7 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{do.extrem = TRUE}
      }
    }
-   \item{\code{XGBOOST.xgboost.xgboost}}{
+   \item{\code{XGBOOST.xgboost.xgb_train}}{
      \itemize{
        \item \code{params = list(max_depth = 2, eta = 1, nthread = 2)}
        \item \code{nrounds = 4}
