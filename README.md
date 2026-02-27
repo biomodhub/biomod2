@@ -59,7 +59,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 <i class="fas fa-exclamation-triangle"></i> All changes between versions are detailed in [News](https://biomodhub.github.io/biomod2/articles/news.html).
 
-<i class="fas fa-video"></i> A new video tutorial is available on the [Video page](https://biomodhub.github.io/biomod2/articles/vignette_videos.html).
+<i class="fas fa-video"></i> A new video tutorial is available on the [Video page](https://biomodhub.github.io/biomod2/articles/videos_2_biomod2.html).
 <br/><br/>
 <br/><br/>
 
