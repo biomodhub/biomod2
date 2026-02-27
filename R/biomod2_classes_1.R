@@ -196,7 +196,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   .fun_testIfInherits(TRUE, ifelse(is.eval == TRUE, "eval.sp", "sp"), sp, available.types.resp)
   
   ## SpatialPoints, SpatialPointsDataFrame, SpatVector
-  if (inherits(sp, c('SpatialPoints','SpatVector'))) {
+  if (inherits(sp, c('SpatialPoints', 'SpatVector'))) {
     .tmp <- .check_formating_spatial(resp.var = sp,
                                      expl.var = env,
                                      resp.xy = xy,

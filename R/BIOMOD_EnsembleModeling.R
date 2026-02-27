@@ -561,7 +561,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 ## standardize model weights
                 models.kept.scores.tmp <- round(models.kept.scores.tmp / sum(models.kept.scores.tmp, na.rm = TRUE), digits = 3)
                 if (eval.m %in% c("RMSE", "MSE", "MAE", "Max_error")) {
-                  models.kept.scores.tmp <- rev(models.kept.scores.tmp)
+                  models.kept.scores.tmp <- (-1) * models.kept.scores.tmp +
+                    (min(models.kept.scores.tmp, na.rm = TRUE) + max(models.kept.scores.tmp, na.rm = TRUE))
+                  models.kept.scores.tmp <- round(models.kept.scores.tmp / sum(models.kept.scores.tmp, na.rm = TRUE), digits = 3)
                 }
                 cat("\n\t\t", " final models weights = ", models.kept.scores.tmp)
               }
@@ -1265,8 +1267,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         models.kept.scores[is.na(models.kept.scores)] <- -1
       }
       thresh = metric.select.thresh[which(metric.select == eval.m)]
-      if (eval.m %in% c("RMSE", "MSE", "MAE", "Max_error")){
-        best <- min(models.kept.scores, na.rm = T)
+      if (eval.m %in% c("RMSE", "MSE", "MAE", "Max_error")) {
+        best <- min(models.kept.scores, na.rm = TRUE)
         out$models.kept[[eval.m]] <- models.kept[models.kept.scores < (best + thresh)]
         out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores < (best + thresh)]
       } else {
