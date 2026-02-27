@@ -22,7 +22,11 @@ navbar:
     videos:
       text: Videos
       icon: fas fa-video
-      href: articles/vignette_videos.html
+      menu:
+        - text: biomod2 tutorials
+          href: articles/videos_2_biomod2.html
+        - text: ENM 2020 course
+          href: articles/videos_1_ENM2020.html
     presentation:
       text: Presentation
       icon: fas fa-graduation-cap
