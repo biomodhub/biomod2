@@ -330,7 +330,7 @@ bm_Tuning <- function(model,
       } else if (model == "XGBOOST") {
         warning("Due to upgrade of xgboost package, currently, no tuning available for that model. Sorry.")
       } else {
-        ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
+        ## 1. SPECIFIC CASE OF MAXENT, SRE OR DNN -------------------------------------------------
         if (model %in% c("MAXENT", "SRE", "DNN")) {
           cat("\n\t\t\t> Tuning parameters...")
           
@@ -340,15 +340,19 @@ bm_Tuning <- function(model,
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           
-          ## SRE case
-          myResp <- mySpExpl[, 1]
-          myExpl <- mySpExpl[, 4:(3 + ncol(bm.format@data.env.var))]
-          
-          ## MAXENT case
-          if (params.train$MAXENT.algorithm == "maxnet") {
-            mySpExpl[["_allData_allRun"]] <- NULL
-            mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
-            mySpExpl <- mySpExpl[, 1:(3 + ncol(bm.format@data.env.var))]
+          ## SRE / DNN case
+          if (model %in% c("SRE", "DNN")) {
+            myResp <- mySpExpl[, 1]
+            myExpl <- mySpExpl[, 4:(3 + ncol(bm.format@data.env.var))]
+            if (model == "SRE") {
+              myResp <- sapply(myResp, function(xx) ifelse(xx == 0 || is.na(xx), 0, 1))
+            }
+          } else { ## MAXENT case
+            if (params.train$MAXENT.algorithm == "maxnet") {
+              mySpExpl[["_allData_allRun"]] <- NULL
+              mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
+              mySpExpl <- mySpExpl[, 1:(3 + ncol(bm.format@data.env.var))]
+            }
           }
           
           if (model == "MAXENT") { # ------------------------------------------#
@@ -379,7 +383,6 @@ bm_Tuning <- function(model,
               argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
             }
           } else if (model == "SRE") { # -------------------------------------- #
-            myResp <- sapply(myResp, function(xx) ifelse(xx == 0 || is.na(xx), 0, 1))
             
             tune.SRE <- foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
               {
@@ -413,8 +416,8 @@ bm_Tuning <- function(model,
             argstmp$formula <- as.formula( "myResp ~.")
             
             ## Preparation of the tune parameters
-            params.train = params.train[grep(paste0(model,"\\."), names(params.train))]
-            for (param.n in names(params.train)) {
+            names_DNN <- grep(paste0(model,"\\."), names(params.train), value = TRUE)
+            for (param.n in names_DNN) {
               real.name <- unlist(strsplit(param.n, split = "\\."))[2]
               
               if (real.name == "hidden") {
@@ -677,6 +680,9 @@ bm_Tuning <- function(model,
                                   , weights = NULL, params.train)
 {
   ## check model --------------------------------------------------------------
+  if(length(model) != 1){
+    stop("\nmodel should be of length 1")
+  }
   .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "DNN", "FDA", "GAM", "GBM", "GLM"
                                         , "MARS", "MAXENT", "MAXNET", "RF", "RFd", "SRE", "XGBOOST"))
   

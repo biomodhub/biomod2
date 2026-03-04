@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-6 : 
+    + fix `bm_Tuning` for DNN and multiple sets (PA x RUN)
     + fix `EMwmean` for abundance models using `RMSE`, `MSE`, `MAE` or `Max_error` as selection metrics
     + add new video tutorial on YouTube
 - 4.3-4-5 : pass CRAN check
