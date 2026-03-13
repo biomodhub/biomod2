@@ -425,11 +425,19 @@ bm_Tuning <- function(model,
                     length(params.train$DNN.hidden$width) == 1) {
                   argstmp$hidden <- rep(params.train$DNN.hidden$width, params.train$DNN.hidden$depth)
                 } else if (length(params.train$DNN.hidden$depth) == 1) {
-                  argstmp$hidden <- cito::tune(params.train$DNN.hidden$width, fixed = 'depth')
+                  lower <- params.train$DNN.hidden$width[1]
+                  upper <- params.train$DNN.hidden$width[2]
+                  addi <- params.train$DNN.hidden$depth
+                  argstmp$hidden <- cito::tune(lower = lower, upper = upper, additional = addi, fixed = 'depth')
                 } else if (length(params.train$DNN.hidden$width) == 1) {
-                  argstmp$hidden <- cito::tune(params.train$DNN.hidden$depth, fixed = 'width')
+                  lower <- params.train$DNN.hidden$depth[1]
+                  upper <- params.train$DNN.hidden$depth[2]
+                  addi <- params.train$DNN.hidden$width
+                  argstmp$hidden <- cito::tune(lower = lower, upper = upper, additional = addi, fixed = 'width')
                 } else {
-                  argstmp$hidden <- cito::tune(params.train$DNN.hidden$depth, params.train$DNN.hidden$width)
+                  lower <- c(params.train$DNN.hidden$width[1], params.train$DNN.hidden$depth[1])
+                  upper <- c(params.train$DNN.hidden$width[2], params.train$DNN.hidden$depth[2])
+                  argstmp$hidden <- cito::tune(lower = lower, upper = upper)
                 }
               } else {
                 if (length(params.train[[param.n]]) == 1) {
