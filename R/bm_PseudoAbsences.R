@@ -439,7 +439,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       if (nrow(user.table) != length(resp.var)) {
         stop("\n PA.user.table must have as many row than the number of observation of your response variable")
       }
-      if (any(!apply(apply(user.table, 2, function(x) x[which(resp.var$resp == 1)]), 2, any))) {
+      ind <- which(resp.var[[1]] == 1)
+      if (any(!apply(apply(user.table, 2, function(x) x[ind]), 2, any))) {
         stop("\n PA.user.table must select presences in each pseudo absence set")
       }
       colnames(user.table) <- paste0("PA", 1:ncol(user.table))
