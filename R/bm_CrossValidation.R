@@ -663,8 +663,8 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
             }
             
             if (bm.format@data.type == "relative") { tmp <- 100* tmp }
+            tmp_group <- as.integer(tmp)
             if (bm.format@data.type != "binary") {
-              tmp_group <- as.integer(tmp) ## for abundance data
               ind1 <- order(tmp_group)
               ind2 <- cut(seq_along(tmp_group), 5, labels = FALSE)
               tmp_group <- ind2[ind1]
