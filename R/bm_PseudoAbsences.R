@@ -21,17 +21,18 @@
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to find the pseudo-absences
 ##' 
-##' @param nb.rep an \code{integer} corresponding to the number of sets (repetitions) of 
-##' pseudo-absence points that will be drawn
 ##' @param strategy a \code{character} corresponding to the pseudo-absence selection strategy, 
 ##' must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}
+##' @param nb.rep (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy != 'user.defined'}, an \code{integer} corresponding to the number of sets 
+##' (repetitions) of pseudo-absence points that will be drawn
 ##' @param nb.absences (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'sre'} or \code{strategy = 'disk'}, an 
 ##' \code{integer} corresponding to the number of pseudo-absence points that will be selected for 
 ##' each pseudo-absence repetition (true absences included). \cr
 ##' It can also be a \code{vector} of the same length as \code{nb.rep} containing \code{integer} 
 ##' values corresponding to the different numbers of pseudo-absences to be selected (see Details)
-##' @param sre.quant (\emph{optional, default} \code{0}) \cr
+##' @param sre.quant (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} defining the 
 ##' half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\link{bm_SRE}})
 ##' @param dist.min (\emph{optional, default} \code{0}) \cr
@@ -213,13 +214,14 @@
 ###################################################################################################
 
 
-bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
-                              , sre.quant = 0, dist.min = 0, dist.max = NULL, fact.aggr = NULL
+bm_PseudoAbsences <- function(resp.var, expl.var, strategy, nb.rep = NULL, nb.absences = NULL
+                              , sre.quant = NULL, dist.min = 0, dist.max = NULL, fact.aggr = NULL
                               , user.table = NULL, seed.val = NULL)
 {
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, nb.absences
-                                        , sre.quant, dist.min, dist.max, user.table,seed.val)
+  args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, strategy, nb.rep, nb.absences
+                                        , sre.quant, dist.min, dist.max, fact.aggr, user.table, seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -341,8 +343,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 
 ###################################################################################################
 
-.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences
-                                          , sre.quant, dist.min, dist.max, user.table, seed.val)
+.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, strategy, nb.rep, nb.absences
+                                          , sre.quant, dist.min, dist.max, fact.aggr, user.table, seed.val)
 {
   cat('\n\nChecking Pseudo-absence selection arguments...\n')
   ## 1. Check resp.var argument -----------------------------------------------
@@ -992,4 +994,3 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
               return(bm_PseudoAbsences_random(resp.var, expl.var = mask.in, nb.absences, nb.rep, fact.aggr = NULL))
             }
           })
-

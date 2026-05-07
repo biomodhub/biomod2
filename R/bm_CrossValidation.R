@@ -14,33 +14,36 @@
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 ##' \code{user.defined}
 ##' 
-##' @param nb.rep (\emph{optional, default} \code{0}) \cr
+##' @param nb.rep (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
 ##' to the number of sets (repetitions) of cross-validation points that will be drawn
-##' @param perc (\emph{optional, default} \code{0}) \cr
+##' @param perc (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'random'}, a \code{numeric} between \code{0} and \code{1} defining the 
 ##' percentage of data that will be kept for calibration
-##' @param k (\emph{optional, default} \code{0}) \cr
+##' @param k (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
 ##' \code{integer} corresponding to the number of partitions 
-##' @param balance (\emph{optional, default} \code{'presences'}) \cr 
+##' @param balance (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
 ##' to how data will be balanced between partitions, must be either \code{presences} or 
 ##' \code{absence}
+##' @param strat (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+##' along gradient, must be among \code{x}, \code{y}, \code{both}
 ##' @param env.var (\emph{optional}) \cr 
 ##' If \code{strategy = 'env'}, a \code{character} corresponding to the environmental variables 
 ##' used to build the partition. \code{k} partitions will be built for each environmental 
 ##' variables. \emph{By default the function uses all environmental variables available.}
-##' @param strat (\emph{optional, default} \code{'both'}) \cr 
-##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
-##' along gradient, must be among \code{x}, \code{y}, \code{both}
 ##' @param user.table (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
 ##' repetition (in columns) which observation lines should be used for models calibration 
 ##' (\code{TRUE}) and validation (\code{FALSE})
-##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr  
+##' @param do.full.models (\emph{optional, default} \code{FALSE}) \cr  
 ##' A \code{logical} value defining whether models should be also calibrated and validated over 
 ##' the whole dataset (and pseudo-absence datasets) or not
+##' 
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' @param \ldots (\emph{optional, one or several of the listed above arguments depending on the 
 ##' selected method}) 
@@ -224,28 +227,14 @@
 ###################################################################################################
 
 
-bm_CrossValidation <- function(bm.format,
-                               strategy = 'random',
-                               nb.rep = 0, 
-                               perc = 0.8,
-                               k = 0, 
-                               balance = 'presences', 
-                               env.var = NULL,
-                               strat = 'both',
-                               user.table = NULL,
-                               do.full.models = FALSE)
+bm_CrossValidation <- function(bm.format, strategy, nb.rep = NULL, perc = NULL, k = NULL
+                               , balance = NULL, strat = NULL, env.var = NULL
+                               , user.table = NULL, do.full.models = FALSE, seed.val = NULL)
 {
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_CrossValidation.check.args(bm.format = bm.format,
-                                         strategy = strategy,
-                                         nb.rep = nb.rep,
-                                         perc = perc, 
-                                         k = k, 
-                                         balance = balance, 
-                                         env.var = env.var,
-                                         strat = strat,
-                                         user.table = user.table,
-                                         do.full.models = do.full.models)
+  args <- .bm_CrossValidation.check.args(bm.format, strategy, nb.rep, perc, k, balance, strat
+                                         , env.var, user.table, do.full.models, seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -323,8 +312,8 @@ bm_CrossValidation <- function(bm.format,
 
 ###################################################################################################
 
-.bm_CrossValidation.check.args <- function(bm.format, strategy, nb.rep, perc, k, balance,
-                                           env.var, strat, user.table, do.full.models)
+.bm_CrossValidation.check.args <- function(bm.format, strategy, nb.rep, perc, k
+                                           , balance, strat, env.var, user.table, do.full.models, seed.val)
 {
   cat('\n\nChecking Cross-Validation arguments...\n')
   
@@ -414,6 +403,12 @@ bm_CrossValidation <- function(bm.format,
       }
     }
   }
+  
+  ## 3. Check do.full.models argument -----------------------------------------
+  if (is.null(do.full.models)) { do.full.models <- FALSE }
+  
+  ## 3. Set the seed (if needed) ----------------------------------------------
+  if (!is.null(seed.val)) { set.seed(seed.val) }
   
   return(list(bm.format = bm.format,
               strategy = strategy,

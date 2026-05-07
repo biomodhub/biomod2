@@ -55,20 +55,20 @@
 ##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
 ##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
 ##' 
-##' @param PA.nb.rep (\emph{optional, default} \code{0}) \cr 
-##' If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
-##' (repetitions) of pseudo-absence points that will be drawn
 ##' @param PA.strategy (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
 ##' select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
 ##' \code{user.defined} (see Details)
-##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
+##' @param PA.nb.rep (\emph{optional, default} \code{NULL}) \cr 
+##' If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+##' (repetitions) of pseudo-absence points that will be drawn
+##' @param PA.nb.absences (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
 ##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
 ##' points that will be selected for each pseudo-absence repetition (true absences included). \cr
 ##' It can also be a \code{vector} of the same length as \code{PA.nb.rep} containing \code{integer} 
 ##' values corresponding to the different numbers of pseudo-absences to be selected (see Details)
-##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
+##' @param PA.sre.quant (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
 ##' (see Details)
@@ -76,7 +76,7 @@
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in the same projection system units as \code{resp.xy} and \code{expl.var}, see Details)
-##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
+##' @param PA.dist.max (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in the same projection system units as \code{resp.xy} and \code{expl.var}, see Details)
@@ -356,12 +356,12 @@ BIOMOD_FormatingData <- function(resp.name,
                                  eval.resp.var = NULL,
                                  eval.resp.xy = NULL,
                                  eval.expl.var = NULL,
-                                 PA.nb.rep = 0,
-                                 PA.nb.absences = 1000,
                                  PA.strategy = NULL,
+                                 PA.nb.rep = NULL,
+                                 PA.nb.absences = NULL,
                                  PA.dist.min = 0,
                                  PA.dist.max = NULL,
-                                 PA.sre.quant = 0.025,
+                                 PA.sre.quant = NULL,
                                  PA.fact.aggr = NULL,
                                  PA.user.table = NULL,
                                  na.rm = TRUE,
@@ -463,4 +463,3 @@ BIOMOD_FormatingData <- function(resp.name,
               eval.expl.var = args$eval.env,
               eval.resp.xy = args$eval.xy))
 }
-

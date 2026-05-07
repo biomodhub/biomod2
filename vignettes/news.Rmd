@@ -17,6 +17,8 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-6 : 
+    + update default parameters in functions (set to NULL if possible)
+    + add `seed.val` parameter in `bm_CrossValidation`
     + add check in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` to deal with single model projection failing
     + remove `.BIOMOD_EnsembleForecasting.prepare.workdir` function 
     + fix `kfold` selection for non-binary data in `bm_CrossValidation`
