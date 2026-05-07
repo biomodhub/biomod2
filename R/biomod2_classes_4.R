@@ -218,7 +218,8 @@ setMethod('get_scaling_model', signature('biomod2_model'),
 ##' @export
 ##' 
 
-setMethod('show', signature('biomod2_model'), function(object) {
+setMethod('show', signature('biomod2_model'), function(object)
+{
   .bm_cat("biomod2_model")
   cat("\n\t Model name (model_name) :", object@model_name, fill = .Options$width)
   cat("\n\t Model class (model_class) :", object@model_class, fill = .Options$width)
@@ -346,28 +347,34 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
             } else {
               set.seed(seedval)
               
-              proj <- predfun(object, newdata, mod.name)
+              proj <- try(predfun(object, newdata, mod.name))
               
-              if (length(get_scaling_model(object)) > 0) {
-                names(proj) <- "pred"
-                proj <- .run_pred(object = get_scaling_model(object), 
-                                  Prev = 0.5 , 
-                                  dat = proj, 
-                                  mod.name = mod.name)
-              }
-              if (on_0_1000) { 
-                proj <- round(proj * 1000) 
-              }
-              
-              # save raster on hard drive ?
-              if (!is.null(filename)) {
-                cat("\n\t\tWriting projection on hard drive...")
-                if (on_0_1000) { ## projections are stored as positive integer
-                  writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-                } else { ## keep default data format for saved raster
-                  writeRaster(proj, filename = filename, overwrite = overwrite)
+              if (!inherits(proj, 'try-error')) {
+                if (length(get_scaling_model(object)) > 0) {
+                  names(proj) <- "pred"
+                  proj <- .run_pred(object = get_scaling_model(object), 
+                                    Prev = 0.5 , 
+                                    dat = proj, 
+                                    mod.name = mod.name)
                 }
-                proj <- rast(filename)
+                if (on_0_1000) { 
+                  proj <- round(proj * 1000) 
+                }
+                
+                # save raster on hard drive ?
+                if (!is.null(filename)) {
+                  cat("\n\t\tWriting projection on hard drive...") ## Happening ?
+                  if (on_0_1000) { ## projections are stored as positive integer
+                    writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+                  } else { ## keep default data format for saved raster
+                    writeRaster(proj, filename = filename, overwrite = overwrite)
+                  }
+                  proj <- rast(filename)
+                }
+              # } else {
+              #   proj <- NA
+              #   class(proj) <- "try-error"
+              #   .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
               }
             }
             return(proj)
@@ -397,22 +404,27 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"
             
             set.seed(seedval)
             # eval(parse(text = paste0("proj <- ", predcommand)))
-            proj <- predfun(object, newdata, not_na_rows)
+            proj <- try(predfun(object, newdata, not_na_rows))
             
-            ## add original NA from formal dataset
-            if (sum(!not_na_rows) > 0) {
-              tmp <- rep(NA, length(not_na_rows))
-              tmp[not_na_rows] <- proj
-              proj <- tmp
-              rm('tmp')
+            if (!inherits(proj, 'try-error')) {
+              ## add original NA from formal dataset
+              if (sum(!not_na_rows) > 0) {
+                tmp <- rep(NA, length(not_na_rows))
+                tmp[not_na_rows] <- proj
+                proj <- tmp
+                rm('tmp')
+              }
+              
+              if (length(get_scaling_model(object)) > 0) {
+                proj <- data.frame(pred = proj)
+                proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
+              }
+              if (on_0_1000) { proj <- round(proj * 1000) }
+            # } else {
+            #   proj <- NA
+            #   class(proj) <- "try-error"
+            #   .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
             }
-            
-            if (length(get_scaling_model(object)) > 0) {
-              proj <- data.frame(pred = proj)
-              proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
-            }
-            if (on_0_1000) { proj <- round(proj * 1000) }
-            
             return(proj)
           }
 )
@@ -492,7 +504,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...)
           {
             data.type <- object@model_type
-            type = 'prob'
+            type <- 'prob'
             n <- 2
             rep <- 2
             if (data.type != "binary") { type = "matrix"; n = 1 }
@@ -519,7 +531,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.fr
           function(object, newdata, ...)
           {
             data.type <- object@model_type
-            type = 'prob'
+            type <- 'prob'
             n <- 2
             if (data.type != "binary") { type = "matrix"; n <- 1 }
             if (data.type %in% c("ordinal", "multiclass")) {
@@ -567,17 +579,17 @@ setMethod('predict2', signature(object = 'DNN_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...)
           {
             predfun <- function(object, newdata, mod.name) {
-              type = ifelse(object@model_type %in% c("ordinal", "multiclass"), 'class', 'response')
+              type = ifelse(object@model_type %in% c("ordinal", "multiclass"), "class", "response")
               
               categorical_var <- .get_categorical_names(as.data.frame(newdata))
               to_scale <- setdiff(names(newdata), categorical_var)
               scale_data <- terra::scale(newdata[[to_scale]],
-                                  center = object@scaling_attributes$`scaled:center`,
-                                  scale = object@scaling_attributes$`scaled:scale`)
+                                         center = object@scaling_attributes$`scaled:center`,
+                                         scale = object@scaling_attributes$`scaled:scale`)
               newdata <- c(scale_data, newdata[[categorical_var]])
-
-              predict(newdata, get_formal_model(object), type = type, na.rm = T,
-                      wopt = list(names = mod.name))
+              
+              predict(newdata, get_formal_model(object), type = type, na.rm = TRUE
+                      , wopt = list(names = mod.name))
             }
             # redirect to predict2.biomod2_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -591,18 +603,20 @@ setMethod('predict2', signature(object = 'DNN_biomod2_model', newdata = "SpatRas
 setMethod('predict2', signature(object = 'DNN_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...)
           {
-            predfun <- function(object, newdata, not_na_rows){
-              type = ifelse(object@model_type %in% c("ordinal", "multiclass"), 'class', 'response')
+            predfun <- function(object, newdata, not_na_rows) {
+              type <- ifelse(object@model_type %in% c("ordinal", "multiclass"), "class", "response")
+              
               categorical_var <- .get_categorical_names(newdata)
               to_scale <- setdiff(names(newdata), categorical_var)
-              scale_data <- scale(newdata[,to_scale],
-                               center = object@scaling_attributes$`scaled:center`,
-                               scale = object@scaling_attributes$`scaled:scale`)
+              scale_data <- scale(newdata[, to_scale],
+                                  center = object@scaling_attributes$`scaled:center`,
+                                  scale = object@scaling_attributes$`scaled:scale`)
               newdata <- cbind(as.data.frame(scale_data),            
                                newdata[, categorical_var])
               names(newdata) <- c(names(as.data.frame(scale_data)), categorical_var)
-
-              as.vector(predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE], reduce = "none", type = type))            
+              
+              as.vector(predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE]
+                                , reduce = "none", type = type))            
             }
             # redirect to predict2.biomod2_model.data.frame
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -990,7 +1004,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             # Remi 11/2022 Not sure the following lines are necessary
             if (!inMemory(proj)) {
               if (!isNamespaceLoaded("raster")) {
-                if(!requireNamespace('raster', quietly = TRUE)) stop("Package 'raster' not found")
+                if (!requireNamespace('raster', quietly = TRUE)) stop("Package 'raster' not found")
               }
               proj <- raster::readAll(proj@ptr) # to prevent from tmp files removing
               x <- message(proj, "readAll") # to have message if need be ?
@@ -1047,9 +1061,9 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             ## there is no need to provide meaningful values.
             Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
             if (nrow(Pred_swd) != nrow(newdata)) {
-              tmp = cbind("predict", newdata[, 1], newdata[, 1])
-              colnames(tmp) = c("predict", "x", "y")
-              Pred_swd = cbind(tmp, newdata)
+              tmp <- cbind("predict", newdata[, 1], newdata[, 1])
+              colnames(tmp) <- c("predict", "x", "y")
+              Pred_swd <- cbind(tmp, newdata)
             } else {
               Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
             }

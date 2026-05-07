@@ -1,16 +1,16 @@
 
 .getOS <- function()
 {
-  sysinf = Sys.info()
+  sysinf <- Sys.info()
   if (!is.null(sysinf))
   {
-    os = sysinf['sysname']
-    if (os == 'Darwin') os = "mac"
+    os <- sysinf['sysname']
+    if (os == 'Darwin') os <- "mac"
   } else
   {
-    os = .Platform$OS.type
-    if (grepl("^darwin", R.version$os)) os = "mac"
-    if (grepl("linux-gnu", R.version$os)) os = "linux"
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os)) os <- "mac"
+    if (grepl("linux-gnu", R.version$os)) os <- "linux"
   }
   return(tolower(os))
 }
@@ -27,8 +27,8 @@
     cat("\n")
   } else
   {
-    x.length = nchar(x) + 2
-    y.length = (.Options$width - x.length) / 2
+    x.length <- nchar(x) + 2
+    y.length <- (.Options$width - x.length) / 2
     cat("\n")
     cat(paste(rep("-=", round(y.length / 2)), collapse = "")
         , x
@@ -196,10 +196,10 @@
 
 .check_formating_table <- function(resp.var)
 {
-  resp.var = as.data.frame(resp.var)
   if (ncol(resp.var) > 1) {
     stop("You must give a monospecific response variable (1D object)")
   } else if (is.ordered(resp.var[, 1])) {
+  resp.var <- as.data.frame(resp.var)
     levels <- levels(resp.var[, 1])
     resp.var <- factor(resp.var[, 1], levels = levels, ordered = T)
   } else {
@@ -336,10 +336,8 @@ rast.has.values <- function(x)
 .get_data_mask <- function(expl.var, value.out = 1)
 {
   stopifnot(inherits(expl.var, 'SpatRaster'))
-  classify(as.numeric(!any(is.na(expl.var))),
-           matrix(c(0, NA, 
-                    1, value.out), 
-                  ncol = 2, byrow = TRUE)) 
+  classify(as.numeric(!any(is.na(expl.var)))
+           , matrix(c(0, NA, 1, value.out), ncol = 2, byrow = TRUE)) 
 }
 
 
@@ -375,10 +373,10 @@ rast.has.values <- function(x)
 .get_env_class <- function(new.env)
 {
   .fun_testIfInherits(TRUE, "new.env", new.env, c('data.frame', 'SpatRaster'))
-  if (inherits(new.env,"data.frame")) {
+  if (inherits(new.env, "data.frame")) {
     return("data.frame")
   }
-  if (inherits(new.env,"SpatRaster")) {
+  if (inherits(new.env, "SpatRaster")) {
     return("SpatRaster")
   }
   NULL
@@ -397,7 +395,7 @@ rast.has.values <- function(x)
   }
   
   nbPres <- sum(resp[subset] > 0, na.rm = TRUE)
-  # number of true absences + pseudo absences to maintain true value of prevalence
+  # number of true absences + pseudo-absences to maintain true value of prevalence
   nbAbs <- length(resp[subset]) - nbPres
   weights <- rep(1, length(resp))
   
@@ -406,7 +404,7 @@ rast.has.values <- function(x)
   } else { # code presences as 1
     weights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbs)
   }
-  weights = round(weights[]) # to remove glm & gam warnings
+  weights <- round(weights[]) # to remove glm & gam warnings
   weights[!subset] <- 0
   
   return(weights)
@@ -704,15 +702,9 @@ rast.has.values <- function(x)
   sub(pattern     = paste0(".*?_",sp.name), 
       replacement = "",
       x           = out.names)
-  out.binary <- grepl(pattern = "bin\\.",
-                      x = out.names)
-  out.filt <- grepl(pattern = "filt\\.",
-                    x = out.names)
-  out.type <- ifelse(out.binary,
-                     "bin",
-                     ifelse(out.filt,
-                            "filt", 
-                            "out"))
+  out.binary <- grepl(pattern = "bin\\.", x = out.names)
+  out.filt <- grepl(pattern = "filt\\.", x = out.names)
+  out.type <- ifelse(out.binary, "bin", ifelse(out.filt, "filt", "out"))
   # To avoid special case when the species name finish by "bin" (or "filt") ??
   # out.format <- tools::file_ext(out.names)
   # if(grepl(pattern = paste0(sp.name,"/.",out.format), x = out.names)){ 
@@ -727,9 +719,7 @@ rast.has.values <- function(x)
                            return(  sub(paste0(out.type[i],".*"), "", begin.cut) )
                          }
                        })
-  data.frame("link"   = out.names,
-             "type"   = out.type,
-             "metric" = out.metric)
+  data.frame(link = out.names, type = out.type, metric = out.metric)
 }
 
 ## Return relevant layers indices from BIOMOD.projection.out given metric.binary or metric.select
@@ -769,7 +759,7 @@ rast.has.values <- function(x)
 .fill_BIOMOD.models.out <- function(objName, objValue, mod.out, inMemory = FALSE, nameFolder = ".")
 {
   # backup case uses existing @val slot
-  if(is.null(objValue)){
+  if (is.null(objValue)) {
     eval(parse(text = paste0("objValue <- mod.out@", objName, "@val")))
   }
   
@@ -794,13 +784,13 @@ rast.has.values <- function(x)
 ##' @param model_subclass the subclass of GAM model
 ##' @keywords internal
 
-.load_gam_namespace <- function(model_subclass = c("GAM_mgcv_gam","GAM_mgcv_bam", "GAM_gam_gam"))
+.load_gam_namespace <- function(model_subclass = c("GAM_mgcv_gam", "GAM_mgcv_bam", "GAM_gam_gam"))
 {
   if (model_subclass %in% c("GAM_mgcv_gam", "GAM_mgcv_bam")) {
     # cat("\n*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
     if (!isNamespaceLoaded("mgcv")) { 
-      if(!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
+      if (!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
     }
   }
   
@@ -812,7 +802,7 @@ rast.has.values <- function(x)
       unloadNamespace("mgcv")
     }
     if (!isNamespaceLoaded("gam")) { 
-      if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+      if (!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
     }
   }
   invisible(NULL)
@@ -830,7 +820,8 @@ rast.has.values <- function(x)
 ##' @return a vector with the name of categorical variables
 ##' @keywords internal
 
-.get_categorical_names <- function(df){
+.get_categorical_names <- function(df)
+{
   unlist(sapply(names(df), function(x) {
     if (is.factor(df[, x])) { return(x) } else { return(NULL) }
   }))
@@ -866,9 +857,7 @@ rast.has.values <- function(x)
 {
   myTerra <- rast(
     sapply(1:raster::nlayers(myraster), 
-           function(thislayer){
-             rast(myraster[[thislayer]])
-           })
+           function(thislayer) { rast(myraster[[thislayer]]) })
   )
   which.factor <- which(raster::is.factor(myraster))
   for (this.layer in which.factor) {
@@ -882,10 +871,10 @@ rast.has.values <- function(x)
       this.levels.df <- data.frame(ID = this.levels[,ind.levels],
                                    value = paste0(this.levels[,ind.levels]))
     } else {
-      new.levels <- paste0(this.levels[,ind.levels])
-      new.index <- this.levels[,1]
+      new.levels <- paste0(this.levels[, ind.levels])
+      new.index <- this.levels[, 1]
       this.layer.name <- names(myraster)[this.layer]
-      fit.levels <- levels(expected_levels[,this.layer.name])
+      fit.levels <- levels(expected_levels[, this.layer.name])
       if (!all(new.levels %in% fit.levels)) {
         cat("\n",
             "!! Levels for layer", colnames(expected_levels)[this.layer],
@@ -898,9 +887,7 @@ rast.has.values <- function(x)
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
         max.index <- max(new.index)
-        this.levels.df <- data.frame(ID = c(new.index,
-                                            max.index +
-                                              seq_along(levels.to.add)),
+        this.levels.df <- data.frame(ID = c(new.index, max.index + seq_along(levels.to.add)),
                                      value = c(new.levels, fit.levels[levels.to.add]))
       } else {
         this.levels.df <- data.frame(ID = new.index,
@@ -923,8 +910,8 @@ rast.has.values <- function(x)
       this.levels <- cats(new.env)[[this.layer]]
       ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
       new.levels <- paste0(this.levels[,ind.levels])
-      if( any(duplicated(new.levels)) ) {
         stop("duplicated levels in `new.env`")
+      if (any(duplicated(new.levels))) {
       }
       new.index <- this.levels[, 1]
       fit.levels <- levels(expected_levels[,this.layer.name])
@@ -940,22 +927,18 @@ rast.has.values <- function(x)
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
         max.index <- max(new.index)
-        this.levels.df <- data.frame(ID = c(new.index,
-                                            max.index +
-                                              seq_along(levels.to.add)),
+        this.levels.df <- data.frame(ID = c(new.index, max.index + seq_along(levels.to.add)),
                                      value = c(new.levels, fit.levels[levels.to.add]))
-        
         colnames(this.levels.df) <- c("ID", names(new.env)[this.layer])
-        new.env <- categories(new.env, layer = this.layer, 
-                              this.levels.df)
+        new.env <- categories(new.env, layer = this.layer, this.levels.df)
       } 
     }
   } else {
     for (this.layer in which.factor) {
       this.layer.name <- names(new.env)[this.layer]
-      this.levels <- levels(new.env[,this.layer.name])
+      this.levels <- levels(new.env[, this.layer.name])
       new.levels <- paste0(this.levels)
-      fit.levels <- levels(expected_levels[,this.layer.name])
+      fit.levels <- levels(expected_levels[, this.layer.name])
       if (!all(new.levels %in% fit.levels)) {
         cat("\n",
             "!! Levels for layer", colnames(expected_levels)[this.layer],
@@ -968,8 +951,7 @@ rast.has.values <- function(x)
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
         new.env[ , this.layer.name] <- factor(new.env[ , this.layer.name], 
-                                              levels = c(new.levels,
-                                                         fit.levels[levels.to.add]))
+                                              levels = c(new.levels, fit.levels[levels.to.add]))
       }
     }
   }
@@ -1077,18 +1059,18 @@ rast.has.values <- function(x)
 ## get good models ou metrics depending of the data.type 
 ## used in BIOMOD.Modeling, bm_ModelingOptions, bm_RunModelsLoop
 
-.avail.models.list <- function(data.type){
+.avail.models.list <- function(data.type) {
   switch(data.type,
-    binary = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
-    ordinal = c('CTA', 'DNN', 'FDA',  'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
-    multiclass = c('CTA', 'DNN', 'FDA', 'MARS', 'RF', 'XGBOOST'),
-    abundance = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
-    count = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
-    relative = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
+         binary = c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
+         ordinal = c('CTA', 'DNN', 'FDA',  'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+         multiclass = c('CTA', 'DNN', 'FDA', 'MARS', 'RF', 'XGBOOST'),
+         abundance = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+         count = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+         relative = c('CTA', 'DNN', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
   )
 }
 
-.avail.eval.meth.list <- function(data.type){
+.avail.eval.meth.list <- function(data.type) {
   switch(data.type,
          binary = c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                     , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', 'AUCprg'

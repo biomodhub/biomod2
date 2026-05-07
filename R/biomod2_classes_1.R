@@ -213,13 +213,13 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   
   ## Check data.type
   if (is.eval == FALSE) {
-    presumed.data.type = .which.data.type(sp)
     if (presumed.data.type != "binary" && !(is.null(PA.strategy) || PA.strategy == 'none')) {
       stop("PA selection is not available with non binary data !")
     }
     if (presumed.data.type == "binary" && !(is.null(PA.strategy) || PA.strategy == 'none')) {
       if (any(sp == 0, na.rm = TRUE)) {
         stop("Your dataset contains true absences. This should not be mixed with pseudo absences selection")
+    presumed.data.type <- .which.data.type(sp)
       }
     }
     
@@ -234,7 +234,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   }
   
   ## Check sp
-  if(data.type == "binary"){
+  if (data.type == "binary") {
     sp <- .check_formating_resp.var.bin(resp.var = sp, is.eval = is.eval)
   } else {
     sp <- .check_formating_resp.var.abun(resp.var = sp)
@@ -292,8 +292,8 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     eval.env <- eval.xy <- NULL
     
   } else {
-    .tmp <- .BIOMOD.formated.data.check_data(sp = eval.sp, env = eval.env, xy = eval.xy, is.eval = TRUE
-                                             , data.type = data.type)
+    .tmp <- .BIOMOD.formated.data.check_data(sp = eval.sp, env = eval.env, xy = eval.xy
+                                             , is.eval = TRUE, data.type = data.type)
     eval.sp <- .tmp$sp
     eval.env <- .tmp$env
     eval.xy <- .tmp$xy
@@ -645,8 +645,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
-            doAbund = FALSE
-            if (x@data.type != "binary") { doAbund = TRUE }
+            doAbund <- FALSE
+            if (x@data.type != "binary") { doAbund <- TRUE }
             
             
             # 1 - extract SpatVector for all required data ----------------------
@@ -681,7 +681,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               full.df.vect <- rbind(full.df.vect, eval.df.vect)
             }
             
-            ## 1.3 - Pseudo Absences and CV dataset -----------------------------
+            ## 1.3 - Pseudo-Absences and CV dataset -----------------------------
             if (!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")) {
               PA_run.vect <- foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do%
                 {
@@ -1176,7 +1176,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     plot.valid <- !is.null(calib.lines)
   } else {
     stopifnot(is.logical(plot.valid))
-    if(plot.valid & is.null(calib.lines)){
+    if (plot.valid && is.null(calib.lines)) {
       plot.valid <- FALSE
       cat('\n  ! Calibration/Validation data is missing, plot.valid set to FALSE')
     }
@@ -1187,7 +1187,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     plot.eval <- x@has.data.eval
   } else {
     stopifnot(is.logical(plot.eval))
-    if(plot.eval & !x@has.data.eval){
+    if (plot.eval && !x@has.data.eval) {
       plot.eval <- FALSE
       cat('\n  ! Evaluation data is missing, plot.eval set to FALSE')
     }
@@ -1200,17 +1200,15 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   } else {
     has.mask.eval <- FALSE
   }
-  if (has.mask | has.mask.eval) {  
-    if (!requireNamespace("tidyterra")) {
-      stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
-    }
+  if (has.mask | has.mask.eval) {
+    if (!requireNamespace('tidyterra', quietly = TRUE)) stop("Package 'tidyterra' not found")
   } 
   ## 5 - check plot.type  ----------------------
   if (missing(plot.type)) {
     plot.type <- "points"
   } else {
     .fun_testIfIn(TRUE, "plot.type", plot.type, c("raster","points"))
-    if ( !has.mask & plot.type == "raster") {
+    if (!has.mask && plot.type == "raster") {
       plot.type <- "points"
       cat("\n ! no raster available, `plot.type` automatically set to 'points'\n")
     }
@@ -1223,10 +1221,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     .fun_testIfIn(TRUE, "plot.output", plot.output, c("facet","list"))
   }
   
-  if(plot.output == "facet"){
-    if(!requireNamespace("ggtext")){
-      stop("Package `ggtext` is missing. Please install it with `install.packages('ggtext')`.")
-    }
+  if (plot.output == "facet") {
+    if (!requireNamespace('ggtext', quietly = TRUE)) stop("Package 'ggtext' not found")
   }
   
   ## 7 - do.plot ----------------------
@@ -1234,8 +1230,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   stopifnot(is.logical(do.plot))
   
   ##  9 - check that coordinates are available -------------------------------
-  if(nrow(x@coord) == 0){
     stop("coordinates are required to plot BIOMOD.formated.data objects")
+  if (nrow(x@coord) == 0) {
   }
   
   ## End - return arguments ----------------------------------------------------
@@ -1268,16 +1264,16 @@ setMethod('show', signature('BIOMOD.formated.data'),
             if (object@data.type == "binary") {
               cat("\n\t",
                   sum(object@data.species, na.rm = TRUE),
-                  'presences, ',
+                  'presences,',
                   sum(object@data.species == 0, na.rm = TRUE),
-                  'true absences and ',
+                  'true absences and',
                   sum(is.na(object@data.species), na.rm = TRUE),
                   'undefined points in dataset',
                   fill = .Options$width)
-            } else if (object@data.type %in% c("ordinal", "multiclass")){
+            } else if (object@data.type %in% c("ordinal", "multiclass")) {
               cat("\n\t",
                   length(object@data.species),
-                  'points, with ',
+                  'points, with',
                   length(levels(object@data.species)),
                   'levels : ',
                   levels(object@data.species),      
@@ -1302,18 +1298,18 @@ setMethod('show', signature('BIOMOD.formated.data'),
               if (object@data.type == "binary") {
                 cat("\n\t",
                     sum(object@eval.data.species, na.rm = TRUE),
-                    'presences, ',
+                    'presences,',
                     sum(object@eval.data.species == 0, na.rm = TRUE),
-                    'true absences and ',
+                    'true absences and',
                     sum(is.na(object@eval.data.species), na.rm = TRUE),
                     'undefined points in dataset',
                     fill = .Options$width)
-              } else if (object@data.type %in% c("ordinal", "multiclass")){
+              } else if (object@data.type %in% c("ordinal", "multiclass")) {
                 cat("\n\t",
                     length(object@eval.data.species),
-                    'points, with ',
+                    'points, with',
                     length(levels(object@eval.data.species)),
-                    'levels : ',
+                    'levels :',
                     levels(object@eval.data.species),      
                     fill = .Options$width)
               } else {
@@ -1328,13 +1324,12 @@ setMethod('show', signature('BIOMOD.formated.data'),
             }
             
             if(inherits(object, "BIOMOD.formated.data.PA")){
-              PA.length <- sapply(object@PA.table, function(this.pa){
-                return(length(which(this.pa))
-                       - length(which(object@data.species == 1)))
+              PA.length <- sapply(object@PA.table, function(this.pa) {
+                return(length(which(this.pa)) - length(which(object@data.species == 1)))
               })
               PA.unique <- unique(PA.length)
-              PA.dataset <- sapply(PA.unique, function(this.PA){
                 paste0(names(PA.length)[which(PA.length == this.PA)], collapse = ", ")
+              PA.dataset <- sapply(PA.unique, function(this.PA) {
               })
               cat(
                 "\n\n",
@@ -1452,7 +1447,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                            "True_Absences" = length(which(object@eval.data.species == 0)),
                                            "Pseudo_Absences" = 0,
                                            "Undefined" = length(which(is.na(object@eval.data.species)))))
-              } else if (object@data.type %in% c("ordinal", "multiclass")){
+              } else if (object@data.type %in% c("ordinal", "multiclass")) {
                 output <- rbind(output,
                                 data.frame("dataset" = "evaluation",
                                      "run" = NA,
@@ -1500,8 +1495,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                       "PA" = this_PA,
                                       "Presences" = length(which(calib.resp == 1)),
                                       "True_Absences" = length(which(calib.resp == 0)),
-                                      "Pseudo_Absences" = 
-                                        length(which(is.na(calib.resp))),
+                                      "Pseudo_Absences" = length(which(is.na(calib.resp))),
                                       "Undefined" = NA)
                     
                     if (!is.na(this_run)) { 
@@ -1517,7 +1511,6 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                                 length(which(valid.resp == 1)) -
                                                 length(which(valid.resp == 0)),
                                               "Undefined" = NA))
-                      
                     }
                     return(tmp) # end foreach
                   })
@@ -1718,7 +1711,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.fact.aggr = NULL
                    , PA.user.table = NULL
-                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
+                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL)
+          {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
@@ -1742,7 +1736,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.fact.aggr = NULL
                    , PA.user.table = NULL
-                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
+                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL)
+          {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
@@ -1806,11 +1801,10 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                    user.table = PA.user.table,
                                    seed.val = seed.val)
   
-  
   if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)
-    if (length(categorical_var) > 0) {
-      for (cat_var in categorical_var) {
+    if (length(categorical.var) > 0) {
+      for (cat_var in categorical.var) {
         pa.data.tmp$env[, cat_var] <- as.factor(pa.data.tmp$env[, cat_var])
       }
     }
@@ -1862,7 +1856,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   } else {
     stop("\n   ! PA selection not done : \n The PA selection is not possible with the parameters selected." )
   }
-  rm(list = "pa.data.tmp" )
+  rm(list = "pa.data.tmp")
   return(BFDP)
 }
 

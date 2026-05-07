@@ -262,9 +262,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             mean_prediction <- args$mean_prediction
             side <- args$side
             data.type <- args$data.type
-            # additional arg retrived for EMca
+            # additional arg retrieved for EMca
             thresh <- args$thresh
-            # additional arg retrived for EMwmean
+            # additional arg retrieved for EMwmean
             penalization_scores <- args$penalization_scores
             
             if (data_as_formal_predictions) { 
@@ -632,7 +632,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
             on_0_1000 <- args$on_0_1000
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             
-            predfun <- function(newdata, na.rm, ...) {
+            predfun <- function(newdata, on_0_1000, thresh, na.rm, ...) {
               out <- rowMeans(bm_BinaryTransformation(newdata, thresh), na.rm = na.rm)
               if (on_0_1000) { out <- round(out * 1000) }
               out
@@ -643,7 +643,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
               thresh <- object@thresholds / 1000
             }
             # redirect to predict2.biomod2_ensemble_model.data.frame
-            callNextMethod(object, newdata, predfun = predfun,
+            callNextMethod(object, newdata, predfun = predfun, thresh = thresh,
                            data_as_formal_predictions = data_as_formal_predictions, ...)
           }
 )

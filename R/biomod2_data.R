@@ -192,64 +192,64 @@
 # bm.opt@models <- sort(unique(c(bm.opt@models, bm.opt_gam2@models, bm.opt_gam3@models)))
 # bm.opt@options <- c(bm.opt@options, bm.opt_gam2@options, bm.opt_gam3@options)
 # bm.opt@options <- bm.opt@options[bm.opt@models]
-# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size = 5 #NULL
-# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 0.1
-# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$trace = FALSE
-# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$rang = 0.1
-# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$maxit = 200
-# # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$method = "class"
-# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)
-# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$cost = NULL
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$batchsize = 100L
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$epochs = 150L
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$hidden = c(100L, 100L) ## To wide ?
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lr = 0.05
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$optimizer = "adam"
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lambda = 0.001
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$alpha = 1.0 #L2 regularization
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$validation = 0.2
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lr_scheduler = config_lr_scheduler("reduce_on_plateau", patience = 7)
-# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$early_stopping = 14
-# # bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']]$method = "mars"
-# # bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
-# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$method = "GCV.Cp"
-# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.trees = 2500
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$interaction.depth = 7
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.minobsinnode = 5
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$shrinkage = 0.001
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$cv.folds = 3
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$keep.data = FALSE
-# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.cores = 1
-# # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
-# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$mustart = 0.5
-# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$control = glm.control(maxit = 50)
-# # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$glm = list(family = binomial(link = 'logit'))
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$ncross = 0
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nk = NULL
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$penalty = 2
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$thresh = 0.001
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nprune = NULL
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$pmethod = 'backward'
-# bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.default$path_to_maxent.jar = '.'
-# bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.values[['_allData_allRun']]$path_to_maxent.jar = '.'
-# # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = 2
-# # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = 2
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
-# bm.opt@options$SRE.binary.biomod2.bm_SRE@args.values[['_allData_allRun']]$do.extrem = TRUE
-# bm.opt@options$XGBOOST.binary.xgboost.xgb_train@args.values[['_allData_allRun']]$params = xgb.params(max_depth = 2, eta = 1, nthread = 2)
-# bm.opt@options$XGBOOST.binary.xgboost.xgb_train@args.values[['_allData_allRun']]$nrounds = 4
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size <- 5 #NULL
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay <- 0.1
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$trace <- FALSE
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$rang <- 0.1
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$maxit <- 200
+# # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$method <- "class"
+# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$control <- list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)
+# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$cost <- NULL
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$batchsize <- 100L
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$epochs <- 150L
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$hidden <- c(100L, 100L) ## To wide ?
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lr <- 0.05
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$optimizer <- "adam"
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lambda <- 0.001
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$alpha <- 1.0 #L2 regularization
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$validation <- 0.2
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$lr_scheduler <- config_lr_scheduler("reduce_on_plateau", patience = 7)
+# bm.opt@options$DNN.binary.cito.dnn@args.values[['_allData_allRun']]$early_stopping <- 14
+# # bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']]$method <- "mars"
+# # bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$family <- binomial(link = 'logit')
+# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$method <- "GCV.Cp"
+# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$control <- list(epsilon = 1e-06, trace = FALSE, maxit = 100)
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.trees <- 2500
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$interaction.depth <- 7
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.minobsinnode <- 5
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$shrinkage <- 0.001
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$cv.folds <- 3
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$keep.data <- FALSE
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.cores <- 1
+# # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$family <- binomial(link = 'logit')
+# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$mustart <- 0.5
+# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$control <- glm.control(maxit = 50)
+# # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$glm <- list(family = binomial(link = 'logit'))
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$ncross <- 0
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nk <- NULL
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$penalty <- 2
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$thresh <- 0.001
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nprune <- NULL
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$pmethod <- 'backward'
+# bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.default$path_to_maxent.jar <- '.'
+# bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.values[['_allData_allRun']]$path_to_maxent.jar <- '.'
+# # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type <- 'classification'
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree <- 500
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry <- 2
+# # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata <- factor(c(0, 1))
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize <- NULL
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize <- 5
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes <- NULL
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type <- 'classification'
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree <- 500
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry <- 2
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata <- factor(c(0, 1))
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize <- NULL
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize <- 5
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes <- NULL
+# bm.opt@options$SRE.binary.biomod2.bm_SRE@args.values[['_allData_allRun']]$do.extrem <- TRUE
+# bm.opt@options$XGBOOST.binary.xgboost.xgb_train@args.values[['_allData_allRun']]$params <- xgb.params(max_depth = 2, eta = 1, nthread = 2)
+# bm.opt@options$XGBOOST.binary.xgboost.xgb_train@args.values[['_allData_allRun']]$nrounds <- 4
 # 
 # # Remove things to be adapted to "count", "abundance" and "compositional"
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']] <- bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']][-which(names(bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]) == "method")]
@@ -375,7 +375,7 @@
 
 # DataSTOC <- read.csv("inst/external/DATA_biomod2_STOC.csv", header = TRUE, sep = ",")
 # DataSTOC <- cbind(DataSTOC[, 1:10], DataSTOC[, sort(colnames(DataSTOC)[11:ncol(DataSTOC)])])
-# colnames(DataSTOC)[3:4] = toupper(colnames(DataSTOC)[3:4])
+# colnames(DataSTOC)[3:4] <- toupper(colnames(DataSTOC)[3:4])
 # 
 # usethis::use_data(DataSTOC, overwrite = TRUE)
 # usethis::use_data(DataSTOC, overwrite = TRUE, internal = TRUE)

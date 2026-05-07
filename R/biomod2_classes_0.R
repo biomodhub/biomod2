@@ -241,50 +241,50 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
   
   ## Correct default options
   if (mod == "ANN") { 
-    argstmp[["x"]] = NULL
-    argstmp$size = 2
+    argstmp[["x"]] <- NULL
+    argstmp$size <- 2
   }
   if (mod == "CTA") { argstmp$method <- CTAmethod }
   if (mod == "DNN") { 
-    argstmp$loss = DNNloss
-    argstmp$plot = FALSE
-    argstmp$verbose = FALSE
+    argstmp$loss <- DNNloss
+    argstmp$plot <- FALSE
+    argstmp$verbose <- FALSE
   }
   if (mod == "FDA") {
-    argstmp$dimension = NULL
-    argstmp$keep.fitted = NULL
-    argstmp$method = FDAmethod
+    argstmp$dimension <- NULL
+    argstmp$keep.fitted <- NULL
+    argstmp$method <- FDAmethod
   }
   if (mod == "GAM") {
-    argstmp[["x"]] = NULL
-    argstmp[["y"]] = NULL
-    argstmp$family = MODfamily
-    if (pkg == "gam") { argstmp$control = gam::gam.control() }
+    argstmp[["x"]] <- NULL
+    argstmp[["y"]] <- NULL
+    argstmp$family <- MODfamily
+    if (pkg == "gam") { argstmp$control <- gam::gam.control() }
     if (pkg == "mgcv") {
-      argstmp$method = "GCV.Cp"
-      argstmp$control = mgcv::gam.control()
+      argstmp$method <- "GCV.Cp"
+      argstmp$control <- mgcv::gam.control()
     }
   }
   if (mod == "GBM"){
-    argstmp$distribution = GBMdistribution
+    argstmp$distribution <- GBMdistribution
   }
   if (mod == "GLM") {
-    argstmp$family = MODfamily
-    argstmp$control = list()
+    argstmp$family <- MODfamily
+    argstmp$control <- list()
   }
-  if (mod == "MAXNET") { argstmp[["f"]] = NULL }
-  if (mod == "MARS") { argstmp$glm = list(family = MODfamily)}
+  if (mod == "MAXNET") { argstmp[["f"]] <- NULL }
+  if (mod == "MARS") { argstmp$glm <- list(family = MODfamily)}
   if (mod == "RF" || mod == "RFd") {
-    argstmp[["x"]] = NULL
-    argstmp$mtry = 1
+    argstmp[["x"]] <- NULL
+    argstmp$mtry <- 1
     argstmp$type <- RFtype
   }
   if (mod == "XGBOOST") { 
     argstmp$params <- xgboost::xgb.params(objective = XGBOOSTobjective, verbosity = 0)
-    argstmp$nrounds = 4
+    argstmp$nrounds <- 4
   }
   
-  argstmp[["..."]] = NULL
+  argstmp[["..."]] <- NULL
   return(argstmp)
 }
 
@@ -590,9 +590,9 @@ setMethod('show', signature('BIOMOD.options.dataset'),
             cat('\n\t   ( dataset', dataset, ')')
             
             for (arg in names(object@args.values[[dataset]])) {
-              val.def = capture.output(object@args.default[[arg]])
-              val.used = capture.output(object@args.values[[dataset]][[arg]])
-              if (arg == 'data') val.used = head(val.used)
+              val.def <- capture.output(object@args.default[[arg]])
+              val.used <- capture.output(object@args.values[[dataset]][[arg]])
+              if (arg == 'data') val.used <- head(val.used)
               
               cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
               if (!is.null(val.used) && !is.null(val.def) &&
@@ -612,16 +612,16 @@ setMethod('show', signature('BIOMOD.options.dataset'),
 setMethod('print', signature('BIOMOD.options.dataset'),
           function(x, dataset = '_allData_allRun')
           {
-            object = x
             cat('\n\t> ', object@model, 'options ( datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
+            object <- x
             dataset <- ifelse(dataset %in% names(object@args.values)
                               , dataset, ifelse("_allData_allRun" %in% names(object@args.values)
                                                 , "_allData_allRun", names(object@args.values)[1]))
             cat('\n\t   ( dataset', dataset, ')')
             
             for (arg in names(object@args.values[[dataset]])) {
-              val.def = capture.output(object@args.default[[arg]])
-              val.used = capture.output(object@args.values[[dataset]][[arg]])
+              val.def <- capture.output(object@args.default[[arg]])
+              val.used <- capture.output(object@args.values[[dataset]][[arg]])
               
               cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
               if (!is.null(val.used) && !is.null(val.def) && 
@@ -711,7 +711,7 @@ setMethod('show', signature('BIOMOD.models.options'),
 setMethod('print', signature('BIOMOD.models.options'),
           function(x, dataset = '_allData_allRun')
           {
-            object = x
+            object <- x
             .bm_cat("BIOMOD.models.options")
             for (mod in object@models) {
               print(object@options[[mod]], dataset = dataset)

@@ -480,10 +480,10 @@ setMethod("get_calib_lines", "BIOMOD.models.out",
             
             if (!is.null(out) && as.data.frame == TRUE) {
               tmp <- melt(out, varnames = c("points", "PA_run"))
-              tmp$PA = strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][1]
-              tmp$run = strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][2]
+              tmp$PA <- strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][1]
+              tmp$run <- strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][2]
               out <- tmp[, c("PA", "run", "points", "value")]
-              colnames(out)[4] = "calib.lines"
+              colnames(out)[4] <- "calib.lines"
               
               keep_lines <- .filter_outputs.df(out, subset.list = list(PA = PA, run = run))
               out <- out[keep_lines, ]
@@ -504,10 +504,10 @@ setMethod("get_formal_data", "BIOMOD.models.out",
             if (is.null(subinfo)) {
               return(load_stored_object(obj@formated.input.data))
             } else if (subinfo == 'MinMax') {
-              env = as.data.frame(get_formal_data(obj)@data.env.var)
-              MinMax = foreach(i = 1:ncol(env)) %do%
+              env <- as.data.frame(get_formal_data(obj)@data.env.var)
+              MinMax <- foreach(i = 1:ncol(env)) %do%
                 {
-                  x = env[, i]
+                  x <- env[, i]
                   if (is.numeric(x)) {
                     return(list(min = min(x, na.rm = TRUE)
                                 , max = max(x, na.rm = TRUE)))
@@ -515,7 +515,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
                     return(list(levels = levels(x)))
                   }
                 }
-              names(MinMax) = colnames(env)
+              names(MinMax) <- colnames(env)
               return(MinMax)
             } else if (subinfo == 'expl.var') {
               return(as.data.frame(get_formal_data(obj)@data.env.var))
@@ -546,7 +546,7 @@ setMethod("get_predictions", "BIOMOD.models.out",
           {
             if (evaluation && (!obj@has.evaluation.data)) {
               warning("!   Calibration data returned because no evaluation data available")
-              evaluation = FALSE
+              evaluation <- FALSE
             }
             
             # select calibration or eval data
@@ -591,8 +591,8 @@ setMethod("get_built_models", "BIOMOD.models.out",
 
 setMethod("get_evaluations", "BIOMOD.models.out",
           function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, metric.eval = NULL) {
-            if(obj@models.evaluation@link == ''){
               cat("\n! models have no evaluations\n")
+            if (obj@models.evaluation@link == '') {
               return(invisible(NULL))
             } else {
               out <- load_stored_object(obj@models.evaluation)
@@ -612,8 +612,8 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
           function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL) {
-            if(obj@variables.importance@link == ''){
               cat("\n! models have no variables importance\n")
+            if (obj@variables.importance@link == '') {
               return(invisible(NULL))
             } else {
               out <- load_stored_object(obj@variables.importance)
@@ -915,9 +915,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
   
   ## 1 - check for tidyterra ----------------------
   if (inherits(proj, "SpatRaster")) {
-    if (!requireNamespace("tidyterra")) {
-      stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
-    }
+    if (!requireNamespace('tidyterra', quietly = TRUE)) stop("Package 'tidyterra' not found")
   }
   
   ## 2 - plot.output----------------------
@@ -966,9 +964,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
     }
   }
   
-  if (missing(size)) {
-    size <- 0.75
-  } 
+  if (missing(size)) { size <- 0.75 } 
   
   ## 7 - check size -------------------------------
   if (inherits(proj, 'data.frame')) {
@@ -1315,7 +1311,7 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
             if (is.null(subinfo)) {
               return(load_stored_object(obj@models.out))
             } else {
-              bm_form = get_formal_data(obj)
+              bm_form <- get_formal_data(obj)
               return(get_formal_data(bm_form, subinfo = subinfo))
             }
           }
@@ -1368,7 +1364,7 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
             # check evaluation data availability
             if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
               warning("!   Calibration data returned because no evaluation data available")
-              evaluation = FALSE
+              evaluation <- FALSE
             }
             
             # select calibration or eval data
@@ -1404,8 +1400,8 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
           function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
                    , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, metric.eval = NULL)
           {
-            if(obj@models.evaluation@link == ''){
               cat("\n! models have no evaluations\n")
+            if (obj@models.evaluation@link == '') {
               return(invisible(NULL))
             } else {
               out <- load_stored_object(obj@models.evaluation)
@@ -1432,8 +1428,8 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
           function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
                    , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, expl.var = NULL)
           {
-            if(obj@variables.importance@link == ''){
               cat("\n! models have no variables importance\n")
+            if (obj@variables.importance@link == '') {
               return(invisible(NULL))
             } else {
               out <- load_stored_object(obj@variables.importance)
@@ -1493,11 +1489,11 @@ setGeneric("set_new_dirname", function(obj, new.dir.name) { standardGeneric("set
   if (obj.type == "mod") {
     to.change <- c("formated.input.data", "calib.lines","models.options", "models.evaluation", "variables.importance", "models.prediction","models.prediction.eval")
     new.name <- file.path(new.dir.name, sp.name, '.BIOMOD_DATA', modellingID, n)
-    name.OUT = paste0(sp.name, '.', modellingID, '.models.out')
+    name.OUT <- paste0(sp.name, '.', modellingID, '.models.out')
   } else if (obj.type == "em") {
     to.change <- c("models.out", "models.evaluation", "variables.importance", "models.prediction","models.prediction.eval")
     new.name <- file.path(new.dir.name, sp.name, '.BIOMOD_DATA', modellingID, 'ensemble.models', n)
-    name.OUT = paste0(sp.name, '.', modellingID, '.ensemble.models.out')
+    name.OUT <- paste0(sp.name, '.', modellingID, '.ensemble.models.out')
   }
   for (n in to.change){
     eval(parse(text = paste0("new.object@", n, "@link", "<- new.name"))) #Plus tordu que ça tu meurs
