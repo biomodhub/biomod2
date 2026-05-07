@@ -1036,7 +1036,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   # check that repetition are note merged with full models
   if(any(grepl(pattern = "RUN",  x = models.chosen)) &&
      any(grepl(pattern = "allRun", x = models.chosen)) &&
-    cat("\n!!! Removed models using the Full dataset as ensemble models cannot merge repetition dataset (RUN1, RUN2, ...) with Full dataset unless em.by = 'PA+run'.")
      em.by != 'PA+run')
   {
     models.chosen <- models.chosen[!grepl(pattern = "allRun", x = models.chosen)]
