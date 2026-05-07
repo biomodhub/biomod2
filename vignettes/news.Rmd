@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-6 : 
+    + remove `.BIOMOD_EnsembleForecasting.prepare.workdir` function 
     + fix `kfold` selection for non-binary data in `bm_CrossValidation`
     + add check in `bm_PseudoAbsences` to select presences in `PA.user.table` when `user.defined` strategy
     + fix `bm_Tuning` for DNN : multiple sets (PA x RUN), hidden `width` and `depth` parameters

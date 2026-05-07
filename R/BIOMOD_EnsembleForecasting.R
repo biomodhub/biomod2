@@ -288,9 +288,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", bm.em@sp.name, "_ensemble")
   namePath <- file.path(bm.em@dir.name, bm.em@sp.name, nameProj)
-  indiv_proj_dir <- .BIOMOD_EnsembleForecasting.prepare.workdir(dir.name = bm.em@dir.name
-                                                                , sp.name = bm.em@sp.name
-                                                                , proj.folder = nameProj)
+  if (!do.stack) {
+    namePath <- file.path(namePath, "individual_projections")
+  }
+  dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
   
   ## 3. Get needed projections --------------------------------------------------------------------
   models.needed <- get_kept_models(bm.em)
@@ -332,7 +333,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (do.stack) {
         filename <- NULL
       } else {
-        filename <- file.path(indiv_proj_dir, paste0(em.name, output.format))
+        filename <- file.path(namePath, paste0(em.name, output.format))
       }
       
       mod <- get(BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name))
@@ -730,16 +731,5 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               do.stack = do.stack,
               output.format = output.format,
               compress = ifelse(is.null(args$compress), FALSE, args$compress)))
-}
-
-
-###################################################################################################
-
-.BIOMOD_EnsembleForecasting.prepare.workdir <- function(dir.name, sp.name, proj.folder)
-{
-  cat("\nCreating suitable Workdir...\n")
-  indiv_proj_dir <- file.path(dir.name, sp.name, proj.folder, "individual_projections")
-  dir.create(indiv_proj_dir, showWarnings = FALSE, recursive = TRUE, mode = "777")
-  return(indiv_proj_dir)
 }
 
