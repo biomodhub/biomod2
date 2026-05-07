@@ -197,7 +197,7 @@ bm_SRE <- function(resp.var = NULL,
             extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
                                    , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
           } else {
-            stop("Unsuported case!")
+            stop("Invalid explanatory variable")
           }
         }
       }
@@ -233,8 +233,8 @@ bm_SRE <- function(resp.var = NULL,
   ## 0. Check compatibility between resp.var and expl.var arguments -----------
   if (is.vector(resp.var) || inherits(resp.var, c("matrix", "data.frame"))) {
     resp.var <- as.data.frame(resp.var)
-      stop("\n resp.var and expl.var arguments must be of same type (both vector, both matrix, etc)")
     if (!is.vector(expl.var) && !inherits(expl.var, c("matrix", "data.frame", "SpatVector"))) {
+      stop("resp.var and expl.var must have the same class (matrix, data.frame, SpatVector or SpatRaster)")
     } else {
       if (inherits(expl.var, "SpatVector")) {
         expl.var <- values(expl.var)
@@ -242,9 +242,7 @@ bm_SRE <- function(resp.var = NULL,
       expl.var <- as.data.frame(expl.var)
       nb.expl.vars <- ncol(expl.var)
       names.expl.vars <- colnames(expl.var)
-      if (nrow(resp.var) != nrow(expl.var)) {
-        stop("resp.var and expl.var arguments must have the same number of rows")
-      }
+      .fun_testIfSameSize("resp.var", nrow(resp.var), "expl.var", nrow(expl.var), "number of rows")
     }
   }
   
@@ -257,7 +255,7 @@ bm_SRE <- function(resp.var = NULL,
   # back-compatibility with raster package
   if (inherits(resp.var, 'Raster')) {
     if (!inherits(expl.var, 'Raster')) {
-      stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
+      stop("resp.var and expl.var must have the same class (matrix, data.frame, SpatVector or SpatRaster)")
     }
     resp.var <- rast(resp.var)
     expl.var <- rast(expl.var)
@@ -265,7 +263,7 @@ bm_SRE <- function(resp.var = NULL,
   
   if (inherits(resp.var, 'SpatRaster')) {
     if (!inherits(expl.var, 'SpatRaster')) {
-      stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
+      stop("resp.var and expl.var must have the same class (matrix, data.frame, SpatVector or SpatRaster)")
     }
     nb.expl.vars <- nlyr(expl.var)
     names.expl.vars <- names(expl.var)
@@ -273,8 +271,8 @@ bm_SRE <- function(resp.var = NULL,
   
   ## 1. Check expl.var argument -----------------------------------------------
   if ((inherits(expl.var, 'data.frame') && any(sapply(expl.var, is.factor))) ||
-    stop("SRE algorithm does not handle factorial variables")
       (inherits(expl.var, 'SpatRaster') && any(is.factor(expl.var)))) {
+    stop("SRE does not handle categorical variables. Sorry.")
   }
   
   
@@ -285,29 +283,19 @@ bm_SRE <- function(resp.var = NULL,
     if (is.data.frame(new.env) || is.matrix(new.env) || is.vector(new.env))
     {
       new.env <- as.data.frame(new.env)
-      if (!all(names.expl.vars %in% colnames(new.env))) {
-        stop("expl.var variables names differs in the 2 dataset given")
-      }
-      new.env <- new.env[,names.expl.vars]
-      if (ncol(new.env) != nb.expl.vars) {
-        stop("Incompatible number of variables in new.env objects")
-      }
+      .fun_testIfIn("colnames(new.env)", colnames(new.env), names.expl.vars, exact = TRUE)
+      new.env <- new.env[, names.expl.vars]
+      .fun_testIfSameSize("new.env", ncol(new.env), "expl.var", nb.expl.vars, "number of cols/size")
     } else if (!inherits(new.env, 'SpatRaster')) {
       new.env <- rast(new.env)
-      if (sum(!(names.expl.vars %in% names(new.env))) > 0) {
-        stop("expl.var variables names differs in the 2 dataset given")
-      }
+      .fun_testIfIn("names(new.env)", names(new.env), names.expl.vars, exact = TRUE)
       new.env <- subset(new.env, names.expl.vars)
-      if (nlyr(new.env) != nb.expl.vars) {
-        stop("Incompatible number of variables in new.env objects")
-      }
+      .fun_testIfSameSize("new.env", nlyr(new.env), "expl.var", nb.expl.vars, "number of layers/size")
     }
   }
   
   ## 3. Check quant argument --------------------------------------------------
-  if (quant < 0 || quant >= 0.5) {
-    stop("\n quantmust be a 0 to 0.5 numeric")
-  }
+  .fun_testIf0X("quant", quant, 0.5)
   
   return(list(resp.var = resp.var,
               expl.var = expl.var,
@@ -338,4 +326,3 @@ bm_SRE <- function(resp.var = NULL,
   }
   return(out)
 }
-

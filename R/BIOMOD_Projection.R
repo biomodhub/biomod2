@@ -225,13 +225,15 @@ BIOMOD_Projection <- function(bm.mod,
                               seed.val = NULL,
                               ...)
 {
-  .bm_cat("Do Single Models Projection")
+  .bm_cat("[BIOMOD] Do Single Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .BIOMOD_Projection.check.args(bm.mod, proj.name, new.env, new.env.xy
                                         , models.chosen, metric.binary, metric.filter, seed.val, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  cat("\n")
   
   # if (.getOS() == "windows" && any(grep("MAXENT", bm.mod@models.computed))){
   #   env <- foreach:::.foreachGlobals
@@ -273,7 +275,7 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 3. Define the clamping mask ------------------------------------------------------------------
   if (build.clamping.mask) {
-    cat("\n\t> Building clamping mask\n")
+    cat("\n Building clamping mask...")
     nameMask <- paste0(nameProjSp, "_ClampingMask")
     MinMax <- get_formal_data(bm.mod, 'MinMax')
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
@@ -295,6 +297,7 @@ BIOMOD_Projection <- function(bm.mod,
                   NAflag = -9999,
                   overwrite = TRUE)
     }
+    cat("\n")
   }
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
@@ -305,16 +308,17 @@ BIOMOD_Projection <- function(bm.mod,
       }
       doParallel::registerDoParallel(cores = nb.cpu)
     } else {
-      warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
+      .message("Parallelisation with foreach is not available for Windows. Sorry.")
     }
   }
   if (proj_is_raster) {
     new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
   }
   
+  cat("\n Projecting : ")
   proj <- foreach(mod.name = models.chosen) %dopar%
     {
-      cat("\n\t> Projecting", mod.name, "...")
+      cat("\n\t +", mod.name)
       if (proj_is_raster) {
         new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
         names(new.env) <- bm.mod@expl.var.names
@@ -341,6 +345,7 @@ BIOMOD_Projection <- function(bm.mod,
       if (inherits(pred.tmp, 'try-error')) {
         pred.tmp <- NA
         class(pred.tmp) <- "try-error"
+        .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
         return(pred.tmp)
       }
       
@@ -384,13 +389,15 @@ BIOMOD_Projection <- function(bm.mod,
           return(pred.tmp)
         }
       } else {
-        cat("\n\t\t", filename)
+        cat("\n\t\t", filename) ## Happening ?
         return(filename)
       }
     }
+  cat("\n")
   
   models.error <- sapply(proj, inherits, what = "try-error")
   if (any(models.error)) {
+    .message("Some projection of models failed. ", toString(models.chosen[models.error]), " will be removed.\n")
     models.chosen <- models.chosen[!models.error]
     proj_out@models.projected <- models.chosen
     proj <- proj[!models.error]
@@ -443,25 +450,25 @@ BIOMOD_Projection <- function(bm.mod,
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
   if (bm.mod@data.type == "binary" && (!is.null(metric.binary) || !is.null(metric.filter)))
   {
-    cat("\n")
     saved.files.binary <- NULL
     saved.files.filtered <- NULL
     thresholds <- get_evaluations(bm.mod, full.name = models.chosen)
     if (!on_0_1000) { thresholds[, "cutoff"]  <- thresholds[, "cutoff"] / 1000 }
     
     ## Do binary/filtering transformation -------------------------------------
+    cat("\n Transforming :")
     for (eval.meth in unique(c(metric.binary, metric.filter))) {
       thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
       rownames(thres.tmp) <- thres.tmp$full.name
       thres.tmp <- thres.tmp[models.chosen, "cutoff"]
       
-      cat("\n\t> Building", eval.meth, "binaries / filtered")
       if (!do.stack) {
         ## NO stack + binary + filtering transformation -----------------------
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
           output.format.search <- paste0("\\",output.format)
           if (eval.meth %in% metric.binary) {
+            cat("\n\t +", eval.meth, "binary transformation")
             file.tmp.binary <- sub(output.format.search,
                                    paste0("_", eval.meth, "bin", output.format),
                                    file.tmp)
@@ -474,6 +481,7 @@ BIOMOD_Projection <- function(bm.mod,
           }
           
           if (eval.meth %in% metric.filter) {
+            cat("\n\t +", eval.meth, "filtering")
             file.tmp.filtered <- sub(output.format.search,
                                      paste0("_", eval.meth, "filt", output.format),
                                      file.tmp)
@@ -488,6 +496,7 @@ BIOMOD_Projection <- function(bm.mod,
       } else {
         ## Stack + binary transformation --------------------------------------
         if (eval.meth %in% metric.binary) {
+          cat("\n\t +", eval.meth, "binary transformation")
           nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
           assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
           
@@ -514,6 +523,7 @@ BIOMOD_Projection <- function(bm.mod,
         
         ## Stack + filtering transformation -----------------------------------
         if (eval.meth %in% metric.filter) {
+          cat("\n\t +", eval.meth, "filtering")
           nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
           assign(x = nameFilt,
                  value = bm_BinaryTransformation(proj.trans, thres.tmp, 
@@ -570,21 +580,18 @@ BIOMOD_Projection <- function(bm.mod,
   args <- list(...)
   
   ## 1. Check bm.mod ----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
+  .fun_testIfInherits("bm.mod", bm.mod, "BIOMOD.models.out")
   
   ## 2. Check proj.name -------------------------------------------------------
-  if (is.null(proj.name)) {
-    stop("\nYou must define a name for Projection Outputs")
-  } else {
-    dir.create(paste0(bm.mod@sp.name, '/proj_', proj.name, '/'), showWarnings = FALSE)
-  }
+  .fun_testIfNULL("proj.name", proj.name)
+  dir.create(paste0(bm.mod@sp.name, '/proj_', proj.name, '/'), showWarnings = FALSE)
   
   ## 3. Check new.env ---------------------------------------------------------
-  .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
+  .fun_testIfInherits("new.env", new.env, c("matrix", "data.frame", "Raster", "SpatRaster"))
   
   if (inherits(new.env, 'matrix')) {
     if (any(sapply(get_formal_data(bm.mod, "expl.var"), is.factor))) {
-      stop("new.env cannot be given as matrix when model involves categorical variables")
+      stop("new.env cannot be given as matrix when modeling involves categorical variables.")
     }
     new.env <- data.frame(new.env)
   } else if (inherits(new.env, 'data.frame')) {
@@ -604,12 +611,12 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   if (inherits(new.env, 'SpatRaster')) {
-    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names, exact = TRUE)
+    .fun_testIfIn("names(new.env)", names(new.env), bm.mod@expl.var.names, exact = TRUE)
     new.env <- new.env[[bm.mod@expl.var.names]]
     new.env.mask <- .get_data_mask(new.env, value.out = 1)
     new.env <- mask(new.env, new.env.mask)
   } else {
-    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names, exact = TRUE)
+    .fun_testIfIn("colnames(new.env)", colnames(new.env), bm.mod@expl.var.names, exact = TRUE)
     new.env <- new.env[ , bm.mod@expl.var.names, drop = FALSE]
   }
   
@@ -623,64 +630,57 @@ BIOMOD_Projection <- function(bm.mod,
   if (!is.null(new.env.xy) & !inherits(new.env, 'SpatRaster')) {
     new.env.xy <- as.data.frame(new.env.xy)
     if (ncol(new.env.xy) != 2 || nrow(new.env.xy) != nrow(new.env)) {
-      stop("invalid xy coordinates argument given -- dimensions mismatch !")
+      stop("new.env and new.env.xy must have the same number of rows, or new.env.xy must be a 2-column matrix or data.frame")
     }
   } else {
     new.env.xy <- data.frame()
   }
   
   ## 5. Check models.chosen ---------------------------------------------------
-  if (models.chosen[1] == 'all') {
+  if (missing(models.chosen) || is.null(models.chosen) || models.chosen[1] == 'all') {
     models.chosen <- bm.mod@models.computed
+    .message("models.chosen set to ", toString(models.chosen))
   } else {
-    models.chosen <- intersect(models.chosen, bm.mod@models.computed)
-  }
-  if (length(models.chosen) < 1) {
-    stop('No models selected')
+    .fun_testIfIn("models.chosen", models.chosen, bm.mod@models.computed)
   }
   
   ## check that given models exist
   files.check <- paste0(bm.mod@dir.name, "/", bm.mod@sp.name, "/models/",
                         bm.mod@modeling.id, "/", models.chosen)
-  
-  not.checked.files <- grep('MAXENT|SRE', files.check)
-  if (length(not.checked.files) > 0) {
-    files.check <- files.check[-not.checked.files]
-  }
   missing.files <- files.check[!file.exists(files.check)]
   if (length(missing.files) > 0) {
-    stop(paste0("Projection files missing : ", toString(missing.files)))
-    if (length(missing.files) == length(files.check)) {
-      stop("Impossible to find any models, might be a problem of working directory")
-    }
+    stop("Some model projection files are missing : ", toString(missing.files)
+         , ".", ifelse(length(missing.files) == length(files.check)
+                       , " Impossible to find any model, might be a working directory problem.", "")
+         , " Please check.")
   }
   
   ## 6. Check metric.binary & metric.filter -----------------------------------
-  if (!is.null(metric.binary) | !is.null(metric.filter)) {
-    if ( bm.mod@data.type != "binary"){
-      cat ("No metric.binary or metric.filter are needed with",bm.mod@data.type, "data")
+  if (!is.null(metric.binary) || !is.null(metric.filter)) {
+    if (bm.mod@data.type != "binary") {
       metric.binary <- NULL
       metric.filter <- NULL
+      .message("metric.binary and metric.filter set to NULL (data.type is not binary)")
     } else {
       models.evaluation <- get_evaluations(bm.mod)
       if (is.null(models.evaluation)) {
-        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+        metric.binary <- NULL
+        metric.filter <- NULL
+        .message("metric.binary and metric.filter set to NULL (models evaluation information missing)")
       } else {
         available.evaluation <- unique(models.evaluation$metric.eval)
         if (!is.null(metric.binary) && metric.binary[1] == 'all') {
           metric.binary <- available.evaluation
         } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
-          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                         " Binary Transformation were switched off because no corresponding evaluation method found"))
           metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+          .message("metric.binary set to ", toString(metric.binary), " (models evaluation information missing)")
         }
         
         if (!is.null(metric.filter) && metric.filter[1] == 'all') {
           metric.filter <- available.evaluation
         } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
-          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
           metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+          .message("metric.filter set to ", toString(metric.filter), " (models evaluation information missing)")
         }
       }
     }
@@ -688,31 +688,28 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 7. Check compress --------------------------------------------------------
   compress <- ifelse(is.null(args$compress), TRUE, args$compress)
-  if (compress == 'xz') {
-    compress <- ifelse(.Platform$OS.type == 'windows', 'gzip', 'xz')
+  if (compress == 'xz' && .Platform$OS.type == 'windows') {
+    compress <- 'gzip'
+    .message("compress set to gzip (windows OS)")
   }
   
   ## 8. Check output.format ---------------------------------------------------
   output.format <- args$output.format # raster output format
   if (!is.null(output.format)) {
-    if (!output.format %in% c(".img", ".grd", ".tif", ".RData")) {
-      stop(paste0("output.format argument should be one of '.img','.grd', '.tif' or '.RData'\n"
-                  , "Note : '.img','.grd', '.tif' are only available if you give environmental condition as a SpatRaster object"))
-    }
-    if (output.format %in% c(".img", ".grd", ".tif") && !inherits(new.env, "SpatRaster")) {
-      warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
+    .fun_testIfIn("output.format", output.format, c(".RData", ".grd", ".tif", ".img"))
+    if (output.format %in% c(".grd", ".tif", ".img") && !inherits(new.env, "SpatRaster")) {
+      .message("output.format set to .RData (new.env is not a raster object)")
     }
   } else {
     output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".tif")
+    .message("output.format set to ", output.format)
   }
   
   ## 9. Check do.stack --------------------------------------------------------
   do.stack <- ifelse(is.null(args$do.stack), TRUE, args$do.stack)
   if (!inherits(new.env, 'SpatRaster')) {
-    if (!do.stack) { 
-      cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") 
-    }
     do.stack <- TRUE
+    .message("do.stack set to TRUE (new.env is not a raster object)")
   } else if (do.stack) { 
     # test if there is enough memory to work with multilayer SpatRaster
     capture.output({
@@ -728,8 +725,8 @@ BIOMOD_Projection <- function(bm.mod,
     #   terraOptions(todisk = TRUE) 
     # }
   } else if (output.format == "RData") {
-    cat("\n\t\t! 'do.stack' arg is always set as TRUE for .RData output format") 
     do.stack <- TRUE
+    .message("do.stack set to TRUE (.RData output format)")
   }
   
   ## 10. Check on_0_1000 ------------------------------------------------------
@@ -738,9 +735,9 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 11.Check overwrite -------------------------------------------------------
   overwrite <- ifelse(is.null(args$overwrite), ifelse(do.stack, TRUE, FALSE), args$overwrite)
-  if (!overwrite){
-    cat("\n\t\t! 'overwrite' arg is set as FALSE. Projections that have already been saved will not be redone. 
-        Please be carfeul if you have changed the models in the meantime. ")
+  if (!overwrite) {
+    .message("Projections that have already been saved will not be recalculated (overwrite = FALSE). "
+             , "Please check if models have changed in the meantime.")
   }
   
   return(list(proj.name = proj.name,
@@ -801,7 +798,7 @@ BIOMOD_Projection <- function(bm.mod,
       }
     }
   } else {
-    stop("Unsupported env arg") 
+    stop("env must be a vector, matrix or data.frame object")
   }
   return(clamp.mask)
 }

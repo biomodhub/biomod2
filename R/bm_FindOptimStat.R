@@ -193,7 +193,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   ## Check obs and fit 
   if (length(obs) != length(fit)) {
-    cat("obs and fit are not the same length  => model evaluation skipped !")
+    .message("Observed and fitted data are not the same length. Model evaluation will be skipped.")
     eval.out <- matrix(NA, 1, 4, dimnames = list(metric.eval, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
@@ -205,13 +205,13 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   ## check some data is still here
   if (!length(obs) | !length(fit)) {
-    cat("\n Non finite obs or fit available => model evaluation skipped !")
+    .message("Observed or fitted data is missing. Model evaluation will be skipped.")
     eval.out <- matrix(NA, 1, 4, dimnames = list(metric.eval, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
   
-    warning("\nObserved or fitted data contains a unique value... Be careful with these model predictions\n", immediate. = TRUE)
   if (length(unique(obs)) == 1 || length(unique(fit)) == 1) {
+    .message("Observed or fitted data contains a unique value. Be careful with these model predictions.")
   }
   
   
@@ -292,7 +292,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     cutoff <- as.numeric(roc1.out[1, "threshold"])
     specificity <- as.numeric(roc1.out[1, "specificity"])
     sensitivity <- as.numeric(roc1.out[1, "sensitivity"])
-  
+    
   } else if (metric.eval == 'AUCprg') ## PRG ---------------------------------------------------------
   {
     prg1 <- create_prg_curve(labels = obs, pos_scores = fit)
@@ -308,7 +308,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     if (metric.eval %in% c("Accuracy", "Recall", "Precision", "F1") &&
         length(levels(obs)) != length(levels(fit))) {
       fit <- factor(fit, levels = levels(obs), ordered = TRUE)
-      cat("\n \t\t Careful : some categories are not predicted! ")
+      .message("Some categories are not predicted. Be careful with these model predictions.")
     }
     best.stat <- bm_CalculateStatAbun(metric.eval, obs, fit, k)
   }
@@ -326,7 +326,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   if (!is.null(boyce.bg.env)) {
     available.types.resp <- c('numeric', 'data.frame', 'matrix', 'Raster',
                               'SpatialPointsDataFrame', 'SpatVector', 'SpatRaster')
-    .fun_testIfInherits(TRUE, "boyce.bg.env", boyce.bg.env, available.types.resp)
+    .fun_testIfInherits("boyce.bg.env", boyce.bg.env, available.types.resp)
     
     if (is.numeric(boyce.bg.env)) {
       boyce.bg.env <- as.data.frame(boyce.bg.env)
@@ -346,13 +346,13 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     
     ## remove NA from background data
     if (sum(is.na(boyce.bg.env)) > 0) {
-      cat("\n      ! NAs have been automatically removed from boyce.bg.env data")
       boyce.bg.env <- na.omit(boyce.bg.env)
+      .message("Some NA occurred in boyce.bg.env and have been removed.")
     }
   }
   
   ## 2. Check mpa.perc --------------------------------------------------------
-  .fun_testIf01(TRUE, "mpa.perc", mpa.perc)
+  .fun_testIf0X("mpa.perc", mpa.perc, 1)
   
   return(list(boyce.bg.env = boyce.bg.env, mpa.perc = mpa.perc))
 }
@@ -420,7 +420,7 @@ get_optim_value <- function(metric.eval)
   
   if ((sum(colnames(misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) || 
       (sum(rownames(misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) ) {
-    stop("Unavailable contingency table given")
+    stop("Contingency table has the wrong format (row/colnames must be either FALSE/TRUE or 0/1). Please check.")
   }
   
   if ('0' %in% rownames(misc)) { rownames(misc)[which(rownames(misc) == '0')] <- 'FALSE' }

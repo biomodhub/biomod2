@@ -73,13 +73,10 @@ bm_MakeFormula <- function(resp.name,
                            k = NULL)
 {
   ## 1. Check parameters --------------------------------------------------------------------------
-  if (!is.character(resp.name) || length(resp.name) != 1) {
-    stop("resp.name must be a unique response variable name")
-  }
-  if (!is.data.frame(expl.var) && !is.matrix(expl.var)) {
-    stop("expl.var must be a data.frame or matrix")
-  }
-  .fun_testIfIn(TRUE, "type", type, c("simple", "quadratic", "polynomial", "s_smoother"))
+  resp.name <- as.character(resp.name)
+  .fun_testIfLength("resp.name", resp.name)
+  .fun_testIfInherits("expl.var", expl.var, c("matrix", "data.frame"))
+  .fun_testIfIn("type", type, c("simple", "quadratic", "polynomial", "s_smoother"))
   
   explVarNames <- colnames(expl.var)
   if (resp.name %in% explVarNames) { # remove the response variable if given in expl.var

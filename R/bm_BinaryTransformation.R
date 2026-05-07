@@ -83,18 +83,15 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
           function(data, threshold, do.filtering = FALSE)
           {
             if (length(threshold) > 1) {
-              if (length(threshold) != ncol(data)) {
-                stop("data and threshold dimensions mismatch")
+              .fun_testIfSameSize("data", ncol(data), "threshold", length(threshold), "number of cols/size")
+              if (do.filtering) {
+                return(
+                  sweep(data, 2, threshold, .convert_bin.array.filt)
+                )
               } else {
-                if (do.filtering) {
-                  return(
-                    sweep(data, 2, threshold, .convert_bin.array.filt)
-                    )
-                } else {
-                  return(as.data.frame(
-                    sweep(data, 2, threshold, .convert_bin.array)
-                    ))
-                }
+                return(as.data.frame(
+                  sweep(data, 2, threshold, .convert_bin.array)
+                ))
               }
             } else {
               if (is.numeric(threshold) && !is.na(threshold)) { #second condition unnecessary?
@@ -123,7 +120,7 @@ setMethod('bm_BinaryTransformation', signature('matrix'),
             data <- as.data.frame(data)
             return(data.matrix(
               bm_BinaryTransformation(data, threshold, do.filtering)
-              ))
+            ))
           })
 
 ## numeric methods ----------------------------------------------------------
@@ -137,7 +134,7 @@ setMethod('bm_BinaryTransformation', signature('numeric'),
             data <- as.data.frame(data)
             return(unlist(
               bm_BinaryTransformation(data, threshold, do.filtering)
-              ))
+            ))
           })
 
 
@@ -205,4 +202,3 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
   x[x <= y] <- 0
   return(x)
 }
-

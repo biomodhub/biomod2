@@ -200,7 +200,7 @@ setGeneric("bm_RangeSize",
                  bm_RangeSize(rast(proj.current), rast(proj.future), ordinal)
                )
              } else {
-               stop("'proj.current' and 'proj.future' must have the same class among 'data.frame', 'SpatRaster' and 'array'" )
+               stop("proj.current and proj.future must have the same class (matrix, array, data.frame or SpatRaster)")
              }
            })
 
@@ -215,10 +215,14 @@ setGeneric("bm_RangeSize",
 setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = 'data.frame'),
           function(proj.current, proj.future, ordinal)
           {
-            .bm_cat("Do Range Size Computation")
+            .bm_cat2("[bm] Range size")
+            
+            ## 0. Check arguments ---------------------------------------------------------------------------
+            cat("\nChecking arguments...")
             args <- .bm_RangeSize.check.args(proj.current, proj.future)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
+            cat("\n")
             
             if (ncol(proj.future) != ncol(proj.current)) {
               proj_current <- matrix(rep(proj.current[, 1], ncol(proj.future)),
@@ -228,8 +232,9 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
               colnames(proj_current) <- colnames(proj.future)
             }  
             
+            ## DiffByPixel
             if (nonbinary && !ordinal) {
-              ##rescale
+              cat(" > Rescaling non-binary data...")
               rescale_df <- rbind(proj.current, proj.future)
               rescale_df <- apply(rescale_df, 2, FUN = rescale, to = c(0,1))
               
@@ -270,7 +275,8 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
             } else {
               comp <- Diff.By.Pixel
             }
-          
+            
+            ## Compt.By.Models
             Compt.By.Models <- as.data.frame(.CompteurSp(comp, c(-2, 0, -1, 1)))
             Compt.By.Models[, seq(5, 10)] <- NA
             Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
@@ -285,10 +291,10 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
                                                                , "PercLoss", "PercGain", "SpeciesRangeChange"
                                                                , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
             
+            cat("\n")
             Output <- list(Compt.By.Models = Compt.By.Models,
                            Diff.By.Pixel = Diff.By.Pixel,
                            loss.gain = comp,
-            .bm_cat("Done")
                            data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary"))
             invisible(Output)
           })
@@ -304,10 +310,14 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
 setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = 'SpatRaster'),
           function(proj.current, proj.future, ordinal)
           {
-            .bm_cat("Do Range Size Computation")
+            .bm_cat2("[bm] Range size")
+            
+            ## 0. Check arguments ---------------------------------------------------------------------------
+            cat("\nChecking arguments...")
             args <- .bm_RangeSize.check.args(proj.current, proj.future)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
+            cat("\n")
             
             names.res <- c("Loss", "Stable_Abs", "Stable_Pres", "Gain"
                            , "PercLoss", "PercGain", "SpeciesRangeChange"
@@ -321,7 +331,7 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
               CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.future),
                             dimnames = list(names(proj.future), names.res))
             }
-
+            
             sp.rast <- rast()
             loss.gain_rast <- rast()
             Cur <- proj.current[[1]]
@@ -331,8 +341,9 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
               }
               Fut <- proj.future[[i]]
               
-                ## DiffByPixel
+              ## DiffByPixel
               if (nonbinary && !ordinal) {
+                cat(" > Rescaling non-binary data...")
                 
                 rescale_map <- c(Cur, Fut)
                 values(rescale_map) <- rescale(values(rescale_map), to = c(0,1))
@@ -342,7 +353,6 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
                 loss.gain <- .loss.gain.nonbinary(current = Cur - 1, future = Fut - 1)
                 add(loss.gain_rast) <- loss.gain 
               } else if (!ordinal) {
-                ## DiffByPixel
                 Ras <- Fut - (Cur + Cur)
                 add(sp.rast) <- Ras
                 loss.gain <- Ras
@@ -368,11 +378,11 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
               CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
               CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
             } 
-
+            
             names(sp.rast) <- rownames(CBS)
             
+            cat("\n")
             Output <- list(Compt.By.Models = as.data.frame(CBS),
-            .bm_cat("Done")
                            Diff.By.Pixel = sp.rast,
                            loss.gain = loss.gain_rast,
                            data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary"))
@@ -384,23 +394,23 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
 
 .bm_RangeSize.check.args <- function(proj.current, proj.future)
 {
-  ## dimensions checking ------------------------
+  ## 0. Check proj.current / proj.future arguments ----------------------------
+  .fun_testIfInherits("proj.current", proj.current, c("matrix", "data.frame", "Raster", "SpatRaster"))
+  .fun_testIfInherits("proj.future", proj.future, c("matrix", "data.frame", "Raster", "SpatRaster"))
+  
+  ## 1. Check dimensions ------------------------------------------------------
   if (inherits(proj.current, "data.frame")) {
     dim_current <- nrow(proj.current)
     dim_future <- nrow(proj.future)
+    .fun_testIfSameSize("proj.current", dim_current, "proj.future", dim_future, "number of rows")
   } else { # SpatRaster case
-    dim_current <- dim(proj.current)[c(1,2)]
-    dim_future <- dim(proj.future)[c(1,2)]
+    dim_current <- dim(proj.current)[c(1, 2)]
+    dim_future <- dim(proj.future)[c(1, 2)]
+    .fun_testIfSameSize("proj.current", dim_current[1], "proj.future", dim_future[1], "number of rows (raster cells)")
+    .fun_testIfSameSize("proj.current", dim_current[2], "proj.future", dim_future[2], "number of cols (raster cells)")
   }
   
-  if (any(dim_current != dim_future)) {
-    stop(paste0("'proj.current' and 'proj.future' do not have the same dimensions ",
-                "(data.frame must have either the same number of lines ; ",
-                "raster must have the same spatial extent and resolution)."))
-  }
-  
-  
-  ## checking number of models to be compared ----------------------------
+  ## 2. Check model number ----------------------------------------------------
   if (inherits(proj.current, "data.frame")) {
     n_current <- ncol(proj.current)
     n_future <- ncol(proj.future)
@@ -411,24 +421,23 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
   
   if (n_current == 1) {
     if (n_future == 1) {
-      cat("\n Comparing 'proj.current' and 'proj.future'. ")
+      cat("\n\n\t + Comparing 'proj.current' and 'proj.future'")
     } else if (n_future > 1) {
-      cat("\n Comparing 'proj.current' with the ", n_future, " projections in 'proj.future'. ")
+      cat("\n\n\t + Comparing 'proj.current' with the ", n_future, " projections in 'proj.future'")
     } else {
-      stop("'proj.future' require at least one layer or one column.")
+      stop("proj.future must be a data.frame or SpatRaster object")
     }
   } else if (n_current > 1) {
     if (n_future == n_current) {
-      cat("\n Each projection in 'proj.current' will be compared once with its corresponding projection in 'proj.future'. ")
+      cat("\n\n\t + Comparing each projection in 'proj.current' with the corresponding projection in 'proj.future'")
     } else {
-      stop("When proj.current' have more than 1 projection, 'proj.future' must have the same number of projection.")
+      stop("proj.current and proj.future must have the same size")
     }
   } else {
-    stop("'proj.current' require at least one layer or one column.")
+    stop("proj.current must be a data.frame or SpatRaster object")
   }
   
-  
-  ## checking 0/1 ----------------------------
+  ## 3. Check 0/1 values ------------------------------------------------------
   if (inherits(proj.current, "data.frame")) {
     test_binary_current <- all(na.omit(unlist(proj.current)) %in% c(0, 1))
     test_binary_future <- all(na.omit(unlist(proj.future)) %in% c(0, 1))
@@ -436,12 +445,7 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
     test_binary_current <- all(na.omit(values(proj.current)) %in% c(0, 1))
     test_binary_future <- all(na.omit(values(proj.future)) %in% c(0, 1))
   }
-  
-  nonbinary <- ifelse((!test_binary_current | !test_binary_future), TRUE, FALSE)
-  # if (!test_binary_current | !test_binary_future) {
-  #   stop("'proj.current' and 'proj.future' must have only values among 0, 1 or NA.")
-  # }
-  
+  nonbinary <- ifelse(!test_binary_current || !test_binary_future, TRUE, FALSE)
   
   return(list("proj.current" = proj.current,
               "proj.future" = proj.future,
@@ -477,6 +481,5 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
   
   return(category)
 }
-
 
 

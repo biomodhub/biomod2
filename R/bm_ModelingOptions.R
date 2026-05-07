@@ -277,18 +277,16 @@ bm_ModelingOptions <- function(data.type = "binary", models, strategy
                                , user.val = NULL, user.base = "bigboss"
                                , bm.format = NULL, calib.lines = NULL)
 {
-  .bm_cat("Build Modeling Options")
-  
-  if (missing(models)) {
-    models <- .avail.models.list(data.type)
-  }
+  .bm_cat2("[bm] Modeling options")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .bm_ModelingOptions.check.args(data.type = data.type, models = models, strategy = strategy
                                          , user.val = user.val, user.base = user.base
                                          , bm.format = bm.format, calib.lines = calib.lines)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  cat("\n")
   
   ## Load single models informations
   # data(ModelsTable) # internal data is already readily available
@@ -339,7 +337,6 @@ bm_ModelingOptions <- function(data.type = "binary", models, strategy
     }
   bm.options <- new('BIOMOD.models.options', models = names(bm.opt), options = bm.opt)
   cat("\n")
-  .bm_cat("Done")
   return(bm.options)
 }
 
@@ -350,73 +347,84 @@ bm_ModelingOptions <- function(data.type = "binary", models, strategy
                                            , user.val = NULL, user.base = NULL
                                            , bm.format = NULL, calib.lines = NULL)
 {
-  ## check if type is supported
-  avail.types.list <- c('binary', 'count', 'relative', 'abundance', 'ordinal', 'multiclass')
-  .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
+  ## 1. Check data.type argument ----------------------------------------------
+  .fun_testIfIn("data.type", data.type, c('binary', 'count', 'relative', 'abundance', 'ordinal', 'multiclass'))
   
-  ## Check data.type coherence 
-  if (!is.null(bm.format)) {
-    if ((data.type %in% c('count', 'relative', 'abundance', 'ordinal', 'multiclass') && bm.format@data.type == "binary") ||
-        (bm.format@data.type != data.type)) {
-      stop("\n data.type should match the data.type of your bm.format")
-    } 
-  } 
-  
-  ## check if model is supported
+  ## 2. Check models argument -------------------------------------------------
   avail.models.list <- .avail.models.list(data.type)
-  if (data.type != "multiclass") {avail.models.list <- c(avail.models.list, "GAM.gam.gam", "GAM.mgcv.gam", "GAM.mgcv.bam")}
-  .fun_testIfIn(TRUE, paste0("Models with ", data.type, " data type"), models, avail.models.list)
-  
-  if (length(grep('GAM', models)) > 1) {
-    stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")
-  } else if ('GAM' %in% models) {
-    models[which(models == 'GAM')] = 'GAM.mgcv.gam'
-    warning("Only one GAM model can be activated. 'GAM.mgcv.gam' has been set (other available : 'GAM.gam.gam' or 'GAM.mgcv.bam')")
+  if (missing(models)) {
+    models <- avail.models.list
+    .message("models set to ", toString(models))
   }
   
-  ## check if strategy is supported
-  avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
-  .fun_testIfIn(TRUE, "strategy", strategy, avail.strategy.list)
-  
-  ## USER DEFINED parameterisation --------------
-  if (strategy == "user.defined") {
-    avail.user.base <- c('default', 'bigboss')
-    .fun_testIfIn(TRUE, "user.base", user.base, avail.user.base)
-    
-    .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
-    avail.options.list <- paste0(ModelsTable$model, ".", data.type, ".", ModelsTable$package, ".", ModelsTable$func)
-    .fun_testIfIn(TRUE, "names(user.val)", names(user.val), avail.options.list)
-    ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
+  if (data.type != "multiclass") {
+    avail.models.list <- c(avail.models.list, "GAM.gam.gam", "GAM.mgcv.gam", "GAM.mgcv.bam")
   }
+  .fun_testIfIn(paste0("models with ", data.type, " data type"), models, avail.models.list)
   
-  ## TUNING with bm_Tuning parameterisation -----
-  if (strategy == "tuned") {
-    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
-  }
-  
-  ## check calib.lines colnames
-  if (!is.null(calib.lines)) {
-    if (is.null(bm.format)) {
-      stop("`bm.format` must be given along with `calib.lines`")
+  if (data.type != "multiclass") {
+    if (length(grep('GAM', models)) > 1) {
+      stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'.")
+    } else if ('GAM' %in% models) {
+      models[which(models == 'GAM')] <- 'GAM.mgcv.gam'
+      .message("Only one GAM model can be activated. 'GAM.mgcv.gam' has been set "
+               , "(other available : 'GAM.gam.gam' or 'GAM.mgcv.bam').")
     }
-    .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
+  }
+  
+  ## 3. Check strategy argument -----------------------------------------------
+  .fun_testIfIn("strategy", strategy, c('default', 'bigboss', 'user.defined', 'tuned'))
+  
+  ## 4.a Check bm.format / bm.format@PA.table / calib.lines arguments ---------
+  if (strategy == "tuned") {
+    .fun_testIfNULL("bm.format", bm.format)
+  }
+  if (!is.null(bm.format)) {
+    .fun_testIfInherits("bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+    if (data.type != bm.format@data.type) {
+      stop("data.type should match bm.format@data.type")
+    }
+  }
+  expected_CVnames <- c("_allData_allRun")
+  if (!is.null(calib.lines)) {
+    .fun_testIfNULL("bm.format", bm.format)
+    .fun_testIfInherits("calib.lines", calib.lines, c("matrix", "data.frame"))
+    if (inherits(calib.lines, "data.frame")) {
+      calib.lines <- as.matrix(calib.lines)
+    }
+    .fun_testIfSameSize("calib.lines", nrow(calib.lines), "bm.format@data.species", length(bm.format@data.species), "number of rows/size")
     
-    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun", "for_all_datasets")
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), expected_CVnames)
     if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(bm.format@PA.table)
                                      , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
                                                            , paste0("_PA", this_PA, "_allRun"))))
     }
-    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    .fun_testIfNULL("colnames(calib.lines)", colnames(calib.lines))
+    .fun_testIfIn("colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    expected_CVnames <- colnames(calib.lines)
+  }
+  
+  ## 4.b Check user.base / user.val arguments ---------------------------------
+  if (strategy == "user.defined") {
+    .fun_testIfIn("user.base", user.base, c('default', 'bigboss'))
     
-    if (strategy == "user.defined") {
-      for (ii in 1:length(user.val)) {
-        .fun_testIfIn(TRUE, "names(user.val[[ii]])", names(user.val[[ii]]), expected_CVnames)
-      }
+    .fun_testIfInherits("user.val", user.val, "list")
+    .fun_testIfNULL("names(user.val)", names(user.val))
+    
+    ind1 <- which(ModelsTable$model %in% sub("[.].*", "", models))
+    ind2 <- which(ModelsTable$type == ifelse(data.type == "binary", "binary", "nonbinary"))
+    ind <- intersect(ind1, ind2)
+    avail.options.list <- paste0(ModelsTable$model[ind], ".", ModelsTable$type[ind]
+                                 , ".", ModelsTable$package[ind], ".", ModelsTable$func[ind])
+    .fun_testIfIn("names(user.val)", names(user.val), avail.options.list)
+    
+    for (ii in 1:length(user.val)) {
+      .fun_testIfNULL(paste0("names(user.val[[", ii, "]])"), names(user.val[[ii]]))
+      .fun_testIfIn("names(user.val[[ii]])", names(user.val[[ii]]), c(expected_CVnames, "for_all_datasets"))
     }
   }
   
-  return(list(models = models, data.type = data.type))
+  return(list(data.type = data.type, models = models))
 }
-

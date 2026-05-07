@@ -106,9 +106,7 @@ bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
     fact.level.cells <- bm_SampleFactorLevels.data.frame(expl.var, mask.out = mask.out, mask.in = mask.in)
     return(fact.level.cells)
   } else {
-    warning(paste0("\nunsupported input data.",
-                   "\nexpl.var should be a Raster* object or a data.frame.",
-                   "\n NULL returned"))
+    .message("expl.var must be a matrix, data.frame or raster object") ## Should not happen now
     return(NULL)
   }
 }
@@ -251,4 +249,3 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
     return(NULL)
   }
 }
-

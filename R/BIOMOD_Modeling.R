@@ -403,15 +403,17 @@ BIOMOD_Modeling <- function(bm.format,
                             seed.val = NULL,
                             do.progress = TRUE)
 {
-  .bm_cat("Build Single Models")
+  .bm_cat("[BIOMOD] Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .BIOMOD_Modeling.check.args(
     bm.format = bm.format, 
     modeling.id = modeling.id, 
     models = models, 
     models.pa = models.pa, 
     OPT.user = OPT.user,
+    CV.strategy = CV.strategy,
     CV.user.table = CV.user.table,
     CV.do.full.models = CV.do.full.models,
     weights = weights, 
@@ -425,7 +427,7 @@ BIOMOD_Modeling <- function(bm.format,
   )
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
+  cat("\n")
   
   ## 1. Create output object ----------------------------------------------------------------------
   models.out <- new('BIOMOD.models.out',
@@ -465,17 +467,13 @@ BIOMOD_Modeling <- function(bm.format,
   if (!is.null(OPT.user)) {
     ## Check for model names -----------
     if (sum(!(models %in% sapply(OPT.user@models, function(x) strsplit(x, "[.]")[[1]][1]))) > 0) {
-      stop(paste0("\n", "OPT.user", " must contain information for '",
-                  ifelse(length(models) > 1,
-                         paste0(paste0(models[1:(length(models) -1)], collapse = "', '"),
-                                "' and '", models[length(models)])
-                         , paste0(models,"' models"))))
+      stop("OPT.user must contain information for ", toString(models), " models. Please check.")
     }
     ## Check data.type coherence 
     data.type.options <- strsplit(OPT.user@models[1],".", fixed = TRUE)[[1]][2]
     if ((bm.format@data.type == "binary" & data.type.options != "binary") ||
         (bm.format@data.type != "binary" & data.type.options == "binary")) {
-      stop("\n The data.type of OPT.user should match the data.type of your bm.format")
+      stop("data.type of OPT.user should match bm.format@data.type. Please check.")
     }
     ## Check for calib.lines names -----
     for (mod in OPT.user@models) {
@@ -489,7 +487,7 @@ BIOMOD_Modeling <- function(bm.format,
           }
         } else if (all(grepl("_allRun", nam))) { #Check if the user create the options just for PA dataset
           sep.name <- unlist(strsplit(mod, split = '[.]'))
-          cat("\n \n \t The options for", sep.name[1], "for '_PAx_allRun' will be given to all runs with PAx (_PAx_RUN1, _PAx_RUN2,...) \n")
+          .message(sep.name[1], " options for '_PAx_allRun' will be given to all PAx runs ('_PAx_RUN1', '_PAx_RUN2', ...).")
           for (run in vals) {
             PA.set <- grep("PA|allData", unlist(strsplit(run, "_")), value = TRUE)
             if (is.null(OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]])) {
@@ -502,11 +500,8 @@ BIOMOD_Modeling <- function(bm.format,
             
           }
         } else {
-          stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
-                      ifelse(length(vals) > 1,
-                             paste0(paste0(vals[1:(length(vals) - 1)], collapse = "', '"),
-                                    "' and '", vals[length(vals)])
-                             , paste0(vals, "'"))))
+          .fun_testIfIn(paste0("names(OPT.user@options[['", mod, "']]@args.values)"), nam, vals, exact = TRUE)
+          stop("names(OPT.user@options[['", mod, "']]@args.values) must be ", toString(vals))
         }
       }
     }
@@ -529,7 +524,7 @@ BIOMOD_Modeling <- function(bm.format,
                                         , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
-  .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa, CV.do.full.models)
+  .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa)
   
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
@@ -552,16 +547,18 @@ BIOMOD_Modeling <- function(bm.format,
   models.out@models.failed <- .transform_outputs_list("mod", mod.out, out = "calib.failure")
   
   if (length(models.out@models.computed) == 1 && models.out@models.computed == "none") {
-    cat("\n! All models failed")
+    .message("*** Error: all models failed")
     return(models.out)
   }
   
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
-  models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
-  rm(models.evaluation)
+  if (length(metric.eval) > 0) {
+    models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
     models.out <- .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
                                           , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+    rm(models.evaluation)
+  }
   
   if (var.import > 0) {
     variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
@@ -601,105 +598,107 @@ BIOMOD_Modeling <- function(bm.format,
 ###################################################################################################
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, OPT.user
-                                        , CV.user.table, CV.do.full.models
+                                        , CV.strategy, CV.user.table, CV.do.full.models
                                         , weights, prevalence, metric.eval, var.import
                                         , scale.models, nb.cpu, seed.val, do.progress)
 {
-  ## 0. Check bm.format and models arguments ----------------------------------
-  cat('\n\nChecking Models arguments...\n')
+  ## 0. Check bm.format argument ----------------------------------------------
+  .fun_testIfInherits("bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
-  if (!is.character(modeling.id) || length(modeling.id) > 1) { stop("modeling.id must be a 'character' of length 1") }
+  ## 1. Check modeling.id argument --------------------------------------------
+  if (missing(modeling.id)) {
+    modeling.id <- as.character(format(Sys.time(), "%s"))
+    .message("modeling.id set to ", modeling.id)
+  }
+  modeling.id <- as.character(modeling.id)
+  .fun_testIfLength("modeling.id", modeling.id)
   
-  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
-  if (!is.character(models)) { stop("models must be a 'character' vector") }
-  
-  models <- unique(models)
-  models.switch.off <- NULL
-  
-  ## check if model is supported
+  ## 2. Check models argument -------------------------------------------------
+  models <- unique(as.character(models))
   avail.models.list <- .avail.models.list(bm.format@data.type)
-  .fun_testIfIn(TRUE, paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
+  .fun_testIfIn(paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
   
+  ## 3.a Specific case of cito
+  if ("DNN" %in% models) {
+    if (!requireNamespace('torch', quietly = TRUE)) stop("Package 'torch' not found")
+  }
   
-  ## Specific case of one variable with GBM / MAXNET
+  ## 3.b Specific case of one variable with GBM / MAXNET
   if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {
-    warning('GBM might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("rpatin/gbm")')
+    .message("GBM might have issues when only one variable is used. "
+             , "Please be sure to install the following version : devtools::install_github('rpatin/gbm')")
   }
   if ('MAXNET' %in% models && ncol(bm.format@data.env.var) == 1) {
-    warning('MAXNET might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("mrmaxent/maxnet")')
+    .message("MAXNET might have issues when only one variable is used. "
+             , "Please be sure to install the following version : devtools::install_github('mrmaxent/maxnet')")
   }
   
-  ## Specific case of cito
-  if ('DNN' %in% models) {
-    if (!requireNamespace("torch")) {
-      stop("Package `torch` is missing. It necessary for DNN model. Please install it with `install.packages('torch')`.")
-    }
-    # if(!torch::torch_is_installed()) torch::install_torch() ## ? 
-  }
-  
-  ## 1.1 Remove models not supporting categorical variables --------------------
+  ## 3.c Remove models not supporting categorical variables
   categorical_var <- .get_categorical_names(bm.format@data.env.var)
-  
+  models.switch.off <- NULL
   if (length(categorical_var) > 0) {
     models.fact.unsupport <- c("SRE")
     models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsupport))
     if (length(models.switch.off) > 0) {
       models <- setdiff(models, models.switch.off)
-      cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," were switched off because of categorical variables !"))
+      .message(toString(models.switch.off), "switched off (categorical variables)")
     }
   }
   
-  ## Check models.pa argument
+  ## 4. Check models.pa argument ----------------------------------------------
   if (!is.null(models.pa)) {
     if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-      .fun_testIfInherits(TRUE, "models.pa", models.pa, "list")
-      .fun_testIfIn(TRUE, "unlist(models.pa)", unlist(models.pa), colnames(bm.format@PA.table))
-      .fun_testIfIn(TRUE, "names(models.pa)", names(models.pa), models)
+      .fun_testIfInherits("models.pa", models.pa, "list")
+      .fun_testIfIn("unlist(models.pa)", unlist(models.pa), colnames(bm.format@PA.table))
+      .fun_testIfIn("names(models.pa)", names(models.pa), models)
       if (length(models.pa) != length(models)) {
-        mod.miss = models[-which(models %in% names(models.pa))]
-        list.miss = rep(list(colnames(bm.format@PA.table)), length(mod.miss))
-        names(list.miss) = mod.miss
-        models.pa = c(models.pa, list.miss)
-        warning(paste0(paste0(mod.miss, collapse = ", ")
-                       , " have been assigned to all PA datasets as no information was given")
-                , immediate. = TRUE)
+        mod.miss <- models[-which(models %in% names(models.pa))]
+        list.miss <- rep(list(colnames(bm.format@PA.table)), length(mod.miss))
+        names(list.miss) <- mod.miss
+        models.pa <- c(models.pa, list.miss)
+        .message("No models.pa provided for ", toString(mod.miss)
+                 , ". They have been assigned to all datasets.")
       }
     } else {
-      warning("models.pa has been disabled because no PA datasets have been given", immediate. = TRUE)
-      models.pa = NULL
+      models.pa <- NULL
+      .message("models.pa set to NULL (no PA dataset provided)")
     }
   }
   
-  
-  ## 3. Check OPT.user arguments --------------------------------------------
+  ## 5. Check OPT.user argument -----------------------------------------------
   if (!is.null(OPT.user)) {
-    .fun_testIfInherits(TRUE, "OPT.user", OPT.user, "BIOMOD.models.options")
+    .fun_testIfInherits("OPT.user", OPT.user, "BIOMOD.models.options")
+    .message("OPT.user provided, all other OPT.[..] arguments will be ignored.")
   } 
   # else {
-  #   warning("Models will run with 'default' parameters", immediate. = TRUE)
+  # warning("OPT.user set to BIOMOD_ModelingOptions()", immediate. = TRUE)
   #   bm.options <- BIOMOD_ModelingOptions()
   # }
   
-  ## 4. Check CV.user.table
-  if (!is.null(CV.user.table)) {
+  ## 6. Check CV.user.table / CV.do.full.models arguments ---------------------
+  if (CV.strategy == "user.defined" && !is.null(CV.user.table)) {
     if (!("_allData_allRun" %in% colnames(CV.user.table)) && CV.do.full.models == TRUE) { 
-      CV.do.full.models = FALSE
-      warning("CV.do.full.model has been disabled because '_allData_allRun' is not provided in CV.user.table")
+      CV.do.full.models <- FALSE
+      .message("CV.do.full.models set to FALSE (no '_allData_allRun' column provided in CV.user.table)")
     }
+  } else if (missing(CV.strategy) || is.null(CV.strategy)) {
+    CV.do.full.models <- FALSE
+  } else if (missing(CV.do.full.models) || is.null(CV.do.full.models)) {
+    CV.do.full.models <- FALSE
   }
   
-  ## 5. Check prevalence arguments --------------------------------------------
+  ## 7. Check prevalence argument ---------------------------------------------
   if (!is.null(prevalence)) {
-    .fun_testIf01(TRUE, "prevalence", prevalence)
+    .fun_testIf0X("prevalence", prevalence, 1)
   } else {
-    warning("Prevalence have been set to 0.5.")
     prevalence <- 0.5
+    .message("prevalence set to 0.5")
   }
   
-  ## 6. Check weights arguments -----------------------------------------------
+  ## 7. Check weights argument ------------------------------------------------
   if (is.null(weights)) {
     if (!is.null(prevalence) && !(bm.format@data.type %in% c("ordinal", "multiclass"))) {
-      cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
+      cat("\n > Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
         weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
@@ -722,14 +721,11 @@ BIOMOD_Modeling <- function(bm.format,
         colnames(weights) <- "allData"
       }
     } else { ## NEVER OCCURRING NO ?? --> now happen with the abundance
-      cat("\n\t> No weights : all observations will have the same weight\n")
-      #weights <- rep(1, length(bm.format@data.species)) ##TODO il faut decommenter ça du coup non ?
+      .message("All observations will have the same weight (no weights provided).")
     }
   } else {
-    if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
-    if (length(weights) != length(bm.format@data.species)) {
-      stop("The number of 'Weight' does not match with the input calibration data. Simulation cannot proceed.")
-    }
+    .fun_testIfPosNum("weights", weights)
+    .fun_testIfSameSize("weights", length(weights), "bm.format@data.species", length(bm.format@data.species))
     if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
       weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
         {
@@ -746,32 +742,27 @@ BIOMOD_Modeling <- function(bm.format,
     }
   }
   
-  
-  ## 7. Check metric.eval arguments -------------------------------------------
+  ## 8. Check metric.eval argument --------------------------------------------
   metric.eval <- unique(metric.eval)
-  
-  if (any(grepl("^ROC", metric.eval))){
-    warning("The metric 'ROC' will be switch to 'AUCroc'.")
-    metric.eval <- sub("^ROC", "AUCroc", metric.eval)
-    metric.eval <- unique(metric.eval)
-  }
-  
   avail.eval.meth.list <- .avail.eval.meth.list(bm.format@data.type)
-  .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
+  .fun_testIfIn(paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
-  
-  if (!is.null(seed.val)) { set.seed(seed.val) }
+  ## 9. Check var.import argument ---------------------------------------------
   if (is.null(var.import)) { var.import = 0 }
   
-  return(list(models = models,
+  ## 10. Set the seed (if needed) ----------------------------------------------
+  if (!is.null(seed.val)) { set.seed(seed.val) }
+  
+  return(list(modeling.id = modeling.id,
+              models = models,
               models.pa = models.pa,
-              weights = weights,
-              var.import = var.import,
-              metric.eval = metric.eval,
+              CV.do.full.models = CV.do.full.models,
               prevalence = prevalence,
+              weights = weights,
+              metric.eval = metric.eval,
+              var.import = var.import,
               seed.val = seed.val,
-              do.progress = do.progress,
-              CV.do.full.models = CV.do.full.models))
+              do.progress = do.progress))
 }
 
 
@@ -779,7 +770,7 @@ BIOMOD_Modeling <- function(bm.format,
 
 .BIOMOD_Modeling.prepare.workdir <- function(dir.name, sp.name, modeling.id)
 {
-  cat("\nCreating suitable Workdir...\n")
+  cat(" > Creating modeling directory\n")
   dir.create(file.path(dir.name, sp.name), showWarnings = FALSE, recursive = TRUE)
   dir.create(file.path(dir.name, sp.name, ".BIOMOD_DATA", modeling.id), showWarnings = FALSE, recursive = TRUE)
   dir.create(file.path(dir.name, sp.name, "models", modeling.id), showWarnings = FALSE, recursive = TRUE)
@@ -787,42 +778,42 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ----------------------------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL, do.full.models)
+.BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL)
 {
-  cat("\n\n")
   .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
-  cat("\n>", ncol(bm.format@data.env.var), "environmental variables (", colnames(bm.format@data.env.var), ")")
+  cat("\nEnvironmental variables :", ncol(bm.format@data.env.var), "(", colnames(bm.format@data.env.var), ")")
   
-  if (inherits(bm.format, "BIOMOD.formated.data.PA")){
-    cat("\n\n> Number of PA datasets :", ncol(bm.format@PA.table))
+  if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+    cat("\nNumber of PA datasets :", ncol(bm.format@PA.table))
     nb.PA <- ncol(bm.format@PA.table)
   } else {
     nb.PA <- 0
   }
   
-  if (do.full.models){
+  if ("_allData_allRun" %in% colnames(calib.lines)) {
     nb.full.models <- nb.PA + 1
     nb.eval.rep <- (ncol(calib.lines) - nb.full.models) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
-    cat("\n\n> Number of calibration/validation splits :", nb.eval.rep)
-    cat("\n CV.do.full.models activated: +", nb.full.models,  "models")
+    cat("\nNumber of calibration/validation splits :", nb.eval.rep)
+    cat("\n\t > CV.do.full.models activated : +", nb.full.models,  "model", ifelse(nb.full.models > 1, "s", ""))
     nb.eval.rep <- nb.eval.rep +1 #for models.pa
   } else {
     nb.eval.rep <- ncol(calib.lines) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
-    cat("\n\n> Number of calibration/validation splits :", nb.eval.rep)
+    cat("\nNumber of calibration/validation splits :", nb.eval.rep)
   }
   
-  cat("\n\n> Algorithms selected :", models)
   if (is.null(models.pa)) {
-    cat("\n", ncol(calib.lines), "models for each algorithm")
     nb.runs <- ncol(calib.lines) * length(models)
+    cat("\n\t >", ncol(calib.lines), ifelse(ncol(calib.lines) > 1, "models", "model"), "for each algorithm")
   } else {
     nb.runs <- length(which(
       sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
     ))
     for (algo in names(models.pa)){
-      cat("\n\t", algo, ":", length(models.pa[[algo]]) * nb.eval.rep , " models")
+      cat("\n\t >", algo, ":", length(models.pa[[algo]]) * nb.eval.rep , "models")
     }
   }
-  cat("\n\nTotal number of model runs:", nb.runs, "\n")
+  
+  cat("\nAlgorithms selected :", length(models), "(", models, ")")
+  cat("\n\nTotal number of model runs :", nb.runs, "\n")
   .bm_cat()
 }

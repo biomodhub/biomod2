@@ -174,10 +174,13 @@
 BIOMOD_RangeSize <- function(proj.current, proj.future, models.chosen = "all", metric.binary = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, models.chosen, metric.binary)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  cat("\n")
   
+  cat("\n Getting predictions...")
   pred_current <- get_predictions(proj.current,
                                   full.name = models.chosen,
                                   metric.binary = metric.binary,
@@ -197,8 +200,8 @@ BIOMOD_RangeSize <- function(proj.current, proj.future, models.chosen = "all", m
       #coord <- as.data.frame(proj.future@coord[rownames(proj.future@coord) %in% good,])
     } 
   }
-  
   ordinal <- (proj.current@data.type == "ordinal")
+  cat("\n")
   
   bm.range <- bm_RangeSize(proj.current = pred_current, proj.future = pred_future, ordinal = ordinal)
   
@@ -221,39 +224,31 @@ BIOMOD_RangeSize <- function(proj.current, proj.future, models.chosen = "all", m
 }
 
 
-  if(inherits(proj.current, "SpatRaster") | inherits(proj.current, "data.frame") |inherits(proj.current, "raster")){
-    stop("BIOMOD.RangeSize now accepts BIOMOD.projection.out objects directly. \n
-         If you want to compare ", class(proj.current), " objects, use bm_RangeSize function. ")
-  } # To Remove after a while. 
 .BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, models.chosen, metric.binary)
 {
+  .fun_testIfInherits("proj.current", proj.current, "BIOMOD.projection.out")
+  .fun_testIfInherits("proj.future", proj.future, "BIOMOD.projection.out")
   
-  .fun_testIfInherits(TRUE, "proj.current", proj.current, "BIOMOD.projection.out")
-  .fun_testIfInherits(TRUE, "proj.future", proj.future, "BIOMOD.projection.out")
-  
-  if(proj.current@data.type == "multiclass"){
-    stop("BIOMOD_RangeSize is not available for multiclass data models.")
+  if (proj.current@data.type == "multiclass") {
+    stop("BIOMOD_RangeSize is not available for multiclass data models. Sorry.")
   }
   
   ## Check models.chosen ---------------------------------------------------
-  if (models.chosen[1] == 'all') {
-    models.chosen <- proj.future@models.projected
-    models.chosen <- intersect(models.chosen, proj.current@models.projected)
+  if (missing(models.chosen) || is.null(models.chosen) || models.chosen[1] == 'all') {
+    models.chosen <- intersect(proj.current@models.projected, proj.future@models.projected)
   } else {
-    models.chosen <- intersect(models.chosen, proj.current@models.projected)
-    models.chosen <- intersect(models.chosen, proj.future@models.projected)
-  }
-  if (length(models.chosen) < 1) {
-    stop('No models selected')
+    .fun_testIfIn("models.chosen", models.chosen, c(proj.current@models.projected, proj.future@models.projected))
+    models.chosen <- intersect(models.chosen, intersect(proj.current@models.projected, proj.future@models.projected))
   }
   
-  if (proj.current@data.type == "binary" && is.null(metric.binary)){
-    stop("Metric.binary is necessary for binary data.")
+  ## Check metric.binary ------------------------------------------------------
+  if (proj.current@data.type == "binary") {
+    .fun_testIfNULL("metric.binary", metric.binary)
   }
   
-  if (proj.current@data.type != "binary" && !is.null(metric.binary)){
+  if (proj.current@data.type != "binary" && !is.null(metric.binary)) {
     metric.binary <- NULL
-    warning("metric.binary set to NULL for non binary data.")
+    .message("metric.binary set to NULL (data.type is not binary)")
   }
   
   return(list(models.chosen = models.chosen,
@@ -303,5 +298,4 @@ setClass("BIOMOD.rangesize.out",
                         row.names = 'character'),
          prototype(data.type = "binary"),
          validity = function(object){ return(TRUE) })               
-  
-        
+

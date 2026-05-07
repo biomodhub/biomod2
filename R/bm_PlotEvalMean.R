@@ -196,7 +196,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   args <- list(...)
   
   ## 1. Check bm.out argument -------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  .fun_testIfInherits("bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 2. Check metric.eval argument --------------------------------------------
   scores <- get_evaluations(bm.out)
@@ -204,34 +204,26 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   if (!is.null(scores)) {
     avail.metrics <- sort(unique(as.character(scores$metric.eval)))
     if (is.null(metric.eval) && length(avail.metrics) > 1) {
-      warning(toString(metric.eval), " evaluation metric.eval automatically selected")
       metric.eval <- avail.metrics[1:2]
+      .message("metric.eval set to ", toString(metric.eval))
     } else {
-      if (length(metric.eval) < 2) {
-        stop("2 different evaluations metric.eval needed")
-      } else if (length(metric.eval) > 2) {
-        metric.eval = metric.eval[1:2]
-        warning("2 different evaluations metric.eval needed, only the first 2 will be kept")
-      }
       metric.eval <- sort(unique(as.character(metric.eval)))
+      .fun_testIfLength("metric.eval", metric.eval, 2)
+      .fun_testIfIn("metric.eval", metric.eval, avail.metrics)
     }
     
     ## 2. Check dataset argument ------------------------------------------------
-    .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
+    .fun_testIfIn("dataset", dataset, c("calibration", "validation", "evaluation"))
     
     ## 3. Check group.by argument -----------------------------------------------
     if (inherits(bm.out, "BIOMOD.models.out")) {
-      .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "PA", "run", "algo"))
+      .fun_testIfInOnlyOne("group.by", group.by, c("full.name", "PA", "run", "algo"))
     } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
-      .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "merged.by.PA", "merged.by.run", "algo"))
+      .fun_testIfInOnlyOne("group.by", group.by, c("full.name", "merged.by.PA", "merged.by.run", "algo"))
     } 
-    if (length(group.by) > 1) {
-      group.by = group.by[1]
-      warning("`group.by` must contain only one value, only the first one will be kept")
-    }
     
     ## 4. Check extra args argument ---------------------------------------------
-    .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main'))
+    .fun_testIfIn("names(args)", names(args), c("main", "xlim", "ylim"))
   }
   
   return(list(is.null.out = is.null(scores),
@@ -241,4 +233,3 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
               ylim = args$ylim,
               main = args$main))
 } 
-

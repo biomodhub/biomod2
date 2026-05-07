@@ -18,7 +18,7 @@
 
 ## BIOMOD SPECIFIC CAT ----------------------------------------------------------------------------
 
-.bm_cat <- function(x = NULL, ...)
+.bm_cat <- function(x = NULL)
 {
   if (is.null(x))
   {
@@ -37,78 +37,113 @@
   }
 }
 
+.bm_cat2 <- function(x = NULL)
+{
+  if (is.null(x))
+  {
+    cat("\n-=-=-=--=-=-=-\n")
+  } else
+  {
+    cat("\n-=-=-=--=-=-=-", x, "\n")
+  }
+}
+
 
 ## TEST PARAMETERS --------------------------------------------------------------------------------
 
-.fun_testIfInherits <- function(test, objName, objValue, values)
+.message <- function(...)
 {
-  if (!inherits(objValue, values)) {
-    stop(paste0("\n", paste0(objName, " must be a '", paste0(values[1:(length(values) -1)], collapse = "', '")
-                             , ifelse(length(values) > 1, paste0("' or '", values[length(values)]), "")
-                             , "' object")))
-    test <- FALSE
-  }
-  return(test)
+  message("\n", ..., appendLF = FALSE)
 }
 
-.fun_testIfIn <- function(test, objName, objValue, values, exact = FALSE)
+.warning <- function(...)
+{
+  warning("\n", ..., call. = FALSE, immediate. = TRUE)
+}
+
+.fun_testIfNULL <- function(objName, objValue)
+{
+  if (missing(objValue) || is.null(objValue)) {
+    stop(objName, " is missing", call. = FALSE)
+  }
+}
+
+.fun_testIfLength <- function(objName, objValue, len = 1)
+{
+  if (length(objValue) > len) {
+    stop(objName, " must be of length ", len, call. = FALSE)
+  }
+}
+
+.fun_testIfInherits <- function(objName, objValue, values)
+{
+  if (!inherits(objValue, values)) {
+    stop(objName, " must be a "
+         , ifelse(length(values) > 1
+                  , paste0(toString(values[1:(length(values) -1)])
+                           , " or ", values[length(values)])
+                  , values)
+         , " object", call. = FALSE)
+  }
+}
+
+.fun_testIfIn <- function(objName, objValue, values, exact = FALSE)
 {
   if (any(! objValue %in% values) ||
       (exact == TRUE && any(! values %in% objValue))) {
-    stop(paste0("\n", objName, " must be '", 
-                ifelse(length(values) > 1, 
-                       paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),
-                              "' or '", values[length(values)])
-                       , paste0(values,"'"))))
-    test <- FALSE
+    stop(objName, " must be '"
+         , ifelse(length(values) > 1
+                  , paste0(paste0(values[1:(length(values) -1)], collapse = "', '")
+                           , "' or '", values[length(values)])
+                  , values)
+         , "'", call. = FALSE)
   }
-  return(test)
 }
 
-.fun_testIfPosNum <- function(test, objName, objValue)
+.fun_testIfInOnlyOne <- function(objName, objValue, values)
+{
+  .fun_testIfLength(objName, objValue, 1)
+  .fun_testIfIn(objName, objValue, values)
+}
+
+.fun_testIfPosNum <- function(objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    stop(paste0("\n", objName, " must be a numeric"))
-    test <- FALSE
-  } else if (objValue < 0) {
-    stop(paste0("\n", objName, " must be a positive numeric"))
-    test <- FALSE
+    stop(objName, " must be a numeric", call. = FALSE)
+  } else if (any(objValue < 0)) {
+    stop(objName, " must be a positive numeric", call. = FALSE)
   }
-  return(test)
 }
 
-.fun_testIf01 <- function(test, objName, objValue)
+.fun_testIf0X <- function(objName, objValue, lim = 1)
 {
-  test <- .fun_testIfPosNum(test, objName, objValue)
-  if (test && objValue > 1) {
-    stop(paste0("\n", objName, " must be a 0 to 1 numeric"))
-    test <- FALSE
+  .fun_testIfPosNum(objName, objValue)
+  if (objValue > lim) {
+    stop(objName, " must be a 0 to ", lim, " numeric", call. = FALSE)
   }
-  return(test)
 }
 
-.fun_testIfPosInt <- function(test, objName, objValue)
+.fun_testIfPosInt <- function(objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    cat(paste0("\n", objName, " must be a integer"))
-    test <- FALSE
+    stop(objName, " must be an integer", call. = FALSE)
   } else if (any(objValue < 0) || any(objValue %% 1 != 0)) {
-    cat(paste0("\n", objName, " must be a positive integer"))
-    test <- FALSE
+    stop(objName, " must be a positive integer", call. = FALSE)
   }
-  return(test)
 }
 
-.fun_testMetric <- function(test, objName, objValue, values)
+.fun_testIfSize <- function(objName, objValue, value, typ = "column")
 {
-  if (!is.null(objValue)) {
-    test <- .fun_testIfInherits(test, objName, objValue, "character")
-    if(length(objValue) != 1) {
-      stop(paste0("`",objName,"` must only have one element"))
-    }
-    test <- .fun_testIfIn(test, objName, objValue, values)
+  if (objValue != value) {
+    stop(objName, " must be a ", value, "-", typ, "matrix or data.frame", call. = FALSE)
   }
-  return(test)
+}
+
+.fun_testIfSameSize <- function(objName1, objValue1, objName2, objValue2, typ = "size")
+{
+  if (objValue1 != objValue2) {
+    stop(objName1, " and ", objName2, " must have the same ", typ, call. = FALSE)
+  }
 }
 
 
@@ -118,7 +153,7 @@
 .check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, is.eval = FALSE)
 {
   if (!is.null(resp.xy)) {
-    cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
+    .message("resp.xy will be ignored (resp.var is a spatial object)")
   }
   
   if (inherits(resp.var, 'SpatialPoints')) { 
@@ -126,8 +161,8 @@
     if (inherits(resp.var, 'SpatialPointsDataFrame')) {
       resp.var <- resp.var@data
     } else {
-      cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
       resp.var <- rep(1, nrow(resp.xy))
+      .message("resp.var set to 1 (only presences)")
     }
   }
   
@@ -135,20 +170,20 @@
     resp.xy <- data.matrix(crds(resp.var))
     resp.var <- as.data.frame(resp.var)
     if (ncol(resp.var) == 0) {
-      if(is.eval){
-        stop("eval.resp must have both presences and absences in the data associated to the SpatVector") 
+      if (is.eval) {
+        stop("eval.resp.var must have both presences and absences")
       } else {
-        cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
         resp.var <- rep(1, nrow(resp.xy))
+        .message("resp.var set to 1 (only presences)")
       }
     }
   }
   
   if (!is.eval) {
-    if ( all(!is.na(resp.var)) && 
-         all(resp.var == 1, na.rm = TRUE) &&
-         !inherits(expl.var, c('Raster','SpatRaster'))) {
-      stop("For Presence-Only model based on SpatialPoints or SpatVector, expl.var needs to be a RasterStack or SpatRaster to be able to sample pseudo-absences")
+    if (all(!is.na(resp.var)) && 
+        all(resp.var == 1, na.rm = TRUE) &&
+        !inherits(expl.var, c('Raster', 'SpatRaster'))) {
+      stop("expl.var must be a RasterStack or SpatRaster object (to sample pseudo-absences)")
     }
   }
   
@@ -161,13 +196,14 @@
     resp.var <- as.numeric(as.character(resp.var)) 
   }
   if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
-    cat("\n      ! ", ifelse(is.eval, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
     resp.var[which(resp.var > 0)] <- 1
     resp.var[which(resp.var <= 0)] <- 0
+    .message(ifelse(is.eval, "eval.", ""), "resp.var contains non-binary values. "
+             , "They have been converted into 0 (resp <= 0) or 1 (resp > 0).")
   }
   if (is.eval) {
     if (!any(resp.var == 1, na.rm = TRUE) || !any(resp.var == 0, na.rm = TRUE)) {
-      stop("Evaluation response data must have both presences and absences")
+      stop("eval.resp.var must have both presences and absences")
     }
   }
   as.numeric(resp.var)
@@ -177,29 +213,26 @@
 {  
   if (!is.numeric(resp.var)) {
     if (!is.factor(resp.var)) {
-      stop("biomod2 accept only numeric or factor values : please check your response data.")
-    # } else if (!is.ordered(resp.var)) {
-    #   stop("Your ordinal data doesn't seem ordered : please check your response data.")
+      stop("resp.var must contain numeric or factor values")
     }
   } else {
-    if (-Inf %in% resp.var | Inf %in% resp.var) {
-      stop("It seems there is Inf in your response data. Please check and remove it.")
+    if (-Inf %in% resp.var || Inf %in% resp.var) {
+      stop("resp.var must not contain Inf values")
     }
-    negative <- any(resp.var < 0 )
-    if (negative) {
-      stop("biomod2 doesn't accept negative values : please check your response data.")
-    }
+    .fun_testIfPosNum("resp.var", resp.var)
   }
-  resp.var <- resp.var[!is.na(resp.var)] ## Add a warning ? 
+  if (any(is.na(resp.var))) {
+    resp.var <- resp.var[!is.na(resp.var)]
+    .message("Some NA occurred in data and have been removed.")
+  }
   return(resp.var)
 }
 
 .check_formating_table <- function(resp.var)
 {
-  if (ncol(resp.var) > 1) {
-    stop("You must give a monospecific response variable (1D object)")
-  } else if (is.ordered(resp.var[, 1])) {
   resp.var <- as.data.frame(resp.var)
+  .fun_testIfSize("resp.var", ncol(resp.var), 1)
+  if (is.ordered(resp.var[, 1])) {
     levels <- levels(resp.var[, 1])
     resp.var <- factor(resp.var[, 1], levels = levels, ordered = T)
   } else {
@@ -210,17 +243,14 @@
 
 .check_formating_xy <- function(resp.xy, resp.length, env.as.df = FALSE)
 {
-  if (ncol(resp.xy) != 2) {
-    stop("If given, resp.xy must be a 2 column matrix or data.frame")
-  }
-  if (nrow(resp.xy) != resp.length &&
-      !(env.as.df & (nrow(resp.xy) == 0))) {
-    stop("Response variable and its coordinates don't match")
+  .fun_testIfSize("resp.xy", ncol(resp.xy), 2)
+  if (!(env.as.df && nrow(resp.xy) == 0)) {
+    .fun_testIfSameSize("resp.xy", nrow(resp.xy), "resp.var", resp.length, "number of rows/size")
   }
   as.data.frame(resp.xy)
 }
 
-.check_formating_expl.var <- function(expl.var, length.resp.var)
+.check_formating_expl.var <- function(expl.var, resp.length)
 {
   if (is.matrix(expl.var) | is.numeric(expl.var)) {
     expl.var <- as.data.frame(expl.var)
@@ -245,9 +275,7 @@
   }
   
   if (inherits(expl.var, 'data.frame')) {
-    if (nrow(expl.var) != length.resp.var) {
-      stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
-    }
+    .fun_testIfSameSize("expl.var", nrow(expl.var), "resp.var", resp.length, "number of rows/size")
   }
   expl.var
 }
@@ -261,16 +289,16 @@
   full.names <- colnames(calib.lines)
   if (missing(expected_PA.names)) { # CV only
     expected_CV.names <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
-    .fun_testIfIn(TRUE, "colnames(calib.lines)", full.names, expected_CV.names)
+    .fun_testIfIn("colnames(calib.lines)", full.names, expected_CV.names)
   } else {
-    err.msg <- "colnames(calib.lines) must follow the following format: '_PAx_RUNy' with x and y integer"
+    err.msg <- "colnames(calib.lines) must have the following format : '_PAx_RUNy' with x and y integer"
     # check for beginning '_'
     if (!all( substr(full.names, 1, 1) == "_")) {
       stop(err.msg)
     }
     PA.names <- sapply(strsplit(full.names, split = "_"), function(x) x[2])
     CV.names <- sapply(strsplit(full.names, split = "_"), function(x) x[3])
-    .fun_testIfIn(TRUE, "Pseudo-absence dataset in colnames(calib.lines)", PA.names, expected_PA.names)
+    .fun_testIfIn("Pseudo-absence dataset in colnames(calib.lines)", PA.names, expected_PA.names)
     if (!all( substr(CV.names, 1, 3) == "RUN")) {
       stop(err.msg)
     }
@@ -320,16 +348,12 @@ rast.has.values <- function(x)
       if (!is.null(PA.user.table)) {
         PA.user.table <- PA.user.table[!sp.cell, , drop = FALSE]
       }
-      cat("\n !!! Some data are located in the same raster cell. 
-          Only the first data in each cell will be kept as `filter.raster = TRUE`.")
+      .message("Some data is located in the same raster cell. Only the first data in each cell will be kept.")
     } else {
-      cat("\n !!! Some data are located in the same raster cell. 
-          Please set `filter.raster = TRUE` if you want an automatic filtering.")
+      .message("Some data is located in the same raster cell. Please set 'filter.raster = TRUE' for automatic filtering.")
     }
   }
-  return(list("sp"  = sp, 
-              "xy"  = xy,
-              "PA.user.table" = PA.user.table))
+  return(list("sp" = sp, "xy" = xy, "PA.user.table" = PA.user.table))
 }
 
 ## used in bm_PseudoAbsences, BIOMOD_Projection, BIOMOD_EnsembleForecasting
@@ -372,14 +396,13 @@ rast.has.values <- function(x)
 
 .get_env_class <- function(new.env)
 {
-  .fun_testIfInherits(TRUE, "new.env", new.env, c('data.frame', 'SpatRaster'))
+  .fun_testIfInherits("new.env", new.env, c("data.frame", "SpatRaster"))
   if (inherits(new.env, "data.frame")) {
     return("data.frame")
   }
   if (inherits(new.env, "SpatRaster")) {
     return("SpatRaster")
   }
-  NULL
 }
 
 
@@ -390,8 +413,8 @@ rast.has.values <- function(x)
 {
   if (is.null(subset)) { ## NEVER used
     subset <- rep(TRUE, length(resp))
-  } else if (length(subset) != length(resp)) {
-    stop("subset should be a vector of logical of the same length as resp")
+  } else {
+    .fun_testIfSameSize("subset", length(subset), "resp", length(resp))
   }
   
   nbPres <- sum(resp[subset] > 0, na.rm = TRUE)
@@ -447,8 +470,8 @@ rast.has.values <- function(x)
 .transform_outputs_list <- function(obj.type, obj.out, out = 'evaluation')
 {
   ## 0. CHECK object type ---------------------------------------------------------------
-  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
-  .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
+  .fun_testIfIn("obj.type", obj.type, c("mod", "em"))
+  .fun_testIfIn("out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
   
   if (obj.type == "mod") {
     dim_names <- c("PA", "run", "algo")
@@ -544,12 +567,12 @@ rast.has.values <- function(x)
 .extract_modelNamesInfo <- function(model.names, obj.type, info, as.unique = TRUE)
 {
   ## 0. CHECK parameters ----------------------------------------------------------------
-  if (!is.character(model.names)) { stop("model.names must be a character vector") }
-  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
+  model.names <- as.character(model.names)
+  .fun_testIfIn("obj.type", obj.type, c("mod", "em"))
   if (obj.type == "mod") {
-    .fun_testIfIn(TRUE, "info", info, c("species", "PA", "run", "algo"))
+    .fun_testIfIn("info", info, c("species", "PA", "run", "algo"))
   } else if (obj.type == "em") {
-    .fun_testIfIn(TRUE, "info", info, c("species", "merged.by.PA", "merged.by.run", "merged.by.algo", "filtered.by", "algo"))
+    .fun_testIfIn("info", info, c("species", "merged.by.PA", "merged.by.run", "merged.by.algo", "filtered.by", "algo"))
   }
   
   ## 1. SPLIT model.names ---------------------------------------------------------------
@@ -585,8 +608,8 @@ rast.has.values <- function(x)
 .format_proj.df <- function(proj, obj.type = "mod")
 {
   # argument check
-  .fun_testIfInherits(TRUE, "proj", proj, "data.frame")
-  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod","em"))
+  .fun_testIfInherits("proj", proj, "data.frame")
+  .fun_testIfIn("obj.type", obj.type, c("mod", "em"))
   # function content
   proj$points <- 1:nrow(proj)
   tmp <- melt(proj, id.vars =  "points")
@@ -651,15 +674,15 @@ rast.has.values <- function(x)
     {
       keep_lines <- 1:nrow(out)
       if (!is.null(subset.list[[sub.i]])) {
-        .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], unique(out[, sub.i]))
+        .fun_testIfIn(sub.i, subset.list[[sub.i]], unique(out[, sub.i]))
         keep_lines <- which(out[, sub.i] %in% subset.list[[sub.i]])
       }
       return(keep_lines)
     }
   keep_lines <- Reduce(intersect, keep_subset)
   if (length(keep_lines) == 0) {
-    warning(paste0("No information corresponding to the given filter(s) ("
-                   , paste0(names(subset.list), collapse = ', '), ")"))
+    .message("No information corresponding to the given filter(s) ("
+             , toString(names(subset.list)), ").")
   }
   return(keep_lines)
 }
@@ -668,14 +691,14 @@ rast.has.values <- function(x)
 {
   keep_layers <- out_names
   if ("full.name" %in% names(subset.list) && !is.null(subset.list[["full.name"]])) {
-    .fun_testIfIn(TRUE, "full.name", subset.list[["full.name"]], out_names)
+    .fun_testIfIn("full.name", subset.list[["full.name"]], out_names)
     keep_layers <- which(out_names %in% subset.list[["full.name"]])
   } else {
     keep_subset <- foreach(sub.i = names(subset.list)) %do%
       {
         keep_tmp <- 1:length(out_names)
         if (!is.null(subset.list[[sub.i]])) {
-          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
+          .fun_testIfIn(sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
           keep_tmp <- grep(paste0(subset.list[[sub.i]], ifelse(sub.i %in% c("PA", "run"), "_", ""), collapse = "|"), out_names)
         }
         return(keep_tmp)
@@ -683,8 +706,8 @@ rast.has.values <- function(x)
     keep_layers <- Reduce(intersect, keep_subset)
   }
   if (length(keep_layers) == 0) {
-    warning(paste0("No information corresponding to the given filter(s) ("
-                   , paste0(names(subset.list), collapse = ', '), ")"))
+    .message("No information corresponding to the given filter(s) ("
+             , toString(names(subset.list)), ").")
   }
   return(keep_layers)
 }
@@ -729,15 +752,15 @@ rast.has.values <- function(x)
   stopifnot(inherits(obj, "BIOMOD.projection.out"))
   
   if (!is.null(metric.binary) & !is.null(metric.filter)) {
-    stop("cannot return both binary and filtered projection, please provide either `metric.binary` or `metric.filter` but not both.")
+    stop("Both binary and filtered projection cannot be returned. Please select only one of metric.binary or metric.filter.")
   }
   
   df.info <- .extract_projlinkInfo(obj)
   
   available.metrics.binary <- unique(df.info$metric[which(df.info$type == "bin")])
   available.metrics.filter <- unique(df.info$metric[which(df.info$type == "filt")])
-  .fun_testMetric(TRUE, "metric.binary", metric.binary, available.metrics.binary)
-  .fun_testMetric(TRUE, "metric.filter", metric.filter, available.metrics.filter)
+  .fun_testIfInOnlyOne("metric.binary", metric.binary, available.metrics.binary)
+  .fun_testIfInOnlyOne("metric.filter", metric.filter, available.metrics.filter)
   
   
   ## select layers  -----------------------------------------------------------
@@ -787,7 +810,7 @@ rast.has.values <- function(x)
 .load_gam_namespace <- function(model_subclass = c("GAM_mgcv_gam", "GAM_mgcv_bam", "GAM_gam_gam"))
 {
   if (model_subclass %in% c("GAM_mgcv_gam", "GAM_mgcv_bam")) {
-    # cat("\n*** unloading gam package / loading mgcv package")
+    # .message("*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
     if (!isNamespaceLoaded("mgcv")) { 
       if (!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
@@ -795,7 +818,7 @@ rast.has.values <- function(x)
   }
   
   if (model_subclass == "GAM_gam_gam") {
-    # cat("\n*** unloading mgcv package / loading gam package")
+    # .message("*** unloading mgcv package / loading gam package")
     if (isNamespaceLoaded("mgcv")) {
       if (isNamespaceLoaded("caret")) { unloadNamespace("caret") } ## need to unload caret before car
       if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
@@ -864,7 +887,7 @@ rast.has.values <- function(x)
     this.levels <- raster::levels(myraster)[[this.layer]][[1]]
     ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
     if (any(duplicated(this.levels[ , ind.levels]))) {
-      stop("duplicated levels in environmental raster")
+      stop("Some levels are duplicated in new.env. Please check.")
     }
     if (is.null(expected_levels)) {
       # no check to do, just formatting
@@ -876,13 +899,10 @@ rast.has.values <- function(x)
       this.layer.name <- names(myraster)[this.layer]
       fit.levels <- levels(expected_levels[, this.layer.name])
       if (!all(new.levels %in% fit.levels)) {
-        cat("\n",
-            "!! Levels for layer", colnames(expected_levels)[this.layer],
-            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
-            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
-            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
-        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
-                    " do not match."))
+        stop("Levels in new.env (", toString(new.levels)
+             , ") do not match levels included in model (", toString(fit.levels)
+             , ") for layer ", colnames(expected_levels)[this.layer]
+             , ". Please check.")
       }
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
@@ -910,19 +930,16 @@ rast.has.values <- function(x)
       this.levels <- cats(new.env)[[this.layer]]
       ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
       new.levels <- paste0(this.levels[,ind.levels])
-        stop("duplicated levels in `new.env`")
       if (any(duplicated(new.levels))) {
+        stop("Some levels are duplicated in new.env. Please check.")
       }
       new.index <- this.levels[, 1]
       fit.levels <- levels(expected_levels[,this.layer.name])
       if (!all(new.levels %in% fit.levels)) {
-        cat("\n",
-            "!! Levels for layer", colnames(expected_levels)[this.layer],
-            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
-            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
-            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
-        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
-                    " do not match."))
+        stop("Levels in new.env (", toString(new.levels)
+             , ") do not match levels included in model (", toString(fit.levels)
+             , ") for layer ", colnames(expected_levels)[this.layer]
+             , ". Please check.")
       }
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
@@ -940,13 +957,10 @@ rast.has.values <- function(x)
       new.levels <- paste0(this.levels)
       fit.levels <- levels(expected_levels[, this.layer.name])
       if (!all(new.levels %in% fit.levels)) {
-        cat("\n",
-            "!! Levels for layer", colnames(expected_levels)[this.layer],
-            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
-            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
-            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
-        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
-                    " do not match."))
+        stop("Levels in new.env (", toString(new.levels)
+             , ") do not match levels included in model (", toString(fit.levels)
+             , ") for layer ", colnames(expected_levels)[this.layer]
+             , ". Please check.")
       }
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {

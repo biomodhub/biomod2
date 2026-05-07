@@ -171,8 +171,8 @@ setGeneric("load_stored_object", function(obj, ...) { standardGeneric("load_stor
 setMethod("load_stored_object", "BIOMOD.stored.data",
           function(obj, layer = 1)
           {
-              stop("No support for multilayer object in `load_stored_object` method for `BIOMOD.stored.data`")
             if (length(layer) > 1) {
+              stop("No support for BIOMOD.stored.data multilayer object in load_stored_object method.")
             }
             if (obj@inMemory & layer == 1) {
               return(obj@val) 
@@ -181,7 +181,7 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
             if (obj@link[layer] != '') {
               return(get(load(obj@link[layer])))
             } else {
-              warning("No link provided for this object")
+              warning("No link provided for this object", immediate. = TRUE)
               return(NA)
             }
           }
@@ -213,4 +213,3 @@ setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",
             }
           }
 )
-

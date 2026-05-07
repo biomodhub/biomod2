@@ -134,8 +134,8 @@ BIOMOD_LoadModels <- function(bm.out, full.name = NULL, PA = NULL, run = NULL, a
                               , merged.by.PA = NULL, merged.by.run = NULL
                               , merged.by.algo = NULL, filtered.by = NULL)
 {
-  # .bm_cat("Load Models")
-
+  # .bm_cat("[BIOMOD] Load Models")
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_LoadModels.check.args(bm.out)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
@@ -152,7 +152,7 @@ BIOMOD_LoadModels <- function(bm.out, full.name = NULL, PA = NULL, run = NULL, a
   envir <- parent.frame()
   
   if (length(models.to.load) == 0) {
-    cat("\n   ! No models computed matched, No models loaded !")
+    .message("No computed model matched, no model has been loaded.")
     return(NULL)
   }
   
@@ -171,6 +171,5 @@ BIOMOD_LoadModels <- function(bm.out, full.name = NULL, PA = NULL, run = NULL, a
 .BIOMOD_LoadModels.check.args <- function(bm.out)
 {
   ## 1. Check bm.out ----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  .fun_testIfInherits("bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
 }
-

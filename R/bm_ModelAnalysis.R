@@ -130,10 +130,12 @@ bm_ModelAnalysis <- function(bm.mod,
                              do.plot = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .bm_ModelAnalysis.check.args(bm.mod = bm.mod, models.chosen = models.chosen,
                                        color.by = color.by, do.plot = do.plot)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  cat("\n")
   
   ## 1. Compute RESIDUALS -------------------------------------------------------------------------
   tab.pred <- get_predictions(bm.mod, full.name = models.chosen)
@@ -198,8 +200,8 @@ bm_ModelAnalysis <- function(bm.mod,
           , axis.text.x = element_text(angle = 45, hjust = 1),
           , axis.text.y = element_blank(),
           , axis.ticks.y = element_blank())
-
-
+  
+  
   ## d. residuals ~ fitted values ---------------------------------------------
   gg.fitted <- ggplot(ggdat, aes(y = residuals, x = pred, color = .data[[color.by]])) +
     geom_point(size = 1) +
@@ -244,7 +246,7 @@ bm_ModelAnalysis <- function(bm.mod,
             , legend.key = element_rect(fill = "white")
             , axis.text.x = element_text(angle = 45, hjust = 1),
             , axis.title.y = element_blank())
-
+    
   } else {
     gg.Rscore <- Rscore <- NULL
   }
@@ -286,40 +288,33 @@ bm_ModelAnalysis <- function(bm.mod,
   
   
   ## 1. Check bm.mod argument -------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
+  .fun_testIfInherits("bm.mod", bm.mod, "BIOMOD.models.out")
   
   if (bm.mod@data.type == "multiclass") {
-    stop("bm_ModelAnalysis is not available for multiclass data models.")
+    stop("bm_ModelAnalysis is not available for multiclass data models. Sorry.")
   }
   
   ## 2. Check models.chosen argument ------------------------------------------
-  if (models.chosen[1] == 'all') {
+  if (missing(models.chosen) || is.null(models.chosen) || models.chosen[1] == 'all') {
     models.chosen <- bm.mod@models.computed
+    .message("models.chosen set to ", toString(models.chosen))
   } else {
-    models.chosen <- intersect(models.chosen, bm.mod@models.computed)
-  }
-  if (length(models.chosen) < 1) {
-    stop('No models selected')
+    .fun_testIfIn("models.chosen", models.chosen, bm.mod@models.computed)
   }
   
   ## check that given models exist
   files.check <- paste0(bm.mod@dir.name, "/", bm.mod@sp.name, "/models/",
                         bm.mod@modeling.id, "/", models.chosen)
-  
-  not.checked.files <- grep('MAXENT|SRE', files.check)
-  if (length(not.checked.files) > 0) {
-    files.check <- files.check[-not.checked.files]
-  }
   missing.files <- files.check[!file.exists(files.check)]
   if (length(missing.files) > 0) {
-    stop(paste0("Projection files missing : ", toString(missing.files)))
-    if (length(missing.files) == length(files.check)) {
-      stop("Impossible to find any models, might be a problem of working directory")
-    }
+    stop("Some model projection files are missing : ", toString(missing.files)
+         , ".", ifelse(length(missing.files) == length(files.check)
+                       , " Impossible to find any model, might be a working directory problem.", "")
+         , " Please check.")
   }
   
   ## 3. Check color.by argument -----------------------------------------------
-  .fun_testIfIn(TRUE, "color.by", color.by, c("full.name", "PA", "run", "algo" ))
+  .fun_testIfIn("color.by", color.by, c("full.name", "PA", "run", "algo" ))
   palette <- switch(color.by
                     , 'algo' = "tvthemes::parksAndRec"
                     , 'run' = "ggthemes::Classic_20"
@@ -329,4 +324,3 @@ bm_ModelAnalysis <- function(bm.mod,
   return(list(models.chosen = models.chosen
               , palette = palette))
 }
-

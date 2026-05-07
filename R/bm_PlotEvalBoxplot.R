@@ -136,7 +136,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
   if (!is.null(scores) && any(!is.na(scores[, dataset]))) {
-  ## Prepare data table for graphic
+    ## Prepare data table for graphic
     ggdat <- scores
     
     ## 2. PLOT graphic ------------------------------------------------------------------------------
@@ -169,27 +169,27 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   args <- list(...)
   
   ## 1. Check bm.out argument -------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  .fun_testIfInherits("bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 2. Check dataset argument ------------------------------------------------
-  .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
+  .fun_testIfIn("dataset", dataset, c("calibration", "validation", "evaluation"))
   
   ## 3. Check group.by argument -----------------------------------------------
-  if (length(group.by) != 2) { stop("2 group values needed") }
+  .fun_testIfLength("group.by", group.by, 2)
   if (inherits(bm.out, "BIOMOD.models.out")) {
     for (i in 1:length(group.by)) {
-      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo"))
+      .fun_testIfIn(paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo"))
     }
   } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
     for (i in 1:length(group.by)) {
-      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "filtered.by"))
+      .fun_testIfIn(paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "filtered.by"))
     }
   } 
   
   ## 4. Check extra args argument ---------------------------------------------
-  .fun_testIfIn(TRUE, "names(args)", names(args), c('main', 'scales'))
+  .fun_testIfIn("names(args)", names(args), c("main", "scales"))
   if ("scales" %in% names(args)) {
-    .fun_testIfIn(TRUE, "args$scales", args$scales, c('fixed', 'free_x', 'free_y', 'free'))
+    .fun_testIfIn("args$scales", args$scales, c("fixed", "free_x", "free_y", "free"))
   } else {
     if (bm.out@data.type == "binary") {
       args$scales = "fixed"
@@ -202,4 +202,3 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   return(list(main = args$main,
               scales = args$scales))
 } 
-

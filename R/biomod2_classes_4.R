@@ -221,24 +221,28 @@ setMethod('get_scaling_model', signature('biomod2_model'),
 setMethod('show', signature('biomod2_model'), function(object)
 {
   .bm_cat("biomod2_model")
-  cat("\n\t Model name (model_name) :", object@model_name, fill = .Options$width)
-  cat("\n\t Model class (model_class) :", object@model_class, fill = .Options$width)
-  cat("\n\t Scaling model (scaling_model) : This model"
-      , ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scale", fill = .Options$width)
   cat("\n")
-  cat("\n\t Modeling directory (dir_name) :", object@dir_name, fill = .Options$width)
-  cat("\n\t Modeled species (resp_name) :", object@resp_name, fill = .Options$width)
-  cat("\n\n\t Explanatory variables (expl.var.names) :", fill = .Options$width)
-  cat("\n\t", "name", "\t", "type", "\t", "range", fill = .Options$width)
+  cat("Modeling directory (dir_name) :", object@dir_name, fill = .Options$width)
+  cat("Modeled species (resp_name) :", object@resp_name, fill = .Options$width)
+  cat("\n")
+  cat("Model name (model_name) :", object@model_name, fill = .Options$width)
+  cat("Model class (model_class) :", object@model_class, fill = .Options$width)
+  cat("Model scaling (scaling_model) : This model"
+      , ifelse(length(object@scaling_model), "has", "doesn't have")
+      , "its own scale.", fill = .Options$width)
+  cat("\n")
+  cat("Explanatory variables (expl.var.names) :", fill = .Options$width)
+  cat("\n\t", "name", "\t", "type", "\t\t", "range", fill = .Options$width)
   for (i in 1:length(object@expl_var_names)) {
     cat("\n\t", object@expl_var_names[i]
         , "\t", object@expl_var_type[i]
-        , "\t", object@expl_var_range[[i]], fill = .Options$width)
+        , "\t", object@expl_var_range[[i]][1]
+        , "\t\t", object@expl_var_range[[i]][2])
   }
   cat("\n")
-  cat("\n\t NOTE : ")
-  cat("\n\t\t You can access 'formal' model with get_formal_model function")
-  cat(ifelse(length(object@scaling_model), "\n\t\t You can access scaling model with get_scaling_model function\n", "\n"))
+  cat("NOTE :", fill = .Options$width)
+  cat("\t Formal model can be accessed with get_formal_model function.", fill = .Options$width)
+  cat("\t Scaling model can be accessed with get_scaling_model function.", fill = .Options$width)
   .bm_cat()
 })
 
@@ -371,10 +375,10 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
                   }
                   proj <- rast(filename)
                 }
-              # } else {
-              #   proj <- NA
-              #   class(proj) <- "try-error"
-              #   .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
+                # } else {
+                #   proj <- NA
+                #   class(proj) <- "try-error"
+                #   .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
               }
             }
             return(proj)
@@ -420,10 +424,10 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"
                 proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
               }
               if (on_0_1000) { proj <- round(proj * 1000) }
-            # } else {
-            #   proj <- NA
-            #   class(proj) <- "try-error"
-            #   .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
+              # } else {
+              #   proj <- NA
+              #   class(proj) <- "try-error"
+              #   .message("*** Error in ", mod.name, " predictions: inherits(proj, 'try-error')")
             }
             return(proj)
           }
@@ -1014,7 +1018,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             
             # save raster on hard drive ?
             if (!is.null(filename)) {
-              cat("\n\t\tWriting projection on hard drive...")
+              cat("\n\t\tWriting projection on hard drive...") ## Happening ?
               if (on_0_1000) { ## projections are stored as positive integer
                 writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
               } else { ## keep default data format for saved raster
@@ -1184,7 +1188,7 @@ setMethod('predict2', signature(object = 'MAXNET_biomod2_model', newdata = "Spat
             
             # save raster on hard drive ?
             if (!is.null(filename)) {
-              cat("\n\t\tWriting projection on hard drive...")
+              cat("\n\t\tWriting projection on hard drive...") ## Happening ?
               if (on_0_1000) { ## projections are stored as positive integer
                 writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
               } else { ## keep default data format for saved raster

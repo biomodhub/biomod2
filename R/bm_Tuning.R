@@ -316,7 +316,7 @@ bm_Tuning <- function(model,
   
   argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib, dataset.i = combi$name_dataset) %do%
     {
-      cat(paste0("\n\t\t> Dataset ", dataset.i))
+      cat("\n\t\t> Dataset", dataset.i)
       
       if(inherits(bm.options, "BIOMOD.options.dataset") && !is.null(bm.options@args.values[[dataset.i]])){
         argstmp <- bm.options@args.values[[dataset.i]]
@@ -326,9 +326,9 @@ bm_Tuning <- function(model,
       
       
       if (model == "MAXNET") {
-        warning("No tuning available for that model. Sorry.")
+        .message("No tuning available for that model. Sorry.")
       } else if (model == "XGBOOST") {
-        warning("Due to upgrade of xgboost package, currently, no tuning available for that model. Sorry.")
+        .message("Due to upgrade of xgboost package, currently, no tuning available for that model. Sorry.")
       } else {
         ## 1. SPECIFIC CASE OF MAXENT, SRE OR DNN -------------------------------------------------
         if (model %in% c("MAXENT", "SRE", "DNN")) {
@@ -409,7 +409,7 @@ bm_Tuning <- function(model,
             argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
             
           } else { ## DNN case  # -------------------------------------- #
-
+            
             ## Preparation of data 
             scale_data <- scale(myExpl)
             argstmp$data <- cbind(myResp, as.data.frame(scale_data))
@@ -688,11 +688,8 @@ bm_Tuning <- function(model,
                                   , weights = NULL, params.train)
 {
   ## check model --------------------------------------------------------------
-  if(length(model) != 1){
-    stop("\nmodel should be of length 1")
-  }
-  .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "DNN", "FDA", "GAM", "GBM", "GLM"
-                                        , "MARS", "MAXENT", "MAXNET", "RF", "RFd", "SRE", "XGBOOST"))
+  .fun_testIfInOnlyOne("model", model, c("ANN", "CTA", "DNN", "FDA", "GAM", "GBM", "GLM"
+                                         , "MARS", "MAXENT", "MAXNET", "RF", "RFd", "SRE", "XGBOOST"))
   
   ## check namespace ----------------------------------------------------------
   if (!isNamespaceLoaded("caret")) { 
@@ -711,9 +708,9 @@ bm_Tuning <- function(model,
   }
   
   ## check bm.options ----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.options", bm.options, c("BIOMOD.options.default", "BIOMOD.options.dataset"))
+  .fun_testIfInherits("bm.options", bm.options, c("BIOMOD.options.default", "BIOMOD.options.dataset"))
   ## check bm.format ----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  .fun_testIfInherits("bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   ## check params.train -------------------------------------------------------
   params.train_init <- list(ANN.size = c(2, 4, 6, 8),
                             ANN.decay = c(0.01, 0.05, 0.1),
@@ -764,19 +761,19 @@ bm_Tuning <- function(model,
   ## check evaluation metric --------------------------------------------------
   metric.bm <- NULL
   if (model == "MAXENT") {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
-    .fun_testIfIn(TRUE, "params.train$MAXENT.algorithm", params.train$MAXENT.algorithm, c("maxent.jar", "maxnet"))
+    .fun_testIfIn("metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
+    .fun_testIfIn("params.train$MAXENT.algorithm", params.train$MAXENT.algorithm, c("maxent.jar", "maxnet"))
   } else if (model == "SRE") {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("AUC", "Kappa", "TSS"))
-    sapply(params.train$SRE.quant, FUN = .fun_testIf01, test = TRUE, objName =  "params.train$SRE.quant")
+    .fun_testIfIn("metric.eval", metric.eval, c("AUC", "Kappa", "TSS"))
+    sapply(params.train$SRE.quant, FUN = .fun_testIf0X, objName =  "params.train$SRE.quant")
   } else if (bm.format@data.type == "binary") {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
+    .fun_testIfIn("metric.eval", metric.eval, c("ROC", "TSS"))
     metric.bm <- metric.eval
   } else if (bm.format@data.type %in% c("multiclass","ordinal")) {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("Accuracy"))
+    .fun_testIfIn("metric.eval", metric.eval, "Accuracy")
     metric.bm <- "Accuracy"
   } else {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("RMSE", "Rsquared"))
+    .fun_testIfIn("metric.eval", metric.eval, c("RMSE", "Rsquared"))
     metric.bm <- ifelse(metric.eval == "RMSE", "RMSE", "Rsquared")
   }
   
@@ -793,16 +790,16 @@ bm_Tuning <- function(model,
   }
   names(all.params) <- all.fun
   
-  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet", "tune"))
-  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, unique(ModelsTable$train[which(ModelsTable$model == model)]))
+  .fun_testIfIn("tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet", "tune"))
+  .fun_testIfIn("tuning.fun", tuning.fun, unique(ModelsTable$train[which(ModelsTable$model == model)]))
   train.params <- all.params[[tuning.fun]]
   
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
   if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "RFd", "XGBOOST")) {
     if (!(model == "GAM")) {
-      .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
       params.train <- params.train[grep(paste0(model,"\\."), names(params.train))]
+      .fun_testIfIn("names(params.train)", names(params.train), paste0(model, ".", train.params$params))
     } else if (tuning.fun == "gamLoess"){
       params.train <- params.train[c('GAM.span', "GAM.degree")]
     } else {
@@ -819,15 +816,15 @@ bm_Tuning <- function(model,
   
   ## Do formula ---------------------------------------------------------------
   if (model %in% c("DNN", "MAXENT", "MAXNET", "SRE", "XGBOOST") && do.formula == TRUE) {
-    cat("\n No optimization of formula for", model)
     do.formula <- FALSE
+    .message("No optimization of formula available for that model. Sorry.")
   }
   
   ## get criteria -------------------------------------------------------------
   if (do.stepAIC &&
       (model == "GLM" || (model == "GAM" && bm.options@package == "gam")) && 
       !bm.format@data.type %in% c("multiclass", "ordinal", "relative")) {
-    .fun_testIfIn(TRUE, "metric.AIC", metric.AIC, c("AIC", "BIC"))
+    .fun_testIfIn("metric.AIC", metric.AIC, c("AIC", "BIC"))
     if (metric.AIC == "AIC") { criteria.AIC <- 2 }
     if (metric.AIC == "BIC")  { criteria.AIC <- log(ncol(bm.format@data.env.var)) }
   } else {
@@ -878,4 +875,3 @@ bm_Tuning <- function(model,
   
   return(step.list)
 }
-

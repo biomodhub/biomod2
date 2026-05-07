@@ -241,7 +241,7 @@ bm_PlotResponseCurves <- function(bm.out
         
         ## Load models ------------------------------------------------------------------
         BIOMOD_LoadModels(bm.out = bm.out, full.name = models)
-
+        
         ## Getting predictions for each model -------------------------------------------
         tab.out <- foreach(model = models, .combine = "cbind") %do% 
           {
@@ -391,9 +391,9 @@ bm_PlotResponseCurves <- function(bm.out
   if (do.plot){ 
     # if (bm.out@data.type == "multiclass"){
     #   levels <- mod@levels_factor
-    #   cat("\nThe levels are represent as : ")
+    #   cat("\nThe levels are represent as :")
     #   for (i in 1:length(levels)){
-    #     cat("\n\t ", i, " : ", levels[i])
+    #     cat("\n\t ", i, ":", levels[i])
     #   }
     # }
     print(gg) }
@@ -408,43 +408,37 @@ bm_PlotResponseCurves <- function(bm.out
   args <- list(...)
   
   ## 1. Check bm.out argument -------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  .fun_testIfInherits("bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   if (get_built_models(bm.out)[1] == "none") {
-    stop('No models computed')
+    stop("No computed models. Please check.")
   }
   
   ## 2. Check models.chosen ---------------------------------------------------
-  if (models.chosen[1] == 'all') {
+  if (missing(models.chosen) || is.null(models.chosen) || models.chosen[1] == 'all') {
     if (inherits(bm.out, "BIOMOD.models.out")) {
       models.chosen <- bm.out@models.computed
     } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
       models.chosen <- bm.out@em.computed
-    } 
+    }
+    .message("models.chosen set to ", toString(models.chosen))
   } else {
     if (inherits(bm.out, "BIOMOD.models.out")) {
-      models.chosen <- intersect(models.chosen, bm.out@models.computed)
+      .fun_testIfIn("models.chosen", models.chosen, bm.out@models.computed)
     } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
-      models.chosen <- intersect(models.chosen, bm.out@em.computed)
-    } 
+      .fun_testIfIn("models.chosen", models.chosen, bm.out@em.computed)
+    }
   }
-  if (length(models.chosen) < 1) {
-    stop('No models selected')
-  }
-  models <- models.chosen
   
   ## check that given models exist
-  files.check <- file.path(bm.out@dir.name, bm.out@sp.name, 'models', bm.out@modeling.id, models.chosen)
-  not.checked.files <- grep('MAXENT|SRE', files.check)
-  if (length(not.checked.files) > 0) {
-    files.check <- files.check[-not.checked.files]
-  }
+  files.check <- paste0(bm.out@dir.name, "/", bm.out@sp.name, "/models/",
+                        bm.out@modeling.id, "/", models.chosen)
   missing.files <- files.check[!file.exists(files.check)]
   if (length(missing.files) > 0) {
-    stop(paste0("Projection files missing : ", toString(missing.files)))
-    if (length(missing.files) == length(files.check)) {
-      stop("Impossible to find any models, might be a problem of working directory")
-    }
+    stop("Some model projection files are missing : ", toString(missing.files)
+         , ".", ifelse(length(missing.files) == length(files.check)
+                       , " Impossible to find any model, might be a working directory problem.", "")
+         , " Please check.")
   }
   
   ## 2. Check args$nb.pts argument --------------------------------------------
@@ -459,12 +453,11 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   ## 3. Check new.env argument ------------------------------------------------
-  .fun_testIfInherits(TRUE, "new.env", new.env, 
-                      c("SpatRaster","Raster","data.frame","matrix"))
+  .fun_testIfInherits("new.env", new.env, c("matrix", "data.frame", "Raster", "SpatRaster"))
   
-      stop("new.env cannot be given as matrix when original model have factor variables")
   if (inherits(new.env, "matrix")) {
     if (any(sapply(get_formal_data(bm.out, "expl.var"), is.factor))) {
+      stop("new.env cannot be given as matrix when modeling involves categorical variables.")
     }
     new.env <- as.data.frame(new.env)
   }
@@ -477,14 +470,14 @@ bm_PlotResponseCurves <- function(bm.out
       new.env <- rast(new.env)
     }
   }
-
+  
   if (inherits(new.env, c("SpatRaster"))) {
-    cat("\n   > Extracting raster infos..")
+    # cat("\n   > Extracting raster infos..")
     DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
     colnames(DataTmp) <- names(new.env)
     maxVal <- global(new.env, max, na.rm = TRUE)$max
     minVal <- global(new.env, min, na.rm = TRUE)$min
-
+    
     DataTmp <- as.data.frame(DataTmp)
     for (i in 1:ncol(DataTmp)) {
       DataTmp[, i] <- seq(minVal[i], maxVal[i], length.out = nb.pts)
@@ -495,24 +488,21 @@ bm_PlotResponseCurves <- function(bm.out
       for(thisvar in categorical_var){
         DataTmp[, thisvar] <- rep(factor(
           cats(new.env[[categorical_var]])[[1]][,2]
-          ), length.out = nrow(DataTmp))
+        ), length.out = nrow(DataTmp))
       }
     }
     new.env <- data.frame(DataTmp)
   }
   
   ## 4. Check show.variables argument -----------------------------------------
-  if (length(show.variables) > ncol(new.env) || 
-      any(!show.variables %in% colnames(new.env))) {
-    stop("columns wanted in show.variables do not match the data \n")
-  }
+  .fun_testIfIn("show.variables", show.variables, colnames(new.env))
   
   # remove factorial var in do.bivariate case
   if (do.bivariate == TRUE) {
     fact_var <- sapply(new.env[, show.variables, drop = FALSE], is.factor)
     if (sum(fact_var) > 0) {
-      warning("Factorial variables have been automatically removed!")
       show.variables <- show.variables[!fact_var]
+      .message("show.variables set to ", toString(show.variables), " (categorical variables removed)")
     }
   }
   
@@ -528,7 +518,7 @@ bm_PlotResponseCurves <- function(bm.out
     data_species[data_species != 1 | is.na(data_species)] <- 0
   }
   
-  return(list(models = models,
+  return(list(models = models.chosen,
               new.env = new.env,
               show.variables = show.variables,
               do.bivariate = do.bivariate,
@@ -566,4 +556,3 @@ bm_PlotResponseCurves <- function(bm.out
     }
   return(out_)
 }
-

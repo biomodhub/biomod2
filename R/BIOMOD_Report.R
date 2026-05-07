@@ -194,17 +194,19 @@ BIOMOD_Report <- function(bm.out
                                                 , D.eco.level = NULL
                                                 , D.samp.design = NULL))
 {
-  .bm_cat("Do biomod2 Report")
+  .bm_cat("[BIOMOD] Do biomod2 Report")
   bm.files <- bm.mod <- bm.ens <- bm.form <- NA
   
   
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .BIOMOD_Report.check.args(bm.out, strategy, params.color, params.ODMAP)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-    
+  cat("\n")
+  
   ## 1. Get modeling files ------------------------------------------------------------------------
-  cat("\n\t> Getting modeling files...")
+  cat("\n Getting modeling files...")
   bm.files <- list.files(path = sp.name, pattern = ".out$", recursive = TRUE, full.names = TRUE)
   if (length(bm.files) > 0) {
     bm.files <- data.frame(file = bm.files
@@ -235,8 +237,8 @@ BIOMOD_Report <- function(bm.out
     if (is.na(name.bm.mod)) {
       ind.mod <- which(bm.files$type == "models" & bm.files$level == "single")
       if (length(ind.mod) > 0) {
-        warning(paste0("No bm.mod selected but some available. Please select one among : "
-                       , paste0(bm.files$file[ind.mod], collapse = ", ")))
+        .message("No bm.mod selected but some available. Please select one among : "
+                 , toString(bm.files$file[ind.mod]))
       }
     } else {
       
@@ -280,7 +282,7 @@ BIOMOD_Report <- function(bm.out
   
   
   ## 2. Create output object ----------------------------------------------------------------------
-  cat("\n\t> Building report...")
+  cat("\n Building report...")
   out <- switch(strategy,
                 report = BIOMOD_Report_summary(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color),
                 ODMAP = BIOMOD_Report_ODMAP(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color, params.ODMAP),
@@ -318,8 +320,8 @@ BIOMOD_Report <- function(bm.out
       name.bm.mod <- sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), bm.out@models.out@link)
     }
   } else {
-    .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"
-                                                  , "BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+    .fun_testIfInherits("bm.out", bm.out, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"
+                                            , "BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   }
   
   
@@ -327,44 +329,44 @@ BIOMOD_Report <- function(bm.out
   availableReport <- c("report", "ODMAP", "code")
   if (is.null(strategy) || !(strategy %in% availableReport)) {
     strategy <- "report"
-    cat("\n   ! Report was automatically selected")
+    .message("strategy set to report")
   }
   
   ## 3. Check params.ODMAP argument -------------------------------------------
   if (strategy == "ODMAP") {
-    .fun_testIfIn(TRUE, "names(params.ODMAP)", names(params.ODMAP)
+    .fun_testIfIn("names(params.ODMAP)", names(params.ODMAP)
                   , c("O.mod.objective", "O.boundary", "O.obs.type"
                       , "O.pred.type", "D.eco.level", "D.samp.design")
                   , exact = FALSE)
     if (!is.null(params.ODMAP$O.mod.objective)) {
-      .fun_testIfIn(TRUE, "params.ODMAP$O.mod.objective", params.ODMAP$O.mod.objective
+      .fun_testIfIn("params.ODMAP$O.mod.objective", params.ODMAP$O.mod.objective
                     , c("Inference and explanation", "Mapping and interpolation", "Forecast and transfer"))
     } else { params.ODMAP$O.mod.objective <- NA }
     if (!is.null(params.ODMAP$O.boundary)) {
-      .fun_testIfIn(TRUE, "params.ODMAP$O.boundary", params.ODMAP$O.boundary
+      .fun_testIfIn("params.ODMAP$O.boundary", params.ODMAP$O.boundary
                     , c("natural", "political", "rectangle"))
     } else { params.ODMAP$O.boundary <- NA }
     if (!is.null(params.ODMAP$O.obs.type)) {
-      .fun_testIfIn(TRUE, "params.ODMAP$O.obs.type", params.ODMAP$O.obs.type
+      .fun_testIfIn("params.ODMAP$O.obs.type", params.ODMAP$O.obs.type
                     , c("citizen science", "field survey", "GPS tracking"
                         , "range map", "standardised monitoring data"))
     } else { params.ODMAP$O.obs.type <- NA }
     if (!is.null(params.ODMAP$O.pred.type)) {
-      .fun_testIfIn(TRUE, "params.ODMAP$O.pred.type", params.ODMAP$O.pred.type
+      .fun_testIfIn("params.ODMAP$O.pred.type", params.ODMAP$O.pred.type
                     , c("climatic", "edaphic", "habitat", "topographic"))
     } else { params.ODMAP$O.pred.type <- NA }
     if (!is.null(params.ODMAP$D.eco.level)) {
-      .fun_testIfIn(TRUE, "params.ODMAP$D.eco.level", params.ODMAP$D.eco.level
+      .fun_testIfIn("params.ODMAP$D.eco.level", params.ODMAP$D.eco.level
                     , c("communities", "individuals", "operational taxonomic units", "populations", "species"))
     } else { params.ODMAP$D.eco.level <- NA }
     if (!is.null(params.ODMAP$D.samp.design)) {
-      .fun_testIfIn(TRUE, "params.ODMAP$D.samp.design", params.ODMAP$D.samp.design
+      .fun_testIfIn("params.ODMAP$D.samp.design", params.ODMAP$D.samp.design
                     , c("spatial random", "spatial uniform", "spatial stratified", "temporal", "nestedness"))
     } else { params.ODMAP$D.samp.design <- NA }
   }
   
   ## 4. Check params.color argument -------------------------------------------
-  .fun_testIfIn(TRUE, "names(params.color)", names(params.color), c("color1", "color2", "color3"))
+  .fun_testIfIn("names(params.color)", names(params.color), c("color1", "color2", "color3"))
   
   
   return(list(sp.name = sp.name
@@ -392,7 +394,7 @@ BIOMOD_Report_summary <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, 
                            , output_dir = dir.name
                            , knit_root_dir = dir.name
                            , quiet = FALSE)
-  cat("\n\t> Report has been created : ", out)
+  cat("\n\t > Report has been created :", out)
   cat("\n")
 }
 
@@ -411,7 +413,7 @@ BIOMOD_Report_ODMAP <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm
                            , output_dir = dir.name
                            , knit_root_dir = dir.name
                            , quiet = FALSE)
-  cat("\n\t> ODMAP has been created : ", out)
+  cat("\n\t > ODMAP has been created :", out)
   cat("\n")
 }
 
@@ -429,7 +431,6 @@ BIOMOD_Report_code <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.
                            , output_dir = dir.name
                            , knit_root_dir = dir.name
                            , quiet = FALSE)
-  cat("\n\t> Code has been created : ", out)
+  cat("\n\t > Code has been created :", out)
   cat("\n")
 }
-

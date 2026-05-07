@@ -244,9 +244,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                        nb.cpu = 1,
                                        ...)
 {
-  .bm_cat("Do Ensemble Models Projection")
+  .bm_cat("[BIOMOD] Do Ensemble Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
+  cat("\nChecking arguments...")
   args <- .BIOMOD_EnsembleForecasting.check.args(bm.em = bm.em,
                                                  bm.proj = bm.proj, 
                                                  proj.name = proj.name, 
@@ -259,6 +260,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                                  ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  cat("\n")
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
@@ -337,9 +339,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   }
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
+  cat("\n Projecting : ")
   proj.em <- foreach(em.name = models.chosen) %dopar%
     {
-      cat("\n\t> Projecting", em.name, "...")
+      cat("\n\t +", em.name)
       if (do.stack) {
         filename <- NULL
       } else {
@@ -434,8 +437,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     saved.files.filtered <- NULL
     to.rm <- grepl("EMcv|EMci", models.chosen)
     if (any(to.rm)) {
-      cat("\n! Binary/Filtered transformation automatically desactivated for ensemble models with coefficient of variation or confidence intervals")
       models.chosen <- models.chosen[!to.rm]
+      .message("no binary/filter transformation for EMcv/EMci")
     }
     
     if (length(models.chosen) > 0) {
@@ -443,12 +446,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (!on_0_1000) { thresholds[, "cutoff"] <- thresholds[, "cutoff"] / 1000 }
       
       ## Do binary/filtering transformation -----------------------------------
+      cat("\n Transforming :")
       for (eval.meth in unique(c(metric.binary, metric.filter))) {
         thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
         rownames(thres.tmp) <- thres.tmp$full.name
         thres.tmp <- thres.tmp[models.chosen, "cutoff"]
         
-        cat("\n\t> Building", eval.meth, "binaries / filtered")
         if (!do.stack) {
           ## NO stack + binary + filtering transformation ---------------------
           for (i in 1:length(proj_out@proj.out@link)) {
@@ -456,6 +459,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
             output.format.search <- paste0("\\",output.format)
             if (grepl(pattern = paste0(models.chosen, collapse = "|"), x = file.tmp)) {
               if (eval.meth %in% metric.binary) {
+                cat("\n\t +", eval.meth, "binary transformation")
                 file.tmp.binary <- sub(output.format.search,
                                        paste0("_", eval.meth, "bin", output.format),
                                        file.tmp)
@@ -468,6 +472,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               }
               
               if (eval.meth %in% metric.filter) {
+                cat("\n\t +", eval.meth, "filtering")
                 file.tmp.filtered <- sub(output.format.search,
                                          paste0("_", eval.meth, "filt", output.format),
                                          file.tmp)
@@ -490,6 +495,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           
           ## Stack + binary transformation ------------------------------------
           if (eval.meth %in% metric.binary) {
+            cat("\n\t +", eval.meth, "binary transformation")
             nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
             assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
             
@@ -513,6 +519,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           
           ## Stack + filtering transformation ---------------------------------
           if (eval.meth %in% metric.filter) {
+            cat("\n\t +", eval.meth, "filtering")
             nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
             # assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
             assign(x = nameFilt, value = bm_BinaryTransformation(proj.trans, thres.tmp, do.filtering = TRUE))
@@ -540,7 +547,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     } else {
       metric.binary <- NULL
       metric.filter <- NULL
-      cat("\n! no models left for binary/filtered transformation")
+      .message("metric.binary and metric.filter set to NULL (no models left)")
     }
   }
   
@@ -574,32 +581,32 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   args <- list(...)
   
   ## 1. Check bm.em -----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
+  .fun_testIfInherits("bm.em", bm.em, "BIOMOD.ensemble.models.out")
   
   ## 2. Check needed data and predictions -------------------------------------
   if ((is.null(bm.proj) && is.null(new.env)) ||
       (!is.null(bm.proj) & !is.null(new.env))) {
-    stop("You have to refer at one of 'bm.proj' or 'new.env' argument")
+    stop("bm.proj or new.env is missing")
   }
   
   if (!is.null(bm.proj)) {
-    .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
+    .fun_testIfInherits("bm.proj", bm.proj, "BIOMOD.projection.out")
     
     ## check all needed predictions are available
     needed_pred <- intersect(get_kept_models(bm.em), models.chosen)
     missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
     if (length(missing_pred) > 0) {
-      stop("Some models predictions missing :", toString(missing_pred))
+      stop("Some model predictions are missing : ", toString(missing_pred), ". Please check.")
     }
   }
   
   ## 3. Check new.env ---------------------------------------------------------
   if (!is.null(new.env)) {
-    .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
+    .fun_testIfInherits("new.env", new.env, c("matrix", "data.frame", "Raster", "SpatRaster"))
     
     if (inherits(new.env, 'matrix')) {
-      if (any(sapply(get_formal_data(bm.em,"expl.var"), is.factor))) {
-        stop("new.env cannot be given as matrix when model involves categorical variables")
+      if (any(sapply(get_formal_data(bm.em, "expl.var"), is.factor))) {
+        stop("new.env cannot be given as matrix when modeling involves categorical variables.")
       }
       new.env <- data.frame(new.env)
     } else if (inherits(new.env, 'data.frame')) {
@@ -617,12 +624,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     }
     
     if (inherits(new.env, 'SpatRaster')) {
-      .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names, exact = TRUE)
+      .fun_testIfIn("names(new.env)", names(new.env), bm.em@expl.var.names, exact = TRUE)
       new.env <- new.env[[bm.em@expl.var.names]]
       new.env.mask <- .get_data_mask(new.env, value.out = 1)
       new.env <- mask(new.env, new.env.mask)
     } else {
-      .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names, exact = TRUE)
+      .fun_testIfIn("colnames(new.env)", colnames(new.env), bm.em@expl.var.names, exact = TRUE)
       new.env <- new.env[ , bm.em@expl.var.names, drop = FALSE]
     }
     
@@ -633,18 +640,16 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   }
   
   ## 4. Check models.chosen ---------------------------------------------------
-  if (models.chosen[1] == 'all') {
+  if (missing(models.chosen) || is.null(models.chosen) || models.chosen[1] == 'all') {
     models.chosen <- get_built_models(bm.em)
+    .message("models.chosen set to ", toString(models.chosen))
   } else {
-    models.chosen <- intersect(models.chosen, get_built_models(bm.em))
-  }
-  if (length(models.chosen) < 1) {
-    stop('No models selected')
+    .fun_testIfIn("models.chosen", models.chosen, get_built_models(bm.em))
   }
   
   ## 5. Check proj.name -------------------------------------------------------
   if (!length(proj.name) && !length(bm.proj)) {
-    stop("You have to give a valid 'proj.name' if you don't work with bm.proj")
+    stop("proj.name is missing")
   } else if (!length(proj.name)) {
     proj.name <- bm.proj@proj.name
   }
@@ -652,29 +657,27 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 6. Check metric.binary & metric.filter -----------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter)) {
     if (bm.em@data.type != "binary") {
-      cat ("No metric.binary or metric.filter are needed with", bm.em@data.type, "data")
       metric.binary <- NULL
       metric.filter <- NULL
+      .message("metric.binary and metric.filter set to NULL (data.type is not binary)")
     } else {
       models.evaluation <- get_evaluations(bm.em)
       if (is.null(models.evaluation)) {
-        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+        .message("no binary/filter transformation (models evaluation information missing)")
       } else {
         available.evaluation <- as.character(unique(models.evaluation$metric.eval))
         if (!is.null(metric.binary) && metric.binary[1] == 'all') {
           metric.binary <- available.evaluation
         } else if (!is.null(metric.binary) && any(! metric.binary %in% available.evaluation)) {
-          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                         " Binary Transformation were switched off because no corresponding evaluation method found"))
           metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+          .message("metric.binary set to ", toString(metric.binary), " (models evaluation information missing)")
         }
         
         if (!is.null(metric.filter) && metric.filter[1] == 'all') {
           metric.filter <- available.evaluation
         } else if (!is.null(metric.filter) && any(!(metric.filter %in% available.evaluation))) {
-          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
           metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+          .message("metric.filter set to ", toString(metric.filter), " (models evaluation information missing)")
         }
       }
     }

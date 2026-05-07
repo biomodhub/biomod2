@@ -163,23 +163,22 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   args <- list(...)
   
   ## 1. Check bm.out argument -------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  .fun_testIfInherits("bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 3. Check group.by argument -----------------------------------------------
-  if (length(group.by) != 3) { stop("3 group values needed") }
+  .fun_testIfLength("group.by", group.by, 3)
   if (inherits(bm.out, "BIOMOD.models.out")) {
     for (i in 1:length(group.by)) {
-      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo", "expl.var"))
+      .fun_testIfIn(paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo", "expl.var"))
     }
   } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
     for (i in 1:length(group.by)) {
-      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "filtered.by", "expl.var"))
+      .fun_testIfIn(paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "filtered.by", "expl.var"))
     }
   } 
   
   ## 4. Check extra args argument ---------------------------------------------
-  .fun_testIfIn(TRUE, "names(args)", names(args), c('main'))
+  .fun_testIfIn("names(args)", names(args), "main")
   
   return(list(main = args$main))
 } 
-
