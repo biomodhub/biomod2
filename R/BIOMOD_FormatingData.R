@@ -367,8 +367,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                  na.rm = TRUE,
                                  filter.raster = FALSE,
                                  seed.val = NULL)
-{ 
   .bm_cat(paste0(resp.name, " Data Formating"))
+{
   
   ## 1. check args ------------------------------------------------------------
   args <- .BIOMOD_FormatingData.check.args(resp.name,
@@ -397,7 +397,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                 eval.xy = eval.resp.xy,
                                 na.rm = na.rm,
                                 filter.raster = filter.raster)
-  } else { # automatic Pseudo Absences selection
+  } else { # automatic pseudo-absence selection
     out <- BIOMOD.formated.data.PA(sp = resp.var,
                                    xy = resp.xy,
                                    env = expl.var,
@@ -406,8 +406,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                    eval.sp = eval.resp.var,
                                    eval.env = eval.expl.var,
                                    eval.xy = eval.resp.xy,
-                                   PA.nb.rep = PA.nb.rep,
                                    PA.strategy = PA.strategy,
+                                   PA.nb.rep = PA.nb.rep,
                                    PA.nb.absences = PA.nb.absences,
                                    PA.dist.min = PA.dist.min,
                                    PA.dist.max = PA.dist.max,

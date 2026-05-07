@@ -195,47 +195,45 @@ BIOMOD_Report <- function(bm.out
                                                 , D.samp.design = NULL))
 {
   .bm_cat("Do biomod2 Report")
-  bm.files = bm.mod = bm.ens = bm.form = NA
+  bm.files <- bm.mod <- bm.ens <- bm.form <- NA
   
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Report.check.args(bm.out, strategy, params.color, params.ODMAP)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-
     
   ## 1. Get modeling files ------------------------------------------------------------------------
   cat("\n\t> Getting modeling files...")
-  bm.files = list.files(path = sp.name, pattern = ".out$", recursive = TRUE, full.names = TRUE)
+  bm.files <- list.files(path = sp.name, pattern = ".out$", recursive = TRUE, full.names = TRUE)
   if (length(bm.files) > 0) {
-    bm.files = data.frame(file = bm.files
-                          , path = dirname(bm.files)
-                          , sp = sapply(basename(bm.files), function(x) strsplit(x, "[.]")[[1]][1])
-                          , type = sapply(basename(bm.files), function(x) rev(strsplit(x, "[.]")[[1]])[2])
-                          , level = sapply(basename(bm.files), function(x) strsplit(x, "[.]")[[1]][3])
-                          , ID = sapply(basename(bm.files), function(x) strsplit(x, "[.]")[[1]][2])
+    bm.files <- data.frame(file = bm.files
+                           , path = dirname(bm.files)
+                           , sp = sapply(basename(bm.files), function(x) strsplit(x, "[.]")[[1]][1])
+                           , type = sapply(basename(bm.files), function(x) rev(strsplit(x, "[.]")[[1]])[2])
+                           , level = sapply(basename(bm.files), function(x) strsplit(x, "[.]")[[1]][3])
+                           , ID = sapply(basename(bm.files), function(x) strsplit(x, "[.]")[[1]][2])
     )
-    bm.files$level = ifelse(bm.files$level == "ensemble", "ensemble", "single")
-    bm.files$level = factor(bm.files$level, c("single", "ensemble"))
-    bm.files = bm.files[order(bm.files$type, bm.files$level, bm.files$ID), ]
-    rownames(bm.files) = NULL
+    bm.files$level <- ifelse(bm.files$level == "ensemble", "ensemble", "single")
+    bm.files$level <- factor(bm.files$level, c("single", "ensemble"))
+    bm.files <- bm.files[order(bm.files$type, bm.files$level, bm.files$ID), ]
+    rownames(bm.files) <- NULL
     
-    bm.files$refer_to = NA
-    ind = which(bm.files$type == "models" & bm.files$level == "single")
-    bm.files$refer_to[ind] = letters[ind]
-    ind.na = which(is.na(bm.files$refer_to))
+    bm.files$refer_to <- NA
+    ind <- which(bm.files$type == "models" & bm.files$level == "single")
+    bm.files$refer_to[ind] <- letters[ind]
+    ind.na <- which(is.na(bm.files$refer_to))
     for (i in ind.na) {
-      tmp = get(load(file = bm.files$file[i]))
-      # tmp.link = sub("[.]/", "", tmp@models.out@link)
-      tmp.link = sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), tmp@models.out@link)
-      bm.files$refer_to[i] = bm.files$refer_to[which(bm.files$file == tmp.link)]
+      tmp <- get(load(file = bm.files$file[i]))
+      # tmp.link <- sub("[.]/", "", tmp@models.out@link)
+      tmp.link <- sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), tmp@models.out@link)
+      bm.files$refer_to[i] <- bm.files$refer_to[which(bm.files$file == tmp.link)]
       suppressWarnings(rm(list = basename(bm.files$file[i])))
     }
     
     ## 
     if (is.na(name.bm.mod)) {
-      ind.mod = which(bm.files$type == "models" &
-                        bm.files$level == "single")
+      ind.mod <- which(bm.files$type == "models" & bm.files$level == "single")
       if (length(ind.mod) > 0) {
         warning(paste0("No bm.mod selected but some available. Please select one among : "
                        , paste0(bm.files$file[ind.mod], collapse = ", ")))
@@ -243,20 +241,20 @@ BIOMOD_Report <- function(bm.out
     } else {
       
       ## load-modeling-files
-      ind.mod = which(bm.files$file == name.bm.mod)
-      bm.mod = get(load(file = name.bm.mod))
+      ind.mod <- which(bm.files$file == name.bm.mod)
+      bm.mod <- get(load(file = name.bm.mod))
       
       ## add potentially missing slots
       if (inherits(try(bm.mod@data.type), "try-error")) {
         bm.mod@data.type <- "binary"
       }
       
-      ind.ens = which(bm.files$type == "models" &
-                        bm.files$level == "ensemble" &
-                        bm.files$refer_to == bm.files$refer_to[ind.mod])
+      ind.ens <- which(bm.files$type == "models" &
+                         bm.files$level == "ensemble" &
+                         bm.files$refer_to == bm.files$refer_to[ind.mod])
       if (length(ind.ens) > 0) {
-        name.bm.ens = bm.files$file[ind.ens]
-        bm.ens = get(load(file = name.bm.ens))
+        name.bm.ens <- bm.files$file[ind.ens]
+        bm.ens <- get(load(file = name.bm.ens))
         
         ## add potentially missing slots
         if (inherits(try(bm.ens@data.type), "try-error")) {
@@ -266,10 +264,10 @@ BIOMOD_Report <- function(bm.out
       suppressWarnings(rm(list = basename(bm.files$file)))
       
       ## get-formated-data
-      bm.form = get_formal_data(bm.mod)
+      bm.form <- get_formal_data(bm.mod)
     }
   } else {
-    bm.files = NA
+    bm.files <- NA
   }
   
   ## add potentially missing slots
@@ -302,7 +300,7 @@ BIOMOD_Report <- function(bm.out
   }
   
   
-  sp.name = dir.name = name.bm.mod = bm.form = NA
+  sp.name <- dir.name <- name.bm.mod <- bm.form <- NA
   
   ## 1. Check bm.out -------------------------------------------------------
   test.format <- inherits(bm.out, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
@@ -341,28 +339,28 @@ BIOMOD_Report <- function(bm.out
     if (!is.null(params.ODMAP$O.mod.objective)) {
       .fun_testIfIn(TRUE, "params.ODMAP$O.mod.objective", params.ODMAP$O.mod.objective
                     , c("Inference and explanation", "Mapping and interpolation", "Forecast and transfer"))
-    } else { params.ODMAP$O.mod.objective = NA }
+    } else { params.ODMAP$O.mod.objective <- NA }
     if (!is.null(params.ODMAP$O.boundary)) {
       .fun_testIfIn(TRUE, "params.ODMAP$O.boundary", params.ODMAP$O.boundary
                     , c("natural", "political", "rectangle"))
-    } else { params.ODMAP$O.boundary = NA }
+    } else { params.ODMAP$O.boundary <- NA }
     if (!is.null(params.ODMAP$O.obs.type)) {
       .fun_testIfIn(TRUE, "params.ODMAP$O.obs.type", params.ODMAP$O.obs.type
                     , c("citizen science", "field survey", "GPS tracking"
                         , "range map", "standardised monitoring data"))
-    } else { params.ODMAP$O.obs.type = NA }
+    } else { params.ODMAP$O.obs.type <- NA }
     if (!is.null(params.ODMAP$O.pred.type)) {
       .fun_testIfIn(TRUE, "params.ODMAP$O.pred.type", params.ODMAP$O.pred.type
                     , c("climatic", "edaphic", "habitat", "topographic"))
-    } else { params.ODMAP$O.pred.type = NA }
+    } else { params.ODMAP$O.pred.type <- NA }
     if (!is.null(params.ODMAP$D.eco.level)) {
       .fun_testIfIn(TRUE, "params.ODMAP$D.eco.level", params.ODMAP$D.eco.level
                     , c("communities", "individuals", "operational taxonomic units", "populations", "species"))
-    } else { params.ODMAP$D.eco.level = NA }
+    } else { params.ODMAP$D.eco.level <- NA }
     if (!is.null(params.ODMAP$D.samp.design)) {
       .fun_testIfIn(TRUE, "params.ODMAP$D.samp.design", params.ODMAP$D.samp.design
                     , c("spatial random", "spatial uniform", "spatial stratified", "temporal", "nestedness"))
-    } else { params.ODMAP$D.samp.design = NA }
+    } else { params.ODMAP$D.samp.design <- NA }
   }
   
   ## 4. Check params.color argument -------------------------------------------

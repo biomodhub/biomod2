@@ -157,7 +157,7 @@ BIOMOD_LoadModels <- function(bm.out, full.name = NULL, PA = NULL, run = NULL, a
   }
   
   ## LOAD the selected models -----------------------------------------------------------
-  filename = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id)
+  filename <- file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id)
   # .bm_cat("Done")
   for (mtl in models.to.load) {
     load(file = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)

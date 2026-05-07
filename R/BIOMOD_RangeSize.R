@@ -171,11 +171,10 @@
 ###################################################################################################
 
 
-BIOMOD_RangeSize <- function(proj.current, proj.future, 
-                             models.chosen = "all", metric.binary = NULL){
+BIOMOD_RangeSize <- function(proj.current, proj.future, models.chosen = "all", metric.binary = NULL)
+{
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, 
-                                       models.chosen, metric.binary)
+  args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, models.chosen, metric.binary)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -199,8 +198,8 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
     } 
   }
   
-  
   ordinal <- (proj.current@data.type == "ordinal")
+  
   bm.range <- bm_RangeSize(proj.current = pred_current, proj.future = pred_future, ordinal = ordinal)
   
   link.models <- proj.current@models.out@link
@@ -209,7 +208,6 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
   } else {
     row.names <- c("Species", "Dataset", "Run", "Algo")
   }
-  
   
   out <- new("BIOMOD.rangesize.out",
              Compt.By.Models = bm.range$Compt.By.Models,
@@ -223,13 +221,12 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
 }
 
 
-.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, 
-                                         models.chosen, metric.binary){
-  
   if(inherits(proj.current, "SpatRaster") | inherits(proj.current, "data.frame") |inherits(proj.current, "raster")){
     stop("BIOMOD.RangeSize now accepts BIOMOD.projection.out objects directly. \n
          If you want to compare ", class(proj.current), " objects, use bm_RangeSize function. ")
   } # To Remove after a while. 
+.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, models.chosen, metric.binary)
+{
   
   .fun_testIfInherits(TRUE, "proj.current", proj.current, "BIOMOD.projection.out")
   .fun_testIfInherits(TRUE, "proj.future", proj.future, "BIOMOD.projection.out")
@@ -258,7 +255,6 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
     metric.binary <- NULL
     warning("metric.binary set to NULL for non binary data.")
   }
-  
   
   return(list(models.chosen = models.chosen,
               metric.binary = metric.binary))

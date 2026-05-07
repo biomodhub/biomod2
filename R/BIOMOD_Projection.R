@@ -249,7 +249,7 @@ BIOMOD_Projection <- function(bm.mod,
                   coord = new.env.xy,
                   data.type = bm.mod@data.type,
                   modeling.id = bm.mod@modeling.id)
-  proj_out@models.out@link = bm.mod@link
+  proj_out@models.out@link <- bm.mod@link
   proj_out@call <- match.call()
   
   proj_is_raster <- FALSE
@@ -328,9 +328,9 @@ BIOMOD_Projection <- function(bm.mod,
                                             , ".tif", output.format)))
       }
       mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
-      temp_workdir = NULL
+      temp_workdir <- NULL
       if (length(grep("MAXENT$", mod.name)) == 1) {
-        temp_workdir = mod@model_output_dir
+        temp_workdir <- mod@model_output_dir
       }
       
       pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
@@ -418,7 +418,7 @@ BIOMOD_Projection <- function(bm.mod,
   ## save projections
   proj_out@type <- .get_env_class(new.env)
   if (!do.stack) {
-    saved.files = unlist(proj)
+    saved.files <- unlist(proj)
   } else {
     assign(x = nameProjSp, value = proj)
     saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
@@ -621,12 +621,12 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 4. Check new.env.xy ------------------------------------------------------
   if (!is.null(new.env.xy) & !inherits(new.env, 'SpatRaster')) {
-    new.env.xy = as.data.frame(new.env.xy)
+    new.env.xy <- as.data.frame(new.env.xy)
     if (ncol(new.env.xy) != 2 || nrow(new.env.xy) != nrow(new.env)) {
       stop("invalid xy coordinates argument given -- dimensions mismatch !")
     }
   } else {
-    new.env.xy = data.frame()
+    new.env.xy <- data.frame()
   }
   
   ## 5. Check models.chosen ---------------------------------------------------
@@ -722,7 +722,7 @@ BIOMOD_Projection <- function(bm.mod,
       terraOptions(todisk = TRUE) 
     }
     # option without capture.output but with :::
-    # ncopies = 2 * length(models.chosen) + nlyr(new.env)
+    # ncopies <- 2 * length(models.chosen) + nlyr(new.env)
     # test <- new.env@ptr$mem_needs(terra:::spatOptions(ncopies = ncopies))
     # if (test[1] > test[2]) {
     #   terraOptions(todisk = TRUE) 
@@ -805,4 +805,3 @@ BIOMOD_Projection <- function(bm.mod,
   }
   return(clamp.mask)
 }
-

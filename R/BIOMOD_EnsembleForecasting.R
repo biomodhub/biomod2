@@ -270,7 +270,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                   coord = new.env.xy,
                   modeling.id = bm.em@modeling.id,
                   data.type = bm.em@data.type)
-  proj_out@models.out@link = bm.em@link
+  proj_out@models.out@link <- bm.em@link
   proj_out@call <- match.call()
   
   proj_is_raster <- FALSE
@@ -281,7 +281,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
   } else {
     proj_out@proj.out <- new('BIOMOD.stored.data.frame')
-    do.stack = TRUE
+    do.stack <- TRUE
   }
   
   ## 2. Create simulation directories -------------------------------------------------------------
@@ -406,7 +406,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## save projections
   proj_out@type <- ifelse(is.null(new.env), bm.proj@type, .get_env_class(new.env))
   if (!do.stack) {
-    saved.files = unlist(proj.em)
+    saved.files <- unlist(proj.em)
   } else {
     assign(x = nameProjSp, value = proj.em)
     saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
@@ -631,6 +631,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       new.env <- .check_env_levels(new.env, expected_levels = head(get_formal_data(bm.em, subinfo = "expl.var")))
     }
   }
+  
   ## 4. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {
     models.chosen <- get_built_models(bm.em)
@@ -683,9 +684,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   output.format <- args$output.format
   if (is.null(output.format)) {
     if (length(bm.proj) > 0) {
-      output.format = ifelse(bm.proj@type != 'SpatRaster', ".RData", ".tif")
+      output.format <- ifelse(bm.proj@type != 'SpatRaster', ".RData", ".tif")
     } else {
-      output.format = ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".tif")
+      output.format <- ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".tif")
     }
   }
   

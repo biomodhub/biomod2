@@ -115,7 +115,7 @@
 ##' @details 
 ##' 
 ##' \describe{
-##'   \item{bm.format}{If pseudo absences have been added to the original dataset (see 
+##'   \item{bm.format}{If pseudo-absences have been added to the original dataset (see 
 ##'   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
 ##'   created.}
 ##'   
@@ -440,11 +440,11 @@ BIOMOD_Modeling <- function(bm.format,
   ## Various objects will be stored (models, predictions, projections)
   ## Projections directories are created in Projection() function
   .BIOMOD_Modeling.prepare.workdir(bm.format@dir.name, bm.format@sp.name, models.out@modeling.id)
-  name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
+  name.BIOMOD_DATA <- file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   
   ## 3.1 Save input data ------------------------------------------------------
-  models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  models.out <- .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
+                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.2 Get and save calibration lines ---------------------------------------
   calib.lines <- bm_CrossValidation(bm.format = bm.format,
@@ -457,8 +457,8 @@ BIOMOD_Modeling <- function(bm.format,
                                     strat = ifelse(!is.null(CV.strat), CV.strat, "both"),
                                     user.table = CV.user.table,
                                     do.full.models = CV.do.full.models)
-  models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  models.out <- .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
+                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.3 Get and save models options ------------------------------------------
   if (!is.null(OPT.user)) {
@@ -524,8 +524,8 @@ BIOMOD_Modeling <- function(bm.format,
       bm.options@options$MAXENT.binary.MAXENT.MAXENT@args.values[[nam]][['defaultprevalence']] <- prevalence
     }
   }
-  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
-                                       , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  models.out <- .fill_BIOMOD.models.out("models.options", bm.options, models.out
+                                        , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
   .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa, CV.do.full.models)
@@ -558,30 +558,30 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
-  models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
-                                       , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   rm(models.evaluation)
+    models.out <- .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
+                                          , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   
   if (var.import > 0) {
     variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
-    models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+    models.out <- .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
+                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(variables.importance)
   }
   
   models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
-  models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  models.out <- .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
+                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   rm(models.prediction)
   
   models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
-  models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  models.out <- .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
+                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   rm(models.prediction.eval)
   rm(mod.out)
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------
-  name.OUT = paste0(models.out@sp.name, '.', models.out@modeling.id, '.models.out')
+  name.OUT <- paste0(models.out@sp.name, '.', models.out@modeling.id, '.models.out')
   models.out@link <- file.path(models.out@dir.name, models.out@sp.name, name.OUT)
   models.out@call <- match.call()
   assign(x = name.OUT, value = models.out)
@@ -691,13 +691,12 @@ BIOMOD_Modeling <- function(bm.format,
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
   } else {
-    prevalence = 0.5
     warning("Prevalence have been set to 0.5.")
+    prevalence <- 0.5
   }
   
   ## 6. Check weights arguments -----------------------------------------------
   if (is.null(weights)) {
-
     if (!is.null(prevalence) && !(bm.format@data.type %in% c("ordinal", "multiclass"))) {
       cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
@@ -813,10 +812,10 @@ BIOMOD_Modeling <- function(bm.format,
   
   cat("\n\n> Algorithms selected :", models)
   if (is.null(models.pa)) {
-    nb.runs = ncol(calib.lines) * length(models)
     cat("\n", ncol(calib.lines), "models for each algorithm")
+    nb.runs <- ncol(calib.lines) * length(models)
   } else {
-    nb.runs = length(which(
+    nb.runs <- length(which(
       sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
     ))
     for (algo in names(models.pa)){
