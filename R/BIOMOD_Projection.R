@@ -77,7 +77,7 @@
 ##' 
 ##' @details 
 ##' 
-##' If \code{models.chosen = 'all'}, projections are done for all calibration and pseudo absences 
+##' If \code{models.chosen = 'all'}, projections are done for all calibration and pseudo-absences 
 ##' runs if applicable. \cr These projections may be used later by the 
 ##' \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
 ##' 
@@ -266,11 +266,10 @@ BIOMOD_Projection <- function(bm.mod,
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", bm.mod@sp.name)
   namePath <- file.path(bm.mod@dir.name, bm.mod@sp.name, nameProj)
-  dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
   if (!do.stack) {
-    dir.create(file.path(namePath, "individual_projections"),
-               showWarnings = FALSE, recursive = TRUE, mode = "777")
+    namePath <- file.path(namePath, "individual_projections")
   }
+  dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
   
   ## 3. Define the clamping mask ------------------------------------------------------------------
   if (build.clamping.mask) {
@@ -282,13 +281,11 @@ BIOMOD_Projection <- function(bm.mod,
     if (output.format == '.RData') {
       if (proj_is_raster) {
         save(list = wrap(nameMask),
-             file = file.path(namePath, 
-                              paste0(nameProj, "_ClampingMask", output.format)),
+             file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
              compress = compress)
       } else {
         save(list = nameMask,
-             file = file.path(namePath, 
-                              paste0(nameProj, "_ClampingMask", output.format)),
+             file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
              compress = compress)
       }
     } else {
@@ -304,7 +301,7 @@ BIOMOD_Projection <- function(bm.mod,
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
       if (!isNamespaceLoaded("doParallel")) { 
-        if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
+        if (!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
       }
       doParallel::registerDoParallel(cores = nb.cpu)
     } else {
@@ -340,7 +337,12 @@ BIOMOD_Projection <- function(bm.mod,
                           filename = filename, omit.na = omit.na, 
                           temp_workdir = temp_workdir, seedval = seed.val, 
                           overwrite = overwrite, mod.name = mod.name)
-
+      
+      if (inherits(pred.tmp, 'try-error')) {
+        pred.tmp <- NA
+        class(pred.tmp) <- "try-error"
+        return(pred.tmp)
+      }
       
       ## Cleaning 
       if (bm.mod@data.type %in% c("count", "abundance")) {
@@ -386,6 +388,13 @@ BIOMOD_Projection <- function(bm.mod,
         return(filename)
       }
     }
+  
+  models.error <- sapply(proj, inherits, what = "try-error")
+  if (any(models.error)) {
+    models.chosen <- models.chosen[!models.error]
+    proj_out@models.projected <- models.chosen
+    proj <- proj[!models.error]
+  }
   
   ## putting predictions into the right format
   if (do.stack) {
@@ -707,11 +716,7 @@ BIOMOD_Projection <- function(bm.mod,
   } else if (do.stack) { 
     # test if there is enough memory to work with multilayer SpatRaster
     capture.output({
-      test <-
-        mem_info(
-          subset(new.env, 1),
-          n = 2 * length(models.chosen) + nlyr(new.env)
-        )
+      test <- mem_info(subset(new.env, 1), n = 2 * length(models.chosen) + nlyr(new.env))
     })
     if (test["needed"] >= test["available"]) { 
       terraOptions(todisk = TRUE) 

@@ -296,27 +296,37 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 3. Get needed projections --------------------------------------------------------------------
   models.needed <- get_kept_models(bm.em)
   if (!is.null(bm.proj)) {
-    formal_pred <- get_predictions(bm.proj, full.name = models.needed)
+    formal_pred <- try(get_predictions(bm.proj, full.name = models.needed), silent = TRUE)
+    if (inherits(formal_pred, "try-error")) {
+      stop("Some model projections failed : "
+           , toString(setdiff(models.needed, get_projected_models(bm.proj)))
+           ,". Please check.")
+    }
   } else {
     # make prediction according to given environment
     tmp_dir <- paste0('Tmp', as.numeric(Sys.time()) * 100000)
-    formal_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out),
-                                     new.env = new.env,
-                                     proj.name = tmp_dir,
-                                     new.env.xy = NULL,
-                                     models.chosen = models.needed,
-                                     compress = TRUE,
-                                     build.clamping.mask = FALSE,
-                                     do.stack = TRUE,
-                                     on_0_1000 = on_0_1000,
-                                     nb.cpu = nb.cpu)
-    formal_pred <- get_predictions(formal_pred, full.name = models.needed)
+    tmp_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out),
+                                  new.env = new.env,
+                                  proj.name = tmp_dir,
+                                  new.env.xy = NULL,
+                                  models.chosen = models.needed,
+                                  compress = TRUE,
+                                  build.clamping.mask = FALSE,
+                                  do.stack = TRUE,
+                                  on_0_1000 = on_0_1000,
+                                  nb.cpu = nb.cpu)
+    formal_pred <- try(get_predictions(tmp_pred, full.name = models.needed), silent = TRUE)
+    if (inherits(formal_pred, "try-error")) {
+      stop("Some model projections failed : "
+           , toString(setdiff(models.needed, get_projected_models(tmp_pred)))
+           ,". Please check.")
+    }
     
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
   }
-
+  
   if (!proj_is_raster) {
     if (bm.em@data.type %in% c("multiclass", "ordinal")){
       formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = function(x){as.character(x[1])})
@@ -345,7 +355,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , filename = filename
                         , mod.name = em.name
                         , na.rm = na.rm)
-
+      
       ## cleaning 
       if (bm.em@data.type %in% c("count", "abundance")) {
         ef.tmp[ef.tmp < 0] <- 0
@@ -477,7 +487,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           } else {
             proj.trans <- proj.trans[, models.chosen, drop = FALSE]
           }
-
+          
           ## Stack + binary transformation ------------------------------------
           if (eval.meth %in% metric.binary) {
             nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
@@ -576,7 +586,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
     
     ## check all needed predictions are available
-    needed_pred <- get_kept_models(bm.em)  
+    needed_pred <- intersect(get_kept_models(bm.em), models.chosen)
     missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
     if (length(missing_pred) > 0) {
       stop("Some models predictions missing :", toString(missing_pred))
@@ -732,4 +742,3 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               output.format = output.format,
               compress = ifelse(is.null(args$compress), FALSE, args$compress)))
 }
-
