@@ -129,7 +129,7 @@ bm_RunModelsLoop <- function(bm.format,
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
       if (!isNamespaceLoaded("doParallel")) {
-        if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
+        if (!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
       }
       doParallel::registerDoParallel(cores = nb.cpu)
     } else {
@@ -148,13 +148,13 @@ bm_RunModelsLoop <- function(bm.format,
   
   ## PREPARE DATA ---------------------------------------------------------------------------------
   list.data <- list()
-  pa.list = sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
+  pa.list <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
   for (pa.id in unique(pa.list)) { # loop on PA -------------------------------
-    models.subset = models
+    models.subset <- models
     if (!is.null(models.pa)) {
       ## optional : subset of models associated to the concerned PA dataset
-      models.subset = sapply(models.pa, function(x) pa.id %in% x)
-      models.subset = names(models.pa)[which(models.subset == TRUE)]
+      models.subset <- sapply(models.pa, function(x) pa.id %in% x)
+      models.subset <- names(models.pa)[which(models.subset == TRUE)]
     }
     
     data.all <- get_species_data(bm.format)
@@ -165,11 +165,11 @@ bm_RunModelsLoop <- function(bm.format,
     data.all <- data.all[, c(bm.format@sp.name, "x", "y", colnames(bm.format@data.env.var))]
     
     for (i in which(pa.list == pa.id)) { # loop on RUN ------------------------
-      run.id = strsplit(colnames(calib.lines)[i], "_")[[1]][3]
-      run.name = paste0(bm.format@sp.name, "_", pa.id, "_", run.id)
+      run.id <- strsplit(colnames(calib.lines)[i], "_")[[1]][3]
+      run.name <- paste0(bm.format@sp.name, "_", pa.id, "_", run.id)
       
       for (modi in models.subset) { # loop on models --------------------------
-        all.name = paste0(run.name, "_", modi)
+        all.name <- paste0(run.name, "_", modi)
         list.data[[all.name]] <- list(modi = modi,
                                       run.name = run.name,
                                       data.all = data.all,
@@ -374,16 +374,16 @@ bm_RunModel <- function(model, run.name
                       expl_var_names = expl_var_names,
                       expl_var_type = .get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
                       expl_var_range = .get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
-      if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
-      if (model == "GBM" && exists("best.iter")) { model.bm@n.trees_optim = best.iter }
-      if (model == "SRE" && bm.opt.val$do.extrem == TRUE) { model.bm@extremal_conditions = model.sp }
+      if (model == "GAM") { model.bm@model_subclass <- subclass_name } ## TO BE ADDED to all models ?
+      if (model == "GBM" && exists("best.iter")) { model.bm@n.trees_optim <- best.iter }
+      if (model == "SRE" && bm.opt.val$do.extrem == TRUE) { model.bm@extremal_conditions <- model.sp }
       if (model == "DNN") { model.bm@scaling_attributes <- attributes(scale_data) }
       # if (model == "SRE") {
       #   model.sp <- as.data.frame(model.sp)
       #   rownames(model.sp) <- rownames(bm.opt.val$expl.var)
-      #   model.bm@extremal_conditions = model.sp
+      #   model.bm@extremal_conditions <- model.sp
       # }
-      if (data.type %in% c("ordinal", "multiclass")){
+      if (data.type %in% c("ordinal", "multiclass")) {
         model.bm@levels_factor <- levels(data_sp)
       }
     }
@@ -507,7 +507,7 @@ bm_RunModel <- function(model, run.name
       g.pred <- try(predict(model.bm, data_env, on_0_1000 = on_0_1000, seedval = seed.val, temp_workdir = temp_workdir))
     }
   } else if (model == "MAXENT" & !inherits(g.pred, 'try-error')) {
-    temp_workdir = model.bm@model_output_dir
+    temp_workdir <- model.bm@model_output_dir
   }
   
   ## scale or not predictions -------------------------------------------------
@@ -553,7 +553,7 @@ bm_RunModel <- function(model, run.name
   } else {
     # keep the name of uncompleted modelisations
     cat("\n   ! Note : ", model_name, "failed!\n")
-    ListOut$calib.failure = model_name
+    ListOut$calib.failure <- model_name
     return(ListOut) ## end of function.
   }
   
@@ -676,7 +676,7 @@ bm_RunModel <- function(model, run.name
   }
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
-  nameModel = paste(run.name, model, sep = "_") 
+  nameModel <- paste(run.name, model, sep = "_") 
   assign(x = nameModel, value = model.bm)
   save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
   
@@ -702,7 +702,7 @@ bm_RunModel <- function(model, run.name
   data_env <- Data[, -c(1, which(colnames(Data) %in% c("x", "y"))), drop = FALSE]
   resp_name <- colnames(Data)[1] ## species name
   expl_var_names <- colnames(data_env) ## explanatory variable names
-  # replace Pseudo absences selected (NA) into true absences (0).. for model computing purpose
+  # replace PA selected (NA) into true absences (0).. for model computing purpose
   if (sum(is.na(Data[, 1]))) { data_sp[which(is.na(data_sp))] <- 0 }
   
   ## 1. Check data.type -------------------------------------------------------
@@ -749,8 +749,7 @@ bm_RunModel <- function(model, run.name
                             , 'RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error'
                             , 'Accuracy', 'Recall', 'Precision', 'F1')
   if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
-    tmp = which(metric.eval %in% avail.eval.meth.list)
-    warning(paste0(toString(metric.eval[!tmp]), ' were switched off !'), immediate. = TRUE)
+    tmp <- which(metric.eval %in% avail.eval.meth.list)
     metric.eval <- metric.eval[tmp]
   }  
   
@@ -804,7 +803,7 @@ bm_RunModel <- function(model, run.name
   if (is.null(calib.lines.vec)) { calib.lines.vec <- rep(TRUE, nrow(data_env)) }
   
   ## define all paths to files needed by MAXENT
-  nameFolder = file.path(dir.name, sp_name, 'models', modeling.id)
+  nameFolder <- file.path(dir.name, sp_name, 'models', modeling.id)
   m_outdir <- file.path(nameFolder, paste0(run_name, '_MAXENT_outputs'))
   m_predictDir <- file.path(m_outdir, "Predictions")
   MWD$m_outdir <- m_outdir

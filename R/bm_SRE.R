@@ -144,7 +144,7 @@ bm_SRE <- function(resp.var = NULL,
   
   ## 1. Determine suitable conditions and make the projection --------------
   lout <- list()
-  if (is.data.frame(resp.var) | is.matrix(resp.var)) {
+  if (is.data.frame(resp.var) || is.matrix(resp.var)) {
     ### matrix or data.frame ------------
     nb.resp <- ncol(resp.var)
     resp.names <- colnames(resp.var)
@@ -231,12 +231,12 @@ bm_SRE <- function(resp.var = NULL,
 .bm_SRE.check.args <- function(resp.var = NULL, expl.var = NULL, new.env = NULL, quant = 0.025)
 {
   ## 0. Check compatibility between resp.var and expl.var arguments -----------
-  if (is.vector(resp.var) || inherits(resp.var, c("matrix","data.frame"))) {
+  if (is.vector(resp.var) || inherits(resp.var, c("matrix", "data.frame"))) {
     resp.var <- as.data.frame(resp.var)
-    if (!is.vector(expl.var) && !inherits(expl.var, c("matrix","data.frame",'SpatVector'))) {
       stop("\n resp.var and expl.var arguments must be of same type (both vector, both matrix, etc)")
+    if (!is.vector(expl.var) && !inherits(expl.var, c("matrix", "data.frame", "SpatVector"))) {
     } else {
-      if (inherits(expl.var, 'SpatVector')) {
+      if (inherits(expl.var, "SpatVector")) {
         expl.var <- values(expl.var)
       }
       expl.var <- as.data.frame(expl.var)
@@ -273,8 +273,8 @@ bm_SRE <- function(resp.var = NULL,
   
   ## 1. Check expl.var argument -----------------------------------------------
   if ((inherits(expl.var, 'data.frame') && any(sapply(expl.var, is.factor))) ||
-      (inherits(expl.var, c('SpatRaster')) && any(is.factor(expl.var)))) {
     stop("SRE algorithm does not handle factorial variables")
+      (inherits(expl.var, 'SpatRaster') && any(is.factor(expl.var)))) {
   }
   
   
@@ -282,7 +282,7 @@ bm_SRE <- function(resp.var = NULL,
   if (is.null(new.env)) { ## if no new.env, projection done on expl.var variables
     new.env <- expl.var
   } else { ## check of compatible number of explanatory variables
-    if (is.vector(new.env) || is.data.frame(new.env) || is.matrix(new.env))
+    if (is.data.frame(new.env) || is.matrix(new.env) || is.vector(new.env))
     {
       new.env <- as.data.frame(new.env)
       if (!all(names.expl.vars %in% colnames(new.env))) {

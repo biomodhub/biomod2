@@ -135,7 +135,6 @@ bm_ModelAnalysis <- function(bm.mod,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  
   ## 1. Compute RESIDUALS -------------------------------------------------------------------------
   tab.pred <- get_predictions(bm.mod, full.name = models.chosen)
   tab.obs <- data.frame(points = 1:max(tab.pred$points),
@@ -179,7 +178,7 @@ bm_ModelAnalysis <- function(bm.mod,
   ## b. residuals Q-Q plot ----------------------------------------------------
   gg.qqplot <- ggplot(ggdat, aes(sample = residuals, color = .data[[color.by]])) +
     stat_qq(size = 1) +
-    stat_qq_line(color = "black", size = 1) +
+    stat_qq_line(color = "black", linewidth = 1) +
     labs(x = "Theoretical quantiles", y = "Standardized residuals"
          , title = "Q-Q plot of residuals") +
     paletteer::scale_color_paletteer_d(palette) +
@@ -192,7 +191,7 @@ bm_ModelAnalysis <- function(bm.mod,
   gg.hist <- ggplot(ggdat, aes(x = residuals, color = .data[[color.by]])) +
     geom_histogram(fill = NA, position = "dodge", bins = 30) +
     facet_wrap(vars(full.name)) +
-    labs(x = "Residuals", ylab = "", title = "Distribution of residuals") +
+    labs(x = "Residuals", y = "", title = "Distribution of residuals") +
     paletteer::scale_color_paletteer_d(palette)+
     theme(legend.title = element_blank()
           , legend.key = element_rect(fill = "white")
@@ -204,7 +203,7 @@ bm_ModelAnalysis <- function(bm.mod,
   ## d. residuals ~ fitted values ---------------------------------------------
   gg.fitted <- ggplot(ggdat, aes(y = residuals, x = pred, color = .data[[color.by]])) +
     geom_point(size = 1) +
-    geom_hline(yintercept = 0, color = "black", size = 1) +
+    geom_hline(yintercept = 0, color = "black", linewidth = 1) +
     labs(x = "Fitted values", y = "Residuals"
          , title = "Residuals ~ Fitted values (Tukey-Anscombe plot)") +
     paletteer::scale_color_paletteer_d(palette) +

@@ -273,9 +273,8 @@
 ###################################################################################################
 
 
-bm_ModelingOptions <- function(data.type = "binary"
-                               , models 
-                               , strategy, user.val = NULL, user.base = "bigboss"
+bm_ModelingOptions <- function(data.type = "binary", models, strategy
+                               , user.val = NULL, user.base = "bigboss"
                                , bm.format = NULL, calib.lines = NULL)
 {
   .bm_cat("Build Modeling Options")
@@ -285,32 +284,27 @@ bm_ModelingOptions <- function(data.type = "binary"
   }
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_ModelingOptions.check.args(data.type = data.type,
-                                         models = models,
-                                         strategy = strategy, 
-                                         user.val = user.val, 
-                                         user.base = user.base,
-                                         bm.format = bm.format, 
-                                         calib.lines = calib.lines)
+  args <- .bm_ModelingOptions.check.args(data.type = data.type, models = models, strategy = strategy
+                                         , user.val = user.val, user.base = user.base
+                                         , bm.format = bm.format, calib.lines = calib.lines)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  
   ## Load single models informations
   # data(ModelsTable) # internal data is already readily available
-  data.type.ModelsTable <- ifelse(data.type == "binary", "binary", "nonbinary")
+  binOrNonbin <- ifelse(data.type == "binary", "binary", "nonbinary")
   
   ## 1. Get options -------------------------------------------------------------------------------
   bm.opt <- foreach(model = models, .combine = "c") %do%
     {
       ## Select model / package / function to keep
       if (length(grep("GAM", model)) == 1) {
-        tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == data.type.ModelsTable &
+        tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == binOrNonbin &
                                          ModelsTable$package == strsplit(model, "[.]")[[1]][2] & 
                                          ModelsTable$func == strsplit(model, "[.]")[[1]][3]), ]
-        model = "GAM"
+        model <- "GAM"
       } else {
-        tab.model <- ModelsTable[which(ModelsTable$model == model & ModelsTable$type == data.type.ModelsTable), ]
+        tab.model <- ModelsTable[which(ModelsTable$model == model & ModelsTable$type == binOrNonbin), ]
       }
       if (nrow(tab.model) > 0) {
         ## For each kept model : get corresponding options
@@ -318,7 +312,7 @@ bm_ModelingOptions <- function(data.type = "binary"
           {
             val.ii <- NULL
             if (strategy == "user.defined") {
-              name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
+              name_model <- paste0(model, ".", binOrNonbin, ".", tab.model$package[ii], ".", tab.model$func[ii])
               val.ii <- user.val[[name_model]]
             }
             BOD <- BIOMOD.options.dataset(mod = model

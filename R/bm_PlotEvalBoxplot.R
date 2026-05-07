@@ -137,7 +137,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   scores <- get_evaluations(bm.out)
   if (!is.null(scores) && any(!is.na(scores[, dataset]))) {
   ## Prepare data table for graphic
-    ggdat = scores
+    ggdat <- scores
     
     ## 2. PLOT graphic ------------------------------------------------------------------------------
     gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data[[dataset]], color = .data[[group.by[2]]])) +
@@ -191,7 +191,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   if ("scales" %in% names(args)) {
     .fun_testIfIn(TRUE, "args$scales", args$scales, c('fixed', 'free_x', 'free_y', 'free'))
   } else {
-    if(bm.out@data.type == "binary"){
+    if (bm.out@data.type == "binary") {
       args$scales = "fixed"
     } else {
       args$scales = "free_y"

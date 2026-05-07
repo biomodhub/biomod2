@@ -131,7 +131,7 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get variables importance values & Prepare data table for graphic
-  ggdat = get_variables_importance(bm.out)
+  ggdat <- get_variables_importance(bm.out)
   
   if (!is.null(ggdat))
   { 

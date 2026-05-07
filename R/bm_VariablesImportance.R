@@ -132,10 +132,10 @@ bm_VariablesImportance <- function(bm.model,
   ## Make randomisation
   cat('\n')
   if (do.progress) {
-    PROGRESS = txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
-    i.iter = 0
+    PROGRESS <- txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
+    i.iter <- 0
   }
-  out = foreach (r = 1:nb.rep, .combine = "rbind") %:%
+  out <- foreach (r = 1:nb.rep, .combine = "rbind") %:%
     foreach (v = variables, .combine = "rbind") %do%
     {
       data_rand <- .randomise_data(expl.var, v, method) #, seedval = seed.val)
@@ -156,7 +156,7 @@ bm_VariablesImportance <- function(bm.model,
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = method_cor)
         , digits = 6), 0, na.rm = TRUE)
       if (do.progress) {
-        i.iter = i.iter + 1
+        i.iter <- i.iter + 1
         setTxtProgressBar(pb = PROGRESS, value = i.iter)
       }
       return(data.frame(expl.var = v, rand = r, var.imp = out_vr))
@@ -205,8 +205,8 @@ bm_VariablesImportance <- function(bm.model,
 
 .full_shuffling <- function(x, id = NULL, seedval = NULL)
 {
-  if (!(is.vector(x) | is.matrix(x) | is.data.frame(x))) {
     stop("x must be a 1 or 2 dimension odject")
+  if (!(is.data.frame(x) || is.matrix(x) || is.vector(x))) {
   }
   
   ## Set a new random seed to ensure that sampling is random

@@ -183,7 +183,7 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
 
 .convert_bin.matrix <- function(data, threshold, do.filtering = FALSE)
 {
-  ind.0 = t(t(data) < threshold)
+  ind.0 <- t(t(data) < threshold)
   data[ind.0] <- 0
   if (!do.filtering) { 
     data[!ind.0] <- 1 

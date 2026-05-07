@@ -538,7 +538,7 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
             PA.table <- cbind(bm.format@PA.table, "allData" = TRUE) #just to pass the check
             calib.lines <- foreach(this.colnames = colnames(user.table), .combine = "cbind") %do%
               {
-                this.pa = strsplit(this.colnames, split = "_")[[1]][2]
+                this.pa <- strsplit(this.colnames, split = "_")[[1]][2]
                 calib.pa <- user.table[,this.colnames, drop = FALSE]
                 which.not.pa <- which(PA.table[, this.pa] == FALSE | is.na(PA.table[, this.pa]))
                 if (length(which.not.pa) > 0) {
@@ -1006,4 +1006,3 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.
             return(calib.lines)
           }
 )
-

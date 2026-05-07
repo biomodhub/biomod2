@@ -148,7 +148,7 @@ bm_SampleFactorLevels.SpatRaster <- function(expl.var, mask.out = NULL, mask.in 
       if (length(fact.level) > 0) {
         cat("\n\t - levels", fact.level, "will be sampled in the original raster")
         selected.cells <- c(selected.cells, sapply(fact.level, function(fl) {
-          ind = which(subset(expl.var, f)[] == fl)
+          ind <- which(subset(expl.var, f)[] == fl)
           if (length(ind) > 0) {
             return(sample(ind, 1))
           }

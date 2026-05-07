@@ -220,11 +220,10 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
-            
             if (ncol(proj.future) != ncol(proj.current)) {
-              proj_current <- matrix(rep(proj.current[,1], ncol(proj.future)),
-                                    ncol = ncol(proj.future),
-                                    dimnames = )
+              proj_current <- matrix(rep(proj.current[, 1], ncol(proj.future)),
+                                     ncol = ncol(proj.future),
+                                     dimnames = ) ##TODO
               proj_current <- as.data.frame(proj_current)
               colnames(proj_current) <- colnames(proj.future)
             }  
@@ -239,7 +238,7 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
               
               Diff.By.Pixel <- as.data.frame(rescale_df[(mid+1):end,] - rescale_df[1:mid,])
               loss.gain <- .loss.gain.nonbinary(current = proj.current, future = proj.future)
-            } else if (!ordinal){
+            } else if (!ordinal) {
               Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
             } else {
               proj.future <- apply(proj.future, 2, as.numeric)
@@ -271,10 +270,9 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
             } else {
               comp <- Diff.By.Pixel
             }
-            
           
             Compt.By.Models <- as.data.frame(.CompteurSp(comp, c(-2, 0, -1, 1)))
-            Compt.By.Models[, seq(5,10)] <- NA
+            Compt.By.Models[, seq(5, 10)] <- NA
             Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
             Compt.By.Models[, 9] <- Compt.By.Models[, 3]
             Compt.By.Models[, 10] <- Compt.By.Models[, 4] + Compt.By.Models[, 3]
@@ -287,13 +285,11 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
                                                                , "PercLoss", "PercGain", "SpeciesRangeChange"
                                                                , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
             
-            
             Output <- list(Compt.By.Models = Compt.By.Models,
                            Diff.By.Pixel = Diff.By.Pixel,
                            loss.gain = comp,
-                           data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary")
-            )
             .bm_cat("Done")
+                           data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary"))
             invisible(Output)
           })
 
@@ -313,14 +309,14 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
-            names.res = c("Loss", "Stable_Abs", "Stable_Pres", "Gain"
-                          , "PercLoss", "PercGain", "SpeciesRangeChange"
-                          , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
+            names.res <- c("Loss", "Stable_Abs", "Stable_Pres", "Gain"
+                           , "PercLoss", "PercGain", "SpeciesRangeChange"
+                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
             
             
-            if(nlyr(proj.current) > 1){
+            if (nlyr(proj.current) > 1) {
               CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.current),
-                          dimnames = list(names(proj.current), names.res))
+                            dimnames = list(names(proj.current), names.res))
             } else {
               CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.future),
                             dimnames = list(names(proj.future), names.res))
@@ -330,13 +326,13 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
             loss.gain_rast <- rast()
             Cur <- proj.current[[1]]
             for (i in seq_len(nlyr(proj.future))) {
-              if(nlyr(proj.current) > 1){
+              if (nlyr(proj.current) > 1) {
                 Cur <- proj.current[[i]]
               }
               Fut <- proj.future[[i]]
               
-              if (nonbinary && !ordinal){
                 ## DiffByPixel
+              if (nonbinary && !ordinal) {
                 
                 rescale_map <- c(Cur, Fut)
                 values(rescale_map) <- rescale(values(rescale_map), to = c(0,1))
@@ -374,12 +370,12 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
             } 
 
             names(sp.rast) <- rownames(CBS)
+            
             Output <- list(Compt.By.Models = as.data.frame(CBS),
-                          Diff.By.Pixel = sp.rast,
-                          loss.gain = loss.gain_rast,
-                          data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary")
-            )
             .bm_cat("Done")
+                           Diff.By.Pixel = sp.rast,
+                           loss.gain = loss.gain_rast,
+                           data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary"))
             return(Output)
           })
 
@@ -434,11 +430,11 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
   
   ## checking 0/1 ----------------------------
   if (inherits(proj.current, "data.frame")) {
-    test_binary_current <- all(na.omit(unlist(proj.current)) %in% c(0,1))
-    test_binary_future <- all(na.omit(unlist(proj.future)) %in% c(0,1))
+    test_binary_current <- all(na.omit(unlist(proj.current)) %in% c(0, 1))
+    test_binary_future <- all(na.omit(unlist(proj.future)) %in% c(0, 1))
   } else { # SpatRaster case
-    test_binary_current <- all(na.omit(values(proj.current)) %in% c(0,1))
-    test_binary_future <- all(na.omit(values(proj.future)) %in% c(0,1))
+    test_binary_current <- all(na.omit(values(proj.current)) %in% c(0, 1))
+    test_binary_future <- all(na.omit(values(proj.future)) %in% c(0, 1))
   }
   
   nonbinary <- ifelse((!test_binary_current | !test_binary_future), TRUE, FALSE)
@@ -473,7 +469,8 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
 }
 
 
-.loss.gain.nonbinary <- function(current, future){
+.loss.gain.nonbinary <- function(current, future)
+{
   category <- current > 0
   category[] <- ifelse(current[] == future[], ifelse(category[], -1, 0),
                        ifelse(current[] < future[], 1, -2)) #gain, loss

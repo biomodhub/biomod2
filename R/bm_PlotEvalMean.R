@@ -145,12 +145,12 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
     if (any(!is.na(scores[, dataset]))) {
       
       ## Compute mean and sd evaluation scores
-      models_mean = tapply(X = scores[, dataset]
-                           , INDEX = list(scores$metric.eval, scores[, group.by])
-                           , FUN = mean, na.rm = TRUE)
-      models_sd = tapply(X = scores[, dataset]
-                         , INDEX = list(scores$metric.eval, scores[, group.by])
-                         , FUN = sd, na.rm = TRUE)
+      models_mean <- tapply(X = scores[, dataset]
+                            , INDEX = list(scores$metric.eval, scores[, group.by])
+                            , FUN = mean, na.rm = TRUE)
+      models_sd <- tapply(X = scores[, dataset]
+                          , INDEX = list(scores$metric.eval, scores[, group.by])
+                          , FUN = sd, na.rm = TRUE)
       
       ## Prepare data table for graphic
       ggdat <- merge(data.frame(name = colnames(models_mean), t(models_mean)),
@@ -164,7 +164,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
       ## 2. PLOT graphic ------------------------------------------------------------------------------
       gg <- ggplot(ggdat, aes(x = .data$mean1, y = .data$mean2, colour = .data$name, fill = NULL)) +
         geom_point() + ## add mean points
-        geom_errorbarh(limits1, height = 0) + ## add horizontal error bars
+        geom_errorbar(limits1, width = 0, orientation = "y") + ## add horizontal error bars
         geom_errorbar(limits2, width = 0) + ## add vertical error bars
         labs(x = metric.eval[1], y = metric.eval[2]
              , subtitle = switch(dataset
@@ -204,16 +204,16 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   if (!is.null(scores)) {
     avail.metrics <- sort(unique(as.character(scores$metric.eval)))
     if (is.null(metric.eval) && length(avail.metrics) > 1) {
-      metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
       warning(toString(metric.eval), " evaluation metric.eval automatically selected")
+      metric.eval <- avail.metrics[1:2]
     } else {
-      metric.eval = sort(unique(as.character(metric.eval)))
       if (length(metric.eval) < 2) {
         stop("2 different evaluations metric.eval needed")
       } else if (length(metric.eval) > 2) {
         metric.eval = metric.eval[1:2]
         warning("2 different evaluations metric.eval needed, only the first 2 will be kept")
       }
+      metric.eval <- sort(unique(as.character(metric.eval)))
     }
     
     ## 2. Check dataset argument ------------------------------------------------

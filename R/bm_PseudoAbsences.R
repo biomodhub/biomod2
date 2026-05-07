@@ -234,10 +234,10 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                     sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, nb.absences, nb.rep),
                     disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr))
     } else if (length(nb.absences) == nb.rep) {
-      out.list = foreach(i.abs = unique(nb.absences)) %do% 
+      out.list <- foreach(i.abs = unique(nb.absences)) %do% 
         {
-          i.rep = which(nb.absences == i.abs)
           cat("\n > Set ", paste0(i.rep, collapse = ", "), " (", i.abs, " pseudo absences wanted)", sep = "")
+          i.rep <- which(nb.absences == i.abs)
           
           out <- switch(strategy,
                         user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
@@ -252,86 +252,86 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
             for (j in 2:length(i.rep)) {
               out$pa.tab <- cbind(out$pa.tab, col1)
             }
-            # i.rep = i.rep[1] ## NOT working with summary and plot functions
+            # i.rep <- i.rep[1] ## NOT working with summary and plot functions
           }
           
-          colnames(out$pa.tab) = paste0("PA", i.rep)
+          colnames(out$pa.tab) <- paste0("PA", i.rep)
           return(out)
         }
       
       ## GET XY -----------------------------------------------------
       
       ## Get coordinates of presences
-      ind.pres = which(out.list[[1]][["sp"]] == 1)
-      xy.pres = out.list[[1]][["xy"]][ind.pres, ]
-      nb.pres = length(ind.pres)
+      ind.pres <- which(out.list[[1]][["sp"]] == 1)
+      xy.pres <- out.list[[1]][["xy"]][ind.pres, ]
+      nb.pres <- length(ind.pres)
       
       ## Get coordinates of pseudo-absences
-      out.xy = foreach(i = 1:length(out.list)) %do%
+      out.xy <- foreach(i = 1:length(out.list)) %do%
         {
-          ind.keep = 1:nrow(out.list[[i]][["xy"]])
-          ind.keep = ind.keep[-which(ind.keep %in% ind.pres)]
-          res = out.list[[i]][["xy"]][ind.keep, ]
-          res = cbind(res, ind.keep)
+          ind.keep <- 1:nrow(out.list[[i]][["xy"]])
+          ind.keep <- ind.keep[-which(ind.keep %in% ind.pres)]
+          res <- out.list[[i]][["xy"]][ind.keep, ]
+          res <- cbind(res, ind.keep)
           return(res)
         }
       
       ## Merge all coordinates of pseudo-absences (may be duplicates)
-      out.xy = Reduce(function(x, y) merge(x, y, by = c("x", "y"), all = TRUE), out.xy)
+      out.xy <- Reduce(function(x, y) merge(x, y, by = c("x", "y"), all = TRUE), out.xy)
       
       ## Get indexes of merged PA coordinates for each set
       ## To be used to rebuild env and pa.tab 
-      out.index = out.xy[, -which(colnames(out.xy) %in% c("x", "y"))]
-      out.order = !is.na(out.index)
-      out.order = t(apply(out.order, 1, cumsum))
+      out.index <- out.xy[, -which(colnames(out.xy) %in% c("x", "y"))]
+      out.order <- !is.na(out.index)
+      out.order <- t(apply(out.order, 1, cumsum))
       
       ## Keep presences + pseudo-absences coordinates
-      out.xy = out.xy[, c("x", "y")]
-      out.xy = rbind(xy.pres, out.xy)
-      out.sp = c(rep(1, nb.pres), rep(NA, nrow(out.xy) - nb.pres))
+      out.xy <- out.xy[, c("x", "y")]
+      out.xy <- rbind(xy.pres, out.xy)
+      out.sp <- c(rep(1, nb.pres), rep(NA, nrow(out.xy) - nb.pres))
       
       ## GET ENV & PA.TAB -------------------------------------------
       
       ## Initialize env matrix
-      out.env = matrix(NA, nrow = nrow(out.xy), ncol = ncol(out.list[[1]][["env"]]))
-      out.env = as.data.frame(out.env)
-      colnames(out.env) = colnames(out.list[[1]][["env"]])
-      out.env[1:nb.pres, ] = out.list[[1]][["env"]][1:nb.pres, ]
+      out.env <- matrix(NA, nrow = nrow(out.xy), ncol = ncol(out.list[[1]][["env"]]))
+      out.env <- as.data.frame(out.env)
+      colnames(out.env) <- colnames(out.list[[1]][["env"]])
+      out.env[1:nb.pres, ] <- out.list[[1]][["env"]][1:nb.pres, ]
       
       ## Initialize pa.tab matrix
-      out.pa.tab = matrix(NA, nrow = nrow(out.xy), ncol = nb.rep)
-      out.pa.tab = as.data.frame(out.pa.tab)
-      colnames(out.pa.tab) = paste0("PA", 1:nb.rep)
-      out.pa.tab[1:nb.pres, ] = TRUE
+      out.pa.tab <- matrix(NA, nrow = nrow(out.xy), ncol = nb.rep)
+      out.pa.tab <- as.data.frame(out.pa.tab)
+      colnames(out.pa.tab) <- paste0("PA", 1:nb.rep)
+      out.pa.tab[1:nb.pres, ] <- TRUE
       
-      ind.start = 1
-      ind.end = ncol(out.list[[1]][["pa.tab"]])
+      ind.start <- 1
+      ind.end <- ncol(out.list[[1]][["pa.tab"]])
       
       ## Fill first column
-      ind = which(out.order[, 1] == 1)
-      out.env[ind + nb.pres, ] = out.list[[1]][["env"]][out.index[ind, 1], ]
-      out.pa.tab[ind + nb.pres, ind.start:ind.end] = out.list[[1]][["pa.tab"]][out.index[ind, 1], ]
+      ind <- which(out.order[, 1] == 1)
+      out.env[ind + nb.pres, ] <- out.list[[1]][["env"]][out.index[ind, 1], ]
+      out.pa.tab[ind + nb.pres, ind.start:ind.end] <- out.list[[1]][["pa.tab"]][out.index[ind, 1], ]
       
       ## Fill all other columns
       for (j in 2:ncol(out.order)) {
-        ind = which(out.order[, j] != out.order[, j-1])
+        ind <- which(out.order[, j] != out.order[, j-1])
         if (length(ind) > 0) {
           
           ## For env
-          out.env[ind + nb.pres, ] = out.list[[j]][["env"]][out.index[ind, j], ]
+          out.env[ind + nb.pres, ] <- out.list[[j]][["env"]][out.index[ind, j], ]
           
           ## For pa.tab
-          ind.start = ind.end + 1
-          ind.end = ind.start + ncol(out.list[[j]][["pa.tab"]]) - 1
-          out.pa.tab[ind + nb.pres, ind.start:ind.end] = out.list[[j]][["pa.tab"]][out.index[ind, j], ]
+          ind.start <- ind.end + 1
+          ind.end <- ind.start + ncol(out.list[[j]][["pa.tab"]]) - 1
+          out.pa.tab[ind + nb.pres, ind.start:ind.end] <- out.list[[j]][["pa.tab"]][out.index[ind, j], ]
         }
       }
       
       ## GET everything ---------------------------------------------
-      out = list(xy = out.xy,
-                 sp = out.sp,
-                 env = out.env,
-                 pa.tab = out.pa.tab)
+      out <- list(xy = out.xy,
+                  sp = out.sp,
+                  env = out.env,
+                  pa.tab = out.pa.tab)
     }
   }
   cat("\n")
@@ -347,10 +347,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   cat('\n\nChecking Pseudo-absence selection arguments...\n')
   ## 1. Check resp.var argument -----------------------------------------------
   if (is.vector(resp.var)) {
-    resp.var <- vect(data.frame(x = 0,
-                                y = 0,
-                                resp = resp.var),
-                     geom = c("x","y"))
+    resp.var <- vect(data.frame(x = 0, y = 0, resp = resp.var), geom = c("x", "y"))
     if (!is.null(nb.absences) && length(nb.absences) > 1) {
       stop("Selection of multiple number of pseudo-absences depends on coordinates. Please provide some.")
     }
@@ -364,13 +361,10 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
     }
     # transform expl.var into SpatVector
     rownames(expl.var) <- NULL
-    expl.var <- vect(
-      cbind(data.frame(x = crds(resp.var)[,1],
-                       y = crds(resp.var)[,2]),
-            as.data.frame(expl.var)
-      ),
-      geom = c("x","y")
-    )
+    expl.var <- vect(cbind(data.frame(x = crds(resp.var)[, 1],
+                                      y = crds(resp.var)[, 2]),
+                           , as.data.frame(expl.var))
+                     , geom = c("x", "y"))
   }
   .fun_testIfInherits(TRUE, "expl.var", expl.var, c("SpatVector", "SpatRaster"))
   
@@ -449,9 +443,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   }
   
   ## 8. Set the seed (if needed) ---------------------------------------------
-  if (!is.null(seed.val)) {
-    set.seed(seed.val)
-  }
+  if (!is.null(seed.val)) { set.seed(seed.val) }
   
   return(list(resp.var = resp.var,
               expl.var = expl.var,
@@ -480,7 +472,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 
 .get_nb_available_pa_cells <- function(data, PA.flag = NA)
 {
-  if (is.vector(data) || inherits(data, c("matrix","data.frame"))) {
+  if (is.vector(data) || inherits(data, c("matrix", "data.frame"))) {
     return(
       ifelse(is.na(PA.flag),
              length(which(is.na(data))), 
@@ -489,8 +481,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   } else if (inherits(data, 'SpatVector')) {
     return(
       ifelse(is.na(PA.flag), 
-             length(which(is.na(as.data.frame(data)[,1]))), 
-             length(which(values(data)[,1] == PA.flag)))
+             length(which(is.na(as.data.frame(data)[, 1]))), 
+             length(which(values(data)[, 1] == PA.flag)))
     )
   } else if (inherits(data, 'SpatRaster')) {
     return(
@@ -503,7 +495,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 {
   rn <- row.names(xy)
   # if (length(rn) == 0) {
-  #   rn = rep("", nrow(xy))
+  #   rn <- rep("", nrow(xy))
   # }
   missing_rn <- which(rn == "")
   if (length(missing_rn) > 0) {
@@ -728,9 +720,9 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
                   pa.tab[selected.cells %in% pa.tab.tmp[,j], j] <- TRUE
                 }
                 
-                # putting presences, true absences and pseudo absences together
-                xy = crds(resp.var)
-                rownames(xy) = paste0("pres", 1:nrow(xy))
+                # putting presences, true absences and pseudo-absences together
+                xy <- crds(resp.var)
+                rownames(xy) <- paste0("pres", 1:nrow(xy))
                 xy <- rbind(xy, xyFromCell(mask.env, selected.cells))
                 xy <- .add_pa_rownames(xy)
                 resp.var <- as.numeric(unlist(c(values(resp.var)[, 1], 
@@ -872,7 +864,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
               pa.tab[selected.cells %in% pa.tab.tmp[,j], j] <- TRUE
             }
             
-            # putting presences, true absences and pseudo absences together
+            # putting presences, true absences and pseudo-absences together
             xy <- rbind(crds(resp.var)[which(!is.na(values(resp.var)[, 1])), ],
                         xyFromCell(mask.in, selected.cells))
             xy <- .add_pa_rownames(xy)
@@ -910,8 +902,9 @@ setGeneric("bm_PseudoAbsences_disk",
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
-          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr) {
             cat("\n   > Disk pseudo absences selection")
+          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr)
+          {
             
             # 1. determining area which can be selected
             coor <- crds(resp.var)
@@ -938,7 +931,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
             
             selected.abs <- tmp.abs[(inside == length(pres)) & (outside > 0)]
             
-            # 2. adding presences and true absences and selecting randomly pseudo absences
+            # 2. adding presences and true absences and selecting randomly pseudo-absences
             return(bm_PseudoAbsences_random(resp.var[c(pres, true.abs, selected.abs), ],
                                             expl.var[c(pres, true.abs, selected.abs), ],
                                             nb.absences, nb.rep))
@@ -992,10 +985,10 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
                                            dist.max, Inf, NA),
                                          ncol = 3, byrow = TRUE))
               mask.in[cellFromXY(mask.in, pres.xy)] <- 1
-              mask.in = expl.var * mask.in
-              names(mask.in) = names(expl.var)
+              mask.in <- expl.var * mask.in
+              names(mask.in) <- names(expl.var)
               
-              # 2. selecting randomly pseudo absences
+              # 2. selecting randomly pseudo-absences
               return(bm_PseudoAbsences_random(resp.var, expl.var = mask.in, nb.absences, nb.rep, fact.aggr = NULL))
             }
           })
