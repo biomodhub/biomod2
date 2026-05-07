@@ -139,12 +139,12 @@ with different strategies (see Details).</p>
 <span>  eval.resp.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eval.expl.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  PA.nb.rep <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  PA.nb.absences <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  PA.strategy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  PA.nb.rep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  PA.nb.absences <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>  PA.sre.quant <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.fact.aggr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -226,26 +226,26 @@ independent data.
 <code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
 
 
-<dt id="arg-pa-nb-rep">PA.nb.rep<a class="anchor" aria-label="anchor" href="#arg-pa-nb-rep"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
-If pseudo-absence selection, an <code>integer</code> corresponding to the number of sets
-(repetitions) of pseudo-absence points that will be drawn</p></dd>
-
-
-<dt id="arg-pa-nb-absences">PA.nb.absences<a class="anchor" aria-label="anchor" href="#arg-pa-nb-absences"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
-If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code>
-or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence
-points that will be selected for each pseudo-absence repetition (true absences included). <br>
-It can also be a <code>vector</code> of the same length as <code>PA.nb.rep</code> containing <code>integer</code>
-values corresponding to the different numbers of pseudo-absences to be selected (see Details)</p></dd>
-
-
 <dt id="arg-pa-strategy">PA.strategy<a class="anchor" aria-label="anchor" href="#arg-pa-strategy"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If pseudo-absence selection, a <code>character</code> defining the strategy that will be used to
 select the pseudo-absence points. Must be <code>random</code>, <code>sre</code>, <code>disk</code> or
 <code>user.defined</code> (see Details)</p></dd>
+
+
+<dt id="arg-pa-nb-rep">PA.nb.rep<a class="anchor" aria-label="anchor" href="#arg-pa-nb-rep"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If pseudo-absence selection, an <code>integer</code> corresponding to the number of sets
+(repetitions) of pseudo-absence points that will be drawn</p></dd>
+
+
+<dt id="arg-pa-nb-absences">PA.nb.absences<a class="anchor" aria-label="anchor" href="#arg-pa-nb-absences"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code>
+or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence
+points that will be selected for each pseudo-absence repetition (true absences included). <br>
+It can also be a <code>vector</code> of the same length as <code>PA.nb.rep</code> containing <code>integer</code>
+values corresponding to the different numbers of pseudo-absences to be selected (see Details)</p></dd>
 
 
 <dt id="arg-pa-dist-min">PA.dist.min<a class="anchor" aria-label="anchor" href="#arg-pa-dist-min"></a></dt>
@@ -256,14 +256,14 @@ minimal distance to presence points used to make the <code>disk</code> pseudo-ab
 
 
 <dt id="arg-pa-dist-max">PA.dist.max<a class="anchor" aria-label="anchor" href="#arg-pa-dist-max"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the
 maximal distance to presence points used to make the <code>disk</code> pseudo-absence selection
 (in the same projection system units as <code>resp.xy</code> and <code>expl.var</code>, see Details)</p></dd>
 
 
 <dt id="arg-pa-sre-quant">PA.sre.quant<a class="anchor" aria-label="anchor" href="#arg-pa-sre-quant"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If pseudo-absence selection and <code>PA.strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code>
 and <code>0.5</code> defining the half-quantile used to make the <code>sre</code> pseudo-absence selection
 (see Details)</p></dd>

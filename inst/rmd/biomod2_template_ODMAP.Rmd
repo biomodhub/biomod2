@@ -173,8 +173,8 @@ ODMAP$value[fun_ind("Overview", "Assumptions", "Model assumptions")] = "tobefill
 ## Information to be chosen by user
 ODMAP$value[fun_ind("Overview", "Model objective", "Model objective")] = params.ODMAP$O.mod.objective
 ODMAP$value[fun_ind("Overview", "Scale of Analysis", "Boundary")] = params.ODMAP$O.boundary
-ODMAP$value[fun_ind("Overview", "Biodiversity data", "Observation type")] = paste0(params.ODMAP$O.obs.type, collapse = ", ")
-ODMAP$value[fun_ind("Overview", "Predictors", "Predictor types")] = paste0(params.ODMAP$O.pred.type, collapse = ", ")
+ODMAP$value[fun_ind("Overview", "Biodiversity data", "Observation type")] = toString(params.ODMAP$O.obs.type)
+ODMAP$value[fun_ind("Overview", "Predictors", "Predictor types")] = toString(params.ODMAP$O.pred.type)
 ODMAP$value[fun_ind("Data", "Biodiversity data", "Ecological level")] = params.ODMAP$D.eco.level
 ODMAP$value[fun_ind("Data", "Biodiversity data", "Sampling design")] = params.ODMAP$D.samp.design
 ```
@@ -189,21 +189,21 @@ if (!is.null(bm.form@data.mask)) {
   
   ## Overview
   ODMAP$value[fun_ind("Overview", "Scale of Analysis", "Spatial extent")] = as.character(ext(mm))
-  ODMAP$value[fun_ind("Overview", "Scale of Analysis", "Spatial resolution")] = paste0(res(mm), collapse = ", ")
+  ODMAP$value[fun_ind("Overview", "Scale of Analysis", "Spatial resolution")] = toString(res(mm))
   
   ## Predictor variables
   ODMAP$value[fun_ind("Data", "Predictor variables", "Spatial extent")] = as.character(ext(mm))
-  ODMAP$value[fun_ind("Data", "Predictor variables", "Spatial resolution")] = paste0(res(mm), collapse = ", ")
+  ODMAP$value[fun_ind("Data", "Predictor variables", "Spatial resolution")] = toString(res(mm))
   ODMAP$value[fun_ind("Data", "Predictor variables", "Coordinate reference system")] = crs(mm, proj = TRUE)
 }
 
 ODMAP$value[fun_ind("Overview", "Biodiversity data", "Response data type")] = ifelse(hasPA, "presence-only", "presence-absence")
 
 if (hasBmMod) {
-  ODMAP$value[fun_ind("Overview", "Algorithms", "Modelling techniques")] = paste0(name.algo, collapse = ", ")
+  ODMAP$value[fun_ind("Overview", "Algorithms", "Modelling techniques")] = toString(name.algo)
 }
 if (hasBmEns) {
-  ODMAP$value[fun_ind("Overview", "Algorithms", "Model averaging")] = paste0(name.ens, collapse = ", ")
+  ODMAP$value[fun_ind("Overview", "Algorithms", "Model averaging")] = toString(name.ens)
 }
 # ODMAP$value[fun_ind("Overview", "Software", "Software")] = paste0("biomod2 v", packageVersion("biomod2"))
 ODMAP$value[fun_ind("Overview", "Software", "Software")] = paste0("biomod2 v", bm.form@biomod2.version)
@@ -223,8 +223,8 @@ if (hasPA) {
   ODMAP$value[fun_ind("Data", "Biodiversity data", "Background data")] = "none"
 }
 
-ODMAP$value[fun_ind("Data", "Biodiversity data", "Sample size")] = paste0(c(paste(nb.1, "presences")
-                                                                , ifelse(nb.0 > 0, paste(nb.0, "true absences"), "")), collapse = ", ")
+ODMAP$value[fun_ind("Data", "Biodiversity data", "Sample size")] = toString(c(paste(nb.1, "presences")
+                                                                              , ifelse(nb.0 > 0, paste(nb.0, "true absences"), "")))
 
 if (hasBmMod) {
 if (hasPA) {
@@ -237,18 +237,18 @@ if (hasPA) {
 }
 ODMAP$value[fun_ind("Data", "Data partitioning", "Test data")] = ifelse(hasDataEval, "TRUC", "none")
 
-ODMAP$value[fun_ind("Data", "Predictor variables", "Predictor variables")] = paste0(name.var, collapse = ", ")
+ODMAP$value[fun_ind("Data", "Predictor variables", "Predictor variables")] = toString(name.var)
 
-ODMAP$value[fun_ind("Model", "Model estimates", "Coefficient")] = paste0(name.var, collapse = ", ")
+ODMAP$value[fun_ind("Model", "Model estimates", "Coefficient")] = toString(name.var)
 ```
 
 ```{r fill-ODMAP-3, echo=FALSE}
 if (hasEvalMod || hasEvalEns) {
   if (evalSame) {
-    mess = paste0(paste0(name.eval.mod, collapse = ", "), " for all models")
+    mess = paste0(toString(name.eval.mod), " for all models")
   } else {
-    mess = paste0(paste0(name.eval.mod, collapse = ", "), " for single models ; "
-                  , paste0(name.eval.ens, collapse = ", "), " for ensemble models")
+    mess = paste0(toString(name.eval.mod), " for single models ; "
+                  , toString(name.eval.ens), " for ensemble models")
   }
 } else { mess = NA }
 ODMAP$value[fun_ind("Assessment", "Performance statistics", "Performance on training data")] = mess

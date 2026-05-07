@@ -337,7 +337,7 @@ apply(PA.r_mult$pa.tab, 2, table)
 cv.r <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = 'random',
                            nb.rep = 3,
-                           k = 0.8)
+                           perc = 0.8)
 
 # k-fold selection
 cv.k <- bm_CrossValidation(bm.format = myBiomodData,
@@ -385,8 +385,8 @@ ModelsTable
 ```
 
 ```R
-allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-               , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+allModels <- c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+               , 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
 
 # default parameters
 opt.d <- bm_ModelingOptions(data.type = 'binary',
@@ -451,7 +451,7 @@ tuned.gam ##list object
                               
 # Tune parameters with formated data
 opt.t <- bm_ModelingOptions(data.type = 'binary',
-                            models = c('SRE', 'XGBOOST'),
+                            models = c('RF', 'XGBOOST'),
                             strategy = 'tuned',
                             bm.format = myBiomodData)
 

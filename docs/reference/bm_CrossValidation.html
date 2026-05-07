@@ -129,15 +129,16 @@ according to 6 different methods : <code>random</code>, <code>kfold</code>, <cod
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_CrossValidation</span><span class="op">(</span></span>
 <span>  <span class="va">bm.format</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
-<span>  nb.rep <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>  k <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  balance <span class="op">=</span> <span class="st">"presences"</span>,</span>
+<span>  <span class="va">strategy</span>,</span>
+<span>  nb.rep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  perc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  balance <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  strat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  env.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  strat <span class="op">=</span> <span class="st">"both"</span>,</span>
 <span>  user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  do.full.models <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed.val <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_CrossValidation_user.defined</span><span class="op">(</span><span class="va">bm.format</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -205,28 +206,34 @@ must be among <code>random</code>, <code>kfold</code>, <code>block</code>, <code
 
 
 <dt id="arg-nb-rep">nb.rep<a class="anchor" aria-label="anchor" href="#arg-nb-rep"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'random'</code> or <code>strategy = 'kfold'</code>, an <code>integer</code> corresponding
 to the number of sets (repetitions) of cross-validation points that will be drawn</p></dd>
 
 
 <dt id="arg-perc">perc<a class="anchor" aria-label="anchor" href="#arg-perc"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'random'</code>, a <code>numeric</code> between <code>0</code> and <code>1</code> defining the
 percentage of data that will be kept for calibration</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'kfold'</code> or <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, an
 <code>integer</code> corresponding to the number of partitions</p></dd>
 
 
 <dt id="arg-balance">balance<a class="anchor" aria-label="anchor" href="#arg-balance"></a></dt>
-<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code> corresponding
 to how data will be balanced between partitions, must be either <code>presences</code> or
 <code>absence</code></p></dd>
+
+
+<dt id="arg-strat">strat<a class="anchor" aria-label="anchor" href="#arg-strat"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'env'</code>, a <code>character</code> corresponding to how data will partitioned
+along gradient, must be among <code>x</code>, <code>y</code>, <code>both</code></p></dd>
 
 
 <dt id="arg-env-var">env.var<a class="anchor" aria-label="anchor" href="#arg-env-var"></a></dt>
@@ -234,12 +241,6 @@ to how data will be balanced between partitions, must be either <code>presences<
 If <code>strategy = 'env'</code>, a <code>character</code> corresponding to the environmental variables
 used to build the partition. <code>k</code> partitions will be built for each environmental
 variables. <em>By default the function uses all environmental variables available.</em></p></dd>
-
-
-<dt id="arg-strat">strat<a class="anchor" aria-label="anchor" href="#arg-strat"></a></dt>
-<dd><p>(<em>optional, default</em> <code>'both'</code>) <br>
-If <code>strategy = 'env'</code>, a <code>character</code> corresponding to how data will partitioned
-along gradient, must be among <code>x</code>, <code>y</code>, <code>both</code></p></dd>
 
 
 <dt id="arg-user-table">user.table<a class="anchor" aria-label="anchor" href="#arg-user-table"></a></dt>
@@ -250,9 +251,14 @@ repetition (in columns) which observation lines should be used for models calibr
 
 
 <dt id="arg-do-full-models">do.full.models<a class="anchor" aria-label="anchor" href="#arg-do-full-models"></a></dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br>
 A <code>logical</code> value defining whether models should be also calibrated and validated over
 the whole dataset (and pseudo-absence datasets) or not</p></dd>
+
+
+<dt id="arg-seed-val">seed.val<a class="anchor" aria-label="anchor" href="#arg-seed-val"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -410,7 +416,7 @@ if the presences are clumped on an edge of the study area.</p>
 <span><span class="va">cv.r</span> <span class="op">&lt;-</span> <span class="fu">bm_CrossValidation</span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                           strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
 <span>                           nb.rep <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                           k <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span>                           perc <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># k-fold selection</span></span>
 <span><span class="va">cv.k</span> <span class="op">&lt;-</span> <span class="fu">bm_CrossValidation</span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>

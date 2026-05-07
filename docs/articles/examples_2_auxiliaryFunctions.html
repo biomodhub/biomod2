@@ -485,7 +485,7 @@ evaluation datasets<a class="anchor" aria-label="anchor" href="#generate-calibra
 <span><span class="va">cv.r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_CrossValidation.html">bm_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                           strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                           nb.rep <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                           k <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span>                           perc <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># k-fold selection</span></span>
 <span><span class="va">cv.k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_CrossValidation.html">bm_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -535,8 +535,8 @@ used is also indicated.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ModelsTable</span><span class="op">)</span></span>
 <span><span class="va">ModelsTable</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">allModels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span></span>
-<span>               , <span class="st">'MARS'</span>, <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">allModels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'DNN'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span>, <span class="st">'MARS'</span></span>
+<span>               , <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'RFd'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># default parameters</span></span>
 <span><span class="va">opt.d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
@@ -597,7 +597,7 @@ used is also indicated.</p>
 <span>                              </span>
 <span><span class="co"># Tune parameters with formated data</span></span>
 <span><span class="va">opt.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
-<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
+<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
 <span>                            strategy <span class="op">=</span> <span class="st">'tuned'</span>,</span>
 <span>                            bm.format <span class="op">=</span> <span class="va">myBiomodData</span><span class="op">)</span></span>
 <span></span>

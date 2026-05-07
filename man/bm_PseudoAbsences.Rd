@@ -19,10 +19,10 @@
 bm_PseudoAbsences(
   resp.var,
   expl.var,
-  nb.rep = 1,
-  strategy = "random",
+  strategy,
+  nb.rep = NULL,
   nb.absences = NULL,
-  sre.quant = 0,
+  sre.quant = NULL,
   dist.min = 0,
   dist.max = NULL,
   fact.aggr = NULL,
@@ -80,11 +80,12 @@ find the pseudo-absences}
 or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 columns or layers) that will be used to find the pseudo-absences}
 
-\item{nb.rep}{an \code{integer} corresponding to the number of sets (repetitions) of 
-pseudo-absence points that will be drawn}
-
 \item{strategy}{a \code{character} corresponding to the pseudo-absence selection strategy, 
 must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}}
+
+\item{nb.rep}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy != 'user.defined'}, an \code{integer} corresponding to the number of sets 
+(repetitions) of pseudo-absence points that will be drawn}
 
 \item{nb.absences}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'} or \code{strategy = 'sre'} or \code{strategy = 'disk'}, an 
@@ -93,7 +94,7 @@ each pseudo-absence repetition (true absences included). \cr
 It can also be a \code{vector} of the same length as \code{nb.rep} containing \code{integer} 
 values corresponding to the different numbers of pseudo-absences to be selected (see Details)}
 
-\item{sre.quant}{(\emph{optional, default} \code{0}) \cr
+\item{sre.quant}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} defining the 
 half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\link{bm_SRE}})}
 

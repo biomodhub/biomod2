@@ -207,7 +207,7 @@ parameters<a class="anchor" aria-label="anchor" href="#prepare-data-parameters">
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span><span class="va">myBiomodData</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="pseudo-absences-extraction">
@@ -231,7 +231,7 @@ webpage</a>.</p>
 <span><span class="co">#                                        PA.strategy = 'random')</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># myBiomodData.r</span></span>
-<span><span class="co"># plot(myBiomodData.r)</span></span></code></pre></div>
+<span><span class="co"># myPlot &lt;- plot(myBiomodData.r)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # Select multiple sets of pseudo-absences</span></span>
 <span><span class="co">#</span></span>
@@ -248,7 +248,7 @@ webpage</a>.</p>
 <span><span class="co">#                                            PA.strategy = 'random')</span></span>
 <span><span class="co"># myBiomodData.multi</span></span>
 <span><span class="co"># summary(myBiomodData.multi)</span></span>
-<span><span class="co"># plot(myBiomodData.multi)</span></span></code></pre></div>
+<span><span class="co"># myPlot &lt;- plot(myBiomodData.multi)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="cross-validation-datasets">
@@ -269,11 +269,14 @@ webpage</a>.</p>
 <span><span class="co"># # stratified selection (geographic)</span></span>
 <span><span class="co"># cv.s &lt;- bm_CrossValidation(bm.format = myBiomodData,</span></span>
 <span><span class="co">#                            strategy = 'strat',</span></span>
-<span><span class="co">#                            k = 2,</span></span>
+<span><span class="co">#                            k = 3,</span></span>
 <span><span class="co">#                            balance = 'presences',</span></span>
 <span><span class="co">#                            strat = 'x')</span></span>
+<span><span class="co">#</span></span>
 <span><span class="co"># head(cv.k)</span></span>
-<span><span class="co"># head(cv.s)</span></span></code></pre></div>
+<span><span class="co"># head(cv.s)</span></span>
+<span><span class="co"># myPlot &lt;- plot(myBiomodData, plot.eval = TRUE, calib.lines = cv.k)</span></span>
+<span><span class="co"># myPlot &lt;- plot(myBiomodData, plot.eval = TRUE, calib.lines = cv.s)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="retrieve-modeling-options">
@@ -290,12 +293,12 @@ webpage</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # bigboss parameters</span></span>
 <span><span class="co"># opt.b &lt;- bm_ModelingOptions(data.type = 'binary',</span></span>
-<span><span class="co">#                             models = c('SRE', 'XGBOOST'),</span></span>
+<span><span class="co">#                             models = c('RF', 'XGBOOST'),</span></span>
 <span><span class="co">#                             strategy = 'bigboss')</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># # tuned parameters with formated data</span></span>
 <span><span class="co"># opt.t &lt;- bm_ModelingOptions(data.type = 'binary',</span></span>
-<span><span class="co">#                             models = c('SRE', 'XGBOOST'),</span></span>
+<span><span class="co">#                             models = c('RF', 'XGBOOST'),</span></span>
 <span><span class="co">#                             strategy = 'tuned',</span></span>
 <span><span class="co">#                             bm.format = myBiomodData)</span></span>
 <span><span class="co"># </span></span>
@@ -314,46 +317,44 @@ webpage</a>.</p>
 </h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model single models</span></span>
-<span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
-<span>                                    modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
-<span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
-<span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>                                    OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUCroc'</span>, <span class="st">'BOYCE'</span><span class="op">)</span>,</span>
-<span>                                    var.import <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span>                                    <span class="co"># seed.val = 123)</span></span>
-<span>                                    <span class="co"># nb.cpu = 8)</span></span>
-<span><span class="va">myBiomodModelOut</span></span>
+<span><span class="va">myBiomodSM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
+<span>                              modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
+<span>                              CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                              CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                              CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                              OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
+<span>                              metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'AUCroc'</span>, <span class="st">'AUCprg'</span>, <span class="st">'BOYCE'</span>, <span class="st">'TSS'</span><span class="op">)</span>,</span>
+<span>                              var.import <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span>                              <span class="co"># seed.val = 123)</span></span>
+<span>                              <span class="co"># nb.cpu = 8)</span></span>
+<span><span class="va">myBiomodSM</span></span>
 <span></span>
 <span><span class="co"># Get evaluation scores &amp; variables importance</span></span>
-<span><span class="fu"><a href="../reference/getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodSM</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodSM</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Represent evaluation scores &amp; variables importance</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, dataset <span class="op">=</span> <span class="st">'validation'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'algo'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'run'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'algo'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'run'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'expl.var'</span>, <span class="st">'run'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, dataset <span class="op">=</span> <span class="st">'validation'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'algo'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'run'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'algo'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'run'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'expl.var'</span>, <span class="st">'run'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">myPlot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create model subsets</span></span>
+<span><span class="va">mySet1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodSM</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">mySet2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodSM</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Represent response curves</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span>,</span>
-<span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, models.chosen <span class="op">=</span> <span class="va">mySet1</span>, fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, models.chosen <span class="op">=</span> <span class="va">mySet1</span>, fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodSM</span>, models.chosen <span class="op">=</span> <span class="va">mySet2</span>, do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>                      </span>
 <span><span class="co"># Explore models' outliers &amp; residuals</span></span>
-<span><span class="fu"><a href="../reference/bm_ModelAnalysis.html">bm_ModelAnalysis</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                 models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">13</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelAnalysis.html">bm_ModelAnalysis</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodSM</span>, models.chosen <span class="op">=</span> <span class="va">mySet1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">myPlot</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="ensemble-models">
@@ -361,14 +362,14 @@ webpage</a>.</p>
 </h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model ensemble models</span></span>
-<span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
+<span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodSM</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmedian'</span>, <span class="st">'EMmean'</span>, <span class="st">'EMwmean'</span>,</span>
 <span>                                                  <span class="st">'EMca'</span>, <span class="st">'EMci'</span>, <span class="st">'EMcv'</span><span class="op">)</span>,</span>
-<span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
-<span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUCroc'</span>, <span class="st">'BOYCE'</span><span class="op">)</span>,</span>
+<span>                                      metric.select <span class="op">=</span> <span class="st">'BOYCE'</span>,</span>
+<span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'AUCroc'</span>, <span class="st">'AUCprg'</span>, <span class="st">'BOYCE'</span>, <span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                                      EMwmean.decay <span class="op">=</span> <span class="st">'proportional'</span><span class="op">)</span></span>
@@ -379,23 +380,20 @@ webpage</a>.</p>
 <span><span class="fu"><a href="../reference/getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Represent evaluation scores &amp; variables importance</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="st">'full.name'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'full.name'</span>, <span class="st">'full.name'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'full.name'</span>, <span class="st">'full.name'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'merged.by.run'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'expl.var'</span>, <span class="st">'merged.by.run'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="st">'full.name'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'full.name'</span>, <span class="st">'full.name'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'full.name'</span>, <span class="st">'full.name'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'merged.by.run'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'expl.var'</span>, <span class="st">'merged.by.run'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create model subsets</span></span>
+<span><span class="va">mySet1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">mySet2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Represent response curves</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span>,</span>
-<span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, models.chosen <span class="op">=</span> <span class="va">mySet1</span>, fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, models.chosen <span class="op">=</span> <span class="va">mySet1</span>, fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, models.chosen <span class="op">=</span> <span class="va">mySet2</span>, do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><br><br></p>
 </div>
 </div>
@@ -409,7 +407,7 @@ webpage</a>.</p>
 </h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project single models</span></span>
-<span><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
+<span><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodSM</span>,</span>
 <span>                                  proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
 <span>                                  new.env <span class="op">=</span> <span class="va">myExpl</span>,</span>
 <span>                                  models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
@@ -453,12 +451,12 @@ webpage</a>.</p>
 <span><span class="va">myExplFuture</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">bioclim_future</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Project onto future conditions</span></span>
-<span><span class="va">myBiomodProjFuture</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                              proj.name <span class="op">=</span> <span class="st">'Future'</span>,</span>
-<span>                                              new.env <span class="op">=</span> <span class="va">myExplFuture</span>,</span>
-<span>                                              models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span>,</span>
-<span>                                              build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">myBiomodProjFuture</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodSM</span>,</span>
+<span>                                        proj.name <span class="op">=</span> <span class="st">'Future'</span>,</span>
+<span>                                        new.env <span class="op">=</span> <span class="va">myExplFuture</span>,</span>
+<span>                                        models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                        metric.binary <span class="op">=</span> <span class="st">'TSS'</span>,</span>
+<span>                                        build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute differences</span></span>
 <span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">myBiomodProj</span>, </span>
@@ -469,11 +467,11 @@ webpage</a>.</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">@</span><span class="va">Diff.By.Pixel</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Represent main results </span></span>
-<span><span class="fu"><a href="../reference/bm_PlotRangeSize.html">bm_PlotRangeSize</a></span><span class="op">(</span>bm.range <span class="op">=</span> <span class="va">myBiomodRangeSize</span>, </span>
-<span>                 do.count <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                 do.perc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                 do.maps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                 do.mean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">myPlot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_PlotRangeSize.html">bm_PlotRangeSize</a></span><span class="op">(</span>bm.range <span class="op">=</span> <span class="va">myBiomodRangeSize</span>, </span>
+<span>                           do.count <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                           do.perc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                           do.maps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                           do.mean <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><br><br></p>
 </div>
 <div class="section level3">

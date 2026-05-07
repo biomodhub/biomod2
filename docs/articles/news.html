@@ -165,6 +165,25 @@
 <ul>
 <li>4.3-4-6 :
 <ul>
+<li>update user related messages :
+<ul>
+<li>remove <em>test</em> argument from <code>.fun_test[...]</code>
+functions and use them whenever possible</li>
+<li>add <code>.fun_testIfNULL</code>, <code>.fun_testIfLength</code>,
+<code>.fun_testIfInOnlyOne</code>, <code>.fun_testIfSameSize</code>
+functions, and change <code>.fun_testIf01</code> and
+<code>.fun_testMetric</code> to <code>.fun_testIf0X</code> and
+<code>.fun_testIfSize</code>
+</li>
+<li>add <code>.bm_cat2</code> function and update all <em>cat</em>
+messages</li>
+<li>add distinction between <em>cat</em> and <em>message</em>, and
+switch most <em>warning</em> to <em>message</em>
+</li>
+<li>standardize / uniformize all <em>cat</em>, <em>message</em>,
+<em>stop</em> and <em>warning</em> messages</li>
+</ul>
+</li>
 <li>update default parameters in functions (set to NULL if
 possible)</li>
 <li>add <code>seed.val</code> parameter in

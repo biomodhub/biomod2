@@ -24,15 +24,16 @@
 \usage{
 bm_CrossValidation(
   bm.format,
-  strategy = "random",
-  nb.rep = 0,
-  perc = 0.8,
-  k = 0,
-  balance = "presences",
+  strategy,
+  nb.rep = NULL,
+  perc = NULL,
+  k = NULL,
+  balance = NULL,
+  strat = NULL,
   env.var = NULL,
-  strat = "both",
   user.table = NULL,
-  do.full.models = FALSE
+  do.full.models = FALSE,
+  seed.val = NULL
 )
 
 bm_CrossValidation_user.defined(bm.format, ...)
@@ -79,40 +80,43 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 \code{user.defined}}
 
-\item{nb.rep}{(\emph{optional, default} \code{0}) \cr
+\item{nb.rep}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
 to the number of sets (repetitions) of cross-validation points that will be drawn}
 
-\item{perc}{(\emph{optional, default} \code{0}) \cr
+\item{perc}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'}, a \code{numeric} between \code{0} and \code{1} defining the 
 percentage of data that will be kept for calibration}
 
-\item{k}{(\emph{optional, default} \code{0}) \cr
+\item{k}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
 \code{integer} corresponding to the number of partitions}
 
-\item{balance}{(\emph{optional, default} \code{'presences'}) \cr 
+\item{balance}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
 to how data will be balanced between partitions, must be either \code{presences} or 
 \code{absence}}
+
+\item{strat}{(\emph{optional, default} \code{NULL}) \cr 
+If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+along gradient, must be among \code{x}, \code{y}, \code{both}}
 
 \item{env.var}{(\emph{optional}) \cr 
 If \code{strategy = 'env'}, a \code{character} corresponding to the environmental variables 
 used to build the partition. \code{k} partitions will be built for each environmental 
 variables. \emph{By default the function uses all environmental variables available.}}
 
-\item{strat}{(\emph{optional, default} \code{'both'}) \cr 
-If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
-along gradient, must be among \code{x}, \code{y}, \code{both}}
-
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
 repetition (in columns) which observation lines should be used for models calibration 
 (\code{TRUE}) and validation (\code{FALSE})}
 
-\item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
+\item{do.full.models}{(\emph{optional, default} \code{FALSE}) \cr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 
 \item{\ldots}{(\emph{optional, one or several of the listed above arguments depending on the 
 selected method})}
@@ -232,7 +236,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
 cv.r <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = "random",
                            nb.rep = 3,
-                           k = 0.8)
+                           perc = 0.8)
 
 # k-fold selection
 cv.k <- bm_CrossValidation(bm.format = myBiomodData,

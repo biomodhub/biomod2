@@ -17,12 +17,12 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  PA.nb.rep = 1,
-  PA.strategy = "random",
+  PA.strategy,
+  PA.nb.rep = NULL,
   PA.nb.absences = NULL,
   PA.dist.min = 0,
   PA.dist.max = NULL,
-  PA.sre.quant = 0.025,
+  PA.sre.quant = NULL,
   PA.fact.aggr = NULL,
   PA.user.table = NULL,
   na.rm = TRUE,
@@ -39,12 +39,12 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  PA.nb.rep = 1,
-  PA.strategy = "random",
+  PA.strategy,
+  PA.nb.rep = NULL,
   PA.nb.absences = NULL,
   PA.dist.min = 0,
   PA.dist.max = NULL,
-  PA.sre.quant = 0.025,
+  PA.sre.quant = NULL,
   PA.fact.aggr = NULL,
   PA.user.table = NULL,
   na.rm = TRUE,
@@ -102,16 +102,16 @@ If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or
 coordinates that will be used to evaluate the species distribution model(s)
 with independent data}
 
-\item{PA.nb.rep}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
-(repetitions) of pseudo-absence points that will be drawn}
-
 \item{PA.strategy}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
 select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
 \code{user.defined} (see Details)}
 
-\item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr 
+\item{PA.nb.rep}{(\emph{optional, default} \code{NULL}) \cr 
+If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+(repetitions) of pseudo-absence points that will be drawn}
+
+\item{PA.nb.absences}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
 or \code{PA.strategy = 'disk'}, an \code{integer} (or a \code{vector} of \code{integer} the 
 same size as \code{PA.nb.rep}) corresponding to the number of pseudo-absence points that 
@@ -122,12 +122,12 @@ If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} de
 minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
 (in the same projection system units as \code{coord}, see Details)}
 
-\item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr 
+\item{PA.dist.max}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 (in the same projection system units as \code{coord}, see Details)}
 
-\item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr 
+\item{PA.sre.quant}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
 (see Details)}

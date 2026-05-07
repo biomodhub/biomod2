@@ -93,7 +93,7 @@ This function allows to project a range of models built with the
 represent new areas, resolution or time scales for example}).
 }
 \details{
-If \code{models.chosen = 'all'}, projections are done for all calibration and pseudo absences 
+If \code{models.chosen = 'all'}, projections are done for all calibration and pseudo-absences 
 runs if applicable. \cr These projections may be used later by the 
 \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
 

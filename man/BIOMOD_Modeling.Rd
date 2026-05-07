@@ -6,24 +6,24 @@
 \usage{
 BIOMOD_Modeling(
   bm.format,
-  modeling.id = as.character(format(Sys.time(), "\%s")),
-  models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
-    "RFd", "SRE", "XGBOOST"),
+  modeling.id,
+  models = c("ANN", "CTA", "DNN", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET",
+    "RF", "RFd", "SRE", "XGBOOST"),
   models.pa = NULL,
-  CV.strategy = "random",
-  CV.nb.rep = 1,
+  CV.strategy = NULL,
+  CV.nb.rep = NULL,
   CV.perc = NULL,
   CV.k = NULL,
   CV.balance = NULL,
   CV.env.var = NULL,
   CV.strat = NULL,
   CV.user.table = NULL,
-  CV.do.full.models = TRUE,
+  CV.do.full.models = NULL,
   OPT.strategy = "default",
   OPT.user.val = NULL,
-  OPT.user.base = "bigboss",
+  OPT.user.base = NULL,
   OPT.user = NULL,
-  metric.eval = c("KAPPA", "TSS", "AUCroc"),
+  metric.eval = NULL,
   var.import = 0,
   weights = NULL,
   prevalence = 0.5,
@@ -48,23 +48,24 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 are to be used, must be among \code{colnames(bm.format@PA.table)}}
 
-\item{CV.strategy}{a \code{character} corresponding to the cross-validation selection strategy, 
+\item{CV.strategy}{(\emph{optional, default} \code{NULL}) \cr
+A \code{character} corresponding to the cross-validation selection strategy, 
 must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 \code{user.defined}}
 
-\item{CV.nb.rep}{(\emph{optional, default} \code{0}) \cr
+\item{CV.nb.rep}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
 to the number of sets (repetitions) of cross-validation points that will be drawn}
 
-\item{CV.perc}{(\emph{optional, default} \code{0}) \cr
+\item{CV.perc}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'}, a \code{numeric} between \code{0} and \code{1} defining the 
 percentage of data that will be kept for calibration}
 
-\item{CV.k}{(\emph{optional, default} \code{0}) \cr
+\item{CV.k}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
 \code{integer} corresponding to the number of partitions}
 
-\item{CV.balance}{(\emph{optional, default} \code{'presences'}) \cr
+\item{CV.balance}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
 to how data will be balanced between partitions, must be either \code{presences} or
 \code{absences}}
@@ -74,7 +75,7 @@ If \code{strategy = 'env'}, a \code{character} corresponding to the environmenta
 used to build the partition (all available variables by default), and for which \code{CV.k} 
 partitions will be built}
 
-\item{CV.strat}{(\emph{optional, default} \code{'both'}) \cr
+\item{CV.strat}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'strat'}, a \code{character} corresponding to how data will partitioned 
 along gradient, must be among \code{x}, \code{y}, \code{both}}
 
@@ -83,22 +84,22 @@ If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defini
 repetition (in columns) which observation lines should be used for models calibration 
 (\code{TRUE}) and validation (\code{FALSE})}
 
-\item{CV.do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
+\item{CV.do.full.models}{(\emph{optional, default} \code{NULL}) \cr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
 
-\item{OPT.strategy}{a \code{character} corresponding to the method to select models' 
-parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
-\code{tuned}}
+\item{OPT.strategy}{(\emph{default} \code{'default'}) \cr
+A \code{character} corresponding to the method to select models' parameters values, must be 
+either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned}}
 
 \item{OPT.user.val}{(\emph{optional, default} \code{NULL}) \cr
 A \code{list} containing parameters values for some (all) models}
 
-\item{OPT.user.base}{(\emph{optional, default} \code{bigboss}) \cr A character, 
+\item{OPT.user.base}{(\emph{optional, default} \code{NULL}) \cr A character, 
 \code{default} or \code{bigboss} used when \code{OPT.strategy = 'user.defined'}. 
 It sets the bases of parameters to be modified by user defined values.}
 
-\item{OPT.user}{(\emph{optional, default} \code{TRUE}) \cr
+\item{OPT.user}{(\emph{optional, default} \code{NULL}) \cr
 A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
 function}
 
@@ -110,7 +111,7 @@ be among \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}
 (\emph{abundance / count / relative data}), 
 \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{multiclass / ordinal data})}
 
-\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
+\item{var.import}{(\emph{optional, default} \code{0}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
 
@@ -160,7 +161,7 @@ metrics (see Details).
 }
 \details{
 \describe{
-  \item{bm.format}{If pseudo absences have been added to the original dataset (see 
+  \item{bm.format}{If pseudo-absences have been added to the original dataset (see 
   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
   created.}
   

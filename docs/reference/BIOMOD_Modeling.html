@@ -131,24 +131,24 @@ metrics (see Details).</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_Modeling</span><span class="op">(</span></span>
 <span>  <span class="va">bm.format</span>,</span>
-<span>  modeling.id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%s"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ANN"</span>, <span class="st">"CTA"</span>, <span class="st">"FDA"</span>, <span class="st">"GAM"</span>, <span class="st">"GBM"</span>, <span class="st">"GLM"</span>, <span class="st">"MARS"</span>, <span class="st">"MAXENT"</span>, <span class="st">"MAXNET"</span>, <span class="st">"RF"</span>,</span>
-<span>    <span class="st">"RFd"</span>, <span class="st">"SRE"</span>, <span class="st">"XGBOOST"</span><span class="op">)</span>,</span>
+<span>  <span class="va">modeling.id</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ANN"</span>, <span class="st">"CTA"</span>, <span class="st">"DNN"</span>, <span class="st">"FDA"</span>, <span class="st">"GAM"</span>, <span class="st">"GBM"</span>, <span class="st">"GLM"</span>, <span class="st">"MARS"</span>, <span class="st">"MAXENT"</span>, <span class="st">"MAXNET"</span>,</span>
+<span>    <span class="st">"RF"</span>, <span class="st">"RFd"</span>, <span class="st">"SRE"</span>, <span class="st">"XGBOOST"</span><span class="op">)</span>,</span>
 <span>  models.pa <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  CV.strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
-<span>  CV.nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  CV.strategy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.nb.rep <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.perc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.balance <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.env.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.strat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  CV.do.full.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  CV.do.full.models <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  OPT.strategy <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  OPT.user.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  OPT.user.base <span class="op">=</span> <span class="st">"bigboss"</span>,</span>
+<span>  OPT.user.base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  OPT.user <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"AUCroc"</span><span class="op">)</span>,</span>
+<span>  metric.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prevalence <span class="op">=</span> <span class="fl">0.5</span>,</span>
@@ -186,31 +186,32 @@ are to be used, must be among <code>colnames(bm.format@PA.table)</code></p></dd>
 
 
 <dt id="arg-cv-strategy">CV.strategy<a class="anchor" aria-label="anchor" href="#arg-cv-strategy"></a></dt>
-<dd><p>a <code>character</code> corresponding to the cross-validation selection strategy,
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+A <code>character</code> corresponding to the cross-validation selection strategy,
 must be among <code>random</code>, <code>kfold</code>, <code>block</code>, <code>strat</code>, <code>env</code> or
 <code>user.defined</code></p></dd>
 
 
 <dt id="arg-cv-nb-rep">CV.nb.rep<a class="anchor" aria-label="anchor" href="#arg-cv-nb-rep"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'random'</code> or <code>strategy = 'kfold'</code>, an <code>integer</code> corresponding
 to the number of sets (repetitions) of cross-validation points that will be drawn</p></dd>
 
 
 <dt id="arg-cv-perc">CV.perc<a class="anchor" aria-label="anchor" href="#arg-cv-perc"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'random'</code>, a <code>numeric</code> between <code>0</code> and <code>1</code> defining the
 percentage of data that will be kept for calibration</p></dd>
 
 
 <dt id="arg-cv-k">CV.k<a class="anchor" aria-label="anchor" href="#arg-cv-k"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'kfold'</code> or <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, an
 <code>integer</code> corresponding to the number of partitions</p></dd>
 
 
 <dt id="arg-cv-balance">CV.balance<a class="anchor" aria-label="anchor" href="#arg-cv-balance"></a></dt>
-<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code> corresponding
 to how data will be balanced between partitions, must be either <code>presences</code> or
 <code>absences</code></p></dd>
@@ -224,7 +225,7 @@ partitions will be built</p></dd>
 
 
 <dt id="arg-cv-strat">CV.strat<a class="anchor" aria-label="anchor" href="#arg-cv-strat"></a></dt>
-<dd><p>(<em>optional, default</em> <code>'both'</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'strat'</code>, a <code>character</code> corresponding to how data will partitioned
 along gradient, must be among <code>x</code>, <code>y</code>, <code>both</code></p></dd>
 
@@ -237,15 +238,15 @@ repetition (in columns) which observation lines should be used for models calibr
 
 
 <dt id="arg-cv-do-full-models">CV.do.full.models<a class="anchor" aria-label="anchor" href="#arg-cv-do-full-models"></a></dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>logical</code> value defining whether models should be also calibrated and validated over
 the whole dataset (and pseudo-absence datasets) or not</p></dd>
 
 
 <dt id="arg-opt-strategy">OPT.strategy<a class="anchor" aria-label="anchor" href="#arg-opt-strategy"></a></dt>
-<dd><p>a <code>character</code> corresponding to the method to select models'
-parameters values, must be either <code>default</code>, <code>bigboss</code>, <code>user.defined</code>,
-<code>tuned</code></p></dd>
+<dd><p>(<em>default</em> <code>'default'</code>) <br>
+A <code>character</code> corresponding to the method to select models' parameters values, must be
+either <code>default</code>, <code>bigboss</code>, <code>user.defined</code>, <code>tuned</code></p></dd>
 
 
 <dt id="arg-opt-user-val">OPT.user.val<a class="anchor" aria-label="anchor" href="#arg-opt-user-val"></a></dt>
@@ -254,13 +255,13 @@ A <code>list</code> containing parameters values for some (all) models</p></dd>
 
 
 <dt id="arg-opt-user-base">OPT.user.base<a class="anchor" aria-label="anchor" href="#arg-opt-user-base"></a></dt>
-<dd><p>(<em>optional, default</em> <code>bigboss</code>) <br> A character,
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A character,
 <code>default</code> or <code>bigboss</code> used when <code>OPT.strategy = 'user.defined'</code>.
 It sets the bases of parameters to be modified by user defined values.</p></dd>
 
 
 <dt id="arg-opt-user">OPT.user<a class="anchor" aria-label="anchor" href="#arg-opt-user"></a></dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code>
 function</p></dd>
 
@@ -276,7 +277,7 @@ be among <code>AUCroc</code>, <code>AUCprg</code>, <code>TSS</code>, <code>KAPPA
 
 
 <dt id="arg-var-import">var.import<a class="anchor" aria-label="anchor" href="#arg-var-import"></a></dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br>
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to
 estimate variable importance</p></dd>
 
@@ -333,7 +334,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
     <h2>Details</h2>
 
 <dl><dt>bm.format</dt>
-<dd><p>If pseudo absences have been added to the original dataset (see
+<dd><p>If pseudo-absences have been added to the original dataset (see
   <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>), <br><code>PA.nb.rep *(nb.rep + 1)</code> models will be
   created.</p></dd>
 

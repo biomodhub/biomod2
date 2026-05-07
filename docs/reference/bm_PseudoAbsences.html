@@ -128,10 +128,10 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_PseudoAbsences</span><span class="op">(</span></span>
 <span>  <span class="va">resp.var</span>,</span>
 <span>  <span class="va">expl.var</span>,</span>
-<span>  nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  <span class="va">strategy</span>,</span>
+<span>  nb.rep <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nb.absences <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sre.quant <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  sre.quant <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fact.aggr <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -205,14 +205,15 @@ or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="e
 columns or layers) that will be used to find the pseudo-absences</p></dd>
 
 
-<dt id="arg-nb-rep">nb.rep<a class="anchor" aria-label="anchor" href="#arg-nb-rep"></a></dt>
-<dd><p>an <code>integer</code> corresponding to the number of sets (repetitions) of
-pseudo-absence points that will be drawn</p></dd>
-
-
 <dt id="arg-strategy">strategy<a class="anchor" aria-label="anchor" href="#arg-strategy"></a></dt>
 <dd><p>a <code>character</code> corresponding to the pseudo-absence selection strategy,
 must be among <code>random</code>, <code>sre</code>, <code>disk</code> or <code>user.defined</code></p></dd>
+
+
+<dt id="arg-nb-rep">nb.rep<a class="anchor" aria-label="anchor" href="#arg-nb-rep"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy != 'user.defined'</code>, an <code>integer</code> corresponding to the number of sets
+(repetitions) of pseudo-absence points that will be drawn</p></dd>
 
 
 <dt id="arg-nb-absences">nb.absences<a class="anchor" aria-label="anchor" href="#arg-nb-absences"></a></dt>
@@ -225,7 +226,7 @@ values corresponding to the different numbers of pseudo-absences to be selected 
 
 
 <dt id="arg-sre-quant">sre.quant<a class="anchor" aria-label="anchor" href="#arg-sre-quant"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the
 half-quantile used to make the <code>sre</code> pseudo-absence selection (see <code><a href="bm_SRE.html">bm_SRE</a></code>)</p></dd>
 
