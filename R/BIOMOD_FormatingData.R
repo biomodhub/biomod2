@@ -367,25 +367,20 @@ BIOMOD_FormatingData <- function(resp.name,
                                  na.rm = TRUE,
                                  filter.raster = FALSE,
                                  seed.val = NULL)
-  .bm_cat(paste0(resp.name, " Data Formating"))
 {
+  .bm_cat("[BIOMOD] Do Data Formating")
   
   ## 1. check args ------------------------------------------------------------
-  args <- .BIOMOD_FormatingData.check.args(resp.name,
-                                           resp.var,
-                                           expl.var,
-                                           dir.name,
-                                           resp.xy,
-                                           eval.resp.var,
-                                           eval.expl.var,
-                                           eval.resp.xy,
-                                           filter.raster)
+  cat("\nChecking arguments...")
+  args <- .BIOMOD_FormatingData.check.args(resp.name, dir.name)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  cat("\n")
   
   ## 2. build BIOMOD.formated.data object -------------------------------------
   out <- NULL
-  if (is.null(PA.strategy) || PA.strategy == 'none') { # no Pseudo Absences
+  if (is.null(PA.strategy)) { # no pseudo-absences
+    cat("\n\t + BIOMOD.formated.data object")
     out <- BIOMOD.formated.data(sp = resp.var,
                                 xy = resp.xy,
                                 env = expl.var,
@@ -398,6 +393,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                 na.rm = na.rm,
                                 filter.raster = filter.raster)
   } else { # automatic pseudo-absence selection
+    cat("\n\t + BIOMOD.formated.data.PA object")
     out <- BIOMOD.formated.data.PA(sp = resp.var,
                                    xy = resp.xy,
                                    env = expl.var,
@@ -419,6 +415,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                    seed.val)
   }
   out@call <- match.call()
+  cat("\n")
   
   .bm_cat("Done")
   return(out)
@@ -427,39 +424,23 @@ BIOMOD_FormatingData <- function(resp.name,
 
 ###################################################################################################
 
-.BIOMOD_FormatingData.check.args <- function(resp.name,
-                                             resp.var,
-                                             expl.var,
-                                             dir.name,
-                                             resp.xy,
-                                             eval.resp.var,
-                                             eval.expl.var,
-                                             eval.resp.xy,
-                                             filter.raster)
+.BIOMOD_FormatingData.check.args <- function(resp.name, dir.name)
 {
-  ## 0. Checking names (resp.name available ?) --------------------------------
+  ## 1. Check resp.name argument ----------------------------------------------
+  .fun_testIfNULL("resp.name", resp.name)
   if (grepl('/', resp.name)) {
-    stop(paste0("Response variable name must be a character, and not a file path."
-                , "\n Please refer to dir.name parameter to set a modeling folder."))
+    stop("resp.name must be a character (not a file path). Please refer to dir.name parameter to set a modeling folder.")
   }
   if (grepl('_', resp.name) | grepl(' ', resp.name)) {
     resp.name <- paste(unlist(strsplit(resp.name, '_')), collapse = '.')
     resp.name <- paste(unlist(strsplit(resp.name, ' ')), collapse = '.')
-    cat('\n      ! Response variable name was converted into', resp.name)
+    .message("resp.name set to ", resp.name)
   }
-  if (!dir.exists(dir.name)) {
-    stop(paste0("Modeling folder '", dir.name, "' does not exist"))
-  }
-  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, xy = resp.xy
-                                           , eval.sp = eval.resp.var, eval.env = eval.expl.var
-                                           , eval.xy = eval.resp.xy, filter.raster = filter.raster)
   
-  return(list(resp.var = args$sp,
-              expl.var = args$env,
-              resp.xy = args$xy,
-              resp.name = resp.name,
-              dir.name = dir.name,
-              eval.resp.var = args$eval.sp,
-              eval.expl.var = args$eval.env,
-              eval.resp.xy = args$eval.xy))
+  ## 2. Check dir.name argument -----------------------------------------------
+  if (!dir.exists(dir.name)) {
+    stop("Modeling folder '", dir.name, "' does not exist. Please check.")
+  }
+  
+  return(list(resp.name = resp.name, dir.name = dir.name))
 }
