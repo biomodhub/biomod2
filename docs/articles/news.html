@@ -165,6 +165,9 @@
 <ul>
 <li>4.3-4-6 :
 <ul>
+<li>fix <code>kfold</code> selection for non-binary data in
+<code>bm_CrossValidation</code>
+</li>
 <li>add check in <code>bm_PseudoAbsences</code> to select presences in
 <code>PA.user.table</code> when <code>user.defined</code> strategy</li>
 <li>fix <code>bm_Tuning</code> for DNN : multiple sets (PA x RUN),
@@ -579,7 +582,7 @@ modified (concerns only ANN, CTA and RF models)</li>
 method.</li>
 <li>Add <code>seed.val</code> for <code>bm_pseudoAbsences</code> and
 <code>BIOMOD_FormatingData</code>.</li>
-<li>Add <code>fact.aggr</code> argument for pseudo-absences selection
+<li>Add <code>fact.aggr</code> argument for pseudo-absence selection
 with the random and disk methods. It allows to reduce the resolution of
 the environment.</li>
 <li>Possibility to give the same options to all datasets with
@@ -1653,8 +1656,8 @@ plots that show inter-models variability</li>
 plots</li>
 <li>
 <code>PA.dist.min</code> and <code>PA.dist.max</code> are now
-defined in meters when you work with unprojected rasters in disk pseudo
-absences selection</li>
+defined in meters when you work with unprojected raster in disk
+pseudo-absence selection</li>
 </ul>
 </div>
 <div class="section level4">
@@ -1706,7 +1709,7 @@ and hard drive: <code>RemoveProperly()</code>
 <h4 id="section-44">2.0.11 (2013-02-18)<a class="anchor" aria-label="anchor" href="#section-44"></a>
 </h4>
 <ul>
-<li>possibility to consider a user.defined pseudo absences selection
+<li>possibility to consider a user.defined pseudo-absence selection
 (<strong>thanks to Signe N.</strong>)</li>
 <li>possibility to switch off stepwise glm selection (*<strong>thanks
 Frank B.</strong>)</li>

@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-6 : 
+    + fix `kfold` selection for non-binary data in `bm_CrossValidation`
     + add check in `bm_PseudoAbsences` to select presences in `PA.user.table` when `user.defined` strategy
     + fix `bm_Tuning` for DNN : multiple sets (PA x RUN), hidden `width` and `depth` parameters
     + fix `EMwmean` for abundance models using `RMSE`, `MSE`, `MAE` or `Max_error` as selection metrics
@@ -195,7 +196,7 @@ vignette: >
 - Some changes for the tuning ranges.
 - Add `RFd` : Random Forest with a down-sampling method.
 - Add `seed.val` for `bm_pseudoAbsences` and `BIOMOD_FormatingData`.
-- Add `fact.aggr` argument for pseudo-absences selection with the random and disk methods. It allows to reduce the resolution of the environment.
+- Add `fact.aggr` argument for pseudo-absence selection with the random and disk methods. It allows to reduce the resolution of the environment.
 - Possibility to give the same options to all datasets with _"for_all_datasets"_ in `bm_ModelingOptions`.
 
 ##### Bugfix
@@ -673,7 +674,7 @@ vignette: >
 #### 2.1.12 (2013-03-04)
 
   * add `rasterVis` dependency for nicer `biomod2` plots
-  * `PA.dist.min` and `PA.dist.max` are now defined in meters when you work with unprojected rasters in disk pseudo absences selection
+  * `PA.dist.min` and `PA.dist.max` are now defined in meters when you work with unprojected raster in disk pseudo-absence selection
 
 #### 2.1.9 (2013-02-28)
 
@@ -701,7 +702,7 @@ vignette: >
 
 #### 2.0.11 (2013-02-18)
 
-  * possibility to consider a user.defined pseudo absences selection (**thanks to Signe N.**)
+  * possibility to consider a user.defined pseudo-absence selection (**thanks to Signe N.**)
   * possibility to switch off stepwise glm selection (***thanks Frank B.**)
 
 #### 2.0.9 (2013-02-15)

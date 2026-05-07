@@ -179,7 +179,7 @@
 ##' cv.r <- bm_CrossValidation(bm.format = myBiomodData,
 ##'                            strategy = "random",
 ##'                            nb.rep = 3,
-##'                            k = 0.8)
+##'                            perc = 0.8)
 ##' 
 ##' # k-fold selection
 ##' cv.k <- bm_CrossValidation(bm.format = myBiomodData,
@@ -270,8 +270,8 @@ bm_CrossValidation <- function(bm.format,
     colnames(out) <- paste0("_allData", colnames(out))
   }
   if (do.full.models) {
-    if(!((strategy %in% c('random', 'kfold') && nb.rep == 0) ||
-       (strategy %in% c('kfold', 'strat', 'env') && k == 0))){
+    if (!((strategy %in% c('random', 'kfold') && nb.rep == 0) ||
+          (strategy %in% c('kfold', 'strat', 'env') && k == 0))) {
       out <- cbind(out, TRUE)
     }
     colnames(out)[ncol(out)] <- "_allData_allRun"
@@ -424,7 +424,6 @@ bm_CrossValidation <- function(bm.format,
               env.var = env.var,
               strat = strat,
               do.full.models = do.full.models,
-              # seed.val = seed.val,
               user.table = user.table))
 }
 
@@ -651,7 +650,7 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
           {
             cat("\n   > k-fold cross-validation selection")
             if (!isNamespaceLoaded("dismo")) { 
-              if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+              if (!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
             }
             
             ind.NA  <- which(is.na(bm.format@data.species))
@@ -664,7 +663,12 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
             }
             
             if (bm.format@data.type == "relative") { tmp <- 100* tmp }
-            tmp_group <- as.integer(tmp) ## for abundance data 
+            if (bm.format@data.type != "binary") {
+              tmp_group <- as.integer(tmp) ## for abundance data
+              ind1 <- order(tmp_group)
+              ind2 <- cut(seq_along(tmp_group), 5, labels = FALSE)
+              tmp_group <- ind2[ind1]
+            }
             
             calib.lines <- foreach(rep = 1:nb.rep, .combine = "cbind") %do%
               {
@@ -690,7 +694,7 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
           {
             cat("\n   > k-fold cross-validation selection")
             if (!isNamespaceLoaded("dismo")) {
-              if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+              if (!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
             }
             
             ind.NA  <- which(is.na(bm.format@data.species))
@@ -748,7 +752,7 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
           {
             cat("\n   > Block cross-validation selection")
             if (!isNamespaceLoaded("ENMeval")) { 
-              if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+              if (!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
             }
             
             ind.NA  <- which(is.na(bm.format@data.species))
@@ -791,7 +795,7 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
           {
             cat("\n   > Block cross-validation selection")
             if (!isNamespaceLoaded("ENMeval")) { 
-              if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+              if (!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
             }
             
             ind.NA  <- which(is.na(bm.format@data.species))

@@ -107,7 +107,7 @@ Be sure to have a look at [cito documentation](https://citoverse.github.io/cito/
 
 - `biomod2` has a new model: **RFd**. It's a Random Forest model with a down-sampling method.
 - You can now define _seed.val_ for `bm_PseudoAbsences()` and `BIOMOD_FormatingData()`.
-- New _fact.aggr_ argument, for pseudo-absences selection with the random and disk methods, allows to reduce the resolution of the environment.
+- New _fact.aggr_ argument, for pseudo-absence selection with the random and disk methods, allows to reduce the resolution of the environment.
 - Possibility to give the same options for all datasets with _"for_all_datasets"_ in `bm_ModelingOptions()`.
 
 <br/>
