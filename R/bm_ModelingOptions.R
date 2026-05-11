@@ -418,7 +418,13 @@ bm_ModelingOptions <- function(data.type = "binary", models, strategy
     ind <- intersect(ind1, ind2)
     avail.options.list <- paste0(ModelsTable$model[ind], ".", ModelsTable$type[ind]
                                  , ".", ModelsTable$package[ind], ".", ModelsTable$func[ind])
-    .fun_testIfIn("names(user.val)", names(user.val), avail.options.list)
+    # .fun_testIfIn("names(user.val)", names(user.val), avail.options.list)
+    if (any(!avail.options.list %in% names(user.val))) {
+      notInUserVal1 <- avail.options.list[!avail.options.list %in% names(user.val)]
+      notInUserVal2 <- sapply(notInUserVal1, function(x) strsplit(x, "[.]")[[1]][1])
+      .message(toString(notInUserVal2), " selected but not contained within user.val ("
+               , toString(notInUserVal1), " missing)")
+    }
     
     for (ii in 1:length(user.val)) {
       .fun_testIfNULL(paste0("names(user.val[[", ii, "]])"), names(user.val[[ii]]))
