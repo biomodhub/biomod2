@@ -166,7 +166,7 @@
 ##' @importFrom foreach foreach %do% %:%
 ##' @importFrom reshape2 melt
 ##' @importFrom ggplot2 ggplot geom_line geom_rug geom_raster facet_wrap xlab ylab labs 
-##' theme element_blank element_rect element_text scale_fill_viridis_c
+##' @importFrom ggplot2 theme element_blank element_rect element_text scale_fill_viridis_c
 ##' @importFrom rlang .data
 ##' 
 ##' @export

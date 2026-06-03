@@ -112,7 +112,7 @@
 ##' 
 ##' 
 ##' @importFrom ggplot2 ggplot geom_boxplot facet_wrap xlab ylab labs 
-##' theme element_blank element_rect element_text scale_y_continuous
+##' @importFrom ggplot2 theme element_blank element_rect element_text scale_y_continuous
 ##' @importFrom rlang .data
 ##' 
 ##' @export

@@ -365,13 +365,13 @@ bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'algo'))
 \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 
-Other Main functions: 
-\code{\link{BIOMOD_EnsembleForecasting}()},
-\code{\link{BIOMOD_FormatingData}()},
-\code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_RangeSize}()}
+Other Main functions:
+\code{\link[=BIOMOD_EnsembleForecasting]{BIOMOD_EnsembleForecasting()}},
+\code{\link[=BIOMOD_FormatingData]{BIOMOD_FormatingData()}},
+\code{\link[=BIOMOD_LoadModels]{BIOMOD_LoadModels()}},
+\code{\link[=BIOMOD_Modeling]{BIOMOD_Modeling()}},
+\code{\link[=BIOMOD_Projection]{BIOMOD_Projection()}},
+\code{\link[=BIOMOD_RangeSize]{BIOMOD_RangeSize()}}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler

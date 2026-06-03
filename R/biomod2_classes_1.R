@@ -147,8 +147,7 @@ NULL
 
 ##' @name BIOMOD.formated.data-class
 ##' @rdname BIOMOD.formated.data
-##' @importFrom terra rast app is.factor subset extract cellFromXY `add<-` 
-##' classify rasterize values
+##' @importFrom terra rast app is.factor subset extract cellFromXY `add<-` classify rasterize values
 ##' @export
 ##' 
 
@@ -563,9 +562,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' 
 ##' @importFrom terra rast minmax crds ext
 ##' @importFrom ggplot2 ggplot aes xlim ylim facet_wrap
-##' scale_size scale_color_manual scale_shape_manual scale_fill_manual 
-##' scale_alpha scale_alpha_continuous 
-##' theme guides ggtitle guide_legend after_stat waiver
+##' @importFrom ggplot2 scale_size scale_color_manual scale_shape_manual scale_fill_manual 
+##' @importFrom ggplot2 scale_alpha scale_alpha_continuous 
+##' @importFrom ggplot2 theme guides ggtitle guide_legend after_stat waiver
 ##' 
 ##' @export
 ##' 
@@ -1666,8 +1665,7 @@ NULL
 ##' @name BIOMOD.formated.data.PA-class
 ##' @rdname BIOMOD.formated.data.PA
 ##' 
-##' @importFrom terra rast app is.factor subset extract 
-##' cellFromXY `add<-` crds vect
+##' @importFrom terra rast app is.factor subset extract cellFromXY `add<-` crds vect
 ##' @export
 ##' 
 

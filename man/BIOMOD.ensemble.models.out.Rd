@@ -138,13 +138,13 @@ myBiomodEM
 \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 
-Other Toolbox objects: 
-\code{\link{BIOMOD.formated.data}},
-\code{\link{BIOMOD.formated.data.PA}},
+Other Toolbox objects:
+\code{\link[=BIOMOD.formated.data]{BIOMOD.formated.data()}},
+\code{\link[=BIOMOD.formated.data.PA]{BIOMOD.formated.data.PA()}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
-\code{\link{BIOMOD.options.dataset}},
-\code{\link{BIOMOD.options.default}},
+\code{\link[=BIOMOD.options.dataset]{BIOMOD.options.dataset()}},
+\code{\link[=BIOMOD.options.default]{BIOMOD.options.default()}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.rangesize.out}},
 \code{\link{BIOMOD.stored.data}},

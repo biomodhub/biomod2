@@ -114,8 +114,8 @@
 ##' bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot geom_boxplot facet_wrap xlab 
-##' theme element_blank element_rect element_text labs
+##' @importFrom ggplot2 ggplot geom_boxplot facet_wrap xlab labs
+##' @importFrom ggplot2 theme element_blank element_rect element_text
 ##' @importFrom rlang .data
 ##' 
 ##' @export

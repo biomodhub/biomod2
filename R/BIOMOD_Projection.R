@@ -203,7 +203,7 @@
 ##' 
 ##' @importFrom foreach foreach %dopar% 
 ##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap
-##'  mem_info app is.factor mask classify
+##' @importFrom terra mem_info app is.factor mask classify
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 

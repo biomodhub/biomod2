@@ -224,25 +224,25 @@ tuned.gam
 \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 
-Other Secondary functions: 
-\code{\link{bm_BinaryTransformation}()},
-\code{\link{bm_CrossValidation}()},
-\code{\link{bm_FindOptimStat}()},
-\code{\link{bm_MakeFormula}()},
-\code{\link{bm_ModelAnalysis}()},
-\code{\link{bm_ModelingOptions}()},
-\code{\link{bm_PlotEvalBoxplot}()},
-\code{\link{bm_PlotEvalMean}()},
-\code{\link{bm_PlotRangeSize}()},
-\code{\link{bm_PlotResponseCurves}()},
-\code{\link{bm_PlotVarImpBoxplot}()},
-\code{\link{bm_PseudoAbsences}()},
-\code{\link{bm_RangeSize}()},
-\code{\link{bm_RunModelsLoop}()},
-\code{\link{bm_SRE}()},
-\code{\link{bm_SampleBinaryVector}()},
-\code{\link{bm_SampleFactorLevels}()},
-\code{\link{bm_VariablesImportance}()}
+Other Secondary functions:
+\code{\link[=bm_BinaryTransformation]{bm_BinaryTransformation()}},
+\code{\link[=bm_CrossValidation]{bm_CrossValidation()}},
+\code{\link[=bm_FindOptimStat]{bm_FindOptimStat()}},
+\code{\link[=bm_MakeFormula]{bm_MakeFormula()}},
+\code{\link[=bm_ModelAnalysis]{bm_ModelAnalysis()}},
+\code{\link[=bm_ModelingOptions]{bm_ModelingOptions()}},
+\code{\link[=bm_PlotEvalBoxplot]{bm_PlotEvalBoxplot()}},
+\code{\link[=bm_PlotEvalMean]{bm_PlotEvalMean()}},
+\code{\link[=bm_PlotRangeSize]{bm_PlotRangeSize()}},
+\code{\link[=bm_PlotResponseCurves]{bm_PlotResponseCurves()}},
+\code{\link[=bm_PlotVarImpBoxplot]{bm_PlotVarImpBoxplot()}},
+\code{\link[=bm_PseudoAbsences]{bm_PseudoAbsences()}},
+\code{\link[=bm_RangeSize]{bm_RangeSize()}},
+\code{\link[=bm_RunModelsLoop]{bm_RunModelsLoop()}},
+\code{\link[=bm_SRE]{bm_SRE()}},
+\code{\link[=bm_SampleBinaryVector]{bm_SampleBinaryVector()}},
+\code{\link[=bm_SampleFactorLevels]{bm_SampleFactorLevels()}},
+\code{\link[=bm_VariablesImportance]{bm_VariablesImportance()}}
 }
 \author{
 Frank Breiner, Maya Guéguen, Hélène Blancheteau

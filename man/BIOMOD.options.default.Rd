@@ -59,13 +59,13 @@ showClass("BIOMOD.options.default")
 \code{\link{BIOMOD.options.dataset}}, \code{\link{bm_ModelingOptions}}, 
 \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 
-Other Toolbox objects: 
+Other Toolbox objects:
 \code{\link{BIOMOD.ensemble.models.out}},
-\code{\link{BIOMOD.formated.data}},
-\code{\link{BIOMOD.formated.data.PA}},
+\code{\link[=BIOMOD.formated.data]{BIOMOD.formated.data()}},
+\code{\link[=BIOMOD.formated.data.PA]{BIOMOD.formated.data.PA()}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
-\code{\link{BIOMOD.options.dataset}},
+\code{\link[=BIOMOD.options.dataset]{BIOMOD.options.dataset()}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.rangesize.out}},
 \code{\link{BIOMOD.stored.data}},

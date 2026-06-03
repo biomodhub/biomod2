@@ -119,8 +119,8 @@
 ##' bm_PlotEvalMean(bm.out = myBiomodModelOut)
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot geom_point geom_errorbarh geom_errorbar xlab ylab
-##' theme element_blank element_rect coord_cartesian labs
+##' @importFrom ggplot2 ggplot geom_point geom_errorbarh geom_errorbar xlab ylab labs
+##' @importFrom ggplot2 theme element_blank element_rect coord_cartesian
 ##' @importFrom rlang .data
 ##' 
 ##' @export

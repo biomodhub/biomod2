@@ -235,13 +235,13 @@ plot(myBiomodEMProj)
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 \code{\link{BIOMOD_RangeSize}}
 
-Other Main functions: 
-\code{\link{BIOMOD_EnsembleModeling}()},
-\code{\link{BIOMOD_FormatingData}()},
-\code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_RangeSize}()}
+Other Main functions:
+\code{\link[=BIOMOD_EnsembleModeling]{BIOMOD_EnsembleModeling()}},
+\code{\link[=BIOMOD_FormatingData]{BIOMOD_FormatingData()}},
+\code{\link[=BIOMOD_LoadModels]{BIOMOD_LoadModels()}},
+\code{\link[=BIOMOD_Modeling]{BIOMOD_Modeling()}},
+\code{\link[=BIOMOD_Projection]{BIOMOD_Projection()}},
+\code{\link[=BIOMOD_RangeSize]{BIOMOD_RangeSize()}}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler

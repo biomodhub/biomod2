@@ -245,13 +245,13 @@ plot(myBiomodData)
 \code{\link{bm_Tuning}}, \code{\link{bm_CrossValidation}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 
-Other Toolbox objects: 
+Other Toolbox objects:
 \code{\link{BIOMOD.ensemble.models.out}},
-\code{\link{BIOMOD.formated.data}},
+\code{\link[=BIOMOD.formated.data]{BIOMOD.formated.data()}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
-\code{\link{BIOMOD.options.dataset}},
-\code{\link{BIOMOD.options.default}},
+\code{\link[=BIOMOD.options.dataset]{BIOMOD.options.dataset()}},
+\code{\link[=BIOMOD.options.default]{BIOMOD.options.default()}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.rangesize.out}},
 \code{\link{BIOMOD.stored.data}},

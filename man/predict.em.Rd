@@ -18,10 +18,10 @@ This function allows the user to predict single models from
 \seealso{
 \code{\link{biomod2_ensemble_model}}
 
-Other Toolbox functions: 
+Other Toolbox functions:
 \code{\link{getters.bm}},
 \code{\link{getters.out}},
-\code{\link{load_stored_object}()},
+\code{\link[=load_stored_object]{load_stored_object()}},
 \code{\link{predict.bm}},
 \code{\link{predict2.bm}},
 \code{\link{predict2.em}},

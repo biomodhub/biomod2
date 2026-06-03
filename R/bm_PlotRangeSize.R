@@ -144,8 +144,10 @@
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast which.max nlyr  classify plot
-##' @importFrom ggplot2 ggplot geom_col geom_tile geom_label facet_wrap xlab ylab labs scale_fill_viridis_c
-##' theme theme_bw element_blank element_rect scale_fill_manual scale_x_discrete guide_legend scale_color_gradientn scale_fill_gradientn
+##' @importFrom ggplot2 ggplot geom_col geom_tile geom_label facet_wrap xlab ylab labs 
+##' @importFrom ggplot2 theme theme_bw element_blank element_rect
+##' @importFrom ggplot2 scale_fill_viridis_c scale_fill_manual scale_x_discrete
+##' @importFrom ggplot2 guide_legend scale_color_gradientn scale_fill_gradientn
 ##' @importFrom rlang .data
 ##' 
 ##' @export

@@ -333,9 +333,9 @@ and formated data, models used or not, predictions, evaluations, variables impor
 \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
 \code{\link{BIOMOD.ensemble.models.out}}
 
-Other Toolbox functions: 
+Other Toolbox functions:
 \code{\link{getters.bm}},
-\code{\link{load_stored_object}()},
+\code{\link[=load_stored_object]{load_stored_object()}},
 \code{\link{predict.bm}},
 \code{\link{predict.em}},
 \code{\link{predict2.bm}},

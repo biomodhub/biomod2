@@ -167,13 +167,13 @@ bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}, 
 \code{\link{bm_PlotRangeSize}}
 
-Other Main functions: 
-\code{\link{BIOMOD_EnsembleForecasting}()},
-\code{\link{BIOMOD_EnsembleModeling}()},
-\code{\link{BIOMOD_FormatingData}()},
-\code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_Projection}()}
+Other Main functions:
+\code{\link[=BIOMOD_EnsembleForecasting]{BIOMOD_EnsembleForecasting()}},
+\code{\link[=BIOMOD_EnsembleModeling]{BIOMOD_EnsembleModeling()}},
+\code{\link[=BIOMOD_FormatingData]{BIOMOD_FormatingData()}},
+\code{\link[=BIOMOD_LoadModels]{BIOMOD_LoadModels()}},
+\code{\link[=BIOMOD_Modeling]{BIOMOD_Modeling()}},
+\code{\link[=BIOMOD_Projection]{BIOMOD_Projection()}}
 }
 \author{
 Maya Guéguen, Hélène Blancheteau
