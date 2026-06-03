@@ -1,8 +1,0 @@
-lp                      Linear and Integer Programming
-lp.assign               Integer Programming for the Assignment Problem
-lp.object               LP (linear programming) object
-lp.transport            Integer Programming for the Transportation
-                        Problem
-make.q8                 Generate sparse constraint matrix for 8-queens
-                        problem
-print.lp                Print an lp object

@@ -1,7 +1,0 @@
-path_to_file            Get file path to 'penguins.csv' and
-                        'penguins_raw.csv' files
-penguins                Size measurements for adult foraging penguins
-                        near Palmer Station, Antarctica
-penguins_raw            Penguin size, clutch, and blood isotope data
-                        for foraging adults near Palmer Station,
-                        Antarctica

@@ -1,6 +1,0 @@
-library(urca)
-data(nporg)
-ir <- na.omit(nporg[, "bnd"])
-wg <- log(na.omit(nporg[, "wg.n"]))
-ir.kpss <- ur.kpss(ir, type = "mu", use.lag=8)
-wg.kpss <- ur.kpss(wg, type = "tau", use.lag=8)

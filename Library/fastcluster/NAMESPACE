@@ -1,2 +1,0 @@
-useDynLib(fastcluster, .registration=TRUE)
-export('hclust', 'hclust.vector')

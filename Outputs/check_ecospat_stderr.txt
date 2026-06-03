@@ -1,5 +1,0 @@
-
-See
-  ‘/home/gueguema/Documents/_PACKAGES/biomod2/ecospat.Rcheck/00check.log’
-for details.
-

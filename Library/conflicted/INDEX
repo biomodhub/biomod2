@@ -1,3 +1,0 @@
-conflict_prefer         Persistently prefer one function over another
-conflict_scout          Find conflicts amongst a set of packages
-conflicts_prefer        Declare many preferences at once

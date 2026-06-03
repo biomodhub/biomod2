@@ -1,5 +1,0 @@
-export("ad.test", "pAD", "qAD")
-export("cvm.test", "pCvM", "qCvM")
-export("recogniseCdf")
-useDynLib(goftest, .registration=TRUE, .fixes="Cgof")
-importFrom("stats", "uniroot")

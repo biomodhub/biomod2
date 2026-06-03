@@ -1,2 +1,0 @@
-useDynLib(RcppProgressArmadillo)
-exportPattern("^[[:alpha:]]+")

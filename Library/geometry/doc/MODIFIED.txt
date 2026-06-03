@@ -1,9 +1,0 @@
-modified function			file            line#		date        by              reason
-=================			====		        =====		====		    ==			        ======
-qh_exit               usermem_r.c		    45    2012/04/03	David Sterratt	To fix warnings about exit being called
-qh_printf_stderr      usermem_r.c       71    2024/08/26  David Sterratt  Use REprintf to print error messages
-qh_printf_stderr      usermem_r.c       74    2024/08/26  David Sterratt  Use REprintf to print error messages
-qh_option             global_r.c      2234    2024/08/26  David Sterratt  Use snprintf instead of sprintf
-qh_option             global_r.c      2236    2024/08/26  David Sterratt  Use snprintf instead of sprintf
-qh_option             global_r.c      2238    2024/08/26  David Sterratt  Use snprintf instead of sprintf
-qh_rboxpoints2        rboxlib_r.c      375    2024/08/26  David Sterratt  Use snprintf instead of sprintf

@@ -1,3 +1,0 @@
-export(registerDoSNOW)
-importFrom("utils", "packageDescription", "packageName")
-import(foreach, iterators, snow)

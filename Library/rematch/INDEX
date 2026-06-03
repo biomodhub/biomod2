@@ -1,4 +1,0 @@
-re_match                Match a regular expression to a character
-                        vector
-re_match_all            Extract all matches of a regular expression
-rematch                 Match Regular Expressions with a Nicer 'API'
