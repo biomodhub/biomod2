@@ -1,0 +1,24 @@
+Package: triebeard
+Type: Package
+Title: 'Radix' Trees in 'Rcpp'
+Version: 0.4.1
+Author: Os Keyes [aut, cre], Drew Schmidt [aut], Yuuki Takano [cph]
+Maintainer: Os Keyes <ironholds@gmail.com>
+Description: 'Radix trees', or 'tries', are key-value data structures optimised for efficient lookups, similar in purpose
+             to hash tables. 'triebeard' provides an implementation of 'radix trees' for use in R programming and in
+             developing packages with 'Rcpp'.
+License: MIT + file LICENSE
+LinkingTo: Rcpp
+Encoding: UTF-8
+Imports: Rcpp
+RoxygenNote: 7.1.2
+Suggests: knitr, rmarkdown, testthat
+VignetteBuilder: knitr
+URL: https://github.com/Ironholds/triebeard/
+BugReports: https://github.com/Ironholds/triebeard/issues
+Date: 2023-03-04
+NeedsCompilation: yes
+Packaged: 2023-03-04 21:40:31 UTC; ironholds
+Repository: CRAN
+Date/Publication: 2023-03-04 23:30:07 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:25:26 UTC; unix

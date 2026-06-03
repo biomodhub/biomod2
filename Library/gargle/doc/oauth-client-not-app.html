@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Transition from OAuth app to OAuth client</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Transition from OAuth app to OAuth
+client</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(gargle)</span></code></pre></div>
+<p>Over the course of several releases (v1.3.0, v1.4.0, and v1.5.0),
+gargle has shifted to using an OAuth <strong>client</strong> in the user
+flow facilitated by <code>gargle::credentials_user_oauth2()</code>,
+instead the previous OAuth “app”. This is a more than just a vocabulary
+change (but it is also a vocabulary change). This vignette explains what
+actually changed and how wrapper packages should adjust.</p>
+<div id="why-change-was-needed" class="section level2">
+<h2>Why change was needed</h2>
+<p>In 2022, Google partially deprecated the out-of-band (OOB) OAuth
+flow. The OOB flow is used by R users who are working with Google APIs
+and who use R in the browser, such as via RStudio Server, Posit
+Workbench, Posit Cloud, or Google Colaboratory.</p>
+<p>Conventional OOB auth <strong>still works</strong> under certain
+conditions, for example, if the OAuth client is associated with a GCP
+project that is in testing mode or that is internal to a Google
+Workspace. But conventional OOB is no longer supported for projects that
+serve external users that are in production mode. In particular, this
+means that conventional OOB is no longer supported for the GCP project
+that has historically made auth “just work” for casual users of packages
+such as googledrive, googlesheets4, and bigrquery. The default OAuth
+client used by these package no longer works with conventional OOB.</p>
+<p>In response, as of v1.3.0, gargle implements a new variant of OOB,
+called <strong>pseudo-OOB</strong>, to continue to provide a
+user-friendly auth flow for googledrive/googlesheets4/bigrquery on
+RStudio Server/Posit Workbench/Posit Cloud/Google Colaboratory. The
+pseudo-OOB flow is also available for other developers to use. This flow
+is triggered when <code>use_oob = TRUE</code> (an existing convention in
+gargle and gargle-using packages) <strong>and</strong> the configured
+OAuth client is of the <em>web</em> type (when creating an OAuth client,
+this is called the “Web application” type).</p>
+<style>
+table {
+border-collapse: collapse;
+border-style: none;
+}
+.empty-cell {
+border: none;
+background-color: transparent;
+}
+table thead {
+background-color: transparent;
+}
+table th, table td {
+border-style: solid;
+}
+</style>
+
+
+<table>
+  <thead>
+    <tr>
+      <th class="empty-cell"></th>
+      <th class="empty-cell"></th>
+      <th colspan="2"><verb>use_oob</verb></th>
+    </tr>
+    <tr>
+      <th class="empty-cell"></th>
+      <th class="empty-cell"></th>
+      <th>FALSE</th>
+      <th>TRUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2">client type</th>
+      <th>installed</th>
+      <td>use httpuv to spin up<br> a temporary web server</td>
+      <td>conventional OOB</td>
+    </tr>
+    <tr>
+      <th>web</th>
+      <td>--not possible--</td>
+      <td>pseudo-OOB</td>
+    </tr>
+  </tbody>
+</table>
+<p>In the past, gargle basically assumed that every OAuth client was of
+the <em>installed</em> type (when creating an OAuth client, this is
+called the “Desktop app” type). Therefore, the introduction of
+pseudo-OOB meant that gargle had to learn about different OAuth client
+types (web vs. installed). And that didn’t play well with
+<code>httr::oauth_app()</code>, which gargle had been using to store the
+client ID and secret.</p>
+<p>That’s why there is a new S3 class,
+<code>&quot;gargle_oauth_client&quot;</code>, with a constructor of the same name.
+Since more information is now necessary to instantiate a client
+(e.g. its type and, potentially, redirect URIs), the recommended way to
+create a client is to provide JSON downloaded from the GCP console to
+<code>gargle_oauth_client_from_json()</code>.</p>
+<p>Since we had to introduce a new S3 class and supporting functions, we
+also took this chance to make the vocabulary pivot from “OAuth app” to
+“OAuth client”. Google’s documentation has always talked about the
+“OAuth client”, so this is more natural. This vocabulary is also more
+future-facing, anticipating the day when gargle might shift from httr to
+httr2, which uses <code>httr2:oauth_client()</code>. As a bridging
+measure, the <code>&quot;gargle_oauth_client&quot;</code> class currently inherits
+from httr’s <code>&quot;oauth_app&quot;</code>, but this probably won’t be true in
+the long-term.</p>
+<div id="how-to-instantiate-an-oauth-client-in-r" class="section level3">
+<h3>How to instantiate an OAuth client in R</h3>
+<p>If you do auth via gargle, here are some recommended changes:</p>
+<ol style="list-style-type: decimal">
+<li>Stop using <code>httr::oauth_app()</code> or
+<code>gargle::oauth_app_from_json()</code> to instantiate an OAuth
+client.</li>
+<li>Start using <code>gargle_oauth_client_from_json()</code> (strongly
+recommended) or <code>gargle_oauth_client()</code> instead.</li>
+</ol>
+<p>This advice applies to anything you do inside your package and also
+to what you encourage and document for your users.</p>
+<p>gargle ships with JSON files for two non-functional OAuth clients,
+just to make this all more concrete:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>(path_to_installed_client <span class="ot">&lt;-</span> <span class="fu">system.file</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;client_secret_installed.googleusercontent.com.json&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;gargle&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>))</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;/private/tmp/RtmpVvkbnd/Rinst20dd79c4e3ac/gargle/extdata/client_secret_installed.googleusercontent.com.json&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>jsonlite<span class="sc">::</span><span class="fu">prettify</span>(<span class="fu">scan</span>(path_to_installed_client, <span class="at">what =</span> <span class="fu">character</span>()))</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; {</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;     &quot;installed&quot;: {</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;         &quot;client_id&quot;: &quot;abc.apps.googleusercontent.com&quot;,</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;         &quot;project_id&quot;: &quot;a_project&quot;,</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;         &quot;auth_uri&quot;: &quot;https://accounts.google.com/o/oauth2/auth&quot;,</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;         &quot;token_uri&quot;: &quot;https://accounts.google.com/o/oauth2/token&quot;,</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;         &quot;auth_provider_x509_cert_url&quot;: &quot;https://www.googleapis.com/oauth2/v1/certs&quot;,</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;         &quot;client_secret&quot;: &quot;ssshh-i-am-a-secret&quot;,</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt;         &quot;redirect_uris&quot;: [</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt;             &quot;http://localhost&quot;</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt;         ]</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>(client <span class="ot">&lt;-</span> <span class="fu">gargle_oauth_client_from_json</span>(path_to_installed_client))</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; &lt;gargle_oauth_client&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; name: a_project_d1c5a8066d2cbe48e8d94514dd286163</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; id: abc.apps.googleusercontent.com</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; secret: &lt;REDACTED&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; type: installed</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; redirect_uris: http://localhost</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="fu">class</span>(client)</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; [1] &quot;gargle_oauth_client&quot; &quot;oauth_app&quot;</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>(path_to_web_client <span class="ot">&lt;-</span> <span class="fu">system.file</span>(</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>  <span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;client_secret_web.googleusercontent.com.json&quot;</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;gargle&quot;</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>))</span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; [1] &quot;/private/tmp/RtmpVvkbnd/Rinst20dd79c4e3ac/gargle/extdata/client_secret_web.googleusercontent.com.json&quot;</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>jsonlite<span class="sc">::</span><span class="fu">prettify</span>(<span class="fu">scan</span>(path_to_web_client, <span class="at">what =</span> <span class="fu">character</span>()))</span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; {</span></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt;     &quot;web&quot;: {</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt;         &quot;client_id&quot;: &quot;abc.apps.googleusercontent.com&quot;,</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt;         &quot;project_id&quot;: &quot;a_project&quot;,</span></span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt;         &quot;auth_uri&quot;: &quot;https://accounts.google.com/o/oauth2/auth&quot;,</span></span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt;         &quot;token_uri&quot;: &quot;https://accounts.google.com/o/oauth2/token&quot;,</span></span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt;         &quot;auth_provider_x509_cert_url&quot;: &quot;https://www.googleapis.com/oauth2/v1/certs&quot;,</span></span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a><span class="co">#&gt;         &quot;client_secret&quot;: &quot;ssshh-i-am-a-secret&quot;,</span></span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a><span class="co">#&gt;         &quot;redirect_uris&quot;: [</span></span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a><span class="co">#&gt;             &quot;https://www.tidyverse.org/google-callback/&quot;</span></span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a><span class="co">#&gt;         ]</span></span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a>(client <span class="ot">&lt;-</span> <span class="fu">gargle_oauth_client_from_json</span>(path_to_web_client))</span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a><span class="co">#&gt; &lt;gargle_oauth_client&gt;</span></span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a><span class="co">#&gt; name: a_project_d1c5a8066d2cbe48e8d94514dd286163</span></span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a><span class="co">#&gt; id: abc.apps.googleusercontent.com</span></span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a><span class="co">#&gt; secret: &lt;REDACTED&gt;</span></span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a><span class="co">#&gt; type: web</span></span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a><span class="co">#&gt; redirect_uris: https://www.tidyverse.org/google-callback/</span></span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a><span class="fu">class</span>(client)</span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a><span class="co">#&gt; [1] &quot;gargle_oauth_client&quot; &quot;oauth_app&quot;</span></span></code></pre></div>
+<p>Notice the difference in the JSON for the installed vs. web client.
+Note the class of the <code>client</code> object, the new
+<code>type</code> field, and the <code>redirect_uris</code>.</p>
+</div>
+</div>
+<div id="authstate-class" class="section level2">
+<h2><code>AuthState</code> class</h2>
+<p>There are two gargle classes that are impacted by the
+OAuth-app-to-client switch: <code>AuthState</code> and
+<code>Gargle2.0</code>. We cover <code>AuthState</code> here and
+<code>Gargle2.0</code> in the next section.</p>
+<p>If a wrapper package follows the design laid out in
+<code>vignette(&quot;gargle-auth-in-client-package&quot;)</code>, it will use an
+instance of <code>AuthState</code> to manage the package’s auth state.
+Let’s assume that internal object is named <code>.auth</code>, which it
+usually is. Here are the changes you need to know about in
+<code>AuthState</code>:</p>
+<ul>
+<li>The <code>app</code> field is deprecated, in favor of a new field
+<code>client</code>. If you request <code>.auth$app</code>, there will
+be a deprecation message and the <code>client</code> field is
+returned.</li>
+<li>The <code>$set_app()</code> method is deprecated, in favor of a new
+<code>$set_client()</code> method. If you call
+<code>.auth$set_app()</code>, there will be a deprecation message and
+the input is used, instead, to set the <code>client</code> field.</li>
+<li>The <code>app</code> argument of the <code>init_AuthState()</code>
+constructor is deprecated in favor of the new <code>client</code>
+argument. If you call <code>init_AuthState(app = x)</code>, there will
+be a deprecation message and the input <code>x</code> is used as the
+<code>client</code> argument instead.</li>
+</ul>
+<p>Here are the changes you probably need to make in your package:</p>
+<ul>
+<li>The first argument of the user-facing function,
+<code>PKG_auth_configure()</code>, should become <code>client</code>
+(which is new). Move the existing <code>app</code> argument to the last
+position and deprecate it.</li>
+<li>Deprecate <code>PKG_oauth_app()</code> (the function to reveal the
+user’s configured OAuth client).</li>
+<li>Introduce <code>PKG_oauth_client()</code> to replace
+<code>PKG_oauth_app()</code>.</li>
+</ul>
+<p>Here’s how <code>googledrive::drive_auth_configure()</code> and
+<code>googledrive::drive_oauth_client()</code> looked before and after
+the transition:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># BEFORE</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>drive_auth_configure <span class="ot">&lt;-</span> <span class="cf">function</span>(app, path, api_key) {</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="co"># not showing this code</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  .auth<span class="sc">$</span><span class="fu">set_app</span>(app)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="co"># more code we&#39;re not showing</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>}</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>drive_oauth_app <span class="ot">&lt;-</span> <span class="cf">function</span>() .auth<span class="sc">$</span>app</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># AFTER</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>drive_auth_configure <span class="ot">&lt;-</span> <span class="cf">function</span>(client, path, api_key, <span class="at">app =</span> <span class="fu">deprecated</span>()) {</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="cf">if</span> (lifecycle<span class="sc">::</span><span class="fu">is_present</span>(app)) {</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    lifecycle<span class="sc">::</span><span class="fu">deprecate_warn</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>      <span class="st">&quot;2.1.0&quot;</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>      <span class="st">&quot;drive_auth_configure(app)&quot;</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>      <span class="st">&quot;drive_auth_configure(client)&quot;</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    )</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    <span class="fu">drive_auth_configure</span>(<span class="at">client =</span> app, <span class="at">path =</span> path, <span class="at">api_key =</span> api_key)</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  } </span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  </span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  <span class="co"># not showing this code</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  .auth<span class="sc">$</span><span class="fu">set_client</span>(client)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  <span class="co"># more code we&#39;re not showing</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>}</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>drive_oauth_client <span class="ot">&lt;-</span> <span class="cf">function</span>() .auth<span class="sc">$</span>client</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>drive_oauth_app <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  lifecycle<span class="sc">::</span><span class="fu">deprecate_warn</span>(</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>    <span class="st">&quot;2.1.0&quot;</span>, <span class="st">&quot;drive_oauth_app()&quot;</span>, <span class="st">&quot;drive_oauth_client()&quot;</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  )</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  <span class="fu">drive_oauth_client</span>()</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>}</span></code></pre></div>
+<p>The approach above follows various conventions explained in
+<code>vignette(&quot;communicate&quot;, package = &quot;lifecycle&quot;)</code>. If you also
+choose to use the lifecycle package to assist in this process,
+<code>usethis::use_lifecycle()</code> function does some helpful
+one-time setup in your package:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_lifecycle</span>()</span></code></pre></div>
+<p>The roxygen documentation helpers in gargle assume
+<code>PKG_auth_configure()</code> is adapted as shown above:</p>
+<ul>
+<li><code>PREFIX_auth_configure_description()</code> crosslinks to
+<code>PREFIX_oauth_client()</code> now, not
+<code>PREFIX_oauth_app()</code>.</li>
+<li><code>PREFIX_auth_configure_params()</code> documents the
+<code>client</code> argument</li>
+<li><code>PREFIX_auth_configure_params()</code> uses a lifecycle badge
+and text to communicate that <code>app</code> is deprecated.</li>
+<li><code>PREFIX_auth_configure_params()</code> crosslinks to
+<code>gargle::gargle_oauth_client_from_json()</code> which requires
+gargle (&gt;= 1.3.0)</li>
+</ul>
+</div>
+<div id="gargle2.0-class" class="section level2">
+<h2><code>Gargle2.0</code> class</h2>
+<p><code>Gargle2.0</code> is the second gargle class that is impacted by
+the OAuth-app-to-client switch.</p>
+<p>Here are the changes you probably need to make in your package:</p>
+<ul>
+<li><p>Inside <code>PKG_auth()</code>, you presumably call
+<code>gargle::token_fetch()</code>. If you are passing
+<code>app = &lt;SOMETHING&gt;</code>, change that to
+<code>client = &lt;SOMETHING&gt;</code>. Neither <code>app</code> nor
+<code>client</code> are formal arguments of
+<code>gargle::token_fetch()</code>, instead, these are intended for
+eventual use by <code>gargle::credentials_user_oauth2()</code>. Here’s a
+sketch of how this looks in <code>googledrive::drive_auth()</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>drive_auth <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="co"># code not shown</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  cred <span class="ot">&lt;-</span> gargle<span class="sc">::</span><span class="fu">token_fetch</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="at">scopes =</span> scopes,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="co"># app = drive_oauth_client() %||% &lt;BUILT_IN_DEFAULT_CLIENT&gt;,   # BEFORE</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="at">client =</span> <span class="fu">drive_oauth_client</span>() <span class="sc">%||%</span> <span class="er">&lt;</span>BUILT_IN_DEFAULT_CLIENT<span class="sc">&gt;</span>,  <span class="co"># AFTER</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">email =</span> email,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="at">path =</span> path,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="at">package =</span> <span class="st">&quot;googledrive&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">cache =</span> cache,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="at">use_oob =</span> use_oob,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    <span class="at">token =</span> token</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  )</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="co"># code not shown</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>}</span></code></pre></div></li>
+<li><p>If you ever call <code>gargle::credentials_user_oauth2()</code>
+directly, use the new <code>client</code> argument instead of the
+deprecated <code>app</code> argument.</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

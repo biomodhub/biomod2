@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Non-interactive auth</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Non-interactive auth</h1>
+
+
+
+<p>Here we describe how to do auth with a package that uses gargle,
+without requiring any user interaction. This comes up in a wide array of
+contexts, ranging from simple rendering of a local R Markdown document
+to deploying a data product on a remote server.</p>
+<p>We assume the wrapper package uses the design described in
+<code>vignette(&quot;gargle-auth-in-client-package&quot;)</code>. Examples
+include:</p>
+<ul>
+<li><a href="https://bigrquery.r-dbi.org">bigrquery</a></li>
+<li><a href="https://googledrive.tidyverse.org">googledrive</a></li>
+<li><a href="https://googlesheets4.tidyverse.org">googlesheets4</a></li>
+<li><a href="https://gmailr.r-lib.org">gmailr</a> <em>note: gmailr does
+not use the built-in tidyverse OAuth client</em></li>
+</ul>
+<p>Full details on <code>gargle::token_fetch()</code>, which powers this
+strategy, are given in
+<code>vignette(&quot;how-gargle-gets-tokens&quot;)</code>.</p>
+<div id="provide-a-token-or-pre-authorize-token-discovery" class="section level2">
+<h2>Provide a token or pre-authorize token discovery</h2>
+<p>The main principle for auth that does not require user
+interaction:</p>
+<blockquote>
+<p>Provide a token directly or take advance measures that indicate you
+want a token to be discovered.</p>
+</blockquote>
+<p>We present several ways to achieve this, basically in order of
+preference.</p>
+</div>
+<div id="sidebar-1-deployment" class="section level2">
+<h2>Sidebar 1: Deployment</h2>
+<p>First, a word about deployed environments. If this doesn’t apply to
+you, skip this section.</p>
+<p>Let’s identify a specific type of project: it is developed in one
+place, with interactivity – such as your local computer – and then
+deployed elsewhere, where it must run without further interaction – such
+as on <a href="https://posit.co/products/enterprise/connect/">Posit
+Connect</a> or <a href="https://www.shinyapps.io">shinyapps.io</a>. In
+this context, it may make sense to depart from gargle’s default
+behaviour, which is to store tokens outside the project, and to embed
+them in the project instead. An example at the end of this vignette
+demonstrates the use of a project-level OAuth cache. A service account
+token could also be stored in the project.</p>
+<p>When you embed tokens in the project and deploy, remember, that, by
+default, they are no more secure or hidden than the other source files
+in the project. <code>vignette(&quot;managing-tokens-securely&quot;)</code>
+describes a method for embedding an encrypted token in the project,
+which is an extra level of care needed if you want to access credentials
+within, e.g., a continuous integration service, such as GitHub
+Actions.</p>
+</div>
+<div id="sidebar-2-i-just-want-my-.rmd-to-render" class="section level2">
+<h2>Sidebar 2: I just want my <code>.Rmd</code> to render</h2>
+<p>TL;DR is that you need to successfully authenticate <em>once</em> in
+an interactive session and then, in your code, give gargle permission to
+use a token it finds in the cache. These sorts of commands achieve
+that:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Approach #1: use an option.</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># Either specify the user:</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_email =</span> <span class="st">&quot;jenny@example.com&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Or, if you only use one Google identity, you can be more vague:</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_email =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># Or, you can specify the identity to use at the domain level:</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_email =</span> <span class="st">&quot;*@example.com&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># Approach #2: call PACKAGE_auth() proactively.</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Either specify the user:</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">email =</span> <span class="st">&quot;jenny@example.com&quot;</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># Or, if you only use one Google identity, you can be more vague:</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">email =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co"># Or, you can specify the identity to use at the domain level:</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">email =</span> <span class="st">&quot;*@example.com&quot;</span>)</span></code></pre></div>
+<p>At the end of this article, this scenario is explained in detail, if
+you want to understand why this works.</p>
+</div>
+<div id="embrace-credentials-available-in-certain-cloud-settings" class="section level2">
+<h2>Embrace credentials available in certain cloud settings</h2>
+<p>In certain cloud computing contexts, a service account token may be
+ambiently available (or you can arrange for that to be true). Think
+about it: if your workload is running on Google Compute Engine (GCE),
+it’s already “inside the Google house”. It seems like there should be a
+way to avoid another round of auth and that is indeed the case.</p>
+<p>Another advantage of these cloud auth workflows is that there is
+never any need to download and carefully manage a file that contains
+sensitive information. This is why they are often described as
+“keyless”. If you <em>can</em> use one of these methods, you should
+seriously consider doing so.</p>
+<div id="google-compute-engine" class="section level3">
+<h3>Google Compute Engine</h3>
+<p>This section applies to code running on a GCE instance, either
+literally, or on another Google Cloud product built on top of GCE. You
+should consider Google’s own documentation to be definitive, but we’ll
+try to give a useful summary here and to explain how gargle works with
+GCE:</p>
+<p><a href="https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances" class="uri">https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances</a></p>
+<p>A Google Cloud Platform (GCP) project generally has a GCE default
+service account and, by default, a new GCE instance runs as that service
+account. (If you wish, you can use a <em>different</em> service account
+by taking explicit steps when you create an instance or by modifying it
+while it’s stopped.) The main point is that, for an application running
+on GCE, a service account identity is generally available.</p>
+<p>GCE allows applications to get an OAuth access token from its
+metadata server and this is what <code>gargle::credentials_gce()</code>
+does (which is one of functions tried by
+<code>gargle::token_fetch()</code>, which is called by wrapper
+packages). This token request can be made for specific scopes and, in
+general, most wrapper packages will indeed be asking for specific scopes
+relevant to the API they access. Consider the signature of
+<code>googledrive::drive_auth()</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>drive_auth <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">email =</span> gargle<span class="sc">::</span><span class="fu">gargle_oauth_email</span>(),</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">path =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="st">&quot;https://www.googleapis.com/auth/drive&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">cache =</span> gargle<span class="sc">::</span><span class="fu">gargle_oauth_cache</span>(),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">use_oob =</span> gargle<span class="sc">::</span><span class="fu">gargle_oob_default</span>(),</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">token =</span> <span class="cn">NULL</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>) {</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  ...</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>}</span></code></pre></div>
+<p>The googledrive package asks for a token with <code>&quot;drive&quot;</code>
+scope, by default. This brings up one big gotcha when using packages
+like googledrive or googlesheets4 on GCE.</p>
+<p>By default, a GCE instance will be running as the default service
+account, with the <code>&quot;cloud-platform&quot;</code> scope and this will,
+generally speaking, allow the service account to work with various Cloud
+products. However, the <code>&quot;cloud-platform&quot;</code> scope does not
+permit operations with non-Cloud APIs, such as Drive and Sheets. If you
+want the service account identity for your GCE instance to be able to
+get an access token for use with Drive and Sheets, you will need to
+explicitly add, e.g., the <code>&quot;drive&quot;</code> scope when you create the
+instance (or stop the instance and add that scope). (Note that, in
+contrast, BigQuery is considered a Cloud product and therefore bigrquery
+can operate with the <code>&quot;cloud-platform&quot;</code> scope.)</p>
+<p>Be aware that you might also need to explicitly grant the service
+account an appropriate level of access (e.g. read or write) to any Drive
+files you intend to work on.</p>
+<p>Finally, if you want to opt-out of using the default service account
+and, instead, auth as a normal user, even though you are on GCE, that is
+also possible. One way to achieve that is to remove
+<code>credentials_gce()</code> from the set of auth functions tried by
+<code>gargle::token_fetch()</code> by executing this command before any
+explicit or implicit auth happens:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># removes `credentials_gce()` from gargle&#39;s registry</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>gargle<span class="sc">::</span><span class="fu">cred_funs_add</span>(<span class="at">credentials_gce =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p>You can make a similar change in more scoped way with the helpers
+<code>gargle::with_cred_funs()</code> or
+<code>gargle::local_cred_funs()</code>.</p>
+</div>
+<div id="workload-identity-on-google-kubernetes-engine-gke" class="section level3">
+<h3>Workload Identity on Google Kubernetes Engine (GKE)</h3>
+<p>Here we discuss how gargle’s GCE auth can work for a related service,
+Google Kubernetes Engine (GKE), using <a href="https://docs.cloud.google.com/kubernetes-engine/docs/how-to/workload-identity">Workload
+Identity</a>. This is more complicated that direct usage of GCE and some
+extra configuration is needed to make a service account’s metadata
+available for the GKE instance to discover. GKE is the underlying
+technology behind Google’s managed Airflow service, <a href="https://cloud.google.com/composer">Cloud Composer</a>, so this
+also applies to R docker files being called in that environment.</p>
+<p>Workload Identity is the recommended way to do authentication on GKE
+and other places, if possible, since it eliminates the use of a file
+that holds the service key, which is a potential security risk.</p>
+<ol style="list-style-type: decimal">
+<li>Following the <a href="https://docs.cloud.google.com/kubernetes-engine/docs/how-to/workload-identity">Workload
+Identity docs</a>, you create a service account as normal and give it
+permissions and scopes needed to, say, upload to BigQuery. Imagine that
+<code>my-service-key@my-project.iam.gserviceaccount.com</code> has the
+<code>https://www.googleapis.com/auth/bigquery</code> scope.</li>
+<li>Instead of downloading a JSON key, you instead migrate that
+permission by adding a policy binding to another service account within
+Kubernetes.</li>
+<li>Create the service account within Kubernetes, ideally within a new
+namespace:</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># create namespace</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="ex">kubectl</span> create namespace my-namespace</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Create Kubernetes service account</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="ex">kubectl</span> create serviceaccount <span class="at">--namespace</span> my-namespace bq-service-account</span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>Bind that Kubernetes service account to the service account outside
+of Kubernetes you created in step 1, and assign it an annotation:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Create IAM policy binding betwwen k8s SA and GSA</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="ex">gcloud</span> iam service-accounts add-iam-policy-binding my-service-key@my-project.iam.gserviceaccount.com <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="at">--role</span> roles/iam.workloadIdentityUser <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="at">--member</span> <span class="st">&quot;serviceAccount:my-project.svc.id.goog[my-namespace/bq-service-account]&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># Annotate k8s SA</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="ex">kubectl</span> annotate serviceaccount bq-service-account <span class="dt">\</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="at">--namespace</span> my-namespace <span class="dt">\</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    iam.gke.io/gcp-service-account=my-service-key@my-project.iam.gserviceaccount.com</span></code></pre></div>
+<p>This key will now be available to add to pods within the cluster. For
+Airflow, you can pass them in using the Python code
+<code>GKEStartPodOperator(...., namespace=&#39;my-namespace&#39;, service_account_name=&#39;bq-service-account&#39;)</code>.
+Documentation around <code>GKEStartPodOperator()</code> within Cloud
+Composer can be found <a href="https://docs.cloud.google.com/composer/docs/composer-2/use-gke-operator">here</a>.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>In order for the R function <code>gargle::gce_credentials()</code>
+do the right thing, you need to do two things:</li>
+</ol>
+<ul>
+<li>Set <code>&quot;gargle.gce.use_ip&quot;</code> option to <code>TRUE</code>, in
+order to use the metadata server that’s relevant on GKE.</li>
+<li>Specify the target service account, i.e. you can’t just passively
+accept the default, which is to use the <code>&quot;default&quot;</code> service
+account. <code>gce_instance_service_accounts()</code> can be helpful,
+e.g., if you want to know which service accounts your Docker container
+can see.</li>
+</ul>
+<p>Here is example code that you might execute in your Docker
+container:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle.gce.use_ip =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>t <span class="ot">&lt;-</span> gargle<span class="sc">::</span><span class="fu">credentials_gce</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;my-service-key@my-project.iam.gserviceaccount.com&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># ... do authenticated stuff with the token t ...</span></span></code></pre></div>
+<p>Let’s assume that PKG is an R package that implements gargle auth in
+the standard way, such as bigrquery or googledrive. At the time of
+writing the <code>service_account</code> argument is not exposed in the
+usual, high-level <code>PKG_auth()</code> function (<a href="https://github.com/r-lib/gargle/issues/249" class="uri">https://github.com/r-lib/gargle/issues/249</a>. So if you
+need to use a non-<code>default</code> service account, you need to call
+<code>credentials_gce()</code> directly and pass that token to
+<code>PKG_auth()</code>: Here’s an example of how that might look:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(PKG)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle.gce.use_ip =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>t <span class="ot">&lt;-</span> gargle<span class="sc">::</span><span class="fu">credentials_gce</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="st">&quot;my-service-key@my-project.iam.gserviceaccount.com&quot;</span>, <span class="co"># use YOUR service account</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="st">&quot;https://www.googleapis.com/auth/PKG&quot;</span>       <span class="co"># use REAL scopes</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fu">PKG_auth</span>(<span class="at">token =</span> t)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># ... do authenticated stuff...</span></span></code></pre></div>
+</div>
+<div id="aws" class="section level3">
+<h3>AWS</h3>
+<p>Keyless auth is even possible from non-Google cloud platforms, using
+<a href="https://cloud.google.com/iam/docs/configuring-workload-identity-federation">Workload
+identity federation</a>.</p>
+<p>This is implemented in the experimental function
+<code>credentials_external_account()</code>, which currently only
+supports AWS.</p>
+</div>
+</div>
+<div id="provide-a-service-account-token-directly" class="section level2">
+<h2>Provide a service account token directly</h2>
+<p>When two computers are talking to each other, possibly with no human
+involvement, the most appropriate type of token to use is a service
+account token. If you’re not working in cloud context with automatic
+access to a service account (see previous section), you can still use a
+service account, but it will require more explicit effort.</p>
+<ol style="list-style-type: decimal">
+<li>Create a service account and then download its credentials as a JSON
+file. This is described in <code>vignette(&quot;get-api-credentials&quot;)</code>,
+specifically in the <em>Service account token</em> section.</li>
+<li>Call the wrapper package’s main auth function proactively and
+provide the path to this JSON file.</li>
+</ol>
+<p>Example using googledrive:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">path =</span> <span class="st">&quot;/path/to/your/service-account-token.json&quot;</span>)</span></code></pre></div>
+<p>If this code is running on, e.g., a continuous integration service
+and you need to use an encrypted token, see
+<code>vignette(&quot;managing-tokens-securely&quot;)</code>.</p>
+<p>For certain APIs, service accounts are inherently awkward, because
+you often want to do things <em>on behalf of a specific user</em>. Gmail
+is a good example. If you are sending email programmatically, you
+probably want to send it as yourself (or from some other specific email
+account) instead of from
+<code>zestybus-geosyogl@fuffapster-654321.iam.gserviceaccount.com</code>.
+This is, in fact, possible but is described as “impersonation”, which
+should tip you off that Google does not exactly encourage this workflow.
+Some details:</p>
+<ul>
+<li>This requires “delegating domain-wide authority” to the service
+account.</li>
+<li>It is only possible in the context of a G Suite domain and only an
+administrator of the domain can set this up.</li>
+<li>The domain-wide authority is granted only for specific scopes, so
+those can be as narrow as possible. This may make a domain administrator
+more receptive to the idea.</li>
+<li>This is documented in a few different places, such as:
+<ul>
+<li><a href="https://developers.google.com/identity/protocols/oauth2/service-account#delegatingauthority">Delegating
+domain-wide authority to the service account</a> from Google Identity
+Platform docs</li>
+<li><a href="https://developers.google.com/admin-sdk/directory/v1/guides/delegation">Perform
+G Suite Domain-Wide Delegation of Authority</a> from G Suite Admin SDK
+docs</li>
+</ul></li>
+<li>The <code>subject</code> argument of
+<code>credentials_service_account()</code> and
+<code>credentials_app_default()</code> is available to specify which
+user to impersonate, e.g. <code>subject = &quot;user@example.com&quot;</code>.
+This argument first appeared in gargle 0.5.0, so it may not necessarily
+be exposed yet in user-facing auth functions like
+<code>drive_auth()</code>. If you need <code>subject</code> in a client
+package, that is a reasonable feature request. It is also possible to
+get a token with an explicit call to, e.g.,
+<code>credentials_service_account()</code> and then pass that token to
+the auth function:</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>t <span class="ot">&lt;-</span> gargle<span class="sc">::</span><span class="fu">credentials_service_account</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">path =</span> <span class="st">&quot;/path/to/your/service-account-token.json&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">scopes =</span> ...,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">subject =</span> <span class="st">&quot;user@example.com&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>googledrive<span class="sc">::</span><span class="fu">drive_auth</span>(<span class="at">token =</span> t)</span></code></pre></div>
+<p>If delegation of domain-wide authority is impossible or unappealing,
+you must use an OAuth user token, as described below.</p>
+</div>
+<div id="rig-a-service-or-external-account-for-use-with-application-default-credentials" class="section level2">
+<h2>Rig a service or external account for use with Application Default
+Credentials</h2>
+<p>Wrapper packages that use <code>gargle::token_fetch()</code> in the
+recommended way have access to the token search strategy known as
+<strong>Application Default Credentials</strong>.</p>
+<p>You need to put the JSON corresponding to your service or external
+account in a very specific location or, alternatively, record the
+location of this JSON file in a specific environment variable.</p>
+<p>Full details are in the <code>credentials_app_default()</code>
+section of <code>vignette(&quot;how-gargle-gets-tokens&quot;)</code>.</p>
+<p>If you have your token rigged properly, you <strong>do not</strong>
+need to do anything else, i.e. you do not need to call
+<code>PACKAGE_auth()</code> explicitly. Your token should just get
+discovered upon first need.</p>
+<p>For troubleshooting purposes, you can set a gargle option to see
+verbose output about the execution of
+<code>gargle::token_fetch()</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_verbosity =</span> <span class="st">&quot;debug&quot;</span>)</span></code></pre></div>
+<p>withr-style convenience helpers also exist:
+<code>with_gargle_verbosity()</code> and
+<code>local_gargle_verbosity()</code>.</p>
+</div>
+<div id="provide-an-oauth-token-directly" class="section level2">
+<h2>Provide an OAuth token directly</h2>
+<p>If you somehow have the OAuth token you want to use as an R object,
+you can provide it directly to the <code>token</code> argument of the
+main auth function. Example using googledrive:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>my_oauth_token <span class="ot">&lt;-</span> <span class="co"># some process that results in the token you want to use</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">token =</span> my_oauth_token)</span></code></pre></div>
+<p>gargle caches each OAuth user token it obtains to an
+<code>.rds</code> file, by default. If you know the filepath to the
+token you want to use, you could use <code>readRDS()</code> to read it
+and provide as the <code>token</code> argument to the wrapper’s auth
+function. Example using googledrive:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># googledrive</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">token =</span> <span class="fu">readRDS</span>(<span class="st">&quot;/path/to/your/oauth-token.rds&quot;</span>))</span></code></pre></div>
+<p>How would you know this filepath? That requires some attention to the
+location of gargle’s OAuth token cache folder, which is described in the
+next section.</p>
+<p>Full details are in the <code>credentials_byo_oauth2()</code> section
+of <code>vignette(&quot;how-gargle-gets-tokens&quot;)</code>.</p>
+</div>
+<div id="arrange-for-an-oauth-user-token-to-be-re-discovered" class="section level2">
+<h2>Arrange for an OAuth user token to be re-discovered</h2>
+<p>This is the least recommended strategy, but it appeals to many users,
+because it doesn’t require creating a service account. Just remember
+that the perceived ease of using the token you already have (an OAuth
+user token) is quickly cancelled out by the greater difficulty of
+managing such tokens for non-interactive use. You might be forced to use
+this strategy with certain APIs, such as Gmail, that are difficult to
+use with a service account.</p>
+<p>Two main principles:</p>
+<ol style="list-style-type: decimal">
+<li>Take charge of – or at least notice – the folder where OAuth tokens
+are being cached.</li>
+<li>Make sure exactly one cached token will be identified and
+pre-authorize its use.</li>
+</ol>
+<p>There are many ways to do this. We’ll work several examples using
+that convey the range of what’s possible.</p>
+<div id="i-just-want-my-.rmd-to-render" class="section level3">
+<h3>I just want my <code>.Rmd</code> to render</h3>
+<p><strong>Step 1</strong>: Get that first token. You must run your code
+at least once, interactively, do the auth dance, and allow gargle to
+store the token in its cache.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co"># do anything that triggers auth</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">drive_find</span>(<span class="at">n_max =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p><strong>Step 2</strong>: Revise your code to pre-authorize the use of
+that token next time. Now your <code>.Rmd</code> can be rendered or your
+<code>.R</code> script can run, without further interaction.</p>
+<p>You have two choices to make:</p>
+<ul>
+<li>Set the <code>gargle_oauth_email</code> option or call
+<code>PACKAGE_auth(email = ...)</code>.
+<ul>
+<li>The option-based approach can be implemented in each
+<code>.Rmd</code> or <code>.R</code> or in a user-level or project level
+<code>.Rprofile</code> startup file.</li>
+</ul></li>
+<li>Authorize the use of the “matching token”:
+<ul>
+<li><code>email = TRUE</code> works if we’re only going to find, at
+most, 1 token, i.e. you always auth with the same identity</li>
+<li><code>email = &quot;jane@example.com&quot;</code> pre-authorizes use of a
+token associated with a specific identity</li>
+<li><code>email = &quot;*@example.com&quot;</code> pre-authorizes use of a token
+associated with an identity from a specific domain; good for code that
+might be executed on the machines of both <code>alice@example.com</code>
+and <code>bob@example.com</code></li>
+</ul></li>
+</ul>
+<p>This sets an option that allows gargle to use cached tokens whenever
+there’s a unique match:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_email =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>This sets an option to use tokens associated with a specific email
+address:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_email =</span> <span class="st">&quot;jenny@example.com&quot;</span>)</span></code></pre></div>
+<p>This sets an option to use tokens associated with an email address
+with a specific domain:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_email =</span> <span class="st">&quot;*@example.com&quot;</span>)</span></code></pre></div>
+<p>This gets a token <em>right now</em> and allows the use of a matching
+token, using googledrive as an example:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">email =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>This gets a token <em>right now</em>, for the user with a specific
+email address:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">email =</span> <span class="st">&quot;jenny@example.com&quot;</span>)</span></code></pre></div>
+<p>This gets a token <em>right now</em>, first checking the cache for a
+token associated with a specific domain:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">email =</span> <span class="st">&quot;*@example.com&quot;</span>)</span></code></pre></div>
+</div>
+<div id="project-level-oauth-cache" class="section level3">
+<h3>Project-level OAuth cache</h3>
+<p>This is like the previous example, but with an added twist: we use a
+project-level OAuth cache. This is good for deployed data products.</p>
+<p><strong>Step 1</strong>: Obtain the token intended for
+non-interactive use and make sure it’s cached in a (hidden) directory of
+the current project. Using googledrive as an example:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># designate project-specific cache</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_oauth_cache =</span> <span class="st">&quot;.secrets&quot;</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co"># check the value of the option, if you like</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>gargle<span class="sc">::</span><span class="fu">gargle_oauth_cache</span>()</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co"># trigger auth on purpose --&gt; store a token in the specified cache</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="fu">drive_auth</span>()</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="co"># see your token file in the cache, if you like</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">&quot;.secrets/&quot;</span>)</span></code></pre></div>
+<p>Do this setup once per project.</p>
+<p>Another way to accomplish the same setup is to specify the desired
+cache location directly in the call to the auth function:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co"># trigger auth on purpose --&gt; store a token in the specified cache</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">cache =</span> <span class="st">&quot;.secrets&quot;</span>)</span></code></pre></div>
+<p><strong>Step 2</strong>: In all downstream use, announce the location
+of the cache and pre-authorize the use of a suitable token discovered
+there. Continuing the googledrive example:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="fu">options</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="at">gargle_oauth_cache =</span> <span class="st">&quot;.secrets&quot;</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="at">gargle_oauth_email =</span> <span class="cn">TRUE</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>)</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="co"># now use googledrive with no need for explicit auth</span></span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="fu">drive_find</span>(<span class="at">n_max =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>Setting the option <code>gargle_oauth_email = TRUE</code> says that
+googledrive is allowed to use a token that it finds in the cache,
+without interacting with a user, as long as it discovers EXACTLY one
+matching token. This option-setting code needs to appear in each script,
+<code>.Rmd</code>, or app that needs to use this token
+non-interactively. Depending on the context, it might be suitable to
+accomplish this in a startup file, e.g. project-level
+<code>.Rprofile</code>.</p>
+<p>Here’s a variation where we say which token to use by explicitly
+specifying the associated email. This is handy if there’s a reason to
+have more than one token in the cache.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="fu">options</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  <span class="at">gargle_oauth_cache =</span> <span class="st">&quot;.secrets&quot;</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="at">gargle_oauth_email =</span> <span class="st">&quot;jenny@example.com&quot;</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>)</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co"># now use googledrive with no need for explicit auth</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="fu">drive_find</span>(<span class="at">n_max =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>Here’s another variation where we specify the necessary info directly
+in an auth call, instead of in options:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">cache =</span> <span class="st">&quot;.secrets&quot;</span>, <span class="at">email =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co"># now use googledrive with no need for explicit auth</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="fu">drive_find</span>(<span class="at">n_max =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>Here’s one last variation that’s applicable when the local cache
+could contain multiple tokens:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">library</span>(googledrive)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="fu">drive_auth</span>(<span class="at">cache =</span> <span class="st">&quot;.secrets&quot;</span>, <span class="at">email =</span> <span class="st">&quot;jenny@example.com&quot;</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co"># now use googledrive with no need for explicit auth</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="fu">drive_find</span>(<span class="at">n_max =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>Be very intentional about paths and working directory. Personally I
+would use <code>here::here(&quot;.secrets)&quot;</code> everywhere above, to make
+things more robust.</p>
+<p>For troubleshooting purposes, you can set a gargle option to see
+verbose output about the execution of
+<code>gargle::token_fetch()</code>:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">gargle_verbosity =</span> <span class="st">&quot;debug&quot;</span>)</span></code></pre></div>
+<p>withr-style convenience helpers also exist:
+<code>with_gargle_verbosity()</code> and
+<code>local_gargle_verbosity()</code>.</p>
+<p>For a cached token to be considered a “match”, it must match the
+current request with respect to user’s email, scopes, and OAuth client
+(client ID or key and secret). By design, these settings have very low
+visibility, because we usually want to use the defaults. If your token
+is not being discovered, consider if any of these fields might explain
+the mismatch.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+##Load dynamic library
+#C++ functions
+#useDynLib(FNN,
+#get_KNN_cover, get_KNNX_cover,
+#get_KNN_kd, get_KNNX_kd, get_KNN_CR,
+#KNN_MLD_brute, KNN_MLD_kd, KL_divergence, KL_dist)
+
+useDynLib(FNN, .registration = TRUE)
+
+#Export directive
+
+#R functions
+export(get.knn, knn.dist, knn.index,
+get.knnx, knnx.dist, knnx.index, 
+entropy, crossentropy,
+KL.divergence, KL.dist, KLx.divergence, KLx.dist, mutinfo,
+knn, knn.cv, knn.reg, ownn
+)
+S3method(print, knnReg)
+S3method(print, knnRegCV)

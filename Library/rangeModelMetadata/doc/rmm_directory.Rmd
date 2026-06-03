@@ -1,0 +1,61 @@
+---
+title: "rangeModelMetadata Function Directory"
+author: "Cory Merow, Brian S. Maitner, Hannah L. Owens, Jamie Kass, Brian Enquist, Rob Guralnick"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rangeModelMetadata Function Directory}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+The rangeModelMetadata package is designed to provide functionality for working with rangeModelMetadata (`rmm`) objects.  These `rmm` objects are nested lists that hierarchically store data associated with species range/niche/distribution models.  These objects are designed to be flexible to accommodate a wide variety of modeling frameworks while also making modeling decisions transparent. 
+
+For full information on each function, see the associated help file.
+
+### Primary functions
+
+* `rmmTemplate` Creates an empty `rmm` object that can then be populated by the user.
+<!-- * `rmmCheckFull` Prints only the rmm fields that have been populated. -->
+* `rmmCheckEmpty` Checks for empty values in the rmm object.
+* `rmmSuggest` Provides suggested values for rmm object fields.
+
+
+### `rmm` Autofill functions
+
+Functions to automatically populate the relevant fields in an `rmm` object.  
+
+* `rmmAutofillPackageCitation` Takes in a vector of packages used by the user in a workflow and returns a vector of Bibtex citations that can be inserted into the rmm object.
+* `rmmAutofillEnvironment` Takes in environmental rasters used in modeling and adds relevant information to the `rmm` object.
+* `rmmAutofillENMeval` Populates `rmm` objects with data taken from an `ENMeval` object.
+* `rmmAutofillBIEN` Populates occurrence field in an `rmm` object with output from a `BIEN_occurrence_...` query.
+* `rmmAutofillspocc` Populates occurrence field in an `rmm` object with output from a spocc query.
+
+### `rmm` Check functions
+
+Functions to check for common errors in `rmm` objects.
+
+* `rmmCheckName` Identifies non-standard name fields in an rmm object.
+* `rmmCheckValue` Checks a subset of `rmm` values against commonly used values and returns information on possible errors.
+* `rmmCheckMissingNames` Identify obligate fields that are missing.
+* `rmmCheckEmpty` Identify empty fields in an `rmm` object and classify these into obligate and optional fields.
+* `rmmCleanNULLs` Remove NULL entries in an `rmm` object.
+* `rmmCheckFinalize` Run all checking functions (`rmmCheck...`) sequentially to detect non-standard and missing values and fields
+
+### `rmm` Utilities
+
+* `rmmFamilies` View entity family names.
+* `rmmDataDictionary` View the data dictionary.
+* `rmmToCSV` Converts the `rmm` object to a CSV file.
+* `csvTormm` Create `rmm` object From .csv File
+
+
+
+
+
+
+
+
+
+

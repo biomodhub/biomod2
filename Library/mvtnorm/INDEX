@@ -1,0 +1,18 @@
+GenzBretz               Choice of Algorithm and Hyper Parameters
+dmvnorm                 Multivariate Normal Density and Random Deviates
+dmvt                    The Multivariate t Distribution
+lpRR                    Multivariate Normal Log-likelihood and Score
+                        Functions for Reduced Rank Covariances
+lpmvnorm                Multivariate Normal Log-likelihood and Score
+                        Functions
+ltMatrices              Multiple Lower Triangular or Symmetric Matrices
+marg_mvnorm             Marginal and Conditional Multivariate Normal
+                        Distributions
+mvnorm                  User Interface to Multiple Multivariate Normal
+                        Distributions
+mvtnorm-package         Multivariate Normal and t Distributions
+pmvnorm                 Multivariate Normal Distribution
+pmvt                    Multivariate t Distribution
+qmvnorm                 Quantiles of the Multivariate Normal
+                        Distribution
+qmvt                    Quantiles of the Multivariate t Distribution

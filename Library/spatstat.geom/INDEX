@@ -1,0 +1,528 @@
+FeretBox                Feret Box Enclosing a Domain
+FeretDiamFun            Feret Diameter as a Function of Direction
+Frame                   Extract or Change the Containing Rectangle of a
+                        Spatial Object
+Math.im                 S3 Group Generic methods for images
+Math.imlist             S3 Group Generic methods for List of Images
+MinkowskiSum            Minkowski Sum of Windows
+NAobject                Make an NA Object
+SupportFun              Support Function
+Window                  Extract or Change the Window of a Spatial
+                        Object
+Window.tess             Extract Window of Spatial Object
+[.anylist               Extract or Replace Subset of a List of Things
+[.hyperframe            Extract or Replace Subset of Hyperframe
+[.im                    Extract Subset of Image
+[.layered               Extract or Replace Subset of a Layered Object
+[.owin                  Extract Subset of Window
+[.ppp                   Extract or Replace Subset of Point Pattern
+[.ppx                   Extract Subset of Multidimensional Point
+                        Pattern
+[.psp                   Extract Subset of Line Segment Pattern
+[.quad                  Subset of Quadrature Scheme
+[.solist                Extract or Replace Subset of a List of Spatial
+                        Objects
+[.splitppp              Extract or Replace Sub-Patterns
+[.tess                  Extract or Replace Subset of Tessellation
+[<-.im                  Reset Values in Subset of Image
+[<-.listof              Extract or Replace Subset of a List of Things
+add.texture             Fill Plot With Texture
+affine                  Apply Affine Transformation
+affine.im               Apply Affine Transformation To Pixel Image
+affine.owin             Apply Affine Transformation To Window
+affine.ppp              Apply Affine Transformation To Point Pattern
+affine.psp              Apply Affine Transformation To Line Segment
+                        Pattern
+affine.tess             Apply Geometrical Transformation To
+                        Tessellation
+angles.psp              Orientation Angles of Line Segments
+anyNA.im                Check Whether Image Contains NA Values
+anylist                 List of Objects
+append.psp              Combine Two Line Segment Patterns
+applynbd                Apply Function to Every Neighbourhood in a
+                        Point Pattern
+area.owin               Area of a Window
+areaGain                Difference of Disc Areas
+areaLoss                Difference of Disc Areas
+as.box3                 Convert Data to Three-Dimensional Box
+as.boxx                 Convert Data to Multi-Dimensional Box
+as.colourmap            Convert to Colour Map
+as.data.frame.hyperframe
+                        Coerce Hyperframe to Data Frame
+as.data.frame.im        Convert Pixel Image to Data Frame
+as.data.frame.owin      Convert Window to Data Frame
+as.data.frame.ppp       Coerce Point Pattern to a Data Frame
+as.data.frame.psp       Coerce Line Segment Pattern to a Data Frame
+as.data.frame.tess      Convert Tessellation to Data Frame
+as.function.im          Convert Pixel Image to Function of Coordinates
+as.function.owin        Convert Window to Indicator Function
+as.function.tess        Convert a Tessellation to a Function
+as.hyperframe           Convert Data to Hyperframe
+as.hyperframe.ppx       Extract coordinates and marks of
+                        multidimensional point pattern
+as.im                   Convert to Pixel Image
+as.layered              Convert Data To Layered Object
+as.mask                 Pixel Image Approximation of a Window
+as.matrix.im            Convert Pixel Image to Matrix or Array
+as.matrix.owin          Convert Pixel Image to Matrix
+as.owin                 Convert Data To Class owin
+as.polygonal            Convert a Window to a Polygonal Window
+as.ppp                  Convert Data To Class ppp
+as.psp                  Convert Data To Class psp
+as.rectangle            Window Frame
+as.solist               Convert List of Two-Dimensional Spatial Objects
+as.tess                 Convert Data To Tessellation
+bdist.pixels            Distance to Boundary of Window
+bdist.points            Distance to Boundary of Window
+bdist.tiles             Distance to Boundary of Window
+beachcolours            Create Colour Scheme for a Range of Numbers
+border                  Border Region of a Window
+bounding.box.xy         Convex Hull of Points
+boundingbox             Bounding Box of a Window, Image, or Point
+                        Pattern
+boundingcircle          Smallest Enclosing Circle
+box3                    Three-Dimensional Box
+boxx                    Multi-Dimensional Box
+bufftess                Buffer Distance Tessellation
+by.im                   Apply Function to Image Broken Down by Factor
+by.ppp                  Apply a Function to a Point Pattern Broken Down
+                        by Factor
+cbind.hyperframe        Combine Hyperframes by Rows or by Columns
+centroid.owin           Centroid of a window
+chop.tess               Subdivide a Window or Tessellation using a Set
+                        of Lines
+clickbox                Interactively Define a Rectangle
+clickdist               Interactively Measure Distance
+clickpoly               Interactively Define a Polygon
+clickppp                Interactively Add Points
+clip.infline            Intersect Infinite Straight Lines with a Window
+closepairs              Close Pairs of Points
+closepairs.pp3          Close Pairs of Points in 3 Dimensions
+closetriples            Close Triples of Points
+closing                 Morphological Closing
+colourmap               Colour Lookup Tables
+colouroutputs           Extract or Assign Colour Values in a Colour Map
+colourtools             Convert and Compare Colours in Different
+                        Formats
+commonGrid              Determine A Common Spatial Domain And Pixel
+                        Resolution
+compatible              Test Whether Objects Are Compatible
+compatible.im           Test Whether Pixel Images Are Compatible
+complement.owin         Take Complement of a Window
+concatxy                Concatenate x,y Coordinate Vectors
+connected               Connected components
+connected.ppp           Connected Components of a Point Pattern
+connected.tess          Connected Components of Tiles of a Tessellation
+contour.im              Contour plot of pixel image
+contour.imlist          Array of Contour Plots
+convexhull              Convex Hull
+convexhull.xy           Convex Hull of Points
+convexify               Weil's Convexifying Operation
+convexmetric            Distance Metric Defined by Convex Set
+convolve.im             Convolution of Pixel Images
+coords                  Extract or Change Coordinates of a Spatial or
+                        Spatiotemporal Point Pattern
+corners                 Corners of a rectangle
+covering                Cover Region with Discs
+crossdist               Pairwise distances
+crossdist.default       Pairwise distances between two different sets
+                        of points
+crossdist.pp3           Pairwise distances between two different
+                        three-dimensional point patterns
+crossdist.ppp           Pairwise distances between two different point
+                        patterns
+crossdist.ppx           Pairwise Distances Between Two Different
+                        Multi-Dimensional Point Patterns
+crossdist.psp           Pairwise distances between two different line
+                        segment patterns
+crossing.psp            Crossing Points of Two Line Segment Patterns
+cut.im                  Convert Pixel Image from Numeric to Factor
+cut.ppp                 Classify Points in a Point Pattern
+default.colourmap       Default Colour Map for Plotting a Spatial
+                        Pattern
+default.dummy           Generate a Default Pattern of Dummy Points
+default.image.colours   Default Colours for Images in Spatstat
+default.symbolmap       Default Symbol Map for Plotting a Spatial
+                        Pattern
+default.symbolmap.ppp   Default Symbol Map for Point Pattern
+delaunay                Delaunay Triangulation of Point Pattern
+delaunayDistance        Distance on Delaunay Triangulation
+deltametric             Delta Metric
+diameter                Diameter of an Object
+diameter.box3           Geometrical Calculations for Three-Dimensional
+                        Box
+diameter.boxx           Geometrical Calculations for Multi-Dimensional
+                        Box
+diameter.owin           Diameter of a Window
+dilated.areas           Areas of Morphological Dilations
+dilation                Morphological Dilation
+dirichlet               Dirichlet Tessellation of Point Pattern
+dirichletAreas          Compute Areas of Tiles in Dirichlet
+                        Tessellation
+dirichletVertices       Vertices and Edges of Dirichlet Tessellation
+dirichletWeights        Compute Quadrature Weights Based on Dirichlet
+                        Tessellation
+disc                    Circular Window
+discpartarea            Area of Part of Disc
+discretise              Safely Convert Point Pattern Window to Binary
+                        Mask
+discs                   Union of Discs
+distfun                 Distance Map as a Function
+distmap                 Distance Map
+distmap.owin            Distance Map of Window
+distmap.ppp             Distance Map of Point Pattern
+distmap.psp             Distance Map of Line Segment Pattern
+domain                  Extract the Domain of any Spatial Object
+duplicated.ppp          Determine Duplicated Points in a Spatial Point
+                        Pattern
+edges                   Extract Boundary Edges of a Window.
+edges2triangles         List Triangles in a Graph
+edges2vees              List Dihedral Triples in a Graph
+edit.hyperframe         Invoke Text Editor on Hyperframe
+edit.ppp                Invoke Text Editor on Spatial Data
+ellipse                 Elliptical Window.
+endpoints.psp           Endpoints of Line Segment Pattern
+eroded.areas            Areas of Morphological Erosions
+erosion                 Morphological Erosion by a Disc
+erosionAny              Morphological Erosion of Windows
+eval.im                 Evaluate Expression Involving Pixel Images
+extrapolate.psp         Extrapolate Line Segments to Obtain Infinite
+                        Lines
+fardist                 Farthest Distance to Boundary of Window
+fillholes.owin          Remove Small Holes in a Window
+flipxy                  Exchange X and Y Coordinates
+fourierbasis            Fourier Basis Functions
+framedist.pixels        Distance to Bounding Frame
+funxy                   Spatial Function Class
+gridcentres             Rectangular grid of points
+gridweights             Compute Quadrature Weights Based on Grid Counts
+grow.boxx               Add margins to box in any dimension
+grow.rectangle          Add margins to rectangle
+harmonise               Make Objects Compatible
+harmonise.im            Make Pixel Images Compatible
+harmonise.owin          Make Windows Compatible
+harmoniseLevels         Harmonise the levels of several factors, or
+                        factor-valued pixel images.
+has.close               Check Whether Points Have Close Neighbours
+head.ppp                First or Last Part of a Spatial Pattern
+hextess                 Hexagonal Grid or Tessellation
+hist.funxy              Histogram of Values of a Spatial Function
+hist.im                 Histogram of Pixel Values in an Image
+hyperframe              Hyper Data Frame
+identify.ppp            Identify Points in a Point Pattern
+identify.psp            Identify Segments in a Line Segment Pattern
+identify.tess           Interactively Identify Tiles of a Tessellation
+im                      Create a Pixel Image Object
+im.apply                Apply Function Pixelwise to List of Images
+im.object               Class of Images
+imcov                   Spatial Covariance of a Pixel Image
+incircle                Find Largest Circle Inside Window
+infline                 Infinite Straight Lines
+inside.boxx             Test Whether Points Are Inside A
+                        Multidimensional Box
+inside.owin             Test Whether Points Are Inside A Window
+integral.im             Integral of a Pixel Image
+integral.tessfun        Integrate a Function Which is Constant on Each
+                        Tile of a Tessellation
+intensity               Intensity of a Dataset or a Model
+intensity.ppp           Empirical Intensity of Point Pattern
+intensity.ppx           Intensity of a Multidimensional Space-Time
+                        Point Pattern
+intensity.psp           Empirical Intensity of Line Segment Pattern
+intensity.quadratcount
+                        Intensity Estimates Using Quadrat Counts
+interp.colourmap        Interpolate smoothly between specified colours
+interp.im               Interpolate a Pixel Image
+intersect.boxx          Intersection Of Boxes Of Arbitrary Dimension
+intersect.owin          Intersection, Union or Set Subtraction of
+                        Windows
+intersect.tess          Intersection of Two Tessellations
+invoke.metric           Perform Geometric Task using a Specified Metric
+invoke.symbolmap        Plot Data Using Graphics Symbol Map
+is.NAobject             Recognise NA Objects
+is.boxx                 Recognise a Multi-Dimensional Box
+is.connected            Determine Whether an Object is Connected
+is.connected.ppp        Determine Whether a Point Pattern is Connected
+is.convex               Test Whether a Window is Convex
+is.empty                Test Whether An Object Is Empty
+is.im                   Test Whether An Object Is A Pixel Image
+is.linim                Test Whether an Object is a Pixel Image on a
+                        Linear Network
+is.linnet               Test Whether An Object Is A Linear Network
+is.lpp                  Test Whether An Object Is A Point Pattern on a
+                        Linear Network
+is.marked               Test Whether Marks Are Present
+is.marked.ppp           Test Whether A Point Pattern is Marked
+is.multitype            Test whether Object is Multitype
+is.multitype.ppp        Test Whether A Point Pattern is Multitype
+is.na.hyperframe        Identify Missing Entries in a Hyperframe
+is.na.solist            Identify Missing Entries in a List of Spatial
+                        Objects
+is.owin                 Test Whether An Object Is A Window
+is.ppp                  Test Whether An Object Is A Point Pattern
+is.rectangle            Determine Type of Window
+is.subset.owin          Determine Whether One Window is Contained In
+                        Another
+layered                 Create List of Plotting Layers
+layerplotargs           Extract or Replace the Plot Arguments of a
+                        Layered Object
+layout.boxes            Generate a Row or Column Arrangement of
+                        Rectangles.
+lengths_psp             Lengths of Line Segments
+levelset                Level Set of a Pixel Image
+levelset.distfun        Level Set of a Distance Function
+lut                     Lookup Tables
+marks                   Marks of a Point Pattern
+marks.psp               Marks of a Line Segment Pattern
+marks.tess              Marks of a Tessellation
+markstat                Summarise Marks in Every Neighbourhood in a
+                        Point Pattern
+matchingdist            Distance for a Point Pattern Matching
+maxnndist               Compute Minimum or Maximum Nearest-Neighbour
+                        Distance
+mean.im                 Mean and Median of Pixel Values in an Image
+mergeLevels             Merge Levels of a Factor
+mergeTiles              Merge Groups of Tiles in a Tessellation
+methods.box3            Methods for Three-Dimensional Box
+methods.boxx            Methods for Multi-Dimensional Box
+methods.distfun         Geometrical Operations for Distance Functions
+methods.funxy           Methods for Spatial Functions
+methods.layered         Methods for Layered Objects
+methods.pp3             Methods for three-dimensional point patterns
+methods.ppx             Methods for Multidimensional Space-Time Point
+                        Patterns
+methods.unitname        Methods for Units
+metric.object           Distance Metric
+midpoints.psp           Midpoints of Line Segment Pattern
+multiplicity.ppp        Count Multiplicity of Duplicate Points
+nearest.raster.point    Find Pixel Nearest to a Given Point
+nearestValue            Image of Nearest Defined Pixel Value
+nearestsegment          Find Line Segment Nearest to Each Point
+nestsplit               Nested Split
+nncross                 Nearest Neighbours Between Two Patterns
+nncross.pp3             Nearest Neighbours Between Two Patterns in 3D
+nncross.ppx             Nearest Neighbours Between Two Patterns in Any
+                        Dimensions
+nndist                  Nearest neighbour distances
+nndist.pp3              Nearest neighbour distances in three dimensions
+nndist.ppx              Nearest Neighbour Distances in Any Dimensions
+nndist.psp              Nearest neighbour distances between line
+                        segments
+nnfun                   Nearest Neighbour Index Map as a Function
+nnmap                   K-th Nearest Point Map
+nnmark                  Mark of Nearest Neighbour
+nnwhich                 Nearest neighbour
+nnwhich.pp3             Nearest neighbours in three dimensions
+nnwhich.ppx             Nearest Neighbours in Any Dimensions
+nobjects                Count Number of Geometrical Objects in a
+                        Spatial Dataset
+npoints                 Number of Points in a Point Pattern
+nsegments               Number of Line Segments in a Line Segment
+                        Pattern
+nvertices               Count Number of Vertices
+opening                 Morphological Opening
+overlap.owin            Compute Area of Overlap
+owin                    Create a Window
+owin.object             Class owin
+owin2mask               Convert Window to Binary Mask under Constraints
+pHcolourmap             Colour Map for pH Values
+padimage                Pad the Border of a Pixel Image
+pairdist                Pairwise distances
+pairdist.default        Pairwise distances
+pairdist.pp3            Pairwise distances in Three Dimensions
+pairdist.ppp            Pairwise distances
+pairdist.ppx            Pairwise Distances in Any Dimensions
+pairdist.psp            Pairwise distances between line segments
+perimeter               Perimeter Length of Window
+periodify               Make Periodic Copies of a Spatial Pattern
+persp.im                Perspective Plot of Pixel Image
+persp.ppp               Perspective Plot of Marked Point Pattern
+perspPoints             Draw Points or Lines on a Surface Viewed in
+                        Perspective
+pixelcentres            Extract Pixel Centres as Point Pattern
+pixellate               Convert Spatial Object to Pixel Image
+pixellate.owin          Convert Window to Pixel Image
+pixellate.ppp           Convert Point Pattern to Pixel Image
+pixellate.psp           Convert Line Segment Pattern to Pixel Image
+pixelquad               Quadrature Scheme Based on Pixel Grid
+plot.anylist            Plot a List of Things
+plot.colourmap          Plot a Colour Map
+plot.hyperframe         Plot Entries in a Hyperframe
+plot.im                 Plot a Pixel Image
+plot.imlist             Plot a List of Images
+plot.layered            Layered Plot
+plot.listof             Plot a List of Things
+plot.onearrow           Plot an Arrow
+plot.owin               Plot a Spatial Window
+plot.pp3                Plot a Three-Dimensional Point Pattern
+plot.ppp                plot a Spatial Point Pattern
+plot.pppmatching        Plot a Point Matching
+plot.psp                plot a Spatial Line Segment Pattern
+plot.quad               Plot a Spatial Quadrature Scheme
+plot.quadratcount       Plot Quadrat Counts
+plot.solist             Plot a List of Spatial Objects
+plot.splitppp           Plot a List of Point Patterns
+plot.symbolmap          Plot a Graphics Symbol Map
+plot.tess               Plot a Tessellation
+plot.textstring         Plot a Text String
+plot.texturemap         Plot a Texture Map
+plot.yardstick          Plot a Yardstick or Scale Bar
+pointsOnLines           Place Points Evenly Along Specified Lines
+polarbody               Polar Body and Voronoi Flower
+polartess               Tessellation Using Polar Coordinates
+pp3                     Three Dimensional Point Pattern
+ppp                     Create a Point Pattern
+ppp.object              Class of Point Patterns
+pppdist                 Distance Between Two Point Patterns
+pppmatching             Create a Point Matching
+pppmatching.object      Class of Point Matchings
+ppx                     Multidimensional Space-Time Point Pattern
+print.im                Print Brief Details of an Image
+print.owin              Print Brief Details of a Spatial Window
+print.ppp               Print Brief Details of a Point Pattern Dataset
+print.psp               Print Brief Details of a Line Segment Pattern
+                        Dataset
+print.quad              Print a Quadrature Scheme
+progressreport          Print Progress Reports
+project2segment         Move Point To Nearest Line
+project2set             Find Nearest Point in a Region
+psp                     Create a Line Segment Pattern
+psp.object              Class of Line Segment Patterns
+psp2mask                Convert Line Segment Pattern to Binary Pixel
+                        Mask
+quad.object             Class of Quadrature Schemes
+quadratcount            Quadrat counting for a point pattern
+quadrats                Divide Region into Quadrats
+quadscheme              Generate a Quadrature Scheme from a Point
+                        Pattern
+quadscheme.logi         Generate a Logistic Regression Quadrature
+                        Scheme from a Point Pattern
+quantess                Quantile Tessellation
+quantile.im             Sample Quantiles of Pixel Image
+quantilefun.im          Quantile Function for Images
+quasirandom             Quasirandom Patterns
+rQuasi                  Generate Quasirandom Point Pattern in Given
+                        Window
+raster.x                Cartesian Coordinates for a Pixel Raster
+rectdistmap             Distance Map Using Rectangular Distance Metric
+reflect                 Reflect In Origin
+regularpolygon          Create A Regular Polygon
+relevel.im              Reorder Levels of a Factor-Valued Image or
+                        Pattern
+requireversion          Require a Specific Version of a Package
+rescale                 Convert dataset to another unit of length
+rescale.im              Convert Pixel Image to Another Unit of Length
+rescale.owin            Convert Window to Another Unit of Length
+rescale.ppp             Convert Point Pattern to Another Unit of Length
+rescale.psp             Convert Line Segment Pattern to Another Unit of
+                        Length
+rescue.rectangle        Convert Window Back To Rectangle
+restrict.colourmap      Restrict a Colour Map to a Subset of Values
+rev.colourmap           Reverse the Colours in a Colour Map
+rexplode                Explode a Point Pattern by Displacing
+                        Duplicated Points
+rgbim                   Create Colour-Valued Pixel Image
+ripras                  Estimate window from points alone
+rjitter                 Random Perturbation of a Point Pattern
+rlinegrid               Generate grid of parallel lines with random
+                        displacement
+rotate                  Rotate
+rotate.im               Rotate a Pixel Image
+rotate.infline          Rotate or Shift Infinite Lines
+rotate.owin             Rotate a Window
+rotate.ppp              Rotate a Point Pattern
+rotate.psp              Rotate a Line Segment Pattern
+round.ppp               Apply Numerical Rounding to Spatial Coordinates
+rounding.ppp            Detect Numerical Rounding
+rsyst                   Simulate systematic random point pattern
+run.simplepanel         Run Point-and-Click Interface
+runifrect               Generate N Uniform Random Points in a Rectangle
+scalardilate            Apply Scalar Dilation
+scaletointerval         Rescale Data to Lie Between Specified Limits
+scanpp                  Read Point Pattern From Data File
+selfcrossing.psp        Crossing Points in a Line Segment Pattern
+selfcut.psp             Cut Line Segments Where They Intersect
+sessionLibs             Print Names and Version Numbers of Libraries
+                        Loaded
+setcov                  Set Covariance of a Window
+shift                   Apply Vector Translation
+shift.im                Apply Vector Translation To Pixel Image
+shift.owin              Apply Vector Translation To Window
+shift.ppp               Apply Vector Translation To Point Pattern
+shift.ppx               Apply Vector Translation To Box Or Point
+                        Pattern In Arbitrary Dimension
+shift.psp               Apply Vector Translation To Line Segment
+                        Pattern
+sidelengths.owin        Side Lengths of Enclosing Rectangle of a Window
+simplepanel             Simple Point-and-Click Interface Panels
+simplify.owin           Approximate a Window by a Simpler Polygon
+solapply                Apply a Function Over a List and Obtain a List
+                        of Objects
+solist                  List of Two-Dimensional Spatial Objects
+solutionset             Evaluate Logical Expression Involving Pixel
+                        Images and Return Region Where Expression is
+                        True
+spatdim                 Spatial Dimension of a Dataset
+spatstat.geom-package   The spatstat.geom Package
+spatstat.options        Internal Options in Spatstat Package
+split.hyperframe        Divide Hyperframe Into Subsets and Reassemble
+split.im                Divide Image Into Sub-images
+split.ppp               Divide Point Pattern into Sub-patterns
+split.ppx               Divide Multidimensional Point Pattern into
+                        Sub-patterns
+spokes                  Spokes pattern of dummy points
+square                  Square Window
+stratrand               Stratified random point pattern
+subset.hyperframe       Subset of Hyperframe Satisfying A Condition
+subset.ppp              Subset of Point Pattern Satisfying A Condition
+subset.psp              Subset of Line Segment Satisfying A Condition
+summary.anylist         Summary of a List of Things
+summary.distfun         Summarizing a Function of Spatial Location
+summary.im              Summarizing a Pixel Image
+summary.listof          Summary of a List of Things
+summary.owin            Summary of a Spatial Window
+summary.ppp             Summary of a Point Pattern Dataset
+summary.psp             Summary of a Line Segment Pattern Dataset
+summary.quad            Summarizing a Quadrature Scheme
+summary.solist          Summary of a List of Spatial Objects
+summary.splitppp        Summary of a Split Point Pattern
+superimpose             Superimpose Several Geometric Patterns
+symbolmap               Graphics Symbol Map
+tess                    Create a Tessellation
+test.crossing.psp       Check Whether Segments Cross
+text.ppp                Add Text Labels to Spatial Pattern
+texturemap              Texture Map
+textureplot             Plot Image or Tessellation Using Texture Fill
+tile.areas              Compute Areas of Tiles in a Tessellation
+tile.centroids          Compute Centroids of Tiles in a Tessellation
+tileindex               Determine Which Tile Contains Each Given Point
+tilenames               Names of Tiles in a Tessellation
+tiles                   Extract List of Tiles in a Tessellation
+tiles.empty             Check For Empty Tiles in a Tessellation
+timeTaken               Extract the Total Computation Time
+timed                   Record the Computation Time
+transmat                Convert Pixel Array Between Different
+                        Conventions
+triangulate.owin        Decompose Window into Triangles
+trim.rectangle          Cut margins from rectangle
+tweak.colourmap         Change Colour Values in a Colour Map
+union.quad              Union of Data and Dummy Points
+unique.ppp              Extract Unique Points from a Spatial Point
+                        Pattern
+uniquemap.ppp           Map Duplicate Entries to Unique Entries
+unitname                Name for Unit of Length
+unmark                  Remove Marks
+unstack.ppp             Separate Multiple Columns of Marks
+unstack.solist          Unstack Each Spatial Object in a List of
+                        Objects
+update.symbolmap        Update a Graphics Symbol Map.
+venn.tess               Tessellation Delimited by Several Sets
+vertices                Vertices of a Window
+volume                  Volume of an Object
+where.max               Find Location of Maximum in a Pixel Image
+whichhalfplane          Test Which Side of Infinite Line a Point Falls
+                        On
+with.hyperframe         Evaluate an Expression in Each Row of a
+                        Hyperframe
+yardstick               Text, Arrow or Scale Bar in a Diagram
+zapsmall.im             Rounding of Pixel Values

@@ -1,0 +1,51 @@
+Package: spocc
+Title: Interface to Species Occurrence Data Sources
+Description: A programmatic interface to many species occurrence data sources,
+    including Global Biodiversity Information Facility ('GBIF'), 'iNaturalist',
+    'eBird', Integrated Digitized 'Biocollections' ('iDigBio'), 'VertNet', 
+    Ocean 'Biogeographic' Information System ('OBIS'), and 
+    Atlas of Living Australia ('ALA'). Includes functionality for retrieving
+    species occurrence data, and combining those data.
+Version: 1.2.4
+License: MIT + file LICENSE
+Authors@R: c(
+    person("Hannah", "Owens", , "hannah.owens@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0071-1745")),
+    person("Vijay", "Barve", role = "aut",
+           comment = c(ORCID = "0000-0002-4852-2567")),
+    person("Scott", "Chamberlain", role = "aut",
+           comment = c(ORCID = "0000-0003-1444-9135")),
+    person("Karthik", "Ram", role = "ctb"),
+    person("Ted", "Hart", role = "ctb"),
+    person("rOpenSci", role = "fnd",
+           comment = c(ROR = "https://ror.org/019jywm96"))
+  )
+URL: https://github.com/ropensci/spocc (devel),
+        https://docs.ropensci.org/spocc/ (user manual)
+BugReports: https://github.com/ropensci/spocc/issues/
+Encoding: UTF-8
+Language: en-US
+Imports: utils, rgbif, rebird, rvertnet, ridigbio, lubridate, crul,
+        whisker, jsonlite, data.table, tibble, wk, s2
+Suggests: testthat, taxize, vcr
+RoxygenNote: 7.3.3
+X-schema.org-applicationCategory: Biodiversity
+X-schema.org-keywords: specimens, API, web-services, occurrences,
+        species, taxonomy, GBIF, INAT, Vertnet, eBird, iDigBio, OBIS,
+        ALA
+X-schema.org-isPartOf: ropensci.org
+Config/Needs/sftests: remotes, silicate, sf, sp, testthat
+NeedsCompilation: no
+Packaged: 2025-12-06 16:19:00 UTC; HannahOwens
+Author: Hannah Owens [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-0071-1745>),
+  Vijay Barve [aut] (ORCID: <https://orcid.org/0000-0002-4852-2567>),
+  Scott Chamberlain [aut] (ORCID:
+    <https://orcid.org/0000-0003-1444-9135>),
+  Karthik Ram [ctb],
+  Ted Hart [ctb],
+  rOpenSci [fnd] (ROR: <https://ror.org/019jywm96>)
+Maintainer: Hannah Owens <hannah.owens@gmail.com>
+Repository: CRAN
+Date/Publication: 2025-12-06 17:40:02 UTC
+Built: R 4.6.0; ; 2026-05-22 09:41:30 UTC; unix

@@ -1,0 +1,17 @@
+Package: nls2
+Version: 0.3-4
+Date: 2024-07-15
+Title: Non-Linear Regression with Brute Force
+Author: G. Grothendieck, R Core Team (nls)
+Maintainer: G. Grothendieck <ggrothendieck@gmail.com>
+Description: Adds brute force and multiple starting values to nls.
+Depends: proto, stats
+Suggests: nlstools, lhs, CPoptim
+License: GPL-2
+BugReports: https://github.com/ggrothendieck/nls2/issues
+URL: https://github.com/ggrothendieck/nls2
+NeedsCompilation: no
+Packaged: 2024-07-14 14:42:06 UTC; Louis
+Repository: CRAN
+Date/Publication: 2024-07-14 15:10:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:54:54 UTC; unix

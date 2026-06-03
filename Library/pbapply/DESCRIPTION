@@ -1,0 +1,46 @@
+Package: pbapply
+Type: Package
+Title: Adding Progress Bar to '*apply' Functions
+Version: 1.7-4
+Date: 2025-07-19
+Authors@R: 
+    c(person(given = "Peter",
+             family = "Solymos",
+             comment = c(ORCID = "0000-0001-7337-1740"),
+             role = c("aut", "cre"),
+             email = "psolymos@gmail.com"),
+      person(given = "Zygmunt",
+             family = "Zawadzki",
+             role = "aut",
+             email = "zygmunt@zstat.pl"),
+      person(given = "Henrik", 
+             family = "Bengtsson", 
+             role = "ctb",
+             email = "henrikb@braju.com"),
+      person("R Core Team", role = c("cph", "ctb")))
+Maintainer: Peter Solymos <psolymos@gmail.com>
+Description: A lightweight package that adds
+  progress bar to vectorized R functions
+  ('*apply'). The implementation can easily be added
+  to functions where showing the progress is
+  useful (e.g. bootstrap). The type and style of the
+  progress bar (with percentages or remaining time)
+  can be set through options.
+  Supports several parallel processing backends including mirai and future.
+Depends: R (>= 3.2.0)
+Imports: parallel
+Suggests: shiny, future, future.apply
+License: GPL (>= 2)
+URL: https://github.com/psolymos/pbapply,
+        https://peter.solymos.org/pbapply/
+BugReports: https://github.com/psolymos/pbapply/issues
+NeedsCompilation: no
+Packaged: 2025-07-20 01:22:14 UTC; Peter
+Author: Peter Solymos [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-7337-1740>),
+  Zygmunt Zawadzki [aut],
+  Henrik Bengtsson [ctb],
+  R Core Team [cph, ctb]
+Repository: CRAN
+Date/Publication: 2025-07-20 18:50:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:49:26 UTC; unix

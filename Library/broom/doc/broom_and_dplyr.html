@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2026-05-13" />
+
+<title>broom and dplyr</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">broom and dplyr</h1>
+<h4 class="date">2026-05-13</h4>
+
+
+
+<div id="broom-and-dplyr" class="section level1">
+<h1>broom and dplyr</h1>
+<p>While broom is useful for summarizing the result of a single analysis
+in a consistent format, it is really designed for high-throughput
+applications, where you must combine results from multiple analyses.
+These could be subgroups of data, analyses using different models,
+bootstrap replicates, permutations, and so on. In particular, it plays
+well with the <code>nest/unnest</code> functions in <code>tidyr</code>
+and the <code>map</code> function in <code>purrr</code>. First, loading
+necessary packages and setting some defaults:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span></code></pre></div>
+<p>Let’s try this on a simple dataset, the built-in <code>Orange</code>.
+We start by coercing <code>Orange</code> to a <code>tibble</code>. This
+gives a nicer print method that will especially useful later on when we
+start working with list-columns.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(Orange)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Orange <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Orange)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>Orange</span></code></pre></div>
+<pre><code>## # A tibble: 35 × 3
+##    Tree    age circumference
+##    &lt;ord&gt; &lt;dbl&gt;         &lt;dbl&gt;
+##  1 1       118            30
+##  2 1       484            58
+##  3 1       664            87
+##  4 1      1004           115
+##  5 1      1231           120
+##  6 1      1372           142
+##  7 1      1582           145
+##  8 2       118            33
+##  9 2       484            69
+## 10 2       664           111
+## # ℹ 25 more rows</code></pre>
+<p>This contains 35 observations of three variables: <code>Tree</code>,
+<code>age</code>, and <code>circumference</code>. <code>Tree</code> is a
+factor with five levels describing five trees. As might be expected, age
+and circumference are correlated:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">cor</span>(Orange<span class="sc">$</span>age, Orange<span class="sc">$</span>circumference)</span></code></pre></div>
+<pre><code>## [1] 0.9135189</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">ggplot</span>(Orange, <span class="fu">aes</span>(age, circumference, <span class="at">color =</span> Tree)) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Suppose you want to test for correlations individually
+<em>within</em> each tree. You can do this with dplyr’s
+<code>group_by</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>Orange <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">group_by</span>(Tree) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">correlation =</span> <span class="fu">cor</span>(age, circumference))</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 2
+##   Tree  correlation
+##   &lt;ord&gt;       &lt;dbl&gt;
+## 1 3           0.988
+## 2 1           0.985
+## 3 5           0.988
+## 4 2           0.987
+## 5 4           0.984</code></pre>
+<p>(Note that the correlations are much higher than the aggregated one,
+and furthermore we can now see it is similar across trees).</p>
+<p>Suppose that instead of simply estimating a correlation, we want to
+perform a hypothesis test with <code>cor.test</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>ct <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(Orange<span class="sc">$</span>age, Orange<span class="sc">$</span>circumference)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>ct</span></code></pre></div>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  Orange$age and Orange$circumference
+## t = 12.9, df = 33, p-value = 1.931e-14
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.8342364 0.9557955
+## sample estimates:
+##       cor 
+## 0.9135189</code></pre>
+<p>This contains multiple values we could want in our output. Some are
+vectors of length 1, such as the p-value and the estimate, and some are
+longer, such as the confidence interval. We can get this into a nicely
+organized tibble using the <code>tidy</code> function:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">tidy</span>(ct)</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
+## 1    0.914      12.9 1.93e-14        33    0.834     0.956 Pearson&#39;… two.sided</code></pre>
+<p>Often, we want to perform multiple tests or fit multiple models, each
+on a different part of the data. In this case, we recommend a
+<code>nest-map-unnest</code> workflow. For example, suppose we want to
+perform correlation tests for each different tree. We start by
+<code>nest</code>ing our data based on the group of interest:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>nested <span class="ot">&lt;-</span> Orange <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>Tree)</span></code></pre></div>
+<p>Then we run a correlation test for each nested tibble using
+<code>purrr::map</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>nested <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">cor.test</span>(.x<span class="sc">$</span>age, .x<span class="sc">$</span>circumference)))</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 3
+##   Tree  data             test   
+##   &lt;ord&gt; &lt;list&gt;           &lt;list&gt; 
+## 1 1     &lt;tibble [7 × 2]&gt; &lt;htest&gt;
+## 2 2     &lt;tibble [7 × 2]&gt; &lt;htest&gt;
+## 3 3     &lt;tibble [7 × 2]&gt; &lt;htest&gt;
+## 4 4     &lt;tibble [7 × 2]&gt; &lt;htest&gt;
+## 5 5     &lt;tibble [7 × 2]&gt; &lt;htest&gt;</code></pre>
+<p>This results in a list-column of S3 objects. We want to tidy each of
+the objects, which we can also do with <code>map</code>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>nested <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>    <span class="at">test =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">cor.test</span>(.x<span class="sc">$</span>age, .x<span class="sc">$</span>circumference)), <span class="co"># S3 list-col</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    <span class="at">tidied =</span> <span class="fu">map</span>(test, tidy)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 4
+##   Tree  data             test    tidied          
+##   &lt;ord&gt; &lt;list&gt;           &lt;list&gt;  &lt;list&gt;          
+## 1 1     &lt;tibble [7 × 2]&gt; &lt;htest&gt; &lt;tibble [1 × 8]&gt;
+## 2 2     &lt;tibble [7 × 2]&gt; &lt;htest&gt; &lt;tibble [1 × 8]&gt;
+## 3 3     &lt;tibble [7 × 2]&gt; &lt;htest&gt; &lt;tibble [1 × 8]&gt;
+## 4 4     &lt;tibble [7 × 2]&gt; &lt;htest&gt; &lt;tibble [1 × 8]&gt;
+## 5 5     &lt;tibble [7 × 2]&gt; &lt;htest&gt; &lt;tibble [1 × 8]&gt;</code></pre>
+<p>Finally, we want to unnest the tidied data frames so we can see the
+results in a flat tibble. All together, this looks like:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>Orange <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>Tree) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    <span class="at">test =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">cor.test</span>(.x<span class="sc">$</span>age, .x<span class="sc">$</span>circumference)), <span class="co"># S3 list-col</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>    <span class="at">tidied =</span> <span class="fu">map</span>(test, tidy)</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>  <span class="fu">unnest</span>(tidied)</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 11
+##   Tree  data     test    estimate statistic p.value parameter conf.low conf.high
+##   &lt;ord&gt; &lt;list&gt;   &lt;list&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 1     &lt;tibble&gt; &lt;htest&gt;    0.985      13.0 4.85e-5         5    0.901     0.998
+## 2 2     &lt;tibble&gt; &lt;htest&gt;    0.987      13.9 3.43e-5         5    0.914     0.998
+## 3 3     &lt;tibble&gt; &lt;htest&gt;    0.988      14.4 2.90e-5         5    0.919     0.998
+## 4 4     &lt;tibble&gt; &lt;htest&gt;    0.984      12.5 5.73e-5         5    0.895     0.998
+## 5 5     &lt;tibble&gt; &lt;htest&gt;    0.988      14.1 3.18e-5         5    0.916     0.998
+## # ℹ 2 more variables: method &lt;chr&gt;, alternative &lt;chr&gt;</code></pre>
+<p>This workflow becomes even more useful when applied to regressions.
+Untidy output for a regression looks like:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>lm_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(age <span class="sc">~</span> circumference, <span class="at">data =</span> Orange)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">summary</span>(lm_fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = age ~ circumference, data = Orange)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -317.88 -140.90  -17.20   96.54  471.16 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    16.6036    78.1406   0.212    0.833    
+## circumference   7.8160     0.6059  12.900 1.93e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 203.1 on 33 degrees of freedom
+## Multiple R-squared:  0.8345, Adjusted R-squared:  0.8295 
+## F-statistic: 166.4 on 1 and 33 DF,  p-value: 1.931e-14</code></pre>
+<p>where we tidy these results, we get multiple rows of output for each
+model:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">tidy</span>(lm_fit)</span></code></pre></div>
+<pre><code>## # A tibble: 2 × 5
+##   term          estimate std.error statistic  p.value
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)      16.6     78.1       0.212 8.33e- 1
+## 2 circumference     7.82     0.606    12.9   1.93e-14</code></pre>
+<p>Now we can handle multiple regressions at once using exactly the same
+workflow as before:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>Orange <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>Tree) <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>    <span class="at">fit =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(age <span class="sc">~</span> circumference, <span class="at">data =</span> .x)),</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>    <span class="at">tidied =</span> <span class="fu">map</span>(fit, tidy)</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  <span class="fu">unnest</span>(tidied)</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 8
+##    Tree  data             fit    term       estimate std.error statistic p.value
+##    &lt;ord&gt; &lt;list&gt;           &lt;list&gt; &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+##  1 1     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   (Intercep…  -265.      98.6      -2.68  4.36e-2
+##  2 1     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   circumfer…    11.9      0.919    13.0   4.85e-5
+##  3 2     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   (Intercep…  -132.      83.1      -1.59  1.72e-1
+##  4 2     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   circumfer…     7.80     0.560    13.9   3.43e-5
+##  5 3     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   (Intercep…  -210.      85.3      -2.46  5.74e-2
+##  6 3     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   circumfer…    12.0      0.835    14.4   2.90e-5
+##  7 4     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   (Intercep…   -76.5     88.3      -0.867 4.26e-1
+##  8 4     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   circumfer…     7.17     0.572    12.5   5.73e-5
+##  9 5     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   (Intercep…   -54.5     76.9      -0.709 5.10e-1
+## 10 5     &lt;tibble [7 × 2]&gt; &lt;lm&gt;   circumfer…     8.79     0.621    14.1   3.18e-5</code></pre>
+<p>You can just as easily use multiple predictors in the regressions, as
+shown here on the <code>mtcars</code> dataset. We nest the data into
+automatic and manual cars (the <code>am</code> column), then perform the
+regression within each nested tibble.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>mtcars <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(mtcars) <span class="co"># to play nicely with list-cols</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>mtcars</span></code></pre></div>
+<pre><code>## # A tibble: 32 × 11
+##      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4
+##  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4
+##  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1
+##  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1
+##  5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2
+##  6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1
+##  7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4
+##  8  24.4     4  147.    62  3.69  3.19  20       1     0     4     2
+##  9  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2
+## 10  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4
+## # ℹ 22 more rows</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>am) <span class="sc">|&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>    <span class="at">fit =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(wt <span class="sc">~</span> mpg <span class="sc">+</span> qsec <span class="sc">+</span> gear, <span class="at">data =</span> .x)), <span class="co"># S3 list-col</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>    <span class="at">tidied =</span> <span class="fu">map</span>(fit, tidy)</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>  <span class="fu">unnest</span>(tidied)</span></code></pre></div>
+<pre><code>## # A tibble: 8 × 8
+##      am data               fit    term      estimate std.error statistic p.value
+##   &lt;dbl&gt; &lt;list&gt;             &lt;list&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1     1 &lt;tibble [13 × 10]&gt; &lt;lm&gt;   (Interce…   4.28      3.46      1.24   2.47e-1
+## 2     1 &lt;tibble [13 × 10]&gt; &lt;lm&gt;   mpg        -0.101     0.0294   -3.43   7.50e-3
+## 3     1 &lt;tibble [13 × 10]&gt; &lt;lm&gt;   qsec        0.0398    0.151     0.264  7.98e-1
+## 4     1 &lt;tibble [13 × 10]&gt; &lt;lm&gt;   gear       -0.0229    0.349    -0.0656 9.49e-1
+## 5     0 &lt;tibble [19 × 10]&gt; &lt;lm&gt;   (Interce…   4.92      1.40      3.52   3.09e-3
+## 6     0 &lt;tibble [19 × 10]&gt; &lt;lm&gt;   mpg        -0.192     0.0443   -4.33   5.91e-4
+## 7     0 &lt;tibble [19 × 10]&gt; &lt;lm&gt;   qsec        0.0919    0.0983    0.935  3.65e-1
+## 8     0 &lt;tibble [19 × 10]&gt; &lt;lm&gt;   gear        0.147     0.368     0.398  6.96e-1</code></pre>
+<p>What if you want not just the <code>tidy</code> output, but the
+<code>augment</code> and <code>glance</code> outputs as well, while
+still performing each regression only once? Since we’re using
+list-columns, we can just fit the model once and use multiple
+list-columns to store the tidied, glanced and augmented outputs.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>regressions <span class="ot">&lt;-</span> mtcars <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>am) <span class="sc">|&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>    <span class="at">fit =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(wt <span class="sc">~</span> mpg <span class="sc">+</span> qsec <span class="sc">+</span> gear, <span class="at">data =</span> .x)),</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>    <span class="at">tidied =</span> <span class="fu">map</span>(fit, tidy),</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>    <span class="at">glanced =</span> <span class="fu">map</span>(fit, glance),</span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>    <span class="at">augmented =</span> <span class="fu">map</span>(fit, augment)</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>  )</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>regressions <span class="sc">|&gt;</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>  <span class="fu">unnest</span>(tidied)</span></code></pre></div>
+<pre><code>## # A tibble: 8 × 10
+##      am data     fit    term       estimate std.error statistic p.value glanced 
+##   &lt;dbl&gt; &lt;list&gt;   &lt;list&gt; &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;  
+## 1     1 &lt;tibble&gt; &lt;lm&gt;   (Intercep…   4.28      3.46      1.24   2.47e-1 &lt;tibble&gt;
+## 2     1 &lt;tibble&gt; &lt;lm&gt;   mpg         -0.101     0.0294   -3.43   7.50e-3 &lt;tibble&gt;
+## 3     1 &lt;tibble&gt; &lt;lm&gt;   qsec         0.0398    0.151     0.264  7.98e-1 &lt;tibble&gt;
+## 4     1 &lt;tibble&gt; &lt;lm&gt;   gear        -0.0229    0.349    -0.0656 9.49e-1 &lt;tibble&gt;
+## 5     0 &lt;tibble&gt; &lt;lm&gt;   (Intercep…   4.92      1.40      3.52   3.09e-3 &lt;tibble&gt;
+## 6     0 &lt;tibble&gt; &lt;lm&gt;   mpg         -0.192     0.0443   -4.33   5.91e-4 &lt;tibble&gt;
+## 7     0 &lt;tibble&gt; &lt;lm&gt;   qsec         0.0919    0.0983    0.935  3.65e-1 &lt;tibble&gt;
+## 8     0 &lt;tibble&gt; &lt;lm&gt;   gear         0.147     0.368     0.398  6.96e-1 &lt;tibble&gt;
+## # ℹ 1 more variable: augmented &lt;list&gt;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>regressions <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="fu">unnest</span>(glanced)</span></code></pre></div>
+<pre><code>## # A tibble: 2 × 17
+##      am data     fit    tidied   r.squared adj.r.squared sigma statistic p.value
+##   &lt;dbl&gt; &lt;list&gt;   &lt;list&gt; &lt;list&gt;       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt;     0.833         0.778 0.291     15.0  7.59e-4
+## 2     0 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt;     0.625         0.550 0.522      8.32 1.70e-3
+## # ℹ 8 more variables: df &lt;dbl&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;, BIC &lt;dbl&gt;,
+## #   deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;, augmented &lt;list&gt;</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>regressions <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  <span class="fu">unnest</span>(augmented)</span></code></pre></div>
+<pre><code>## # A tibble: 32 × 15
+##       am data     fit    tidied   glanced     wt   mpg  qsec  gear .fitted
+##    &lt;dbl&gt; &lt;list&gt;   &lt;list&gt; &lt;list&gt;   &lt;list&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  2.62  21    16.5     4    2.73
+##  2     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  2.88  21    17.0     4    2.75
+##  3     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  2.32  22.8  18.6     4    2.63
+##  4     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  2.2   32.4  19.5     4    1.70
+##  5     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  1.62  30.4  18.5     4    1.86
+##  6     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  1.84  33.9  19.9     4    1.56
+##  7     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  1.94  27.3  18.9     4    2.19
+##  8     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  2.14  26    16.7     5    2.21
+##  9     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  1.51  30.4  16.9     5    1.77
+## 10     1 &lt;tibble&gt; &lt;lm&gt;   &lt;tibble&gt; &lt;tibble&gt;  3.17  15.8  14.5     5    3.15
+## # ℹ 22 more rows
+## # ℹ 5 more variables: .resid &lt;dbl&gt;, .hat &lt;dbl&gt;, .sigma &lt;dbl&gt;, .cooksd &lt;dbl&gt;,
+## #   .std.resid &lt;dbl&gt;</code></pre>
+<p>By combining the estimates and p-values across all groups into the
+same tidy data frame (instead of a list of output model objects), a new
+class of analyses and visualizations becomes straightforward. This
+includes</p>
+<ul>
+<li>Sorting by p-value or estimate to find the most significant terms
+across all tests</li>
+<li>P-value histograms</li>
+<li>Volcano plots comparing p-values to effect size estimates</li>
+</ul>
+<p>In each of these cases, we can easily filter, facet, or distinguish
+based on the <code>term</code> column. In short, this makes the tools of
+tidy data analysis available for the <em>results</em> of data analysis
+and models, not just the inputs.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

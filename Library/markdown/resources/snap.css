@@ -1,0 +1,100 @@
+:root { --slide-width: 100%; }
+html { scroll-snap-type: y mandatory; }
+th, td { padding: .2em .5em; }
+.slide {
+  padding: 1em;
+  position: relative;
+}
+.slide > h2, .slide > h3 { margin-top: unset; }
+body {
+  max-width: fit-content;
+  padding: 0;
+}
+a { color: #eb4a47; }
+:not(pre) > code { background-color: #fdfded; }
+#TOC { columns: 2; }
+#TOC::before {
+  font-size: 1.3em;
+  font-weight: bold;
+  display: block;
+  border-bottom: 1px solid #666;
+}
+.frontmatter, .middle {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.page-number, .timer {
+  position: absolute;
+  bottom: 0;
+  opacity: .5;
+  font: .7em monospace;
+}
+.page-number { right: 0; }
+.timer { left: 0; }
+.inverse {
+  background-color: #eee;
+  filter: invert(1);
+}
+.fade {
+  background: repeating-linear-gradient(135deg, white, white 30px, #ddd 32px, #ddd 32px);
+  opacity: 0.6;
+}
+.center { text-align: center; }
+.slide-container h2 .section-number {
+  display: inline-block;
+  background-color: #666;
+  color: white;
+  padding: 0 .1em;
+  margin-right: .3em;
+}
+.overview {
+  font-size: .8em;
+  max-width: none;
+}
+.overview .slide {
+  min-height: unset;
+  scroll-snap-align: unset;
+}
+.overview .slide-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+.overview .slide-container .slide {
+  width: var(--slide-width);
+  border: 1px dotted #ccc;
+  margin-bottom: 0.5em;
+}
+.mirrored { transform: scale(-1, 1); }
+.spacer { height: 50vh; }
+.overview .timer, .overview .spacer { display: none; }
+.overview .footnotes { position: unset; }
+html:fullscreen::-webkit-scrollbar { display: none; }
+html:fullscreen {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+@media (min-width: 992px) {
+ :root { --slide-width: 49%; }
+  body { font-size: 2em; }
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+  }
+  li li { font-size: .9em; }
+  .footnotes {
+    position: absolute;
+    bottom: 1em;
+    font-size: .8em;
+  }
+}
+@media (min-width: 1400px) {
+ :root { --slide-width: 33%; }
+}
+@media (min-width: 1800px) {
+ :root { --slide-width: 24.67%; }
+}
+@media print, (max-width: 991.98px) {
+  .timer, .spacer { display: none; }
+}

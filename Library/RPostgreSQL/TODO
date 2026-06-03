@@ -1,0 +1,19 @@
+Things yet to be completed:
+
+1. Array and other complex structures are not converted properly:
+   just the strings are transmitted.  Datatype conversion callback
+   table for supporting complex data types are desired.
+
+2. Add commands for prepared statements.
+    This is partly done. But not thoroughly tested yet.
+
+3. More explicit encoding support.
+
+4. 'Scale' is not calculated in dbGetInfo(result_set)
+   Try to write an SQL query to get the value or hardcode
+   the appropriate details in the code.For more details
+   refer to : "RS_PostgreSQL_createDataMappings".
+
+5. Check the working of DBI extension "dbApply".
+
+6. Binary data transfer to store IEEE754 floating point data without loss of precision.

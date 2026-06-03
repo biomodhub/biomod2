@@ -1,0 +1,117 @@
+Window.rmhmodel         Extract Window of Spatial Object
+as.owin.rmhmodel        Convert Data To Class owin
+clusterfield            Field of clusters
+clusterkernel           Extract Cluster Offspring Kernel
+clusterprocess          Cluster Point Process Model
+clusterradius           Compute or Extract Effective Range of Cluster
+                        Kernel
+default.expand          Default Expansion Rule for Simulation of Model
+default.rmhcontrol      Set Default Control Parameters for
+                        Metropolis-Hastings Algorithm.
+dmixpois                Mixed Poisson Distribution
+domain.rmhmodel         Extract the Domain of any Spatial Object
+dpakes                  Pakes distribution
+expand.owin             Apply Expansion Rule
+gauss.hermite           Gauss-Hermite Quadrature Approximation to
+                        Expectation for Normal Distribution
+is.stationary           Recognise Stationary and Poisson Point Process
+                        Models
+methods.clusterprocess
+                        Methods for Cluster Models
+quadratresample         Resample a Point Pattern by Resampling Quadrats
+rCauchy                 Simulate Neyman-Scott Point Process with Cauchy
+                        cluster kernel
+rDGS                    Perfect Simulation of the Diggle-Gates-Stibbard
+                        Process
+rDiggleGratton          Perfect Simulation of the Diggle-Gratton
+                        Process
+rGRFgauss               Simulate a Gaussian Random Field
+rGaussPoisson           Simulate Gauss-Poisson Process
+rHardcore               Perfect Simulation of the Hardcore Process
+rLGCP                   Simulate Log-Gaussian Cox Process
+rMatClust               Simulate Matern Cluster Process
+rMaternI                Simulate Matern Model I
+rMaternII               Simulate Matern Model II
+rMosaicField            Mosaic Random Field
+rMosaicSet              Mosaic Random Set
+rNeymanScott            Simulate Neyman-Scott Process
+rPSNCP                  Simulate Product Shot-noise Cox Process
+rPenttinen              Perfect Simulation of the Penttinen Process
+rPoissonCluster         Simulate Poisson Cluster Process
+rSSI                    Simulate Simple Sequential Inhibition
+rStrauss                Perfect Simulation of the Strauss Process
+rStraussHard            Perfect Simulation of the Strauss-Hardcore
+                        Process
+rThomas                 Simulate Thomas Process
+rVarGamma               Simulate Neyman-Scott Point Process with
+                        Variance Gamma cluster kernel
+rags                    Alternating Gibbs Sampler for Multitype Point
+                        Processes
+ragsAreaInter           Alternating Gibbs Sampler for Area-Interaction
+                        Process
+ragsMultiHard           Alternating Gibbs Sampler for Multitype Hard
+                        Core Process
+rcell                   Simulate Baddeley-Silverman Cell Process
+rcellnumber             Generate Random Numbers of Points for Cell
+                        Process
+rclusterBKBC            Simulate Cluster Process using Brix-Kendall
+                        Algorithm or Modifications
+reach                   Interaction Distance of a Point Process Model
+recipEnzpois            First Reciprocal Moment of the Truncated
+                        Poisson Distribution
+rjitter.psp             Random Perturbation of Line Segment Pattern
+rknn                    Theoretical Distribution of Nearest Neighbour
+                        Distance
+rlabel                  Random Re-Labelling of Point Pattern
+rmh                     Simulate point patterns using the
+                        Metropolis-Hastings algorithm.
+rmh.default             Simulate Point Process Models using the
+                        Metropolis-Hastings Algorithm.
+rmhcontrol              Set Control Parameters for Metropolis-Hastings
+                        Algorithm.
+rmhexpand               Specify Simulation Window or Expansion Rule
+rmhmodel                Define Point Process Model for
+                        Metropolis-Hastings Simulation.
+rmhmodel.default        Build Point Process Model for
+                        Metropolis-Hastings Simulation.
+rmhmodel.list           Define Point Process Model for
+                        Metropolis-Hastings Simulation.
+rmhstart                Determine Initial State for Metropolis-Hastings
+                        Simulation.
+rmpoint                 Generate N Random Multitype Points
+rmpoispp                Generate Multitype Poisson Point Pattern
+rnoise                  Random Pixel Noise
+rpoint                  Generate N Random Points
+rpoint3                 Generate N Random Points in 3 Dimensions
+rpoisline               Generate Poisson Random Line Process
+rpoislinetess           Poisson Line Tessellation
+rpoispp                 Generate Poisson Point Pattern
+rpoispp3                Generate Poisson Point Pattern in Three
+                        Dimensions
+rpoisppOnLines          Generate Poisson Point Pattern on Line Segments
+rpoisppx                Generate Poisson Point Pattern in Any
+                        Dimensions
+rpoistrunc              Random Values from the Truncated Poisson
+                        Distribution
+rshift                  Random Shift
+rshift.ppp              Randomly Shift a Point Pattern
+rshift.psp              Randomly Shift a Line Segment Pattern
+rshift.splitppp         Randomly Shift a List of Point Patterns
+rstrat                  Simulate Stratified Random Point Pattern
+rtemper                 Simulated Annealing or Simulated Tempering for
+                        Gibbs Point Processes
+rthin                   Random Thinning
+rthinclumps             Random Thinning of Clumps
+runifdisc               Generate N Uniform Random Points in a Disc
+runifpoint              Generate N Uniform Random Points
+runifpoint3             Generate N Uniform Random Points in Three
+                        Dimensions
+runifpointOnLines       Generate N Uniform Random Points On Line
+                        Segments
+runifpointx             Generate N Uniform Random Points in Any
+                        Dimensions
+spatstat.random-package
+                        The spatstat.random Package
+update.rmhcontrol       Update Control Parameters of
+                        Metropolis-Hastings Algorithm
+will.expand             Test Expansion Rule

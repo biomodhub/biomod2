@@ -1,0 +1,194 @@
+---
+title: Identification of Modified Data
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Identification of Modified Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Code here written by [Erica Krimmel](https://orcid.org/0000-0003-3192-0080).
+
+Here, we explore a situation where data from the provider were modified by iDigBio during ingestion as part of its data quality processing. Understanding how data were modified can help collections staff identify updates that need to be made on their specimen records as well as issues that the aggregator may need to remedy in their data quality processing.
+
+## General Overview
+
+In this demo we will cover how to:
+
+1.  Write a query to search for specimens using `idig_search_records`
+2.  Compare the difference between the data providers and aggregators data\
+3.  Identify specimen records that need to be reviewed
+
+## Load Packages
+
+```{r message=FALSE}
+# Load core libraries; install these packages if you have not already
+library(ridigbio)
+library(tidyverse)
+
+# Load library for making nice HTML output
+library(kableExtra)
+```
+
+```{r echo = FALSE}
+
+verify_df_names <- FALSE
+
+#Test that examples will run
+tryCatch({
+    # Your code that might throw an error
+    verify_df_names <- idig_search_records(rq = list(recordset = "5082e6c8-8f5b-4bf6-a930-e3e6de7bf6fb"),
+                    fields = c("uuid",
+                               "data.dwc:occurrenceID",
+                               "data.dwc:catalogNumber",
+                               "family",
+                               "data.dwc:family",
+                               "genus",
+                               "data.dwc:genus",
+                               "specificepithet",
+                               "data.dwc:specificEpithet",
+                               "infraspecificepithet",
+                               "data.dwc:infraspecificEpithet",                             
+                               "data.dwc:scientificName",
+                               "flags"),
+                    # Set the limit for how many records are returned by the
+                    # search to a low number for the purposes of this demo
+                    limit = 10)
+}, error = function(e) {
+    # Code to run if an error occurs
+    cat("An error occurred during the idig_search_records call: ", e$message, "\n")
+    cat("Vignettes will not be fully generated. Please try again after resolving the issue.")
+    # Optionally, you can return NULL or an empty dataframe
+    verify_df_names <- FALSE
+})
+```
+
+## Write a query to search for specimen records
+
+First, let's find all the specimen records from a given recordset, e.g. all of the records published by a single collection. Do this using the `idig_search_records` function from the `ridigbio` package. You can learn more about this function from the [iDigBio API documentation](https://github.com/iDigBio/idigbio-search-api/wiki) and [ridigbio documentation](https://cran.r-project.org/package=ridigbio/ridigbio.pdf). In this example, we want to start by searching for specimens from the [Invertebrate Paleontology collection](https://www.idigbio.org/portal/recordsets/5082e6c8-8f5b-4bf6-a930-e3e6de7bf6fb) at the Natural History Museum of Los Angeles.
+
+```{r eval=verify_df_names}
+# Edit the value after `recordset` to search for data from a different collection
+# and the fields (e.g. `uuid`) in `fields` to adjust the columns returned in
+# your results
+df_names <- idig_search_records(rq = list(recordset = "5082e6c8-8f5b-4bf6-a930-e3e6de7bf6fb"),
+                    fields = c("uuid",
+                               "data.dwc:occurrenceID",
+                               "data.dwc:catalogNumber",
+                               "family",
+                               "data.dwc:family",
+                               "genus",
+                               "data.dwc:genus",
+                               "specificepithet",
+                               "data.dwc:specificEpithet",
+                               "infraspecificepithet",
+                               "data.dwc:infraspecificEpithet",                             
+                               "data.dwc:scientificName",
+                               "flags"),
+                    # Set the limit for how many records are returned by the
+                    # search to a low number for the purposes of this demo
+                    limit = 1000) %>% 
+  # Rename fields to more easily reflect their provenance (either from the
+  # data provider directly or modified by the data aggregator)
+  rename(occurrenceID = `data.dwc:occurrenceID`,
+         catalogNumber = `data.dwc:catalogNumber`,
+         provider_family = `data.dwc:family`,
+         provider_genus = `data.dwc:genus`,
+         provider_species = `data.dwc:specificEpithet`,
+         provider_subspecies = `data.dwc:infraspecificEpithet`,
+         provider_scientificName = `data.dwc:scientificName`,
+         aggregator_family = `family`,
+         aggregator_genus = `genus`,
+         aggregator_species = `specificepithet`,
+         aggregator_subspecies = `infraspecificepithet`) %>% 
+  # Reorder columns for easier viewing
+  select(uuid, occurrenceID, catalogNumber, aggregator_family, provider_family,
+         aggregator_genus, aggregator_species, aggregator_subspecies, 
+         provider_genus, provider_species, provider_subspecies,
+         provider_scientificName, flags)
+```
+
+Here is what our query result data looks like, with the data from the aggregator's processing highlighted in red text:
+
+```{r eval=verify_df_names, echo = FALSE}
+# Subset `df_names` to show example
+df_names[1:50,] %>% 
+  select(-flags) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(c(4,6,7,8), color = "red") %>% 
+  scroll_box(width = "100%", height = "400px")
+```
+
+## Explore differences in the data
+
+We can already see that there are some formatting differences between the data from the provider and that modified by the aggregator. For example, iDigBio converts all data to lowercase, which was historically useful for standardizing and indexing data across all of the recordsets represented in the iDigBio database. Family and genus names are capitalized by convention, so we will reformat those fields here:
+
+```{r eval=verify_df_names}
+# Reformat aggregator fields to title case
+df_names <- df_names %>% 
+  mutate(aggregator_family = str_to_title(aggregator_family)) %>% 
+  mutate(aggregator_genus = str_to_title(aggregator_genus))
+
+# Subset `df_names` to show example
+df_names[1:5,] %>% 
+  select(-flags) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(c(4,6,7,8), color = "red") %>% 
+  scroll_box(width = "100%", height = "400px")
+```
+
+Let's use the power of R to filter out data that *have not* been modified so that we can focus on rows where the aggregator has made changes. As an example, we will look at rows where the genus name does not match between the provider and the aggregator:
+
+```{r eval=verify_df_names}
+# Filter for rows where genus does not match
+df_names %>% 
+  filter(provider_genus != aggregator_genus) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(c(4,6,7,8), color = "red") %>% 
+  scroll_box(width = "100%", height = "400px")
+```
+
+When iDigBio makes modifications to data, these actions are recorded with **data quality flags**, for instance you will notice that all of the rows in the filtered data above have the flag "dwc_genus_replaced." We could have used values in the *flags* field, like "dwc_genus_replaced," to search for records back at the beginning of this demo. You can learn more about the flags that iDigBio uses [here](https://github.com/iDigBio/idigbio-search-api/wiki/Data-Quality-Flags).
+
+## Summarize differences in the data
+
+If you want to make changes based on the modifications we have discovered here, it may be helpful to summarize the distinct modifications, as opposed to seeing them repeated across many individual specimen records. We can summarize the distinct modifications for genus names using the `group_by` and `tally` functions from the `dplyr` package.
+
+```{r eval=verify_df_names}
+# Summarize modifications made to genus names
+df_names %>% 
+  filter(provider_genus != aggregator_genus) %>% 
+  # Because of the nature of scientific names, it makes sense to group data by
+  # all of the primary fields that comprise a scientific name
+  group_by(provider_genus, provider_species, provider_subspecies,
+           aggregator_genus, aggregator_species, aggregator_subspecies,
+           provider_scientificName) %>% 
+  # Count how many rows are affected by this modification made to genus name
+  tally() %>% 
+  # Order by frequency of rows affected
+  arrange(desc(n)) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(c(4,5,6), color = "red") %>% 
+  scroll_box(width = "100%", height = "400px")
+```
+
+After reviewing the summarized data, you may wish to review individual specimens and possibly update their data. We can use the information from the summary above to search for the catalog numbers of which specimens to review.
+
+```{r eval=verify_df_names}
+# Search for specimen records of an example modified genus name
+df_names %>% 
+  filter(provider_genus == "Glossaulax" & provider_species == "reclusiana") %>%
+  select(catalogNumber)
+```

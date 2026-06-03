@@ -1,0 +1,32 @@
+Package: SparseM
+Version: 1.84-2
+Authors@R: c(
+    person("Roger", "Koenker",  role = c("cre","aut"), email =  "rkoenker@uiuc.edu"),
+    person(c("Pin", "Tian"), "Ng",  role = c("ctb"),
+           comment = "Contributions to Sparse QR code", email =  "pin.ng@nau.edu")
+  , person("Yousef", "Saad",  role = c("ctb"), comment = "author of sparskit2")
+  , person("Ben", "Shaby", role = c("ctb"), comment = "author of chol2csr")
+  , person("Martin", "Maechler", role = "ctb", comment = c("chol() tweaks; S4", ORCID = "0000-0002-8685-9910"))
+  )
+Maintainer: Roger Koenker <rkoenker@uiuc.edu>
+Depends: R (>= 2.15), methods
+Imports: graphics, stats, utils
+VignetteBuilder: knitr
+Suggests: knitr
+Description: Some basic linear algebra functionality for sparse matrices is
+  provided:  including Cholesky decomposition and backsolving as well as
+  standard R subsetting and Kronecker products.
+License: GPL (>= 2)
+Title: Sparse Linear Algebra
+URL: http://www.econ.uiuc.edu/~roger/research/sparse/sparse.html
+NeedsCompilation: yes
+Packaged: 2024-07-17 11:01:25 UTC; ripley
+Author: Roger Koenker [cre, aut],
+  Pin Tian Ng [ctb] (Contributions to Sparse QR code),
+  Yousef Saad [ctb] (author of sparskit2),
+  Ben Shaby [ctb] (author of chol2csr),
+  Martin Maechler [ctb] (chol() tweaks; S4,
+    <https://orcid.org/0000-0002-8685-9910>)
+Repository: CRAN
+Date/Publication: 2024-07-17 16:10:06 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:40:26 UTC; unix

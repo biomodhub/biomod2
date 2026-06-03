@@ -1,0 +1,181 @@
+* installing *source* package ‘rJava’ ...
+** this is package ‘rJava’ version ‘1.0-18’
+** package ‘rJava’ successfully unpacked and MD5 sums checked
+** using staged installation
+checking for gcc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether cc accepts -g... yes
+checking for cc option to enable C11 features... none needed
+checking for sys/wait.h that is POSIX.1 compatible... yes
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for string.h... (cached) yes
+checking for sys/time.h... yes
+checking for unistd.h... (cached) yes
+checking for an ANSI C-conforming const... yes
+configure: checking whether cc supports static inline...
+yes
+checking whether setjmp.h is POSIX.1 compatible... yes
+checking for cc options needed to detect all undeclared functions... none needed
+checking whether sigsetjmp is declared... yes
+checking whether siglongjmp is declared... yes
+checking Java support in R... present:
+interpreter : '/usr/lib/jvm/default-java/bin/java'
+archiver    : '/usr/lib/jvm/default-java/bin/jar'
+compiler    : '/usr/lib/jvm/default-java/bin/javac'
+header prep.: ''
+cpp flags   : '-I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux'
+java libs   : '-L/usr/lib/jvm/default-java/lib/server -ljvm'
+checking whether Java run-time works... yes
+checking whether -Xrs is supported... yes
+checking whether -Xrs will be used... yes
+checking whether JVM will be loaded dynamically... no
+checking whether JNI programs can be compiled... yes
+checking whether JNI programs run... yes
+checking JNI data types... ok
+checking whether JRI should be compiled (autodetect)... yes
+checking whether debugging output should be enabled... no
+checking whether memory profiling is desired... no
+checking whether threads support is requested... no
+checking whether callbacks support is requested... no
+checking whether JNI cache support is requested... no
+checking whether headless init is enabled... no
+checking whether JRI is requested... yes
+configure: creating ./config.status
+config.status: creating src/Makevars
+config.status: creating R/zzz.R
+config.status: creating src/config.h
+=== configuring in src/jri (/tmp/RtmppGvrDx/R.INSTALL77e2677e1d9/rJava/src/jri)
+configure: running /bin/bash ./configure --disable-option-checking '--prefix=/usr/local'  'CC=cc' 'CFLAGS=-g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2' 'LDFLAGS=-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro' --cache-file=/dev/null --srcdir=.
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking for gcc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether cc accepts -g... yes
+checking for cc option to enable C11 features... none needed
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for sys/time.h... yes
+checking for sys/types.h... (cached) yes
+checking for sys/select.h... yes
+checking Java version... 11.0.30
+checking Java compatibility version (integer)... 11
+checking whether  actually works... no
+checking whether javah was replaced by javac -h... yes
+checking for target flags...  -h . -target 1.6 -source 1.6
+checking whether Java interpreter works... checking whether JNI programs can be compiled... yes
+checking whether JNI programs can be run... yes
+checking JNI data types... ok
+checking whether Rinterface.h exports R_CStackXXX variables... yes
+checking whether Rinterface.h exports R_SignalHandlers... yes
+configure: creating ./config.status
+config.status: creating src/Makefile
+config.status: creating Makefile
+config.status: creating run
+config.status: creating src/config.h
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c Rglue.c -o Rglue.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c arrayc.c -o arrayc.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c callJNI.c -o callJNI.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c callback.c -o callback.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c fields.c -o fields.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c init.c -o init.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c jri_glue.c -o jri_glue.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c loader.c -o loader.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c otables.c -o otables.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c rJava.c -o rJava.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c registration.c -o registration.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c rjstring.c -o rjstring.o
+cc -I"/usr/share/R/include" -DNDEBUG -I. -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c tools.c -o tools.o
+cc -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o rJava.so Rglue.o arrayc.o callJNI.o callback.o fields.o init.o jri_glue.o loader.o otables.o rJava.o registration.o rjstring.o tools.o -L/usr/lib/jvm/default-java/lib/server -ljvm -L/usr/lib/R/lib -lR
+(cd jri && make)
+make[1] : on entre dans le répertoire « /tmp/RtmppGvrDx/R.INSTALL77e2677e1d9/rJava/src/jri »
+make -C src JRI.jar
+make[2] : on entre dans le répertoire « /tmp/RtmppGvrDx/R.INSTALL77e2677e1d9/rJava/src/jri/src »
+/usr/lib/jvm/default-java/bin/javac -h . -target 1.6 -source 1.6  -d . ../Mutex.java ../RBool.java ../RConsoleOutputStream.java ../REXP.java ../RFactor.java ../RList.java ../RMainLoopCallbacks.java ../RVector.java ../Rengine.java ../package-info.java
+warning: [options] bootstrap class path not set in conjunction with -source 6
+warning: [options] source value 6 is obsolete and will be removed in a future release
+warning: [options] target value 1.6 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: ../REXP.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+4 warnings
+if [ -n "" ]; then  -d . -classpath . org.rosuda.JRI.Rengine; fi
+cc -c -o Rengine.o Rengine.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux -I/usr/share/R/include -I/usr/share/R/include 
+cc -c -o jri.o jri.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux -I/usr/share/R/include -I/usr/share/R/include 
+cc -c -o Rcallbacks.o Rcallbacks.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux -I/usr/share/R/include -I/usr/share/R/include 
+cc -c -o Rinit.o Rinit.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/share/R/include -I/usr/share/R/include 
+cc -c -o globals.o globals.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux 
+cc -c -o rjava.o rjava.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux 
+cc -c -o rjstring.o rjstring.c -g -Iinclude  -DRIF_HAS_CSTACK -DRIF_HAS_RSIGHAND -DHAVE_CONFIG_H -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux  -fpic -I/usr/lib/jvm/default-java/include -I/usr/lib/jvm/default-java/include/linux -I/usr/share/R/include -I/usr/share/R/include 
+cc -o libjri.so Rengine.o jri.o Rcallbacks.o Rinit.o globals.o rjava.o rjstring.o -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -shared -L/usr/lib/jvm/default-java/lib/server -ljvm -Wl,--export-dynamic -fopenmp -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -L/usr/lib/R/lib -lR -lpcre2-8 -ldeflate -llzma -lbz2 -lz -ltirpc -lrt -ldl -lm -licuuc -licui18n 
+/usr/lib/jvm/default-java/bin/javac -h . -target 1.6 -source 1.6  -d . ../Mutex.java ../RBool.java ../RConsoleOutputStream.java ../REXP.java ../RFactor.java ../RList.java ../RMainLoopCallbacks.java ../RVector.java ../Rengine.java ../package-info.java
+warning: [options] bootstrap class path not set in conjunction with -source 6
+warning: [options] source value 6 is obsolete and will be removed in a future release
+warning: [options] target value 1.6 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: ../REXP.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+4 warnings
+/usr/lib/jvm/default-java/bin/jar fc JRI.jar org libjri.so
+make[2] : on quitte le répertoire « /tmp/RtmppGvrDx/R.INSTALL77e2677e1d9/rJava/src/jri/src »
+rm -f libjri.so
+cp src/libjri.so libjri.so
+/usr/lib/jvm/default-java/bin/javac -h . -target 1.6 -source 1.6 -classpath src/JRI.jar -d examples examples/rtest.java
+warning: [options] bootstrap class path not set in conjunction with -source 6
+warning: [options] source value 6 is obsolete and will be removed in a future release
+warning: [options] target value 1.6 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: examples/rtest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+4 warnings
+/usr/lib/jvm/default-java/bin/javac -h . -target 1.6 -source 1.6 -classpath src/JRI.jar -d examples examples/rtest2.java
+warning: [options] bootstrap class path not set in conjunction with -source 6
+warning: [options] source value 6 is obsolete and will be removed in a future release
+warning: [options] target value 1.6 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: examples/rtest2.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+4 warnings
+make[1] : on quitte le répertoire « /tmp/RtmppGvrDx/R.INSTALL77e2677e1d9/rJava/src/jri »
+installing via 'install.libs.R' to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-rJava/00new/rJava
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (rJava)

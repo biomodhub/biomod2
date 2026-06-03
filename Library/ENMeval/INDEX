@@ -1,0 +1,98 @@
+ENMdetails-class        ENMdetails class
+ENMeval-package         Automated runs and evaluations of ecological
+                        niche models
+ENMevaluate             Tune ecological niche model (ENM) settings and
+                        calculate evaluation statistics
+ENMevaluation-class     ENMevaluation class
+ENMevaluation_convert   Convert old ENMevaluation objects to new ones
+ENMnull-class           ENMnull class
+ENMnulls                Generate null ecological niche models (ENMs)
+                        and compare null with empirical performance
+                        metrics
+aic.maxent              Calculate AICc from Maxent model prediction
+buildRMM                Build metadata object from ENMeval results
+bvariegatus             Example occurrence dataset.
+calc.10p.trainThresh    Calculate 10 percentile threshold
+calc.niche.overlap      Calculate Similarity of ENMs in Geographic
+                        Space
+clamp.vars              Clamp predictor variables
+corrected.var           Corrected variance function
+emp.bg                  emp.bg generic for ENMnull object
+emp.bg.grp              emp.bg.grp generic for ENMnull object
+emp.occs                emp.occs generic for ENMnull object
+emp.occs.grp            emp.occs.grp generic for ENMnull object
+enm.args                enm.args generic for ENMdetails object
+enm.bioclim             ENMdetails bioclim
+enm.errors              enm.errors generic for ENMdetails object
+enm.fun                 enm.fun generic for ENMdetails object
+enm.maxent.jar          ENMdetails maxent.jar
+enm.maxnet              ENMdetails maxnet
+enm.msgs                enm.msgs generic for ENMdetails object
+enm.name                eval.name generic for ENMdetails object
+enm.ncoefs              enm.ncoefs generic for ENMdetails object
+enm.predict             enm.predict generic for ENMdetails object
+enm.variable.importance
+                        enm.variable.importance generic for ENMdetails
+                        object
+enmeval_results         Example ENMevaluation object.
+eval.algorithm          eval.algorithm generic for ENMevaluation object
+eval.bg                 eval.bg generic for ENMevaluation object
+eval.bg.grp             eval.bg.grp generic for ENMevaluation object
+eval.clamp.directions   eval.clamp.directions generic for ENMevaluation
+                        object
+eval.doClamp            eval.doClamp generic for ENMevaluation object
+eval.models             eval.models generic for ENMevaluation object
+eval.occs               eval.occs generic for ENMevaluation object
+eval.occs.grp           eval.occs.grp generic for ENMevaluation object
+eval.occs.testing       eval.occs.testing generic for ENMevaluation
+                        object
+eval.other.settings     eval.other.settings generic for ENMevaluation
+                        object
+eval.overlap            eval.overlap generic for ENMevaluation object
+eval.partition.method   eval.partition.method generic for ENMevaluation
+                        object
+eval.partition.settings
+                        eval.partition.settings generic for
+                        ENMevaluation object
+eval.predictions        eval.predictions generic for ENMevaluation
+                        object
+eval.results            eval.results generic for ENMevaluation object
+eval.results.partitions
+                        eval.results.partitions generic for
+                        ENMevaluation object
+eval.rmm                eval.rmm generic for ENMevaluation object
+eval.taxon.name         eval.taxon.name generic for ENMevaluation
+                        object
+eval.tune.settings      eval.tune.settings generic for ENMevaluation
+                        object
+eval.variable.importance
+                        eval.variable.importance (variable importance)
+                        generic for ENMevaluation object
+evalplot.envSim.hist    Similarity histogram plots for partition groups
+evalplot.envSim.map     Similarity maps for partition groups
+evalplot.grps           Partition group plots
+evalplot.nulls          ENMnulls statistics plot
+evalplot.stats          ENMevaluation statistics plot
+loadENMevaluation       Load ENMevaluation object
+lookup.enm              Look up ENMdetails abject
+maxentJARversion        Look up version of maxent.jar
+maxnet.predictRaster    Predict raster for maxnet
+null.algorithm          null.algorithm generic for ENMnull object
+null.doClamp            null.doClamp generic for ENMnull object
+null.emp.results        null.emp.results generic for ENMnull object
+null.mod.settings       null.mod.settings generic for ENMnull object
+null.no.iter            null.no.iter generic for ENMnull object
+null.other.settings     null.other.settings generic for ENMnull object
+null.partition.method   null.partition.method generic for ENMnull
+                        object
+null.partition.settings
+                        null.partition.settings generic for ENMnull
+                        object
+null.results            null.results generic for ENMnull object
+null.results.partitions
+                        null.results.partitions generic for ENMnull
+                        object
+parse_lambdas           Parse Maxent lambdas information
+partitions              Methods to partition data for evaluation
+saveENMevaluation       Save ENMevaluation object
+tune.enm                Iterate tuning of ENMs

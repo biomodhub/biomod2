@@ -1,0 +1,40 @@
+OU1d.loglik             Log likelihood of an one-dimensional
+                        Ornstein-Uhlenbeck model
+OUshifts                Detections of shifts in the OU process along a
+                        phylogeny.
+flowerSize              Flower size of 25 Euphorbiaceae species
+flowerTree              Phylogenetic tree of 25 Euphorbiaceae species
+guidetree               Binary population tree within Arabidopsis
+                        thaliana
+mace                    Multi-task learning for ancestral state
+                        estimation.
+phyloglm                Phylogenetic Generalized Linear Model
+phyloglmstep            Stepwise model selection for Phylogenetic
+                        Generalized Linear Model
+phylolm                 Phylogenetic Linear Model
+phylolm-package         Phylogenetic Linear Regression
+phylostep               Stepwise model selection for Phylogenetic
+                        Linear Model
+plot.OUshifts           Methods for class 'OUshifts'.
+print.phyloglm          Methods for class 'phyloglm'.
+print.phylolm           Methods for class 'phylolm'.
+pruningwise.branching.times
+                        Calculates internal node ages in an ultrametric
+                        "pruningwise" tree
+pruningwise.distFromRoot
+                        Calculates node distance from the root in an
+                        "pruningwise" tree
+quartetCF               Quartet concordance factors across Arabidopsis
+                        thaliana
+rTrait                  Continuous trait simulation
+rbinTrait               Binary trait simulation
+stepwise.test.tree      Fits a population tree to data from quartet
+                        concordance factors
+test.one.species.tree   Tests the fit of a population tree to quartet
+                        concordance factor data
+test.tree.preparation   data structure preparation for testing a
+                        population tree
+three.point.compute     Computations with a (generalized) three-point
+                        structured tree
+transf.branch.lengths   Creates a tree with branch lengths to represent
+                        the 3-point structure of a covariance matrix

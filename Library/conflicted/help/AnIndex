@@ -1,0 +1,7 @@
+conflicted-package	conflicted-package
+conflicted	conflicted-package
+conflicts_prefer	conflicts_prefer
+conflict_prefer	conflict_prefer
+conflict_prefer_all	conflict_prefer
+conflict_prefer_matching	conflict_prefer
+conflict_scout	conflict_scout

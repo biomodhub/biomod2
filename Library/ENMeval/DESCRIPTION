@@ -1,0 +1,41 @@
+Package: ENMeval
+Type: Package
+Title: Automated Tuning and Evaluations of Ecological Niche Models
+Version: 2.0.5.2
+Date: 2025-05-01
+Authors@R: c(
+  person("Jamie M.","Kass", email = "jamie.m.kass@gmail.com", role = c("aut","cre")), 
+  person("Robert","Muscarella", role = "aut"),
+  person("Peter J.","Galante", role = "aut"),
+  person("Corentin","Bohl", role = "aut"),
+  person("Gonzalo E.","Buitrago-Pinilla", role = "aut"),
+  person("Robert A.","Boria", role = "aut"),
+  person("Mariano","Soley-Guardia", role = "aut"),
+  person("Robert P.","Anderson", role = c("aut")))
+Maintainer: Jamie M. Kass <jamie.m.kass@gmail.com>
+Description: Runs ecological niche models over all combinations of user-defined settings (i.e., tuning), performs cross validation to evaluate models, and returns data tables to aid in selection of optimal model settings that balance goodness-of-fit and model complexity. Also has functions to partition data spatially (or not) for cross validation, to plot multiple visualizations of results, to run null models to estimate significance and effect sizes of performance metrics, and to calculate range overlap between model predictions, among others. The package was originally built for Maxent models (Phillips et al. 2006, Phillips et al. 2017), but the current version allows possible extensions for any modeling algorithm. The extensive vignette, which guides users through most package functionality but unfortunately has a file size too big for CRAN, can be found here on the package's Github Pages website: <https://jamiemkass.github.io/ENMeval/articles/ENMeval-2.0-vignette.html>.
+License: GPL-3
+Encoding: UTF-8
+Depends: methods, R (>= 4.1.0)
+Imports: terra, maxnet, predicts (>= 0.1-16), parallel, foreach, utils,
+        stats, grDevices, dplyr, tidyr, ggplot2, glmnet,
+        rangeModelMetadata, rlang
+RoxygenNote: 7.3.2
+LazyData: true
+Suggests: rmarkdown, graphics, testthat, knitr, rJava (>= 0.5-0),
+        spocc, RColorBrewer, sf, blockCV, devtools, tibble, ecospat,
+        geodata, usdm
+URL: https://jamiemkass.github.io/ENMeval/
+NeedsCompilation: no
+Packaged: 2025-05-01 08:13:48 UTC; kass
+Author: Jamie M. Kass [aut, cre],
+  Robert Muscarella [aut],
+  Peter J. Galante [aut],
+  Corentin Bohl [aut],
+  Gonzalo E. Buitrago-Pinilla [aut],
+  Robert A. Boria [aut],
+  Mariano Soley-Guardia [aut],
+  Robert P. Anderson [aut]
+Repository: CRAN
+Date/Publication: 2025-05-01 13:50:07 UTC
+Built: R 4.6.0; ; 2026-05-22 09:42:29 UTC; unix

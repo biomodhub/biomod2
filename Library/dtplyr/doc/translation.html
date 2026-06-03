@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Translation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Translation</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette shows the details of how dtplyr translates dplyr
+expressions into the equivalent <a href="https://r-datatable.com/">data.table</a> code. If you see places
+where you think I could generate better data.table code, please <a href="https://github.com/tidyverse/dtplyr/issues">let me know</a>!</p>
+<p>This document assumes that you’re familiar with the basics of
+data.table; if you’re not, I recommend starting at
+<code>vignette(&quot;datatable-intro.html&quot;)</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(dtplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+</div>
+<div id="the-basics" class="section level2">
+<h2>The basics</h2>
+<p>To get started, I’ll create a simple lazy table with
+<code>lazy_dt()</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">b =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">c =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">d =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>dt <span class="ot">&lt;-</span> <span class="fu">lazy_dt</span>(df)</span></code></pre></div>
+<p>The actual data doesn’t matter here since we’re just looking at the
+translation.</p>
+<p>When you print a lazy frame, it tells you that it’s a local data
+table with four rows. It also prints the call that dtplyr will evaluate
+when we execute the lazy table. In this case it’s very simple:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>dt</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; Source: local data table [5 x 4]</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; Call:   `_DT1`</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;       a     b     c     d</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; 1     1     1     1     1</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 2     2     2     2     2</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 3     3     3     3     3</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 4     4     4     4     4</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 5     5     5     5     5</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; # Use as.data.table()/as.data.frame()/as_tibble() to access results</span></span></code></pre></div>
+<p>If we just want to see the generated code, you can use
+<code>show_query()</code>. I’ll use that a lot in this vignette.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`</span></span></code></pre></div>
+</div>
+<div id="simple-verbs" class="section level2">
+<h2>Simple verbs</h2>
+<p>Many dplyr verbs have a straightforward translation to either the
+<code>i</code> or <code>j</code> component of
+<code>[.data.table</code>.</p>
+<div id="filter-and-arrange" class="section level3">
+<h3><code>filter()</code> and <code>arrange()</code></h3>
+<p><code>filter()</code> and <code>arrange()</code> become elements of
+<code>i</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(a, b, c) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`[order(a, b, c)]</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">filter</span>(b <span class="sc">==</span> c) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; `_DT1`[b == c]</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">filter</span>(b <span class="sc">==</span> c, c <span class="sc">==</span> d) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; `_DT1`[b == c &amp; c == d]</span></span></code></pre></div>
+</div>
+<div id="select-summarise-transmute" class="section level3">
+<h3><code>select()</code>, <code>summarise()</code>,
+<code>transmute()</code></h3>
+<p><code>select()</code>, <code>summarise()</code> and
+<code>transmute()</code> all become elements of <code>j</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">select</span>(a<span class="sc">:</span>b) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`[, .(a, b)]</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">a =</span> <span class="fu">mean</span>(a)) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; `_DT1`[, .(a = mean(a))]</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; copy(`_DT1`)[, `:=`(a2 = a * 2)][, `:=`(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;), </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;     NULL)]</span></span></code></pre></div>
+<p><code>mutate()</code> also uses the <code>j</code> component with
+data.table’s special <code>:=</code> operator:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; copy(`_DT1`)[, `:=`(a2 = a * 2, b2 = b * 2)]</span></span></code></pre></div>
+<p>Note that dplyr will not copy the input data by default, see below
+for more details.</p>
+<p><code>mutate()</code> allows to refer to variables that you just
+created using an “extended <code>j</code>” expression:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>, <span class="at">a4 =</span> a2 <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; copy(`_DT1`)[, `:=`(c(&quot;a2&quot;, &quot;b2&quot;, &quot;a4&quot;), {</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;     a2 &lt;- a * 2</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;     b2 &lt;- b * 2</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;     a4 &lt;- a2 * 2</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;     .(a2, b2, a4)</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; })]</span></span></code></pre></div>
+<p><code>transmute()</code> works similarly:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">transmute</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>, <span class="at">a4 =</span> a2 <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; copy(`_DT1`)[, `:=`(c(&quot;a2&quot;, &quot;b2&quot;, &quot;a4&quot;), {</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt;     a2 &lt;- a * 2</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt;     b2 &lt;- b * 2</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt;     a4 &lt;- a2 * 2</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;     .(a2, b2, a4)</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; })][, `:=`(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;), NULL)]</span></span></code></pre></div>
+</div>
+</div>
+<div id="other-calls" class="section level2">
+<h2>Other calls</h2>
+<p>Other verbs require calls to other functions:</p>
+<div id="rename" class="section level3">
+<h3><code>rename()</code></h3>
+<p><code>rename()</code> uses <code>setnames()</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">x =</span> a, <span class="at">y =</span> b) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; setnames(copy(`_DT1`), c(&quot;a&quot;, &quot;b&quot;), c(&quot;x&quot;, &quot;y&quot;))</span></span></code></pre></div>
+</div>
+<div id="distinct" class="section level3">
+<h3><code>distinct()</code></h3>
+<p><code>distinct()</code> uses <code>unique()</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">distinct</span>() <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; unique(`_DT1`)</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(a, b) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; unique(`_DT1`[, .(a, b)])</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(a, b, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; unique(`_DT1`, by = c(&quot;a&quot;, &quot;b&quot;))</span></span></code></pre></div>
+<p><code>distinct()</code> on a computed column uses an intermediate
+mutate:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(<span class="at">c =</span> a <span class="sc">+</span> b) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; unique(copy(`_DT1`)[, `:=`(c = a + b)][, `:=`(c(&quot;a&quot;, &quot;b&quot;, &quot;d&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; ), NULL)])</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(<span class="at">c =</span> a <span class="sc">+</span> b, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; unique(copy(`_DT1`)[, `:=`(c = a + b)], by = &quot;c&quot;)</span></span></code></pre></div>
+</div>
+<div id="joins" class="section level3">
+<h3>Joins</h3>
+<p>Most joins use the <code>[.data.table</code> equivalent:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>dt2 <span class="ot">&lt;-</span> <span class="fu">lazy_dt</span>(<span class="fu">data.frame</span>(<span class="at">a =</span> <span class="dv">1</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">inner_join</span>(dt2, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; `_DT1`[`_DT2`, on = .(a), nomatch = NULL, allow.cartesian = TRUE]</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">right_join</span>(dt2, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; `_DT1`[`_DT2`, on = .(a), allow.cartesian = TRUE]</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(dt2, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; `_DT2`[`_DT1`, on = .(a), allow.cartesian = TRUE]</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">anti_join</span>(dt2, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; `_DT1`[!`_DT2`, on = .(a)]</span></span></code></pre></div>
+<p>But <code>full_join()</code> uses <code>merge()</code></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">full_join</span>(dt2, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; merge(`_DT1`, `_DT2`, all = TRUE, by.x = &quot;a&quot;, by.y = &quot;a&quot;, allow.cartesian = TRUE)</span></span></code></pre></div>
+<p>In some case extra calls to <code>data.table::setcolorder()</code>
+and <code>data.table::setnames()</code> are required to ensure correct
+column order and names in:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>dt3 <span class="ot">&lt;-</span> <span class="fu">lazy_dt</span>(<span class="fu">data.frame</span>(<span class="at">b =</span> <span class="dv">1</span>, <span class="at">a =</span> <span class="dv">1</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(dt3, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; setnames(setcolorder(`_DT3`[`_DT1`, on = .(a), allow.cartesian = TRUE], </span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt;     c(2L, 3L, 4L, 5L, 1L)), c(&quot;i.b&quot;, &quot;b&quot;), c(&quot;b.x&quot;, &quot;b.y&quot;))</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">full_join</span>(dt3, <span class="at">by =</span> <span class="st">&quot;b&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; setcolorder(merge(`_DT1`, `_DT3`, all = TRUE, by.x = &quot;b&quot;, by.y = &quot;b&quot;, </span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;     allow.cartesian = TRUE), c(2L, 1L, 3L, 4L, 5L))</span></span></code></pre></div>
+<p>Semi-joins are little more complex:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">semi_join</span>(dt2, <span class="at">by =</span> <span class="st">&quot;a&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`[unique(`_DT1`[`_DT2`, which = TRUE, nomatch = NULL, on = .(a)])]</span></span></code></pre></div>
+</div>
+<div id="set-operations" class="section level3">
+<h3>Set operations</h3>
+<p>Set operations use the fast data.table alternatives:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">intersect</span>(dt2) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; fintersect(`_DT1`, `_DT2`)</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">setdiff</span>(dt2) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; fsetdiff(`_DT1`, `_DT2`)</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">union</span>(dt2) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; funion(`_DT1`, `_DT2`)</span></span></code></pre></div>
+</div>
+</div>
+<div id="grouping" class="section level2">
+<h2>Grouping</h2>
+<p>Just like in dplyr, <code>group_by()</code> doesn’t do anything by
+itself, but instead modifies the operation of downstream verbs. This
+generally just involves using the <code>keyby</code> argument:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(a) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">b =</span> <span class="fu">mean</span>(b)) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`[, .(b = mean(b)), keyby = .(a)]</span></span></code></pre></div>
+<p>You may use <code>by</code> instead of <code>keyby</code> if you set
+<code>arrange = FALSE</code>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(a, <span class="at">arrange =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">b =</span> <span class="fu">mean</span>(b)) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`[, .(b = mean(b)), by = .(a)]</span></span></code></pre></div>
+<p>Often, there won’t be too much of a difference between these, but for
+larger grouped operations, the overhead of reordering data may become
+significant. In these situations, using <code>arrange = FALSE</code>
+becomes preferable.</p>
+<p>The primary exception is grouped <code>filter()</code>, which
+requires the use of <code>.SD</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(a) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(b <span class="sc">&lt;</span> <span class="fu">mean</span>(b)) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#&gt; `_DT1`[`_DT1`[, .I[b &lt; mean(b)], by = .(a)]$V1]</span></span></code></pre></div>
+</div>
+<div id="combinations" class="section level2">
+<h2>Combinations</h2>
+<p>dtplyr tries to generate generate data.table code as close as
+possible to what you’d write by hand, as this tends to unlock
+data.table’s tremendous speed. For example, if you <code>filter()</code>
+and then <code>select()</code>, dtplyr generates a single
+<code>[</code>:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">filter</span>(a <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>a) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="fu">show_query</span>()</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt; `_DT1`[a == 1, .(b, c, d)]</span></span></code></pre></div>
+<p>And similarly when combining filtering and summarising:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="fu">group_by</span>(a) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="fu">filter</span>(b <span class="sc">&lt;</span> <span class="fu">mean</span>(b)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">c =</span> <span class="fu">max</span>(c)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="fu">show_query</span>()</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co">#&gt; `_DT1`[`_DT1`[, .I[b &lt; mean(b)], by = .(a)]$V1, .(c = max(c)), </span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co">#&gt;     keyby = .(a)]</span></span></code></pre></div>
+<p>This is particularly nice when joining two tables together because
+you can select variables after you have joined and data.table will only
+carry those into the join:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>dt3 <span class="ot">&lt;-</span> <span class="fu">lazy_dt</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="dv">2</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>dt4 <span class="ot">&lt;-</span> <span class="fu">lazy_dt</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">a =</span> <span class="dv">2</span>, <span class="at">b =</span> <span class="dv">3</span>, <span class="at">c =</span> <span class="dv">4</span>, <span class="at">d =</span> <span class="dv">5</span>, <span class="at">e =</span> <span class="dv">7</span>))</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>dt3 <span class="sc">%&gt;%</span> </span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="fu">left_join</span>(dt4) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="fu">select</span>(x, a<span class="sc">:</span>c) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>  <span class="fu">show_query</span>()</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co">#&gt; Joining, by = &quot;x&quot;</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; setcolorder(`_DT5`[`_DT4`, on = .(x), allow.cartesian = TRUE], </span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt;     c(1L, 7L, 2L, 3L, 4L, 5L, 6L))[, `:=`(c(&quot;y&quot;, &quot;d&quot;, &quot;e&quot;), NULL)]</span></span></code></pre></div>
+<p>Note, however, that <code>select()</code>ing and then
+<code>filter()</code>ing must generate two separate calls to
+<code>[</code>, because data.table evaluates <code>i</code> before
+<code>j</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">X =</span> a, <span class="at">Y =</span> b) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="fu">filter</span>(X <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="fu">show_query</span>()</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt; `_DT1`[, .(X = a, Y = b)][X == 1]</span></span></code></pre></div>
+<p>Similarly, a <code>filter()</code> and <code>mutate()</code> can’t be
+combined because <code>dt[a == 1, .(b2 := b * 2)]</code> would modify
+the selected rows in place:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="fu">filter</span>(a <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="fu">show_query</span>()</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co">#&gt; `_DT1`[a == 1][, `:=`(b2 = b * 2)]</span></span></code></pre></div>
+</div>
+<div id="copies" class="section level2">
+<h2>Copies</h2>
+<p>By default dtplyr avoids mutating the input data, automatically
+creating a <code>copy()</code> if needed:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt; copy(`_DT1`)[, `:=`(a2 = a * 2, b2 = b * 2)]</span></span></code></pre></div>
+<p>Note that dtplyr does its best to avoid needless copies, so it won’t
+explicitly copy if there’s already an implicit copy produced by
+<code>[</code>, <code>head()</code>, <code>merge()</code> or
+similar:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>dt <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>  <span class="fu">filter</span>(x <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>  <span class="fu">show_query</span>()</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a><span class="co">#&gt; `_DT1`[x == 1][, `:=`(a2 = a * 2, b2 = b * 2)]</span></span></code></pre></div>
+<p>You can choose to opt out of this copy, and take advantage of
+data.table’s reference semantics (see
+<code>vignette(&quot;datatable-reference-semantics&quot;)</code> for more
+details). Do this by setting <code>immutable = FALSE</code> on
+construction:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>dt2 <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>dt_inplace <span class="ot">&lt;-</span> <span class="fu">lazy_dt</span>(dt2, <span class="at">immutable =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>dt_inplace <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">a2 =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">b2 =</span> b <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>()</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="co">#&gt; `_DT6`[, `:=`(a2 = a * 2, b2 = b * 2)]</span></span></code></pre></div>
+</div>
+<div id="performance" class="section level2">
+<h2>Performance</h2>
+<p>There are two components to the performance of dtplyr: how long it
+takes to generate the translation, and how well the translation
+performs. Given my explorations so far, I’m reasonably confident that
+we’re generating high-quality data.table code, so most of the cost
+should be in the translation itself.</p>
+<p>The following code briefly explores the performance of a few
+different translations. A significant amount of work is done by the
+dplyr verbs, so we benchmark the whole process.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>bench<span class="sc">::</span><span class="fu">mark</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="at">filter =</span> dt <span class="sc">%&gt;%</span> <span class="fu">filter</span>(a <span class="sc">==</span> b, c <span class="sc">==</span> d),</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="at">mutate =</span> dt <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">a =</span> a <span class="sc">*</span> <span class="dv">2</span>, <span class="at">a4 =</span> a2 <span class="sc">*</span> <span class="dv">2</span>, <span class="at">a8 =</span> a4 <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>(),</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  <span class="at">summarise =</span> dt <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(a) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">b =</span> <span class="fu">mean</span>(b)) <span class="sc">%&gt;%</span> <span class="fu">show_query</span>(),</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>  <span class="at">check =</span> <span class="cn">FALSE</span></span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 6</span></span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span></span>
+<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
+<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a><span class="co">#&gt; 1 filter        222µs    247µs     4035.    3.25KB     54.1</span></span>
+<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a><span class="co">#&gt; 2 mutate        342µs    375µs     2642.   17.51KB     58.9</span></span>
+<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a><span class="co">#&gt; 3 summarise     539µs    584µs     1689.   26.17KB     54.6</span></span></code></pre></div>
+<p>These translations all take less than a millisecond, suggesting that
+the performance overhead of dtplyr should be negligible for realistic
+data sizes. Note that dtplyr run-time scales with the complexity of the
+pipeline, not the size of the data, so these timings should apply
+regardless of the size of the underlying data<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Unless a copy is performed.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

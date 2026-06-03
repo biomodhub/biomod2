@@ -1,0 +1,25 @@
+### C code
+useDynLib(expm, .registration = TRUE)
+
+importFrom("methods", as, is)
+importFrom("stats", rnorm)
+
+importFrom("Matrix", Schur, norm,
+	   solve,# <- for expm.Higham08(*, balancing=FALSE)
+           rowSums, colSums,# e.g. in expm.s.Pade.s
+	   Diagonal,
+           Matrix)# <- only in Schur(Matrix(.))
+
+### Exports
+export(expm, expAtv)
+export(.methSparse, .methComplex)
+export("%^%")
+export(balance, dgebal)# dgebal() should become deprecated -- see R/dgebal.R and ./TODO
+export(logm)
+## From Michael Stadelmann's (ETH Zurich) Master Thesis : ------------
+export(expm.Higham08)## exported, as has own help == man/expm.Higham08.Rd
+
+## For now we want the files to be kept modularly separate from the rest of 'expm'
+export(expmCond, expmFrechet)
+
+export(sqrtm)

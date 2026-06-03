@@ -1,0 +1,95 @@
+---
+title: "ks: Kernel density estimation for bivariate data"
+output: rmarkdown::html_vignette
+description: ks Kernel density estimation for bivariate data
+author: Tarn Duong
+vignette: >
+  %\VignetteIndexEntry{ks: Kernel density estimation for bivariate data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(global.par=TRUE, collapse=TRUE, comment="#>", fig.width=5, fig.height=5, fig.align="center", dpi=96)
+options(tibble.print_min=3L, tibble.print_max=3L)
+```
+
+## Introduction 
+
+Kernel density estimation is a popular tool for visualising the distribution of data. See Chacon \& Duong (2018), for example, for an overview. When multivariate kernel density estimation is considered it is usually in the constrained context with diagonal bandwidth matrices, e.g. in the `R` packages `sm` and `KernSmooth`. In contrast, the `ks` package implements both diagonal and unconstrained data-driven bandwidth matrices for kernel density estimation. 
+
+## Bivariate data example
+
+For our target density, we use the `dumbbell' density, given by the normal mixture
+$$ 
+\frac{4}{11} N \bigg( \begin{bmatrix}-2 \\ 2\end{bmatrix}, 
+\begin{bmatrix}1 & 0 \\ 0 & 1 \end{bmatrix} \bigg)+ 
+\frac{3}{11} N \bigg( \begin{bmatrix}0 \\ 0\end{bmatrix},
+\begin{bmatrix}0.8 & -0.72 \\ -0.72 & 0.8\end{bmatrix} \bigg)+
+\frac{4}{11} N \bigg( \begin{bmatrix}2 \\ -2\end{bmatrix}, 
+\begin{bmatrix}1 & 0 \\ 0 & 1 \end{bmatrix} \bigg).
+$$
+This density is unimodal and we draw a sample of 2000 data points.
+ 
+```{r, message=FALSE}
+library(ks)
+mus <- rbind(c(-2,2), c(0,0), c(2,-2))
+Sigmas <- rbind(diag(2), matrix(c(0.8, -0.72, -0.72, 0.8), nrow=2), diag(2))
+cwt <- 3/11
+props <- c((1-cwt)/2, cwt, (1-cwt)/2)
+plotmixt(mus=mus, Sigmas=Sigmas, props=props, display="filled.contour", xlim=c(-4,4), ylim=c(-4,4))
+set.seed(88192)
+samp <- 2000
+x <- rmvnorm.mixt(n=samp, mus=mus, Sigmas=Sigmas, props=props)
+colnames(x) <- c("x","y")
+plot(x, pch=16, cex=0.5, xlim=c(-4,4), ylim=c(-4,4))
+```
+
+We use `Hpi` for unconstrained plug-in selectors and `Hpi.diag` for diagonal plug-in selectors.
+
+```{r}
+Hpi1 <- Hpi(x=x)
+Hpi2 <- Hpi.diag(x=x)
+```
+
+To compute a kernel density estimate, the command is `kde`, which creates a `kde` class object
+
+```{r}
+fhat.pi1 <- kde(x=x)         ## same as Hpi(x=x, H=Hpi1)
+fhat.pi2 <- kde(x=x, H=Hpi2)
+``` 
+
+We use the `plot` method for `kde` objects to display these kernel density estimates. The default is a contour plot with the upper 25%, 50% and 75% contours of the 
+(sample) highest density regions. The diagonal bandwidth matrix constrains the smoothing to be performed in directions parallel to the co-ordinate axes, so it is not able to apply accurate levels of smoothing to the obliquely oriented central portion. The result is a multimodal density estimate. The unconstrained bandwidth matrix correctly produces a unimodal density estimate. 
+
+```{r}
+plot(fhat.pi1, main="Plug-in", display="filled.contour", xlim=c(-4,4), ylim=c(-4,4))
+plot(fhat.pi2, main="Plug-in diagonal", display="filled.contour", xlim=c(-4,4), ylim=c(-4,4)) 
+```
+
+The unconstrained SCV (Smoothed Cross Validation) selector is `Hscv` and 
+its diagonal version is `Hscv.diag`. The most reasonable density estimate below is from the unconstrained SCV selector. 
+
+```{r}
+Hscv1 <- Hscv(x=x)
+Hscv2 <- Hscv.diag(x=x)
+fhat.cv1 <- kde(x=x, H=Hscv1)
+fhat.cv2 <- kde(x=x, H=Hscv2)
+plot(fhat.cv1, main="SCV", display="filled.contour", xlim=c(-4,4), ylim=c(-4,4))
+plot(fhat.cv2, main="SCV diagonal", display="filled.contour", xlim=c(-4,4), ylim=c(-4,4))
+```
+
+The unconstrained bandwidth selectors will be better than their diagonal counterparts when the data have large mass oriented obliquely to the co-ordinate axes, like for the dumbbell data. 
+The unconstrained plug-in and the SCV selectors can be viewed as generally recommended selectors.
+
+## References
+
+Chacon, J. E. and Duong, T. (2018). [_Multivariate Kernel Smoothing and Its Applications_](https://mvstat.net/mvksa/) Chapman & Hall/CRC Press, Boca Raton.
+
+Duong, T. 2007). [ks: Kernel density estimation and kernel discriminant analysis for
+  multivariate data in R](https://www.jstatsoft.org/v21/i07/) _Journal of Statistical Software_ **21 (7)**.
+
+&nbsp; 
+
+-- Generated `r format(Sys.time(), '%d %B %Y')`. 

@@ -1,0 +1,99 @@
+About the RPostgreSQL package:
+
+    Database Interface between R and PostgreSQL
+
+For details, see the Adobe PDF file "DBI.pdf" in the doc folder or see the
+documentation using help(PostgreSQL).  Examples provided in the devTests
+folder illustrate some of the functionality.
+
+=============================================================================
+
+Basic usage:
+
+  ## initialize the driver to PostgreSQL
+  drv <- dbDriver("PostgreSQL")
+
+  ## create a connection to a PostgreSQL server
+  con <- dbConnect(drv, user="userName", password="123456",
+                   dbname="gsoc", host="10.23.34.23")
+
+  ## run a query, and get the result set as a dataframe
+  dFrame <- dbGetQuery(con, "select * from someTable LIMIT 50")
+
+  ## run a query, leave results in the library*
+  ## note current implementation does not leave the result in the Server
+  ## and there is no benefit using dbSendQuery() fetch() pair other than
+  ## compatibility.
+  rs <- dbSendQuery(con, "select * from someTable")
+
+  ## fetch up to, say, 50 records
+  dFrame <- fetch(rs, n = 50)
+
+  ## close resultSet rs 
+  dbClearResult(rs)
+
+  ## close connection con
+  dbDisconnect(con)
+
+  ## Unload the driver drv
+  dbUnloadDriver(drv)
+
+For a more complete example, refer to the file demo.r in the devTests folder.
+
+=============================================================================
+
+Important Information:
+
+1. The present version of RPostgreSQL can handle only one resultset per connection.
+   Thus dbSendQuery/fetch usually do not have speed merit over dbGetQuery.
+
+=============================================================================
+
+Frequently Asked Questions (FAQ):
+
+1.  What is Database Interface(DBI) ?
+
+    The Data Base Interface (DBI) provides a layer of abstraction between R
+    and relational databases. All the classes in the DBI package are virtual
+    and need to be implemented using the various DBMS libraries. The vendor
+    has written some functions for communicating with the database in some
+    language like C, compiled the functions and the compiled code is the
+    library. We write a C program that calls the functions in the library,
+    when it wants to access the database. Every database library is
+    different. The names of the functions vary, and the order in
+    which you call them varies, and the details of passing queries to the
+    functions and getting the data back out will vary. To manage this, DBI
+    was extended for individual database back-ends MySQL, SQLite, Oracle,
+    PostgreSQL via R packages ROracle, RMySQL, RSQLite and RPostgreSQL. 
+    DBI for R-language was initially developed at Bell Labs by David James.
+
+2.  What is RPostgreSQL ?
+ 
+    The RPostgreSQL package provides a glue between the PostgreSQL database
+    and the DBI of R. The C programming interface called libpq was used for
+    communicating with PostgreSQL. 
+
+3   What is libpq ?
+
+    libpq is the C application programmer’s interface to PostgreSQL. libpq is
+    a cross platform library providing set of library functions that allow
+    client programs to pass queries to the PostgreSQL backend server and to
+    receive the results of these queries.
+
+4.  What about Rdbi/RdbiPgSQL ?
+
+    Rdbi and RdbiPgSQL are a 'fork' of the DBI interface for R. RPostgreSQL follows
+    the DBI as do ROracle, RMySQL and RSQLite.
+
+
+For any queries,suggestions and comments, mail: 
+ 
+    rpostgresql-dev@googlegroups.com
+
+For security issues that should not directly go to public,
+you may contact:
+
+    Tomoaki Nishiyama <tomoakin@kenroku.kanazawa-u.ac.jp>
+    Neil Tiffin <neilt@neiltiffin.com>
+    Joe Conway <mail@joeconway.com>
+    Dirk Eddelbuettel <edd@debian.org>

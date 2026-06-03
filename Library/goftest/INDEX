@@ -1,0 +1,8 @@
+ad.test                 Anderson-Darling Test of Goodness-of-Fit
+cvm.test                Cramer-Von Mises Test of Goodness-of-Fit
+goftest-package         Classical Goodness-of-Fit Tests
+pAD                     Null Distribution of Anderson-Darling Test
+                        Statistic
+pCvM                    Null Distribution of Cramer-von Mises Test
+                        Statistic
+recogniseCdf            Explanatory Name of Distribution Function

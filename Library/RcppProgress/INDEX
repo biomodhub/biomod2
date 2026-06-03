@@ -1,0 +1,2 @@
+RcppProgress-package    An interruptible progress bar with OpenMP
+                        support for c++ in R packages

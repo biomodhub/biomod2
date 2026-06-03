@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: High Dimensional Geometry, Set Operations, Projection, and
+Inference Using Kernel Density Estimation, Support Vector
+Machines, and Convex Hulls</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> High Dimensional Geometry, Set Operations, Projection, and
+Inference Using Kernel Density Estimation, Support Vector
+Machines, and Convex Hulls
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;hypervolume&rsquo; version 3.1.6</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../demo">Code demos</a>.  Use <a href="../../utils/help/demo">demo()</a> to run them.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="hypervolume-package.html">hypervolume-package</a></td>
+<td>High Dimensional Geometry, Set Operations, Projection, and Inference Using Kernel Density Estimation, Support Vector Machines, and Convex Hulls</td></tr>
+<tr><td style="width: 25%;"><a href="acacia_pinus.html">acacia_pinus</a></td>
+<td>Data for Acacia and Pinus tree distributions</td></tr>
+<tr><td style="width: 25%;"><a href="circles.html">circles</a></td>
+<td>Circles simulated dataset</td></tr>
+<tr><td style="width: 25%;"><a href="copy_param_hypervolume.html">copy_param_hypervolume</a></td>
+<td>Generate hypervolumes using pre-existing parameters</td></tr>
+<tr><td style="width: 25%;"><a href="estimate_bandwidth.html">estimate_bandwidth</a></td>
+<td>Kernel bandwidth estimators for hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="expectation_ball.html">expectation_ball</a></td>
+<td>Hypersphere expectation</td></tr>
+<tr><td style="width: 25%;"><a href="expectation_box.html">expectation_box</a></td>
+<td>Hyperbox expectation</td></tr>
+<tr><td style="width: 25%;"><a href="expectation_convex.html">expectation_convex</a></td>
+<td>Convex expectation</td></tr>
+<tr><td style="width: 25%;"><a href="expectation_maximal.html">expectation_maximal</a></td>
+<td>Maximal expectation</td></tr>
+<tr><td style="width: 25%;"><a href="find_optimal_occupancy_thin.html">find_optimal_occupancy_thin</a></td>
+<td>Find optimal parameters to calculate occupancy</td></tr>
+<tr><td style="width: 25%;"><a href="get_centroid.html">get_centroid</a></td>
+<td>Get centroid of hypervolume or hypervolume list</td></tr>
+<tr><td style="width: 25%;"><a href="get_centroid_weighted.html">get_centroid_weighted</a></td>
+<td>Get weighted centroid of hypervolume or hypervolume list</td></tr>
+<tr><td style="width: 25%;"><a href="get_occupancy_intersection_bootstrap.html">get_occupancy_intersection_bootstrap</a></td>
+<td>Volume of the intersection of a bootstrapped occupancy object</td></tr>
+<tr><td style="width: 25%;"><a href="get_occupancy_stats.html">get_occupancy_stats</a></td>
+<td>Stats from occupancy objects</td></tr>
+<tr><td style="width: 25%;"><a href="get_occupancy_stats.html">get_occupancy_stats_bootstrap</a></td>
+<td>Stats from occupancy objects</td></tr>
+<tr><td style="width: 25%;"><a href="get_occupancy_unshared_bootstrap.html">get_occupancy_unshared_bootstrap</a></td>
+<td>Volume of the unshared fraction of a bootstrapped occupancy object</td></tr>
+<tr><td style="width: 25%;"><a href="get_occupancy_volume_bootstrap.html">get_occupancy_volume_bootstrap</a></td>
+<td>Extract the volume from occupancy bootstrap objects</td></tr>
+<tr><td style="width: 25%;"><a href="get_relative_volume.html">get_relative_volume</a></td>
+<td>Extract the relative volume</td></tr>
+<tr><td style="width: 25%;"><a href="get_volume.html">get_volume</a></td>
+<td>Extract volume</td></tr>
+<tr><td style="width: 25%;"><a href="get_volume.html">get_volume-method</a></td>
+<td>Extract volume</td></tr>
+<tr><td style="width: 25%;"><a href="get_volume.html">get_volume.Hypervolume</a></td>
+<td>Extract volume</td></tr>
+<tr><td style="width: 25%;"><a href="get_volume.html">get_volume.HypervolumeList</a></td>
+<td>Extract volume</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume.html">hypervolume</a></td>
+<td>Hypervolume construction methods</td></tr>
+<tr><td style="width: 25%;"><a href="Hypervolume-class.html">Hypervolume-class</a></td>
+<td>Class '"Hypervolume"'</td></tr>
+<tr><td style="width: 25%;"><a href="HypervolumeList-class.html">HypervolumeList-class</a></td>
+<td>Class '"HypervolumeList"'</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_box.html">hypervolume_box</a></td>
+<td>Hypervolume construction via hyperbox kernel density estimation</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_distance.html">hypervolume_distance</a></td>
+<td>Distance between two hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_distance_point.html">hypervolume_distance_point</a></td>
+<td>Distance from a point to the margin of a hypervolume.</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_estimate_probability.html">hypervolume_estimate_probability</a></td>
+<td>Estimate probability a given location</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_funnel.html">hypervolume_funnel</a></td>
+<td>Hypervolumes at different sample sizes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_gaussian.html">hypervolume_gaussian</a></td>
+<td>Hypervolume construction via Gaussian kernel density estimation</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_general_model.html">hypervolume_general_model</a></td>
+<td>Generates hypervolume by sampling from arbitrary model object.</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_holes.html">hypervolume_holes</a></td>
+<td>Hole detection</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_inclusion_test.html">hypervolume_inclusion_test</a></td>
+<td>Inclusion test</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_join.html">hypervolume_join</a></td>
+<td>Concatenate hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_n_occupancy.html">hypervolume_n_occupancy</a></td>
+<td>Operations for groups of hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_n_occupancy.html">hypervolume_n_occupancy_bootstrap</a></td>
+<td>Operations for groups of hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_n_occupancy_permute.html">hypervolume_n_occupancy_permute</a></td>
+<td>Hypervolumes through permuting labels of n pairwise groups of hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_n_occupancy_test.html">hypervolume_n_occupancy_test</a></td>
+<td>Significance of random points occupancy</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_n_resample.html">hypervolume_n_resample</a></td>
+<td>Bootstrap n hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_overlap_confidence.html">hypervolume_overlap_confidence</a></td>
+<td>Confidence intervals for overlap statistics</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_overlap_statistics.html">hypervolume_overlap_statistics</a></td>
+<td>Overlap statistics for set operations (Sorensen, Jaccard, etc.)</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_overlap_test.html">hypervolume_overlap_test</a></td>
+<td>Null distribution for overlap statistics</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_permute.html">hypervolume_permute</a></td>
+<td>Hypervolumes through permuting data of two hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_project.html">hypervolume_project</a></td>
+<td>Geographical projection of hypervolume for species distribution modeling, using the hypervolume as the environmental niche model.</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_prune.html">hypervolume_prune</a></td>
+<td>Removes small hypervolumes from a HypervolumeList</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_redundancy.html">hypervolume_redundancy</a></td>
+<td>Redundancy of a point in a hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_resample.html">hypervolume_resample</a></td>
+<td>Hypervolume resampling methods</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_save_animated_gif.html">hypervolume_save_animated_gif</a></td>
+<td>Saves animated GIF of three-dimensional hypervolume plot.</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_segment.html">hypervolume_segment</a></td>
+<td>Segments a hypervolume into multiple separate hypervolumes.</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_set.html">hypervolume_set</a></td>
+<td>Set operations (intersection / union / unique components)</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_set_n_intersection.html">hypervolume_set_n_intersection</a></td>
+<td>Multi-way set intersection</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_set_n_union.html">hypervolume_set_n_union</a></td>
+<td>Multi-way set union</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_svm.html">hypervolume_svm</a></td>
+<td>Hypervolume construction via one-class support vector machine (SVM) learning model</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_thin.html">hypervolume_thin</a></td>
+<td>Reduces the number of random points in a hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_threshold.html">hypervolume_threshold</a></td>
+<td>Thresholds hypervolume and calculates volume quantile statistics (empirical cumulative distribution function)</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_to_data_frame.html">hypervolume_to_data_frame</a></td>
+<td>Convert hypervolumes to 'data.frame'</td></tr>
+<tr><td style="width: 25%;"><a href="hypervolume_variable_importance.html">hypervolume_variable_importance</a></td>
+<td>Hypervolume variable importance</td></tr>
+<tr><td style="width: 25%;"><a href="morphSnodgrassHeller.html">morphSnodgrassHeller</a></td>
+<td>Morphological data for Darwin's finches</td></tr>
+<tr><td style="width: 25%;"><a href="occupancy_bootstrap_gof.html">occupancy_bootstrap_gof</a></td>
+<td>Goodness of fit metrics for bootstrapped occupancy objects</td></tr>
+<tr><td style="width: 25%;"><a href="occupancy_filter.html">occupancy_filter</a></td>
+<td>Subset occupancy hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="occupancy_to_intersection.html">occupancy_to_intersection</a></td>
+<td>Get the intersection of an occupancy object</td></tr>
+<tr><td style="width: 25%;"><a href="occupancy_to_union.html">occupancy_to_union</a></td>
+<td>Union of hypervolumes from an occupancy object</td></tr>
+<tr><td style="width: 25%;"><a href="occupancy_to_unshared.html">occupancy_to_unshared</a></td>
+<td>Unshared fraction from an occupancy object</td></tr>
+<tr><td style="width: 25%;"><a href="padded_range.html">padded_range</a></td>
+<td>Generates axis-wise range limits with padding</td></tr>
+<tr><td style="width: 25%;"><a href="plot.Hypervolume.html">plot.Hypervolume</a></td>
+<td>Plot a hypervolume or list of hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="plot.Hypervolume.html">plot.HypervolumeList</a></td>
+<td>Plot a hypervolume or list of hypervolumes</td></tr>
+<tr><td style="width: 25%;"><a href="print.Hypervolume.html">print.Hypervolume</a></td>
+<td>Print summary of hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="print.Hypervolume.html">print.HypervolumeList</a></td>
+<td>Print summary of hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="quercus.html">quercus</a></td>
+<td>Data and demo for Quercus (oak) tree distributions</td></tr>
+<tr><td style="width: 25%;"><a href="summary.Hypervolume.html">show.Hypervolume</a></td>
+<td>Summary of hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="summary.Hypervolume.html">show.HypervolumeList</a></td>
+<td>Summary of hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="summary.Hypervolume.html">summary.Hypervolume</a></td>
+<td>Summary of hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="summary.Hypervolume.html">summary.HypervolumeList</a></td>
+<td>Summary of hypervolume</td></tr>
+<tr><td style="width: 25%;"><a href="to_hv_list.html">to_hv_list</a></td>
+<td>Read hypervolumes from directory</td></tr>
+<tr><td style="width: 25%;"><a href="weight_data.html">weight_data</a></td>
+<td>Abundance weighting and prior of data for hypervolume input</td></tr>
+</table>
+</div></body></html>

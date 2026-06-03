@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2024-09-17" />
+
+<title>Phylogenetic trees from morphological data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Phylogenetic trees from morphological
+data</h1>
+<h4 class="author">Iris Bardel-Kahr, Klaus Schliep</h4>
+<address class="author_afil">
+University of Graz, Graz University of
+Technology<br><a class="author_email" href="mailto:#"><a href="mailto:klaus.schliep@gmail.com" class="email">klaus.schliep@gmail.com</a></a>
+</address>
+<h4 class="date">2024-09-17</h4>
+
+
+
+<p>In this vignette, we will show how to work with morphological data in
+<em>phangorn</em> <span class="citation">(Schliep 2011)</span>. In most
+cases the different morphological characters or character states are
+encoded with the numbers 0:9 (or less, if there are less differences).
+Morphological data can come in different formats. The most common ones
+are <strong>.csv</strong> and <strong>.nexus</strong>.</p>
+<div id="load-packages" class="section level1">
+<h1>Load packages</h1>
+<p>We start by loading the <em>phangorn</em> package and setting a
+random seed:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(phangorn)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9</span>)</span></code></pre></div>
+</div>
+<div id="load-data" class="section level1">
+<h1>Load data</h1>
+<p>The dataset we’re using contains morphological data for 12 mite
+species, with 79 encoded characters <span class="citation">(Schäffer et
+al. 2010)</span>. When reading in the <em>.csv</em> file,
+<code>row.names = 1</code> uses the first column (species) as row names.
+To get a <code>phyDat</code> object, we have to convert the dataframe
+into a matrix with <code>as.matrix</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>fdir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;phangorn&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>mm <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(fdir, <span class="st">&quot;mites.csv&quot;</span>), <span class="at">row.names =</span> <span class="dv">1</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>mm_pd <span class="ot">&lt;-</span> <span class="fu">phyDat</span>(<span class="fu">as.matrix</span>(mm), <span class="at">type =</span> <span class="st">&quot;USER&quot;</span>, <span class="at">levels =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">7</span>)</span></code></pre></div>
+<p>The data can then be written into a <em>nexus</em> file:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">write.phyDat</span>(mm_pd, <span class="fu">file.path</span>(fdir, <span class="st">&quot;mites.nex&quot;</span>), <span class="at">format =</span> <span class="st">&quot;nexus&quot;</span>)</span></code></pre></div>
+<p>Reading in a <em>nexus</em> file is even easier than reading in a
+<em>csv</em> file:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>mm_pd <span class="ot">&lt;-</span> <span class="fu">read.phyDat</span>(<span class="fu">file.path</span>(fdir, <span class="st">&quot;mites.nex&quot;</span>), <span class="at">format =</span> <span class="st">&quot;nexus&quot;</span>, <span class="at">type =</span> <span class="st">&quot;STANDARD&quot;</span>)</span></code></pre></div>
+<p>After reading in the <em>nexus</em> file, we have the states 0:9, but
+the data only has the states 0:7. Here is one possibility to change the
+contrast matrix:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>contrast <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="at">ncol =</span> <span class="dv">9</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="fu">dimnames</span>(contrast) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">7</span>,<span class="st">&quot;-&quot;</span>,<span class="st">&quot;?&quot;</span>),</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="fu">c</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">7</span>, <span class="st">&quot;-&quot;</span>))</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>contrast</span></code></pre></div>
+<pre><code>##   0 1 2 3 4 5 6 7 -
+## 0 1 0 0 0 0 0 0 0 0
+## 1 0 1 0 0 0 0 0 0 0
+## 2 0 0 1 0 0 0 0 0 0
+## 3 0 0 0 1 0 0 0 0 0
+## 4 0 0 0 0 1 0 0 0 0
+## 5 0 0 0 0 0 1 0 0 0
+## 6 0 0 0 0 0 0 1 0 0
+## 7 0 0 0 0 0 0 0 1 0
+## - 0 0 0 0 0 0 0 0 1
+## ? 1 1 1 1 1 1 1 1 1</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>mm_pd <span class="ot">&lt;-</span> <span class="fu">phyDat</span>(mm_pd, <span class="at">type=</span><span class="st">&quot;USER&quot;</span>, <span class="at">contrast=</span>contrast)</span></code></pre></div>
+<p>Now that we have our data, we can start the analyses.</p>
+</div>
+<div id="parsimony" class="section level1">
+<h1>Parsimony</h1>
+<p>For morphological data, one of the most frequently used approaches to
+conduct phylogenetic trees is maximum parsimony (MP).
+<code>pratchet</code> (as already described in <em>Estimating
+phylogenetic trees with phangorn</em>) implements the parsimony ratchet
+<span class="citation">(Nixon 1999)</span>. To create a starting tree,
+we can use the function <code>random.addition</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>mm_start <span class="ot">&lt;-</span> <span class="fu">random.addition</span>(mm_pd)</span></code></pre></div>
+<p>This tree can then be given to <code>pratchet</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>mm_tree <span class="ot">&lt;-</span> <span class="fu">pratchet</span>(mm_pd, <span class="at">start =</span> mm_start, <span class="at">minit =</span> <span class="dv">1000</span>, <span class="at">maxit =</span> <span class="dv">10000</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                    <span class="at">all =</span> <span class="cn">TRUE</span>, <span class="at">trace =</span> <span class="dv">0</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>mm_tree</span></code></pre></div>
+<pre><code>## 19 phylogenetic trees</code></pre>
+<p>With <code>all=TRUE</code> we get all (in this case 19) trees with
+lowest parsimony score in a <code>multiPhylo</code> object. Since we we
+did a minimum of 1000 iterations, we already have some edge support. Now
+we can assign the edge lengths.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>mm_tree <span class="ot">&lt;-</span> <span class="fu">acctran</span>(mm_tree, mm_pd)</span></code></pre></div>
+<div id="branch-and-bound" class="section level2">
+<h2>Branch and bound</h2>
+<p>In the case of our mites-dataset with 12 sequences, it’s also
+possible to use the branch and bound algorithm <span class="citation">(Hendy and Penny 1982)</span> to find all most
+parsimonious trees. With bigger datasets it is definitely recommended to
+use <code>pratchet</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>mm_bab <span class="ot">&lt;-</span> <span class="fu">bab</span>(mm_pd, <span class="at">trace =</span> <span class="dv">0</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>mm_bab</span></code></pre></div>
+<pre><code>## 37 phylogenetic trees</code></pre>
+</div>
+<div id="root-trees" class="section level2">
+<h2>Root trees</h2>
+<p>If we want our unrooted trees to be rooted, we have the possibility
+to use <code>midpoint</code> to perform midpoint rooting. Rooting the
+trees with a specific species (we chose <em>C. cymba</em> here) can be
+done with the function <code>root</code> from the <em>ape</em> package
+<span class="citation">(Paradis and Schliep 2019)</span>. To save the
+correct node labels (edge support), it’s important to set
+<code>edgelabel=TRUE</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>mm_tree_rooted <span class="ot">&lt;-</span> <span class="fu">root</span>(mm_tree, <span class="at">outgroup =</span> <span class="st">&quot;C._cymba&quot;</span>, <span class="at">resolve.root =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>                       <span class="at">edgelabel =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="plot-trees" class="section level2">
+<h2>Plot trees</h2>
+<!-- With `plotBS`, we can either plot all of the trees with their respective edge support, or we can subset to only get a certain tree.
+
+# plot all trees
+plotBS(mm_tree_rooted, digits = 2)
+-->
+<p>With <code>plotBS</code> we plot a tree with their respective edge
+support. It is also possible to save the plots as <em>.pdf</em> (or
+various other formats, e.g. svg, png, tiff) file. <code>digits</code> is
+an argument to determine the number of digits shown for the bootstrap
+values.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># subsetting for tree nr. 9</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">plotBS</span>(mm_tree_rooted[[<span class="dv">9</span>]], <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co"># save plot as pdf</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;mm_rooted.pdf&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="fu">plotBS</span>(mm_tree_rooted[[<span class="dv">9</span>]], <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+<div id="consensus-tree" class="section level2">
+<h2>Consensus tree</h2>
+<p>To look at the consensus tree of our 19 trees from
+<code>pratchet</code>, or of our 37 most parsimonious trees from
+<code>bab</code>, we can use the <code>consensus</code> function from
+<em>ape</em>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># unrooted pratchet tree</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>mm_cons <span class="ot">&lt;-</span> <span class="fu">consensus</span>(mm_tree)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co"># rooted pratchet tree</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>mm_cons_root <span class="ot">&lt;-</span> <span class="fu">consensus</span>(mm_tree_rooted, <span class="at">rooted =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># branch and bound, we root the consensus tree in the same step</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>mm_bab_cons <span class="ot">&lt;-</span> <span class="fu">root</span>(<span class="fu">consensus</span>(mm_bab), <span class="at">outgroup =</span> <span class="st">&quot;C._cymba&quot;</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>                    <span class="at">resolve.root =</span> <span class="cn">TRUE</span>, <span class="at">edgelabel =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">plot</span>(mm_cons, <span class="at">main=</span><span class="st">&quot;Unrooted pratchet consensus tree&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">plot</span>(mm_cons_root, <span class="at">main=</span><span class="st">&quot;Rooted pratchet consensus tree&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="fu">plot</span>(mm_bab_cons, <span class="at">main=</span><span class="st">&quot;Rooted bab consensus tree&quot;</span>)</span></code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Unrooted and rooted consensus trees of the mites dataset with MP." width="33%" /><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAADAFBMVEUAAAABAQECAgIDAwMEBAQFBQUGBgYHBwcICAgJCQkKCgoLCwsMDAwNDQ0ODg4PDw8QEBARERESEhITExMUFBQVFRUWFhYXFxcYGBgZGRkaGhobGxscHBwdHR0eHh4fHx8gICAhISEiIiIjIyMkJCQlJSUmJiYnJycoKCgpKSkqKiorKyssLCwtLS0uLi4vLy8wMDAxMTEyMjIzMzM0NDQ1NTU2NjY3Nzc4ODg5OTk6Ojo7Ozs8PDw9PT0+Pj4/Pz9AQEBBQUFCQkJDQ0NERERFRUVGRkZHR0dISEhJSUlKSkpLS0tMTExNTU1OTk5PT09QUFBRUVFSUlJTU1NUVFRVVVVWVlZXV1dYWFhZWVlaWlpbW1tcXFxdXV1eXl5fX19gYGBhYWFiYmJjY2NkZGRlZWVmZmZnZ2doaGhpaWlqampra2tsbGxtbW1ubm5vb29wcHBxcXFycnJzc3N0dHR1dXV2dnZ3d3d4eHh5eXl6enp7e3t8fHx9fX1+fn5/f3+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+QkJCRkZGSkpKTk5OUlJSVlZWWlpaXl5eYmJiZmZmampqbm5ucnJydnZ2enp6fn5+goKChoaGioqKjo6OkpKSlpaWmpqanp6eoqKipqamqqqqrq6usrKytra2urq6vr6+wsLCxsbGysrKzs7O0tLS1tbW2tra3t7e4uLi5ubm6urq7u7u8vLy9vb2+vr6/v7/AwMDBwcHCwsLDw8PExMTFxcXGxsbHx8fIyMjJycnKysrLy8vMzMzNzc3Ozs7Pz8/Q0NDR0dHS0tLT09PU1NTV1dXW1tbX19fY2NjZ2dna2trb29vc3Nzd3d3e3t7f39/g4ODh4eHi4uLj4+Pk5OTl5eXm5ubn5+fo6Ojp6enq6urr6+vs7Ozt7e3u7u7v7+/w8PDx8fHy8vLz8/P09PT19fX29vb39/f4+Pj5+fn6+vr7+/v8/Pz9/f3+/v7////isF19AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAbx0lEQVR4nO2deWBU1dnG3wTCkoAJe0AgGsGgbCUgS7GAAp9UqFgF5cOlFqxQFUFAsahVCp8bVEWURVwQFHAtKBWLgizFCqJFPihlK9atiBshsgRC3t5zZ+bce2fuDIlnTu69w/P7Y3LnzMmZk5kfM3fCk/clBkAB8noDINhAIKAEBAJKQCCgBAQCSkAgoAQEAkpAIKAEBAJKQCCgBAQCSkAgoAQEAkpAIKAEBAJKQCCgBAQCSkAgoAQEAkpAIKAEBAJKQCCgBAQCSkAgoAQEAkpAIKAEBAJKQCCgBAQCSkAgoAQEAkr4XaAHKETd3psSzFo/Zsx2l+G/Ej1QvruJWaAf1ajAHenGo7stD0ERiCjzk/izZhO95TJcfoFiFogjUJw70o1Hd1seAiDQ0NmzZz1YQDQq/iwI5BkBEGi2+LqBqIfx5djk7tln/OJd8ybreNSZRK2GM+8c0qJWh8ePixu/vKpJ/qhVlkBNqdP2AXUL7ykxjjtR06PXnraPyxZ1b1iz5W8/tRY4MKpDVsFvv2JToKJfN28w9DPxzXLdyDwTa7J9W8biXw9t2mDgbnHlzxfm1moz4WvHGvFmGDs0LpcRPeX8Ruvni+zb/nPaDr0hKAL9i6if8Zy1N9/N0qaw47iPOOjKK2uZIwOMh3NPU3HU0i5QXjMx1PmY+QzeRLSPHwy9N7Y4GFng383NgcZfC4EyOovjTsZi1rrheSa2yfZtdaI654orZx5hfjZ0By0P2NeIN8MukG1YEL7byL5ta9kOPSIgAhWNNh/YMUSXrXq+EVXd5jw2X+KPt6JWG/YaD/HjzEOIrnvtGrILRPXnzM8nWiCewarUacB3xzMpf8XawURvRN4jria6e83tRL8RAlGzmbPrE210rGt7L7FNtm+lE9HZcx5oQrSEuTnlvrVhFNFUxxruMxwC2YZNQncb2be1ln1ZjwiAQCHSx5Tx0QxqfYJ5NdENjuPQA7yc6FXm0sb0E/4sXbxe8QUOgVYwb0+j3uYzONcY+vL66183/7FPDy/wXRpdbIz3pjxToA3MM4lesK9rE8g22bGVTpS2l3k60TQ+QtRuJ5dMvOMlxxruM+wC2YdNIgKZ+7atZV/WIwIjUCvj+fx/oj+IwVzjfMh+HHqAHzEe9q5du9am9BNvEc03bptrF6i++NKBmoknonqZOfjt4gkX1yR6NLzARqJHjNEjBw6Yb2HGnNfF02lb1yaQbbJjK50ol81TNuP9zHgLpda3rSplxxruMxyvQLZhk4hA5r5ta9mX9YgACGR8Cps5NoNyivjPoTNM7kjNHcehB3i8/MT/vfHK8Y5x2wq7QG3El/6UIZ6I082xx6oZL2wtLYFeEa83YUKfwsyn07auTSDbZMdWjBMV43CTqcfm7ua35f/dsYb7DIdAtmGTiEDmvm1r2Zf1iAAIZJ5EX0K0jrcQTRZXmlA3x3HoAX6UaGf4uxYRPW98WWwXqIH40pFaRJ5j3pJO5y3/YYMl0HqiGcb48aNHHQLZ1rUJZJvs2IpdD+Pc/5GeVYi6ONZwn2HssNC4+kZYRjlsu9vwvm1r2Zf1iKAIdA/RS3ykKrUzXsTXEA1zHIsHeDm/SfSaMfOpaU+J95cBxuFljnOglcaH3nS6RD4Rs8z5syMCLef9oe/qQ2c6BLKtG5pnYpvs2IpNj4+nTfuU+bN8ynGs4T6D86nmIeb7xT3ah01Cdxvet20t+7IeERSB7jLPam4mumLd4lyqstl5bJzsTCo+3oLyVu+ZSHQnl+YZJ7TLRjo/hTV6ZlELolXyiZhPdNG6RQ3NcxlzAb6U6K71E4hGOwSyrRueZ2KbbN+KTQ/jRar/pu2L61JPxxruM7gv0SULf19T3KN92CR0t+F929ayL+sRQRFosvlh6bs2oV+4iHNW+/E68/ckb9Y0Ry4w/iE/YR7l2QVq3kQMXcNSoH11xEAB0W8jC+zKNb+tRZFDIPu666zfA9km27di0+PEgND5ScZfHWvEmfGyedRN3KN92GRd5PdA5jXbWrZDjwiKQMb58BnGl5JJ3U7L67/KvMl+fFejzCuMT2m/zKtd+NhRMfDOgIZnjHjH8Zvorf3qFE4VH2MiT8SG7rXaTt5XldKLIwt8M6JNZqux4oTULpB93dA8E2uyfSv2M5wjj3fNrZZ3mfnfwNYa8WY83Sar8OHQOZB92Pr5Ivu278d26A1+FyhZhD7jgKQDgYASEAgocaoINKTPjV5vITU5VQQCmoBAQAkIBJSAQEAJCASUgEBACQgElIBAQAkIBJSAQEAJCASUgEBACQgElIBAQAkIBJSAQEAJCASUgEBACQgElIBAQAkIBJSAQEAJCASUgEBACQgElIBAQAkIBJSAQEAJCKSdT4a1zWz58LFyzj7/Zq2bSToQSDfPZfb846Ib08eUb3Zp1gK920k2EEgzazPMfgWj0r8q1/QtntftrSAQSC8HGg4zv64/f7Mc2zE0v87wQ9x6hHG8ssrWj9I29M0p+GBNj9qFX/DTdV/9ec75ojXa5l82rtnpHW92XQEgkF5mVYt55VmZPeDF2Zlj+eL+zGWFN/Dcqt2WL6nd+PwV89P+wCOzWjz9Yutmx3hvzsAlL7ZpWN5TJ8+AQHrpPCh6pDR/0AnmW9ryje2ZF9TaxyMbfMM84Ixi5tZjuWPuftFHYx0vvuy4oV8tz3pglBcIpJUDdH/00KL0PcblkYP8YD0+0nyK4ZhoxXj2PcwnsuYdrfaEceUQvSwu//nmuT0rd7s/At0C7dtzCvOlcU48z3wYyia9EnlERnUIHyymIw82PczHaxifuw6k/YV5K23dQF8Yt+yi3bywTZVmA+rdpvnpUUe3QDnN809dCor30HjzYXiZ1kYekb7iTe3w6gP8Pr2f/Zxxskz/YF5FX4sP/KWPVxGV0Kc2KJtRe+FBLqn+suanRx3dArUM2KfSJFPatKDI+PJB7lVy6CrRlGdM5kH+D3UsNHR5Jss4z3lIlOEf1Z1/Rf9m/rzek3z6BGPgGXHN50AgvTxH7abPG1FjcDFvuPp9c2QR3f7O3emPGm9rNUTnF77pfOPiisuNi26j+dzMn70xt2mPMm7X9cO/jq1VZVOitX0BBNLMi12zmw9cZBz8nv4ZGrmrWXaP18VB/iXi0tDGOLzPeLWqOb84/d0BOefcXcK8uiCr492rsod6te1yA4E8Y3XGdq+3kAQgkEcc/6LlLV7vIRlAII+4gHp51+QriUAgj9iwx+sdJAcIBJSAQEAJCASUgEBACQikmeep3L/tGd/RdmWP/7NkJhBIM6NPKyvv1J4jbVdGXKBhMxqAQJr5ablFOFH7adu19ndo2IwGIJBeSjNvjxoJJ6KtzPP3o9pk99/FvI22yNFtRHThX+g75rLsJ7lsXoesZlO92P7JgUB62UxRkZ5IIlpmnvcWdF48p1mLEp6XWSpHjy2jLcVTzmIRLtvE006b/tZw+sCTH+BkeCTQRb8cfApw3SGeS584fnCZiJaZ58FdSphfoI1mrkOOPtqQ+dIhxjcszijhJncyf3vzDs1P1Y/DI4GaTn/pFOC1E3xDQ+cPLhPRkczzzvS5u3fvXkHrufOtLEf5qv7Mp//RuH5bIZed1mJe+f6qzAM8EuiUeWfr0N95XSaiI5nn2RTiq2PVF1qjXHAvf2nGYC+8nnlV93TqsrGyt14+IJBWjmTc6xyIJKJl5vmmLuFbNtEulqNFacv49fRi5uKsWeLGrxc1v7Byd15eIJBW/kZ/dg5EEtEy83x701Lmne2X8qycMisJvZL28T1NjSuTaWNZK/GnPkN6VvbeywcE0spjNHeJwZqYRLTMPH9c7ZoVj+b1LOFhfdkafaL6+qJJNP2DO3KqHuG2jZ9fNaHqSx7/KHGAQFq5NnSCMzQmEW1lnpe1rVkw+bAhz0Tb6Jamtf/zWZ8a5/xuWnvmj/pm1Q2lqH0IBAJKQCCgBAQCSkAg3Xw+9pyshoM+cbvJ/JvCMEGJb0QDgTSzI7f1wy9Pb3naf1xuu9f23+9BiW9EA4E0069nKYv/U33uJPOCEt+IBgLpZX+aGcP44eYP5dCU9kt/nv2Ttcwr6NtIuiM48Y1oIJBeSuqdteyoc2hg49YLFp5d7wDff4ZMdwQnvhENBNLMa40oq/+Mb20jTfKKmNfQWzzocivdEZj4RjQQSDeH3hxzNtWxkvWfkzh13k9LREkOme4ITHwjGn8JtHFTSrEl8nO9SKPlz/gn+sa4XEk7vzNehGS6IzDxjWj8JVBO246pRNfiuxuEfrB64+XP+LsscTmpXuk7tF+mO4IT34jGXwK12KVzLx4wqcrH4suijI/kUB8y3p72153KDzW30h3BiW9EA4G0sqN6wZylswdXM15WwoGOspxGvZbPy+96mK+81Ep3BCe+EQ0E0st7/1M/s+01IsoRDnTsoLf7Z7abWGI8BpNZpjuCE9+IBgJVMguq+757QYWAQJXMLd283kFygUCVTNfRJ58TJHQL1PCGCW7U3eI6+xQQ6FBqvYNpF+jO/3vAjQbbXGefAgKlGh516zl138JSDQikmQ/Df3nayBq6q3VFF7FHF30GBNLMbJr3iuBda+iiX1d0EXt00WdAIM0MbxYzVG9Wom84GDNSlLzdJB8IpJn2g6NH9tDSKxoLiWQCcWP63y/NbSBeZXZd2ZjG9/u9VX7qvYwP+xbaoovst9giBNLL4arToocWU8G81d2rFbNMIM7KaDl/dffqxfxenctenZJe7XWr/NSM7JYPbbJFF9lvsUUIpJf14XPoUdbQuOrbmF+jvVYC8frMfzIvNUY6iR7hQ+kLq9DUdTW2siO66LfYIgTSy/T0xeY59G5rqIdQ4MnsMplA5MJfGQdzssveTNsvRnLFrHChqXbXMjuii36LLUKgZNChVx83Lv6Br24VPfdELfEXPjf0thKIJdVEQ7rf9OZx54gJV/zCKjR1pKpxkz266LvYIgRKBqcveNuNNWVccHX03K2iyS4XTrASiJtIPBodJnA/0aCwpO69VqGp98l46bJHF30XW4RAyeDMf8W5oSjtkeihZ40zGz6a8bJMIPKToha5GOklStXfR8usQlMzc4wDe3TRd7FFCJQM4gq0iu5dYlIqS0zd2MO42GicMcsE4ohexsgGY2Qizf7bbbXoK6vQ1PDexk326KLvYosQKBnEFeih8IewXKvpbuexxsXMuswygXjeOGPkCWOkqAc1Hz3+XFuhqQ6iTLk9uui72CIESgZxBaoQ20U9xaMtJidjrUoDAiWD5Ag0n148uGvQuYeTsValAYGSQXIEOjyUqMaQz5OxVOUBgZJBcgRiPvjpieQsVHkEQqBs8jlpW3U+WL4mEAL5/oUpWa9AAQQCJQMIVNmcOgJtNd/jGo+UVaYGxPznRoQEUVfRTlWU4fRfthUCJYMEAj1LT73yypN96YHIQO5j8aYmiLqKdqqiDKf/sq0QKBkkEOjG+uLyUINB4euf0oZ4U+NHXc12qv4sw+mRQI3Hu/65WP1/uM4OskDn9TO/NLktfP3Vakd57zn9DspoquyZKqOuVsLV1k7VLMNpZlv9hUcCXTfO/Q9W3T8OB1igkup3ii8v0RvhgTs686ZG1x+3oqmyZ6qMusqEq72dqlmGU2RbfYZHAsUhqG9hcfJAq8v4Axq7ZMmisVX/NzK1981v1JrCtoqasmeqjLrKhKujnaoowznocu9+xjhAoGRw3gWuicSBP/BM8RksvfmEQ+GZZTm9qtQ/zlZFTatnqoy6RhKuznaqogxn/n1e/YRxgUB6+XUj5/Ud1GghLbFFU2XPVBl1lQlXZzvVgnvNbKvfgEB6aXOJ8/rzWXu480C28qyyZ6qMusqEq6OdqijDKbKtfgMCaeWHKlOcA6N/xjyjqlVR0+qZKqOuMuHqaKcqynCKbKvfgEBaWUtvhw4igdafjmH+OmOqFU2VPVNl1FUmXB3tVEUZTpFt9RsQSCsPp30fOggHWkszFxiXvzjHiqbKnqky6ioTro52qqIMZ0sfhhUhEFACAgElIBBQAgIBJSCQbhI03Y1GpH4kAenCC4E0k6jpbjQi9SMJSBdeCKSZ8jbd5XDqR+LP+E8MEEgvLk13ZW266KJ122iL7MgbmC68EEgvLk13I7XpYorWzcsslR15A9OFFwJpxqXpbqg2XWzROpH6kR15g9KFFwLpJrrpbqQ2XUzROpH6sTryBqULbwoK1LK9171SI3QpDm/J3nQ3UpsupmidSP3IjryB6cKbggLlLfG6W3OE7ezSdJfDteliitaJ1I/syBuYLrwpKNBZu08+p7KIbbora9NFF60zUz+yI29guvBCIK3ENt2VteliitYN62vryBuYLrwQSC8xTXet2nTRRevaTbR15A1MF14I5CcC2JEXAvmJAHbkhUB+IoAdeSGQnwhgR14IBJSAQLpJECgT//nlCJFJApImYwiknUSBMlEuyhEikwQkTcYQSDsnCZQ5Q2SSgKTJ2G8C1enuWuUic3NFFvGVQC6BskhmjEW5KBEik3WkIp1SA5MmY78J9MYK1zo7p7sXxIuDrwRyCZRFMmMsykWJEJmsIxXplBqYNBn7TaA4BPktzCVQFsmMiXJR4jxa1pGSnVKDkiZjCKSf6ECZlRkT5aI632orMSU7pQYlTcYpKVCTKXN8wvOl4S3ZA2UyMybKRYkQmawjJTulBiZNxikpUL0hN/iEGw+7BMpkZkyUixIhMllHSnZKDUyajFNSID+9hcUGyqzMmCgXJUJkso6U7JQamDQZQyDNxAbKrMyYKBclSkfJOlKyU2pg0mQMgXQTEyizMmOiXJQoHSXrSMlOqYFJkzEEqnQCmBlLCASqZAKYGUsIBKpkApgZSwgEqmQCmBlLCAQCSkAgoAQE0k0FStwlxH/dLk0gkGYqUuIuIf7rdmkCgTRTgRJ3gQQC6SVRIjESQLR6XFrNLvde2azeoO9tI2a3y+iieD4IK0IgvSRKJEYCiFaPS3mwvVbvRU81+hlbIyK+GFMUzwdhRQikmQSJRBlAlD0u5UHHS04wL0j7yhoZdDnHFsXzQVgRAukmfiJRBhAjPS7lwSYS89fSHuum/Ptii+L5IayYggJlZdfxCc3dStxZVewiAUTZ41Ie3FlPzHyhxgk5IuKLMUXx/BBWTEGB8j/8zicUuZW4k4lEGUCUPS7lwSDz7wqvvMgaEfHFmKJ47IOwYgoK5Ke3sESJRBlAlD0u5cHQAuPgvfRV1oiIL0YXxfNFWBECaSVRIlEGEGWPS3nwCg1ffn/tcWyNiPhiTFE8P4QVIZBeEiQSZQBR9ri0ml3OOCu797NsGzG7XUYXxfNDWBECVTJIJHpAKgmERKIHpJJASCR6QCoJhESiB6SSQKkGBAJKQCCgBATSzUkire5JVRTZTCpBFuhkkVb3pCqKbCaVIAv04yKtKLKZVAIskEuk9aO0DX1zCj5Y06N24RdmUlXGViNRVRTZTDIBFsgl0jq3arflS2o3Pn/F/LQ/mElVGVuNRFVRZDPJ5N72QAWoPa4is3Xy8DG3SOvIBt8wDzijmLn1WLPQpoytyqgqimwml+vGTagAmcMrMlsnd4vXnuhIK3ceZVycfQ/ziax5ZqFNGVuV/ZtRZNNLfPUWFsIeaT1eYwHzgbS/MG+lrSKpKmOrVlQVRTa9xE8CuURaN9M/DCnoa+bnMsOFNsOxVRlVRZFNT/GTQC6R1meyTjA/ZJw786juZlJVxlZl/2YU2fQUPwnk0rXZ/NXzFca5M3cbbSZVZWxVRlVRZNNT/CSQS9fmbuJ0SJw7l9acbyZVZWxVRlVRZNNTfCVQygOBgBIQCCgBgYASEAgoAYF0Exso82m1wx8HBNKMS6DMp9UOfxwQSDOokRg4fCWQS6DMrHYYUx4xIPmxGCCQXlwCZSJDFlseMSD5sRggkGZiA2UiQxZbHjEg+bEYUlCgmuQXaokSdzGBMvH/YLHlEQOSH4shBQXy1yuQiT1QJjJkseURg5IfiwECacUlUCYyZLHlEYOSH4sBAmnFJVAmMmSx5RGDkh+LAQJpxSVQJjJkseURg5IfiwEC6SU2UCYyZLHlEYOSH4sBAgElIBBQAgIBJSAQUAICASUgEFACAukmWV2bBeM7JmWZZAKBNJO0rs2CniOTsUpSgUCaOUkisagia52o7b8wLATSi0siUaYR38v4sG8hfz+qTXb/XW4dmyNNmuXANtriu+QiBNKLSyJRphFnZLd8aNPegs6L5zRrUeLSsTnSpFkOzMss9V1yMQUFajDC68pkEe486pZIlGnE62psZR7cpYT5BdoY27FZNmmWLZzF3wP5LbmYggI1qlBFRZ3MMEyJTSTKNGK7a5l3ps/dvXv3Clof27E50qTZauHc+Vb/Vb5LQYF89RYWwp5IlGnEI1UXMc8Op1+/iu3YHGnSLAeOVV/ov+QiBNKKSyJRphHfJ2OjN3UJD8d2bI40aba1cN7lv+QiBNKKSyJRphFn5hgHtzc1PuXvbL/UpWNzpEmzHJiVU+a/5CIE0opLIlGmEYf3Nq59XO2aFY/m9Sxx6dgcadIsB4b1Zf8lFyGQXmITiTKN2OF2cXVZ25oFkw+7dWyONGmWA+0m+jC5CIGAEhAIKAGBgBIQSDcJ4hyOdEZAy05BIM0kinM40hkBLTsFgTSTIM7hx3RGhYFAekkU5xDpjCntl/48+ydr2b11oV8yGwmAQHpJFOcQ6YyBjVsvWHh2vQPurQv9ktlIAATSTII4hzhtbpJXxLyG3orTutAnmY0EQCDdxI9zdL6VPydxGrSflri3LvRLZiMBKSjQme/u8QlfRrbkGucQ6Yw/0TfGyEraGad1oU8yGwlIQYFOz8v3CQXFieIcIp3xuywxNKlenNaF7JPMRgJSUCA/kSjOIdIZfch4h9pfd6p760LfZDYSAIG0kijOMawvl+U06rV8Xn7Xw3FaF/ols5EACKSXBHGOdhN5B73dP7PdxBKO07rQL5mNBEAgL1lQ/ZjXW1AFAnnJLd283oEyEMhLuo4++RyfA4G85FDg38EgEFADAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgElIBBQAgIBJSAQUAICASUgEFACAgEl/gt1uFjNFv/MBQAAAABJRU5ErkJggg==" alt="Unrooted and rooted consensus trees of the mites dataset with MP." width="33%" /><img src="data:image/png;base64,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" alt="Unrooted and rooted consensus trees of the mites dataset with MP." width="33%" />
+<p class="caption">
+Unrooted and rooted consensus trees of the mites dataset with MP.
+</p>
+</div>
+<p>We can clearly see that, as expected, the two rooted trees have the
+same topology.</p>
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1>Session info</h1>
+<pre><code>## R version 4.4.1 (2024-06-14)
+## Platform: x86_64-pc-linux-gnu
+## Running under: Debian GNU/Linux 12 (bookworm)
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.11.0 
+## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.11.0
+## 
+## locale:
+##  [1] LC_CTYPE=de_AT.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=de_AT.UTF-8        LC_COLLATE=C              
+##  [5] LC_MONETARY=de_AT.UTF-8    LC_MESSAGES=de_AT.UTF-8   
+##  [7] LC_PAPER=de_AT.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=de_AT.UTF-8 LC_IDENTIFICATION=C       
+## 
+## time zone: Europe/Vienna
+## tzcode source: system (glibc)
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] phangorn_2.12.1 ape_5.8-0.1    
+## 
+## loaded via a namespace (and not attached):
+##  [1] Matrix_1.7-0      gtable_0.3.5      jsonlite_1.8.8    dplyr_1.1.4      
+##  [5] compiler_4.4.1    highr_0.11        tidyselect_1.2.1  Rcpp_1.0.13      
+##  [9] parallel_4.4.1    jquerylib_0.1.4   scales_1.3.0      yaml_2.3.10      
+## [13] fastmap_1.2.0     lattice_0.22-6    ggplot2_3.5.1     R6_2.5.1         
+## [17] labeling_0.4.3    generics_0.1.3    igraph_2.0.3      knitr_1.48       
+## [21] tibble_3.2.1      munsell_0.5.1     bslib_0.8.0       pillar_1.9.0     
+## [25] rlang_1.1.4       utf8_1.2.4        fastmatch_1.1-4   cachem_1.1.0     
+## [29] xfun_0.47         quadprog_1.5-8    sass_0.4.9        cli_3.6.3        
+## [33] withr_3.0.1       magrittr_2.0.3    digest_0.6.37     grid_4.4.1       
+## [37] rstudioapi_0.16.0 lifecycle_1.0.4   nlme_3.1-165      vctrs_0.6.5      
+## [41] evaluate_0.24.0   glue_1.7.0        farver_2.1.2      codetools_0.2-20 
+## [45] ggseqlogo_0.2     fansi_1.0.6       colorspace_2.1-1  rmarkdown_2.28   
+## [49] tools_4.4.1       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Hendy1982" class="csl-entry">
+Hendy, M. D., and D. Penny. 1982. <span>“Branch and Bound Algorithms to
+Determine Minimal Evolutionary Trees.”</span> <em>Math. Biosc.</em> 59:
+277–90.
+</div>
+<div id="ref-Nixon1999" class="csl-entry">
+Nixon, K. 1999. <span>“The Parsimony Ratchet, a New Method for Rapid
+Rarsimony Analysis.”</span> <em>Cladistics</em> 15: 407–14.
+</div>
+<div id="ref-Paradis2018" class="csl-entry">
+Paradis, Emmanuel, and Klaus Schliep. 2019. <span>“Ape 5.0: An
+Environment for Modern Phylogenetics and Evolutionary Analyses in
+r.”</span> <em>Bioinformatics</em> 35 (3): 526–28. <a href="https://doi.org/10.1093/bioinformatics/bty633">https://doi.org/10.1093/bioinformatics/bty633</a>.
+</div>
+<div id="ref-schaffer2010phylogenetic" class="csl-entry">
+Schäffer, Sylvia, Tobias Pfingstl, Stephan Koblmüller, Kathrin A
+Winkler, Christian Sturmbauer, and Günther Krisper. 2010.
+<span>“Phylogenetic Analysis of European Scutovertex Mites (Acari,
+Oribatida, Scutoverticidae) Reveals Paraphyly and Cryptic Diversity: A
+Molecular Genetic and Morphological Approach.”</span> <em>Molecular
+Phylogenetics and Evolution</em> 55 (2): 677–88.
+</div>
+<div id="ref-Schliep2011" class="csl-entry">
+Schliep, Klaus Peter. 2011. <span>“Phangorn: Phylogenetic Analysis in
+<span>R</span>.”</span> <em>Bioinformatics</em> 27 (4): 592–93. <a href="https://doi.org/10.1093/bioinformatics/btq706">https://doi.org/10.1093/bioinformatics/btq706</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

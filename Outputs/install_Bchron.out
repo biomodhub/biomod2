@@ -1,0 +1,22 @@
+* installing *source* package ‘Bchron’ ...
+** this is package ‘Bchron’ version ‘4.7.8’
+** package ‘Bchron’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+cc -I"/usr/share/R/include" -DNDEBUG       -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c Bchron.c -o Bchron.o
+cc -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o Bchron.so Bchron.o -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-Bchron/00new/Bchron/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (Bchron)

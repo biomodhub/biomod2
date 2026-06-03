@@ -1,0 +1,18 @@
+useDynLib(splancs)
+
+# Default NAMESPACE created by R
+
+# Export all names
+#exportPattern(".")
+exportPattern("^[^\\.]")
+
+# Import all packages listed as Imports or Depends
+import(sp)
+importFrom(stats, runif, quantile, optim, rpois, rnorm)
+importFrom(graphics, locator, identify, lines, par, hist, image, title, points, polygon, persp, abline, text)
+importFrom(grDevices, dev.cur, heat.colors, dev.off, dev.set, chull)
+importFrom(methods, slot)
+
+S3method(print, ribfit)
+S3method(print, khat)
+S3method(plot, khat)

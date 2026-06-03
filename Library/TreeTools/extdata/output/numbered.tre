@@ -1,0 +1,4 @@
+tread 'tree(s) from TNT, for data in C:\TreeTools\input\dataset.nex'
+(0 (1 (2 (3 4 ))))*
+(0 (1 (2 (3 4 ))));
+proc-;

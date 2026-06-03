@@ -1,0 +1,331 @@
+#####################################
+##              Load DLL           ##
+#####################################
+useDynLib(ade4, .registration = TRUE, .fixes = "C_")
+
+
+#####################################
+##            S3 methods           ##
+#####################################
+S3method("[","dudi")
+S3method("[","kdist")
+S3method("[","ktab")
+S3method("[","krandtest")
+S3method("[[","krandtest")
+S3method("as.data.frame","kdist")
+S3method("bca","coinertia")
+S3method("bca","dpcoa")
+S3method("bca","dudi")
+S3method("bca","rlq")
+S3method("biplot","dudi")
+S3method("boxplot","acm")
+S3method("c","kdist")
+S3method("c","ktab")
+S3method("col.names<-","ktab")
+S3method("col.names","ktab")
+S3method("inertia","dudi")
+S3method("kplot","foucart")
+S3method("kplot","mcoa")
+S3method("kplot","mfa")
+S3method("kplot","pta")
+S3method("kplot","sepan")
+S3method("kplot","statis")
+S3method("loocv","dudi")
+S3method("loocv","between")
+S3method("loocv","discrimin")
+S3method("plot","4thcorner")                
+S3method("plot","betcoi")
+S3method("plot","betrlq")                   
+S3method("plot","between")
+S3method("plot","coinertia")
+S3method("plot","corkdist")
+S3method("plot","discrimin")
+S3method("plot","dpcoa")
+S3method("plot","dpcaiv")
+S3method("plot","foucart")
+S3method("plot","krandtest")
+S3method("plot","mcoa")
+S3method("plot","mfa")
+S3method("plot","niche")
+S3method("plot","orthobasis")
+S3method("plot","pcaiv")
+S3method("plot","phylog")
+S3method("plot","procuste")                 
+S3method("plot","pta")
+S3method("plot","randtest")                 
+S3method("plot","rlq")
+S3method("plot","sepan")
+S3method("plot","statis")                   
+S3method("plot","witcoi")
+S3method("plot","within")                   
+S3method("plot","witrlq")
+S3method("plot","bcaloocv")
+S3method("plot","discloocv")
+S3method("predict","dudi")
+S3method("print","4thcorner")
+S3method("print","amova")
+S3method("print","apqe")
+S3method("print","betcoi")
+S3method("print","betdpcoa")
+S3method("print","betrlq")
+S3method("print","between")
+S3method("print","coinertia")
+S3method("print","corkdist")
+S3method("print","discrimin")
+S3method("print","dpcaiv")
+S3method("print","dpcoa")
+S3method("print","dvaripart")
+S3method("print","dudi")
+S3method("print","foucart")
+S3method("print","kdist")
+S3method("print","krandboot")
+S3method("print","krandtest")
+S3method("print","krandxval")
+S3method("print","ktab")
+S3method("print","inertia")
+S3method("print","mcoa")
+S3method("print","mfa")
+S3method("print","multiblock")
+S3method("print","neig")
+S3method("print","niche")
+S3method("print","nipals")
+S3method("print","orthobasis")
+S3method("print","pcaiv")
+S3method("print","phylog")
+S3method("print","procuste")
+S3method("print","pta")
+S3method("print","randboot")
+S3method("print","randtest")
+S3method("print","randxval")
+S3method("print","rlq")
+S3method("print","sepan")
+S3method("print","statis")
+S3method("print","varipart")
+S3method("print","witcoi")
+S3method("print","within")
+S3method("print","witrlq")
+S3method("print","witdpcoa")
+S3method("print","bcaloocv")
+S3method("print","discloocv")
+S3method("randboot","multiblock")
+S3method("randtest","amova")
+S3method("randtest","betwit")
+S3method("randtest","between")
+S3method("randtest","coinertia")
+S3method("randtest","discrimin")
+S3method("randtest","dpcaiv")
+S3method("randtest","dpcoa")
+S3method("randtest","pcaiv")
+S3method("randtest","pcaivortho")
+S3method("randtest","procuste")
+S3method("randtest","rlq")
+S3method("reconst","coa")
+S3method("reconst","pca")
+S3method("row.names<-","ktab")
+S3method("row.names","ktab")
+S3method("rtest","between")
+S3method("rtest","discrimin")
+S3method("rtest","niche")
+S3method("scatter","acm")
+S3method("scatter","coa")
+S3method("scatter","dudi")
+S3method("scatter","fca")
+S3method("scatter","nipals")
+S3method("scatter","pco")
+S3method("score","acm")
+S3method("score","coa")
+S3method("score","mix")
+S3method("score","pca")
+S3method("screeplot","dudi")
+S3method("summary","4thcorner")
+S3method("summary","between")
+S3method("summary","betwit")
+S3method("summary","coinertia")
+S3method("summary","corkdist")
+S3method("summary","dist")
+S3method("summary","dpcaiv")
+S3method("summary","dpcoa")
+S3method("summary","dudi")
+S3method("summary","mcoa")
+S3method("summary","mfa")
+S3method("summary","inertia")
+S3method("summary","multiblock")
+S3method("summary","neig")
+S3method("summary","orthobasis")
+S3method("summary","pcaiv")
+S3method("summary","pcaivortho")
+S3method("summary","rlq")
+S3method("summary","sepan")
+S3method("summary","within")
+S3method("summary","witwit")
+S3method("supcol","coa")
+S3method("supcol","dudi")
+S3method("suprow","acm")
+S3method("suprow","coa")
+S3method("suprow","dudi")
+S3method("suprow","fca")
+S3method("suprow","mix")
+S3method("suprow","pca")
+S3method("suprow","pta")
+S3method("t","dudi")
+S3method("t","ktab")
+S3method("tab.names<-","ktab")
+S3method("tab.names","ktab")
+S3method("testdim","multiblock")
+S3method("testdim","pca")
+S3method("wca","coinertia")
+S3method("wca","dudi")
+S3method("wca","dpcoa")
+S3method("wca","rlq")
+
+
+
+#####################################
+##               Import            ##
+#####################################
+importFrom("graphics", "abline", "arrows", "axis", "barplot", "box", "boxplot", "frame", "hist", "image", "layout", "lines", "mtext", "par", "plot.default", "plot", "plot.new", "points", "polygon", "rect", "segments", "strheight", "strwidth", "symbols", "text", "title")
+importFrom("grDevices", "chull", "dev.cur", "gray", "grey", "n2mfrow")
+importFrom("stats", "IQR", "shapiro.test", "anova", "as.dist", "as.formula", "biplot", "coefficients", "cor", "cov", "cutree", "density", "dist", "dnorm", "hclust", "is.ts", "lm", "lm.wfit", "loess", "model.frame", "model.matrix", "na.omit", "p.adjust", "p.adjust.methods", "pf", "plot.ts", "poly", "ppoints", "predict", "quantile", "residuals", "screeplot", "sd", "symnum", "ts", "ts.union", "var", "weighted.mean")
+importFrom("utils", "modifyList", "read.table", "write.table")
+importFrom("methods", "setOldClass")
+importFrom("MASS", "ginv", "kde2d")
+importFrom("Rcpp", "sourceCpp")
+
+#####################################
+##               Export            ##
+#####################################
+
+## ******* diversity *******
+export("amova", "apqe", "disc", "divc", "divcmax", "dpcoa" )
+
+## ******* utilities and misc *******
+export("acm.burt", "acm.disjonctif", "adegraphicsLoaded", "as.krandboot", "as.krandtest", "as.krandxval", "as.randboot", "as.randtest", "as.randxval", "uniquewt.df")
+export("bicenter.wt", "covfacwt", "covwt", "meanfacwt", "scalefacwt", "scalewt", "varfacwt", "varwt")
+
+## ******* dist *******
+export("cailliez", "dist.binary", "dist.ktab", "dist.prop", "dist.quant", "is.euclid", "lingoes", "quasieuclid", "supdist")
+
+## ******* generic *******
+export("bca", "col.names", "col.names<-", "inertia", "kplot", "loocv", "reconst", "randboot", "randtest", "rtest", "scatter", "score", "supcol", "suprow", "tab.names", "tab.names<-", "testdim", "wca" )
+
+## ******* graphics *******
+export("s.arrow", "s.class", "s.chull", "s.corcircle", "s.distri", "s.hist", "s.image", "s.kde2d", "s.label", "s.logo", "s.match", "s.match.class", "s.multinom", "s.traject", "s.value")
+## export("scatter.acm", "scatter.coa", "scatter.dudi", "scatter.fca", "scatter.nipals", "scatter.pco")
+export("sco.boxplot", "sco.class", "sco.distri", "sco.gauss", "sco.label", "sco.match", "sco.quant")
+## export("score.acm", "score.coa", "score.mix", "score.pca")
+export("add.scatter", "dotcircle")
+export("table.cont", "table.dist", "table.paint", "table.value")
+export("triangle.biplot", "triangle.class", "triangle.plot")
+
+## ******* 1-table methods *******
+export("dudi.acm", "dudi.coa", "dudi.dec", "dudi.fca", "dudi.fpca", "dudi.hillsmith", "dudi.mix", "dudi.nsc", "dudi.pca", "dudi.pco", "pcoscaled", "nipals")
+export("as.dudi", "dist.dudi", "dudi.type","inertia.dudi", "is.dudi", "prep.fuzzy.var", "reciprocal.coa", "redo.dudi")
+
+## ******* 2/3-table methods *******
+export("coinertia", "discrimin", "discrimin.coa", "fourthcorner", "fourthcorner2", "fourthcorner.rlq", "niche", "pcaiv", "pcaivortho", "procuste", "rlq", "varipart", "withinpca", "witwit.coa", "witwitsepan")
+export("combine.4thcorner", "combine.randtest.rlq", "mantel.randtest", "mantel.rtest", "niche.param", "p.adjust.4thcorner", "procuste.randtest", "procuste.rtest", "RVdist.randtest")
+export("dpcaiv", "dvaripart")
+
+## ******* K-table methods *******
+export("costatis",  "costatis.randtest",  "foucart", "mcoa", "mbpcaiv", "mbpls", "mdpcoa", "mfa", "pta", "sepan", "statico", "statico.krandtest", "statis")
+export("is.ktab", "kdist", "kdist2ktab", "kdist.cor", "kdisteuclid", "kplotX.mdpcoa", "kplotsepan.coa", "ktab.data.frame", "ktab.list.df", "ktab.list.dudi", "ktab.match2ktabs",  "ktab.within", "ldist.ktab", "mantelkdist", "prep.binary", "prep.circular", "prep.fuzzy", "prep.mdpcoa", "RVkdist", "RV.rtest")
+
+## ******* phylog *******
+export("as.taxo", "dist.taxo", "dotchart.phylog", "enum.phylog", "gearymoran", "hclust2phylog", "newick2phylog", "phylog.extract", "phylog.permut", "PI2newick", "radial.phylog","symbols.phylog", "table.phylog", "taxo2phylog", "variance.phylog")
+export("originality")
+
+## ******* orthobasis *******
+export("haar2level", "mld", "orthobasis.circ", "orthobasis.haar", "orthobasis.line", "orthobasis.mat", "orthobasis.neig", "is.orthobasis")
+
+## ******* spatial *******
+export("area2link", "area2poly", "area.plot", "dist.neig", "gridrowcol", "mstree", "nb2neig", "neig", "neig2mat", "neig2nb", "poly2area", "scores.neig")
+
+## ******* misc *********
+export("bwca.dpcoa")
+export("dagnelie.test")
+
+## ******* Rcpp *********
+export("RV.randtest")
+export("RVrandtestCpp")
+export("RVintra.randtest")
+export("RVintrarandtestCpp")
+export("procusterandtestCpp")
+export("testinterCpp")
+export("inerbetweenCpp")
+export("testmantelCpp")
+export("testdiscriminCpp")
+export("betweenvarCpp")
+export("testertraceCpp")
+export("testertracenuCpp")
+export("testertracenubisCpp")
+
+#####################################
+##            Not Exported         ##
+#####################################
+
+## ******* deprecated *******
+## "between"
+## "betweencoinertia"
+## "char2genet"
+## "count2genet"
+## "dist.genet"
+## "EH"
+## "freq2genet"
+## "fuzzygenet"
+## "optimEH"
+## "orisaved"
+## "orthogram"
+## "randEH"
+## "within"
+## "withincoinertia"
+## "multispati"
+## "plot.multispati"
+## "print.multispati"
+## "plot.multispati"
+## "multispati.randtest"
+## "multispati.rtest"
+
+## ******* internal utilities *******
+
+## Re-export the following functions to avoid the breaking of several other packages (19/11/2013)
+export("add.scatter.eig", "scatterutil.base", "scatterutil.chull", "scatterutil.convrot90", "scatterutil.eigen", "scatterutil.ellipse", "scatterutil.eti", "scatterutil.eti.circ", "scatterutil.grid", "scatterutil.legend.bw.square" , "scatterutil.legendgris", "scatterutil.legend.square.grey", "scatterutil.logo", "scatterutil.scaling", "scatterutil.sco", "scatterutil.star", "scatterutil.sub")
+
+## "add.position.triangle"
+## "add.scatter.eig"
+## "area.util.contour"
+## "area.util.xy"                                         
+## "area.util.class"
+## "fac2disj"
+## "neig.util.GtoL"                
+## "neig.util.LtoG"
+## "ktab.util.addfactor"
+## "ktab.util.names"
+## "newick2phylog.addtools"
+## "scatterutil.base"              
+## "scatterutil.chull"
+## "scatterutil.convrot90"         
+## "scatterutil.eigen"
+## "scatterutil.ellipse"           
+## "scatterutil.eti"
+## "scatterutil.eti.circ"          
+## "scatterutil.grid"
+## "scatterutil.legend.bw.square"  
+## "scatterutil.legendgris"
+## "scatterutil.legend.square.grey"
+## "scatterutil.logo"
+## "scatterutil.scaling"           
+## "scatterutil.sco"
+## "scatterutil.star"              
+## "scatterutil.sub"
+## "scoreutil.base"
+## "table.prepare"                 
+## "testdiscrimin"
+## "testertrace"                   
+## "testertracenu"
+## "testertracenubis"              
+## "testertracerlq"
+## "testinter"                     
+## "testmantel"
+## "testprocuste"
+## "triangle.param"
+## "triangle.posipoint"

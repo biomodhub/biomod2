@@ -1,0 +1,133 @@
+## spatstat.univar NAMESPACE file
+
+## ................  Import packages ..................
+
+importFrom(graphics, "plot.function")
+import(stats)
+import(spatstat.utils)
+
+## ................ Load dynamic library ..............
+##      (native routines are registered in init.c)
+##      (entry points are symbols with prefix "SG_")
+
+useDynLib(spatstat.univar, .registration=TRUE, .fixes="SK_")
+
+## //////////  DO NOT EDIT THE FOLLOWING  ///////////////
+## ////////  it is generated automatically  /////////////
+
+
+
+
+# .................................................. 
+# Automatically-generated list of documented objects 
+# .................................................. 
+export("as.breakpts")
+export("breakpts")
+export("breakpts.from.r")
+export("bw.abram")
+export("bw.abram.default")
+export("bw.pow")
+export("bw.taylor")
+export("CDF")
+export("CDF.density")
+export("check.bandwidth")
+export("check.hist.lengths")
+export("densityAdaptiveKernel")
+export("densityAdaptiveKernel.default")
+export("densityBC")
+export("dkernel")
+export("dkernelBC")
+export("dsocs")
+export("ewcdf")
+export("farebro")
+export("firstdigit")
+export("hotrod")
+export("IdenticalRowPair")
+export("IdenticalRows")
+export("indefinteg")
+export("integral")
+export("integral.density")
+export("kaplan.meier")
+export("kermom")
+export("kernel.factor")
+export("kernel.moment")
+export("kernel.squint")
+export("km.rs")
+export("km.rs.opt")
+export("knots.ecdf")
+export("knots.ewcdf")
+export("lastdigit")
+export("make.even.breaks")
+export("match.kernel")
+export("mean.ecdf")
+export("mean.ewcdf")
+export("ndigits")
+export("pkernel")
+export("plot.adaptivedensity")
+export("plot.interpolatedCDF")
+export("print.ewcdf")
+export("print.interpolatedCDF")
+export("psocs")
+export("qkernel")
+export("qsocs")
+export("quantile.density")
+export("quantile.ewcdf")
+export("quantilefun")
+export("quantilefun.ecdf")
+export("quantilefun.ewcdf")
+export("quantilefun.interpolatedCDF")
+export("reduced.sample")
+export("rkernel")
+export("rounding")
+export("rounding.default")
+export("rsocs")
+export("socsTest")
+export("stieltjes")
+export("StieltjesCalc")
+export("StieltjesCalc.stepfun")
+export("transformquantiles")
+export("uniquemap")
+export("uniquemap.data.frame")
+export("uniquemap.default")
+export("uniquemap.matrix")
+export("unnormdensity")
+export("weighted.median")
+export("weighted.quantile")
+export("weighted.var")
+export("whist")
+export("woodCalc")
+
+# .......  Special cases ........... 
+# .......  End of special cases  ... 
+
+# ......................................... 
+# Automatically generated list of S3 methods
+# ......................................... 
+ S3method("bw.abram", "default")
+S3method("CDF", "density")
+S3method("densityAdaptiveKernel", "default")
+S3method("integral", "density")
+ S3method("knots", "ecdf")
+ S3method("knots", "ewcdf")
+S3method("mean", "ecdf")
+S3method("mean", "ewcdf")
+S3method("plot", "adaptivedensity")
+S3method("plot", "interpolatedCDF")
+S3method("print", "ewcdf")
+S3method("print", "interpolatedCDF")
+S3method("quantile", "density")
+  S3method("quantile", "ewcdf")
+  S3method("quantilefun", "ecdf")
+  S3method("quantilefun", "ewcdf")
+S3method("quantilefun", "interpolatedCDF")
+S3method("rounding", "default")
+S3method("StieltjesCalc", "stepfun")
+S3method("uniquemap", "data.frame")
+S3method("uniquemap", "default")
+S3method("uniquemap", "matrix")
+# ......................................... 
+#      Assignment methods                   
+# ......................................... 
+# ......................................... 
+#      End of methods                       
+# ......................................... 

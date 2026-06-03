@@ -1,0 +1,25 @@
+BRB                     Utilization Distribution of an Animal Based on
+                        Biased Random Bridges
+CharHull                Estimation of the Home Range by Delaunay
+                        Triangulation method
+LoCoH                   Estimating LoCoH home ranges
+MCHu                    The Class "MCHu": Managing Home Ranges Built by
+                        Multiple Convex Hulls
+clusthr                 Estimation of the Home Range by Single-Linkage
+                        Cluster Analysis
+estUD-class             Class "estUD": Storing Utilization
+                        Distributions in R
+findmax                 Find Local Maxima on a Map of Class
+                        'SpatialPixelsDataFrame'
+getverticeshr           Extract the home-range contour of one or
+                        several animals
+kernelUD                Estimation of Kernel Home-Range
+kernelbb                Estimation of Kernel Brownian Bridge Home-Range
+kernelkc                Kernel Smoothing in Space and Time of the
+                        Animals' Use of Space
+kerneloverlap           Spatial Interaction between Animals Monitored
+                        Using Radio-Tracking
+kver2spol               Conversion of old classes from adehabitat to
+                        classes from adehabitatHR
+mcp                     Estimation of the Home Range Using the Minimum
+                        Convex Polygon Estimator

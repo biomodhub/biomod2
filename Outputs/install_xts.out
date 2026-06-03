@@ -1,0 +1,47 @@
+* installing *source* package ‘xts’ ...
+** this is package ‘xts’ version ‘0.14.2’
+** package ‘xts’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c add_class.c -o add_class.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c any.c -o any.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c attr.c -o attr.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c binsearch.c -o binsearch.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c coredata.c -o coredata.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c dimnames.c -o dimnames.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c endpoints.c -o endpoints.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c extract_col.c -o extract_col.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c init.c -o init.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c isOrdered.c -o isOrdered.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c isXts.c -o isXts.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c lag.c -o lag.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c merge.c -o merge.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c na.c -o na.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c period_apply.c -o period_apply.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c period_arithmetic.c -o period_arithmetic.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c period_quantile.c -o period_quantile.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c rbind.c -o rbind.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c rollfun.c -o rollfun.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c runSum.c -o runSum.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c startofyear.c -o startofyear.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c subset.c -o subset.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c toperiod.c -o toperiod.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c totalcols.c -o totalcols.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c tryXts.c -o tryXts.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../inst/include -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/zoo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c unique.time.c -o unique.time.o
+cc -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o xts.so add_class.o any.o attr.o binsearch.o coredata.o dimnames.o endpoints.o extract_col.o init.o isOrdered.o isXts.o lag.o merge.o na.o period_apply.o period_arithmetic.o period_quantile.o rbind.o rollfun.o runSum.o startofyear.o subset.o toperiod.o totalcols.o tryXts.o unique.time.o -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-xts/00new/xts/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (xts)

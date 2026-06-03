@@ -1,0 +1,491 @@
+# vroom 1.7.1
+
+* Internal changes requested by CRAN for forward compatibility with clang 22.
+
+* Internal changes requested by CRAN to remove non-API calls to `Rf_findVarInFrame` and `R_NamespaceRegistry`.
+
+# vroom 1.7.0
+
+* [vroom.tidyverse.org](https://vroom.tidyverse.org/) is the new home of vroom's website, catching up to the much earlier move (April 2022) of vroom's GitHub repository from the r-lib organization to the tidyverse. The motivation for that was to make it easier to transfer issues between these two closely connected packages.
+
+* The `path` parameter has been removed from `vroom_write()`. This parameter was deprecated in vroom 1.5.0 (2021-06-14) in favor of the `file` parameter (#575).
+
+* The function `vroom_altrep_opts()` and the argument `vroom(altrep_opts =)` have been removed. They were deprecated in favor of `vroom_altrep()` and `altrep =`, respectively, in v1.2.0 (2020-01-13). Also applies to `vroom_fwf(altrep_opts =)` and `vroom_lines(altrep_opts =)` (#575).
+
+* `vroom()` now supports reading from a remote file that uses any of the supported compression formats, by downloading to a temporary (compressed) file. This is a new feature for `.bz2`, `.xz`, and `.zip` and fixes `.gz` bugs arising from problematic behaviour of `base::gzcon()` (#400, #553, https://github.com/tidyverse/readr/issues/1555, https://github.com/tidyverse/readr/issues/1553).
+
+* `mtcars.csv.tar.gz` and `mtcars-concatenated.csv.gz` are 2 new example files that are handy internally, at least, for exercising code related to reading compressed files.
+
+* vroom now offers to install the archive package if it's needed to complete the user's request (https://github.com/tidyverse/readr/issues/1334).
+
+* vroom takes the recommended approach for phasing out usage of the non-API entry points `SETLENGTH`, `SET_TRUELENGTH`, and `ATTRIB` (#582, #596).
+
+* Unclosed quotes (e.g., `a,b,"c` with no closing `"`) now trigger a warning, instead of silent data truncation. The affected row is also newly included in the returned data, which should facilitate troubleshooting (#484, https://github.com/tidyverse/readr/issues/1539, https://github.com/tidyverse/readr/issues/1491).
+
+* Columns specified as having type "number" (requested via `col_number()` or `"number"` or `'n'`) or "skip" (requested via `col_skip()` or `"skip"` or `_` or `-`) now work in the case where 0 rows of data are parsed (#427, #540, #548).
+
+* `vroom()`, `vroom_lines()`, and `vroom_fwf()` now close and destroy (instead of leak) the connection in the case where opening the connection fails due to, e.g., a nonexistent URL (#488).
+
+* If there is insufficient space for the tempfile used when reading from a connection (affects delimited and fixed width parsing, from compressed files and URLs), that is now reported as an error and no longer segfaults (#544).
+
+* `vroom(..., n_max = 0, col_names = c(...))` with a connection (compressed file, URL, raw connection) no longer produces a "negative length vectors are not allowed" error or crashes R (#539).
+
+* `vroom_fwf(..., n_max = 0)` with a connection no longer segfaults (#590).
+
+# vroom 1.6.7
+
+* `locale(encoding =)` now warns, instead of errors, when the encoding cannot be found in `iconvlist()` return value. This removes an unnecessary blocker on platforms like Alpine Linux where the output doesn't reflect actual capabilities.
+
+* vroom no longer uses `STDVEC_DATAPTR()` and takes the recommended approach for phasing out usage of `DATAPTR()` (#561).
+
+* `problems()` works normally for vroom-produced objects, even if readr is attached (#534, #554).
+
+* `problems()` are no longer corrupted if the offending data frame is partially materialized, e.g. by viewing a subset, before calling `problems()` (#535).
+
+# vroom 1.6.6
+
+* Fixed a bad URL in the README at CRAN's request.
+
+# vroom 1.6.5
+
+* Internal changes requested by CRAN around format specification (#524).
+
+# vroom 1.6.4
+
+* It is now possible (again?) to read from a list of connections (@bairdj, #514).
+
+* Internal change for compatibility with cpp11 >= 0.4.6 (@DavisVaughan, #512).
+
+# vroom 1.6.3
+
+* No user-facing changes.
+
+# vroom 1.6.2
+
+* There was no CRAN release with this version number.
+
+# vroom 1.6.1
+
+* `str()` now works in a colorized context in the presence of a column of class `integer64`, i.e. parsed with `col_big_integer()` (@bart1, #477).
+
+* The embedded implementation of the Grisu algorithm for printing floating point numbers now uses `snprintf()` instead of `sprintf()` and likewise for vroom's own code (@jeroen, #480).
+
+# vroom 1.6.0
+
+* `vroom(col_select=)` now handles column selection by numeric position when `id` column is provided (#455).
+
+* `vroom(id = "path", col_select = a:c)` is treated like `vroom(id = "path", col_select = c(path, a:c))`. If an `id` column is provided, it is automatically included in the output (#416).
+
+* `vroom_write(append = TRUE)` does not modify an existing file when appending an empty data frame. In particular, it does not overwrite (delete) the existing contents of that file (https://github.com/tidyverse/readr/issues/1408, #451).
+
+* `vroom::problems()` now defaults to `.Last.value` for its primary input, similar to how `readr::problems()` works (#443).
+
+* The warning that indicates the existence of parsing problems has been improved, which should make it easier for the user to follow-up (https://github.com/tidyverse/readr/issues/1322).
+
+* `vroom()` reads more reliably from filepaths containing non-ascii characters, in a non-UTF-8 locale (#394, #438).
+
+* `vroom_format()` and `vroom_write()` only quote values that contain a delimiter, quote, or newline. Specifically values that are equal to the `na` string (or that start with it) are no longer quoted (#426).
+  
+* Fixed segfault when reading in multiple files and the first file has only a header row of column names, but subsequent files have at least one row (#430).
+
+* Fixed segfault when `vroom_format()` is given an empty data frame (#425)
+
+* Fixed a segfault that could occur when the final field of the final line is missing and the file also does not end in a newline (#429).
+
+* Fixed recursive garbage collection error that could occur during `vroom_write()` when `output_column()` generates an ALTREP vector (#389).
+
+* `vroom_progress()` uses `rlang::is_interactive()` instead of `base::interactive()`.
+
+* `col_factor(levels = NULL)` honors the `na` strings of `vroom()` and its own `include_na` argument, as described in the docs, and now reproduces the behaviour of readr's first edition parser (#396).
+
+# vroom 1.5.7
+
+* Jenny Bryan is now the official maintainer.
+
+* Fix uninitialized bool detected by CRAN's UBSAN check (https://github.com/tidyverse/vroom/pull/386)
+
+* Fix buffer overflow when trying to parse an integer field that is over 64 characters long (https://github.com/tidyverse/readr/issues/1326)
+
+* Fix subset indexing when indexes span a file boundary multiple times (#383)
+
+# vroom 1.5.6
+
+* `vroom(col_select=)` now works if `col_names = FALSE` as intended (#381)
+
+* `vroom(n_max=)` now correctly handles cases when reading from a connection and the file does _not_ end with a newline (https://github.com/tidyverse/readr/issues/1321)
+
+* `vroom()` no longer issues a spurious warning when the parsing needs to be restarted due to the presence of embedded newlines (https://github.com/tidyverse/readr/issues/1313)
+* Fix performance issue when materializing subsetted vectors (#378)
+
+* `vroom_format()` now uses the same internal multi-threaded code as `vroom_write()`, improving its performance in most cases (#377)
+
+* `vroom_fwf()` no longer omits the last line if it does _not_ end with a newline (https://github.com/tidyverse/readr/issues/1293)
+
+* Empty files or files with only a header line and no data no longer cause a crash if read with multiple files (https://github.com/tidyverse/readr/issues/1297)
+
+* Files with a header but no contents, or a empty file if `col_names = FALSE` no longer cause a hang when `progress = TRUE` (https://github.com/tidyverse/readr/issues/1297)
+
+* Commented lines with comments at the end of lines no longer hang R (https://github.com/tidyverse/readr/issues/1309)
+
+* Comment lines containing unpaired quotes are no longer treated as unterminated quotations (https://github.com/tidyverse/readr/issues/1307)
+
+* Values with only a `Inf` or `NaN` prefix but additional data afterwards, like
+  `Inform` or no longer inappropriately guessed as doubles (https://github.com/tidyverse/readr/issues/1319)
+
+* Time types now support `%h` format to denote hour durations greater than 24, like readr (https://github.com/tidyverse/readr/issues/1312)
+
+* Fix performance issue when materializing subsetted vectors (#378)
+
+
+# vroom 1.5.5
+
+* `vroom()` now supports files with only carriage return newlines (`\r`). (#360, https://github.com/tidyverse/readr/issues/1236)
+
+* `vroom()` now parses single digit datetimes more consistently as readr has done (https://github.com/tidyverse/readr/issues/1276)
+
+* `vroom()` now parses `Inf` values as doubles (https://github.com/tidyverse/readr/issues/1283)
+
+* `vroom()` now parses `NaN` values as doubles (https://github.com/tidyverse/readr/issues/1277)
+
+* `VROOM_CONNECTION_SIZE` is now parsed as a double, which supports scientific notation (#364)
+
+* `vroom()` now works around specifying a `\n` as the delimiter (#365, https://github.com/tidyverse/dplyr/issues/5977)
+
+* `vroom()` no longer crashes if given a `col_name` and `col_type` both less than the number of columns (https://github.com/tidyverse/readr/issues/1271)
+
+* `vroom()` no longer hangs if given an empty value for `locale(grouping_mark=)` (https://github.com/tidyverse/readr/issues/1241)
+
+* Fix performance regression when guessing with large numbers of rows (https://github.com/tidyverse/readr/issues/1267)
+
+# vroom 1.5.4
+
+* `vroom(col_types=)` now accepts column type names like those accepted by utils::read.table. e.g.
+    vroom::vroom(col_types = list(a = "integer", b = "double", c = "skip"))
+
+* `vroom()` now respects the `quote` parameter properly in the first two lines of the file (https://github.com/tidyverse/readr/issues/1262)
+
+* `vroom_write()` now always correctly writes its output including column names in UTF-8 (https://github.com/tidyverse/readr/issues/1242)
+
+* `vroom_write()` now creates an empty file when given a input without any columns (https://github.com/tidyverse/readr/issues/1234)
+
+# vroom 1.5.3
+
+* `vroom(col_types=)` now truncates the column types if the user passes too many types. (#355)
+
+* `vroom()` now always includes the last row when guessing (#352)
+
+* `vroom(trim_ws = TRUE)` now trims field content within quotes as well as without (#354).
+  Previously vroom explicitly retained field content inside quotes regardless of the value of `trim_ws`.
+
+# vroom 1.5.2
+
+* `vroom()` now supports inputs with unnamed column types that are less than the number of columns (#296)
+
+* `vroom()` now outputs the correct column names even in the presence of skipped columns (#293, [tidyverse/readr#1215](https://github.com/tidyverse/readr/issues/1215))
+
+* `vroom_fwf(n_max=)` now works as intended when the input is a connection.
+
+* `vroom()` and `vroom_write()` now automatically detect the compression format regardless of the file extension for bzip2, xzip, gzip and zip files (#348)
+
+* `vroom()` and `vroom_write()` now automatically support many more archive formats thanks to the archive package.
+  These include new support for writing zip files, reading and writing 7zip, tar and ISO files.
+
+* `vroom(num_threads = 1)` will now not spawn any threads.
+  This can be used on as a workaround on systems without full thread support.
+
+* Threads are now automatically disabled on non-macOS systems compiling against clang's libc++.
+  Most systems non-macOS systems use the more common gcc libstdc++, so this should not effect most users.
+
+# vroom 1.5.1
+
+* Parsers now treat NA values as NA even if they are valid values for the types (#342)
+
+* Element-wise indexing into lazy (ALTREP) vectors now has much less overhead (#344)
+
+# vroom 1.5.0
+
+## Major improvements
+
+* New `vroom(show_col_types=)` argument to more simply control when column types are shown.
+
+* `vroom()`, `vroom_fwf()` and `vroom_lines()` now support multi-byte encodings such as UTF-16 and UTF-32 by converting these files to UTF-8 under the hood (#138)
+
+* `vroom()` now supports skipping comments and blank lines within data, not just at the start of the file (#294, #302)
+
+* `vroom()` now uses the tzdb package when parsing date-times (@DavisVaughan, #273)
+
+* `vroom()` now emits a warning of class `vroom_parse_issue` if there are non-fatal parsing issues.
+
+* `vroom()` now emits a warning of class `vroom_mismatched_column_name` if the user supplies a column type that does not match the name of a read column (#317).
+
+* The vroom package now uses the MIT license, as part of systematic relicensing throughout the r-lib and tidyverse packages (#323)
+
+## Minor improvements and fixes
+
+* `vroom() correctly reads double values with comma as decimal separator (@kent37 #313)
+
+* `vroom()` now correctly skips lines with only one quote if the format doesn't use quoting (https://github.com/tidyverse/readr/issues/991#issuecomment-616378446)
+
+* `vroom()` and `vroom_lines()` now handle files with mixed windows and POSIX line endings (https://github.com/tidyverse/readr/issues/1210)
+
+* `vroom()` now outputs a tibble with the expected number of columns and types based on `col_types` and `col_names` even if the file is empty (#297).
+
+* `vroom()` no longer mis-indexes files read from connections with windows line endings when the two line endings falls on separate sides of the read buffer (#331)
+
+* `vroom()` no longer crashes if `n_max = 0` and `col_names` is a character (#316)
+
+* `vroom()` now preserves the spec attribute when vroom and readr are both loaded (#303)
+
+* `vroom()` now allows specifying column names in `col_types` that have been repaired (#311)
+
+* `vroom()` no longer inadvertently calls `.name_repair` functions twice (#310).
+
+* `vroom()` is now more robust to quoting issues when tracking the CSV state (#301)
+
+* `vroom()` now registers the S3 class with `methods::setOldClass()` (r-dbi/DBI#345)
+
+* `col_datetime()` now supports '%s' format, which represents decimal seconds since the Unix epoch.
+
+* `col_numeric()` now supports `grouping_mark` and `decimal_mark` that are unicode characters, such as U+00A0 which is commonly used as the grouping mark for numbers in France (https://github.com/tidyverse/readr/issues/796).
+
+* `vroom_fwf()` gains a `skip_empty_rows` argument to skip empty lines (https://github.com/tidyverse/readr/issues/1211)
+
+* `vroom_fwf()` now respects `n_max`, as intended (#334)
+
+* `vroom_lines()` gains a `na` argument.
+
+* `vroom_write_lines()` no longer escapes or quotes lines.
+
+* `vroom_write_lines()` now works as intended (#291).
+
+* `vroom_write(path=)` has been deprecated, in favor of `file`, to match readr.
+
+* `vroom_write_lines()` now exposes the `num_threads` argument.
+
+* `problems()` now prints the correct row number of parse errors (#326)
+
+* `problems()` now throws a more informative error if called on a readr object (#308).
+
+* `problems()` now de-duplicates identical problems (#318)
+
+* Fix an inadvertent performance regression when reading values (#309)
+
+* `n_max` argument is correctly respected in edge cases (#306)
+
+* factors with implicit levels now work when fields are quoted, as intended (#330)
+
+* Guessing double types no longer unconditionally ignores leading whitespace. Now whitespace is only ignored when `trim_ws` is set.
+
+# vroom 1.4.0
+
+## Major changes and new functions
+
+* vroom now tracks indexing and parsing errors like readr. The first time an issue is encountered a warning will be signaled. A tibble of all found problems can be retrieved with `vroom::problems()`. (#247)
+
+* Data with newlines within quoted fields will now automatically revert to using a single thread and be properly read (#282)
+
+* NUL values in character data are now permitted, with a warning.
+
+* New `vroom_write_lines()` function to write a character vector to a file (#291)
+
+* `vroom_write()` gains a `eol=` parameter to specify the end of line character(s) to use. Use `vroom_write(eol = "\r\n")` to write a file with Windows style newlines (#263).
+
+## Minor improvements and fixes
+
+* Datetime formats used when guessing now match those used when parsing (#240)
+
+* Quotes are now only valid next to newlines or delimiters (#224)
+
+* `vroom()` now signals an R error for invalid date and datetime formats, instead of crashing the session (#220).
+
+* `vroom(comment = )` now accepts multi-character comments (#286)
+
+* `vroom_lines()` now works with empty files (#285)
+
+* Vectors are now subset properly when given invalid subscripts (#283)
+
+* `vroom_write()` now works when the delimiter is empty, e.g. `delim = ""` (#287).
+
+* `vroom_write()` now works with all ALTREP vectors, including string vectors (#270)
+
+* An internal call to `new.env()` now correctly uses the `parent` argument (#281)
+
+# vroom 1.3.2
+
+* Test failures on R 4.1 related to factors with NA values fixed (#262)
+
+* `vroom()` now works without error with readr versions of col specs (#256, #264, #266)
+
+# vroom 1.3.1
+
+* Test failures on R 4.1 related to POSIXct classes fixed (#260)
+
+* Column subsetting with double indexes now works again (#257)
+
+* `vroom(n_max=)` now only partially downloads files from connections, as intended (#259)
+
+# vroom 1.3.0
+
+* The Rcpp dependency has been removed in favor of cpp11.
+
+* `vroom()` now handles cases when `id` is set and a column in skipped (#237)
+
+* `vroom()` now supports column selections when there are some empty column names (#238)
+
+* `vroom()` argument `n_max` now works properly for files with windows newlines and no final newline (#244)
+
+* Subsetting vectors now works with `View()` in RStudio if there are now rows to subset (#253).
+
+* Subsetting datetime columns now works with `NA` indices (#236).
+
+# vroom 1.2.1
+
+* `vroom()` now writes the column names if given an input with no rows (#213)
+
+* `vroom()` columns now support indexing with NA values (#201)
+
+* `vroom()` no longer truncates the last value in a file if the file contains windows newlines but no final newline (#219).
+
+* `vroom()` now works when the `na` argument is encoded in non ASCII or UTF-8 locales _and_ the file encoding is not the same as the native encoding (#233).
+
+* `vroom_fwf()` now verifies that the positions are valid, namely that the begin value is always less than the previous end (#217).
+
+* `vroom_lines()` gains a `locale` argument so you can control the encoding of the file (#218)
+
+* `vroom_write()` now supports the `append` argument with R connections (#232)
+
+# vroom 1.2.0
+
+## Breaking changes
+
+* `vroom_altrep_opts()` and the argument `vroom(altrep_opts =)` have been
+  renamed to `vroom_altrep()` and `altrep` respectively. The prior names have
+  been deprecated.
+
+## New Features
+
+* `vroom()` now supports reading Big Integer values with the `bit64` package.
+  Use `col_big_integer()` or the "I" shortcut to read a column as big integers. (#198)
+
+* `cols()` gains a `.delim` argument and `vroom()` now uses it as the delimiter
+  if it is provided (#192)
+
+* `vroom()` now supports reading from `stdin()` directly, interpreted as the
+  C-level standard input (#106).
+
+## Minor improvements and fixes
+
+* `col_date` now parses single digit month and day (@edzer, #123, #170)
+
+* `fwf_empty()` now uses the `skip` parameter, as intended.
+
+* `vroom()` can now read single line files without a terminal newline (#173).
+
+* `vroom()` can now select the id column if provided (#110).
+
+* `vroom()` now correctly copies string data for factor levels (#184)
+
+* `vroom()` no longer crashes when files have trailing fields, windows newlines
+  and the file is not newline or null terminated.
+
+* `vroom()` now includes a spec object with the `col_types` class, as intended.
+
+* `vroom()` now better handles floating point values with very large exponents
+  (#164).
+
+* `vroom()` now uses better heuristics to guess the delimiter and now throws an
+  error if a delimiter cannot be guessed (#126, #141, #167).
+
+* `vroom()` now has an improved error message when a file does not exist (#169).
+
+* `vroom()` no longer leaks file handles (#177, #180)
+
+* `vroom()` now outputs its messages on `stdout()` rather than `stderr()`,
+  which avoids the text being red in RStudio and in the Windows GUI.
+
+* `vroom()` no longer overflows when reading files with more than 2B entries (@wlattner, #183).
+
+* `vroom_fwf()` is now more robust if not all lines are the expected length (#78)
+
+* `vroom_fwf()` and `fwf_empty()` now support passing `Inf` to `guess_max()`.
+
+* `vroom_str()` now works with S4 objects.
+
+* `vroom_fwf()` now handles files with dos newlines properly.
+
+* `vroom_write()` now does not try to write anything when given empty inputs (#172).
+
+* Dates, times, and datetimes now properly consider the locale when parsing.
+
+* Added benchmarks with _wide_ data for both numeric and character data (#87, @R3myG)
+
+* The delimiter used for parsing is now shown in the message output (#95 @R3myG)
+
+# vroom 1.0.2
+
+## New Features
+
+* The column created by `id` is now stored as an run length encoded Altrep
+  vector, which uses less memory and is much faster for large inputs. (#111)
+
+## Minor improvements and fixes
+
+* `vroom_lines()` now properly respects the `n_max` parameter (#142)
+
+* `vroom()` and `vroom_lines()` now support reading files which do not end in
+  newlines by using a file connection (#40).
+
+* `vroom_write()` now works with the standard output connection `stdout()` (#106).
+
+* `vroom_write()` no longer crashes non-deterministically when used on Altrep vectors.
+
+* The integer parser now returns NA values for invalid inputs (#135)
+
+* Fix additional UBSAN issue in the mio project reported by CRAN (#97)
+
+* Fix indexing into connections with quoted fields (#119)
+
+* Move example files for `vroom()` out of `\dontshow{}`.
+
+* Fix integer overflow with very large files (#116, #119)
+
+* Fix missing columns and windows newlines (#114)
+
+* Fix encoding of column names (#113, #115)
+
+* Throw an error message when writing a zip file, which is not supported (@metaOO, #145)
+
+* Default message output from `vroom()` now uses `Rows` and `Cols` (@meta00, #140)
+
+
+# vroom 1.0.1
+
+## New Features
+
+* `vroom_lines()` function added, to (lazily) read lines from a file into a
+  character vector (#90).
+
+## Minor improvements and fixes
+
+* Fix for a hang on Windows caused by a race condition in the progress bar (#98)
+
+* Remove accidental runtime dependency on testthat (#104)
+
+* Fix to actually return non-Altrep character columns on R 3.2, 3.3 and 3.4.
+
+* Disable colors in the progress bar when running in RStudio, to work around an
+  issue where the progress bar would be garbled (https://github.com/rstudio/rstudio/issues/4777)
+
+* Fix for UBSAN issues reported by CRAN (#97)
+
+* Fix for rchk issues reported by CRAN (#94)
+
+* The progress bar now only updates every 10 milliseconds.
+
+* Getting started vignette index entry now more informative (#92)
+
+# vroom 1.0.0
+
+* Initial release
+
+* Added a `NEWS.md` file to track changes to the package.

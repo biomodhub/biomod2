@@ -1,0 +1,15 @@
+useDynLib(sgeostat)
+# Export all names
+exportPattern(".")
+
+# Import all packages listed as Imports or Depends
+import(
+  stats,
+  grDevices,
+  graphics
+)
+S3method(plot, variogram)
+S3method(plot, point)
+S3method(print, point)
+S3method(print, pair)
+S3method(identify, point)

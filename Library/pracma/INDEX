@@ -1,0 +1,312 @@
+Diag                    Matrix Diagonal
+L1linreg                L1 Linear Regression
+Mode                    Mode function (Matlab style)
+Norm                    Vector Norm
+Poly                    Define Polynomial by Roots
+Rank                    Matrix Rank
+Reshape                 Reshape Matrix
+Si                      Sine and Cosine Integral Functions
+Toeplitz                Toeplitz Matrix
+Trace                   Matrix trace
+abm3pc                  Adams-Bashford-Moulton
+accumarray              Accumulate Vector Elements
+agmean                  Arithmetic-geometric Mean
+aitken                  Aitken' Method
+akimaInterp             Univariate Akima Interpolation
+and                     Logical AND, OR (Matlab Style)
+andrewsplot             Andrews' Curves
+angle                   Basic Complex Functions
+anms                    Adaptive Nelder-Mead Minimization
+approx_entropy          Approximate and Sample Entropy
+arclength               Arc Length of a Curve
+arnoldi                 Arnoldi Iteration
+barylag                 Barycentric Lagrange Interpolation
+barylag2d               2-D Barycentric Lagrange Interpolation
+bernoulli               Bernoulli Numbers and Polynomials
+bernstein               Bernstein Polynomials
+bisect                  Rootfinding Through Bisection or Secant Rule
+bits                    Binary Representation
+blanks                  String of Blank Carakters
+blkdiag                 Block Diagonal Matrix
+brentDekker             Brent-Dekker Root Finding Algorithm
+brown72                 Brownian Motion
+broyden                 Broyden's Method
+bsxfun                  Elementwise Function Application (Matlab Style)
+bubbleSort              Sorting Routines
+bulirsch_stoer          Bulirsch-Stoer Algorithm
+bvp                     Boundary Value Problems
+cart2sph                Coordinate Transformations
+cd                      Directory Functions (Matlab style)
+ceil                    Integer Functions (Matlab Style)
+charpoly                Characteristic Polynomial
+chebApprox              Chebyshev Approximation
+chebCoeff               Chebyshev Polynomials
+chebPoly                Chebyshev Polynomials
+circlefit               Fitting a Circle
+clear                   Clear function (Matlab style)
+clenshaw_curtis         Clenshaw-Curtis Quadrature Formula
+combs                   Generate Combinations
+compan                  Companion Matrix
+complexstep             Complex Step Derivatives
+cond                    Matrix Condition
+conv                    Polynomial Convolution
+cot                     More Trigonometric Functions
+cotes                   Newton-Cotes Formulas
+coth                    More Hyperbolic Functions
+cranknic                Crank-Nicolson Method
+cross                   Vector Cross Product
+crossn                  n-dimensional Vector Cross Product
+cubicspline             Interpolating Cubic Spline
+curvefit                Parametric Curve Fit
+cutpoints               Find Cutting Points
+dblquad                 Double and Triple Integration
+deconv                  Deconvolution
+deeve                   Event Detection in ODE solution
+deg2rad                 Degrees to Radians
+detrend                 Remove Linear Trends
+deval                   Evaluate ODE Solution
+disp                    Utility functions (Matlab style)
+distmat                 Distance Matrix
+dot                     Scalar Product
+eig                     Eigenvalue Function (Matlab Style)
+eigjacobi               Jacobi Eigenvalue Method
+einsteinF               Einstein Functions
+ellipke                 Elliptic and Jacobi Elliptic Integrals
+eps                     Floating Point Relative Accuracy
+erf                     Error Functions and Inverses (Matlab Style)
+errorbar                Plot Error Bars
+eta                     Dirichlet Eta Function
+euler_heun              Euler-Heun ODE Solver
+expint                  Exponential and Logarithmic Integral
+expm                    Matrix Exponential
+eye                     Some Basic Matrices
+ezcontour               Contour, Surface, and Mesh Plotter
+ezplot                  Easy Function Plot
+ezpolar                 Easy Polar Plot
+fact                    Factorial Function
+factors                 Prime Factors
+fderiv                  Numerical Differentiation
+fibsearch               Fibonacci Search
+figure                  Control Plot Devices (Matlab Style)
+findintervals           Find Interval Indices
+findmins                Find All Minima
+findpeaks               Find Peaks
+finds                   find function (Matlab Style)
+findzeros               Find All Roots
+fletcher_powell         Fletcher-Powell Conjugate Gradient Minimization
+flipdim                 Matrix Flipping (Matlab Style)
+fminbnd                 Finding Function Minimum
+fmincon                 Minimize Nonlinear Constrained Multivariable
+                        Function.
+fminsearch              Derivative-free Nonlinear Function Minimization
+fminunc                 Minimize Unconstrained Multivariable Function
+fnorm                   Function Norm
+fornberg                Fornberg's Finite Difference Approximation
+fprintf                 Formatted Printing (Matlab style)
+fractalcurve            Fractal Curves
+fresnelS                Fresnel Integrals
+fsolve                  Solve System of Nonlinear Equations
+fzero                   Root Finding Algorithm
+fzsolve                 Complex Root Finding
+gammainc                Incomplete Gamma Function
+gammaz                  Complex Gamma Function
+gaussHermite            Gauss-Hermite Quadrature Formula
+gaussLaguerre           Gauss-Laguerre Quadrature Formula
+gaussLegendre           Gauss-Legendre Quadrature Formula
+gaussNewton             Gauss-Newton Function Minimization
+gauss_kronrod           Gauss-Kronrod Quadrature
+gcd                     GCD and LCM Integer Functions
+geo_median              Geometric Median
+geomean                 Geometric and Harmonic Mean (Matlab Style)
+givens                  Givens Rotation
+gmres                   Generalized Minimal Residual Method
+golden_ratio            Golden Ratio Search
+grad                    Numerical Gradient
+gradient                Discrete Gradient (Matlab Style)
+gramSchmidt             Gram-Schmidt
+hadamard                Hadamard Matrix
+halley                  Halley's Root Finding Mathod
+hampel                  Hampel Filter
+hankel                  Hankel Matrix
+hausdorff_dist          Hausdorff Distance
+haversine               Haversine Formula
+hessenberg              Hessenberg Matrix
+hessian                 Hessian Matrix
+hessvec                 Hessian utilities
+hilb                    Hilbert Matrix
+histc                   Histogram Count (Matlab style)
+histss                  Histogram Bin-width Optimization
+hooke_jeeves            Hooke-Jeeves Function Minimization Method
+horner                  Horner's Rule
+householder             Householder Reflections
+humps                   Matlab Test Functions
+hurstexp                Hurst Exponent
+hypot                   Hypotenuse Function
+ifft                    Inverse Fast Fourier Transformation
+inpolygon               Polygon Region
+integral                Adaptive Numerical Integration
+integral2               Numerically Evaluate Double and Triple
+                        Integrals
+interp1                 One-dimensional Interpolation
+interp2                 Two-dimensional Data Interpolation
+inv                     Matrix Inverse (Matlab Style)
+invlap                  Inverse Laplacian
+isempty                 isempty Property
+isposdef                Positive Definiteness
+isprime                 isprime Property
+itersolve               Iterative Methods
+jacobian                Jacobian Matrix
+kriging                 Interpolation by Kriging
+kron                    Kronecker product (Matlab Style)
+laguerre                Laguerre's Method
+lambertWp               Lambert's W Function
+laplacian               Laplacian Operator
+lebesgue                Lebesgue Constant
+legendre                Legendre Functions (Matlab Style)
+line_integral           Line integral (in the complex plane)
+linearproj              Linear Projection onto a Subspace
+linprog                 Linear Programming Solver
+linspace                Linearly Spaced Sequences
+logspace                Log-linearly Spaced Sequences
+lsqlin                  Linear Least-Squares Fitting
+lsqlincon               Linear Least-Squares Fitting with linear
+                        constraints
+lsqnonlin               Nonlinear Least-Squares Fitting
+lu                      LU Matrix Factorization
+magic                   Magic Square
+matlab                  Matlab Compatibility
+meshgrid                Generate a Mesh Grid
+mexpfit                 Multi-exponential Fitting
+mldivide                Matlab backslash operator
+mod                     Integer Division
+moler                   Moler Matrix
+movavg                  Moving Average Filters
+muller                  Muller's Method
+nchoosek                Binomial Coefficients
+ndims                   Number of Dimensions
+nearest_spd             Nearest Symmetric Positive-definite Matrix
+nelder_mead             Nelder-Mead Function Minimization Method
+neville                 Neville's Method
+newmark                 Newmark Method
+newtonHorner            Newton's Root Finding Method for Polynomials.
+newtonInterp            Lagrange and Newtons Interpolation
+newtonRaphson           Rootfinding through Newton-Raphson or Secant.
+newtonsys               Newton Method for Nonlinear Systems
+nextpow2                Next Power of 2
+nnz                     Nonzero Elements
+normest                 Estimated Matrix Norm
+nthroot                 Real nth Root
+nullspace               Kernel or Nullspace
+numderiv                Richardson's Numerical Derivative
+numel                   Number of Elements
+ode23                   Non-stiff (and stiff) ODE solvers
+odregress               Orthogonal Distance Regression
+orth                    Range Space
+pade                    Pade Approximation
+pascal                  Pascal Triangle
+pchip                   Hermitean Interpolation Polynomials
+peaks                   Peaks Function (Matlab Style)
+perms                   Generate Permutations
+piecewise               Piecewise Linear Function
+pinv                    Pseudoinverse or Generalized Inverse
+plotyy                  Plotting Two y-Axes
+poisson2disk            Poisson Disk Sampling
+polar                   Polar Coordinate Plot (Matlab Style)
+poly2str                Print Polynomial
+polyApprox              Polynomial Approximation
+polyadd                 Adding Polynomials
+polyarea                Area of a Polygon
+polyder                 Derivative of Polynomial
+polyfit                 Fitting by Polynomial
+polyint                 Anti-derivative of Polynomial
+polylog                 Polylogarithm Function
+polymul                 Multiplying and Dividing Polynomials
+polypow                 Polynomial Powers
+polytrans               Polynomial Transformations
+polyval                 Evaluating a Polynomial
+pow2                    Base 2 Power
+ppfit                   Piecewise Polynomial Fit
+ppval                   Piecewise Polynomial Structures
+pracma-package          Practical Numerical Math Routines
+primes                  Prime Numbers
+procrustes              Solving the Procrustes Problem
+psi                     Psi (Polygamma) Function
+qpspecial               Special Quadratic Programming Solver
+qrSolve                 LSE Solution
+quad                    Adaptive Simpson Quadrature
+quad2d                  2-d Gaussian Quadrature
+quadcc                  Adaptive Clenshaw-Curtis Quadrature
+quadgk                  Adaptive Gauss-Kronrod Quadrature
+quadgr                  Gaussian Quadrature with Richardson
+                        Extrapolation
+quadinf                 Infinite Integrals
+quadl                   Adaptive Lobatto Quadrature
+quadprog                Quadratic Programming
+quadv                   Vectorized Integration
+quiver                  Quiver or Velocity Plot
+rand                    Create Random Matrices
+randcomb                Random Combination
+randortho               Generate Random Orthonormal or Unitary Matrix
+randperm                Random Permutation
+rat                     Continuous Fractions (Matlab Style)
+ratinterp               Rational Interpolation
+rationalfit             Rational Function Approximation
+rectint                 Rectangle Intersection Areas
+refindall               Find overlapping regular expression matches.
+regexp                  Match regular expression
+regexprep               Replace string using regular expression
+repmat                  Replicate Matrix
+ridders                 Ridders' Root Finding Method
+rk4                     Classical Runge-Kutta
+rkf54                   Runge-Kutta-Fehlberg
+rmserr                  Accuracy Measures
+romberg                 Romberg Integration
+roots                   Polynomial Roots
+rosser                  Rosser Matrix
+rot90                   Matrix Rotation
+rref                    Reduced Row Echelon Form
+runge                   Runge Function
+savgol                  Savitzky-Golay Smoothing
+segm_distance           Segment Distance
+segm_intersect          Segment Intersection
+semilogx                Semi-logarithmic Plots (Matlab Style)
+shooting                Shooting Method
+shubert                 Shubert-Piyavskii Method
+sigmoid                 Sigmoid Function
+simpadpt                Adaptive Simpson Quadrature
+simpson                 Simpson Integration
+simpson2d               Double Simpson Integration
+sind                    Trigonometric Functions in Degrees
+size                    Size of Matrix
+softline                Soft (Inexact) Line Search
+sortrows                Sort Rows of a Matrix (Matlab Style)
+spinterp                Monotone (Shape-Preserving) Interpolation
+sqrtm                   Matrix Square and p-th Roots
+squareform              Format Distance Matrix (Matlab Style)
+std                     Standard Deviation (Matlab Style)
+std_err                 Standard Error
+steep_descent           Steepest Descent Minimization
+stereographic           Stereographic Projection
+str2num                 Converting string to number (Matlab style)
+strRep                  Find and replace substring
+strTrim                 Remove leading and trailing white space.
+strcat                  String Concatenation
+strcmp                  String Comparison
+strfind                 Find Substrings
+strjust                 Justify character vector
+subspace                Angle between two subspaces
+sumalt                  Alternating Series Acceleration
+taylor                  Taylor Series Approximation
+tic                     MATLAB timer functions
+titanium                Titanium Test Data
+trapz                   Trapezoidal Integration
+trigApprox              Trigonometric Approximation
+trigPoly                Trigonometric Polynomial
+tril                    Triangular Matrices (Matlab Style)
+triquad                 Gaussian Triangle Quadrature
+trisolve                Tridiagonal Linear System Solver
+vander                  Vandermonde matrix
+vectorfield             Vector Field Plotting
+whittaker               Whittaker Smoothing
+wilkinson               wilkinson Matrix
+zeta                    Riemann Zeta Function

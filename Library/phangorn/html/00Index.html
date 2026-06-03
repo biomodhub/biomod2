@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Phylogenetic Reconstruction and Analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Phylogenetic Reconstruction and Analysis
+<img class="toplogo" src="figures/logo.png" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;phangorn&rsquo; version 2.12.1</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS">Package NEWS</a></li>
+<li><a href="../README.md">Package README</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#Y">Y</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="parsimony.html">acctran</a></td>
+<td>Parsimony tree.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">acgt2ry</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="add.tips.html">add.tips</a></td>
+<td>Add tips to a tree</td></tr>
+<tr><td style="width: 25%;"><a href="addConfidences.html">addConfidences</a></td>
+<td>Compare splits and add support values to an object</td></tr>
+<tr><td style="width: 25%;"><a href="addConfidences.html">addConfidences.phylo</a></td>
+<td>Compare splits and add support values to an object</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">addTrivialSplits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="add_ci.html">add_boxplot</a></td>
+<td>Draw Confidences Intervals on Phylogenies</td></tr>
+<tr><td style="width: 25%;"><a href="add_ci.html">add_ci</a></td>
+<td>Draw Confidences Intervals on Phylogenies</td></tr>
+<tr><td style="width: 25%;"><a href="add_edge_length.html">add_edge_length</a></td>
+<td>Assign and compute edge lengths from a sample of trees</td></tr>
+<tr><td style="width: 25%;"><a href="plot.ancestral.html">add_mutations</a></td>
+<td>Plot ancestral character on a tree</td></tr>
+<tr><td style="width: 25%;"><a href="plotBS.html">add_support</a></td>
+<td>Plotting trees with bootstrap values</td></tr>
+<tr><td style="width: 25%;"><a href="modelTest.html">AICc</a></td>
+<td>ModelTest</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">allCircularSplits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="maxCladeCred.html">allCompat</a></td>
+<td>Maximum clade credibility tree</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">allSitePattern</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">allSplits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="allTrees.html">allTrees</a></td>
+<td>Compute all trees topologies.</td></tr>
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">ancestral.pars</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">ancestral.pml</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">anc_pars</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">anc_pml</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.html">anova.pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.AAbin.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="write.ancestral.html">as.ancestral</a></td>
+<td>Export and convenience functions for ancestral reconstructions</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.bitsplits.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.character.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">as.data.frame.ancestral</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.data.frame.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.DNAbin.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.Matrix</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.Matrix.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.matrix.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.MultipleAlignment</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.MultipleAlignment.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.networx.html">as.networx</a></td>
+<td>Conversion among phylogenetic network objects</td></tr>
+<tr><td style="width: 25%;"><a href="as.networx.html">as.networx.phylo</a></td>
+<td>Conversion among phylogenetic network objects</td></tr>
+<tr><td style="width: 25%;"><a href="as.networx.html">as.networx.splits</a></td>
+<td>Conversion among phylogenetic network objects</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.AAbin</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.AAStringSet</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.alignment</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">as.phyDat.ancestral</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.character</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.data.frame</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.DNAbin</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.DNAStringSet</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.factor</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.matrix</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.phyDat.MultipleAlignment</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.phylo.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.html">as.pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.prop.part.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.splits.bitsplits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.splits.multiPhylo</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.splits.networx</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">as.splits.phylo</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.StringSet</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">as.StringSet.phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="bab.html">bab</a></td>
+<td>Branch and bound for finding all most parsimonious trees</td></tr>
+<tr><td style="width: 25%;"><a href="baseFreq.html">baseFreq</a></td>
+<td>Summaries of alignments</td></tr>
+<tr><td style="width: 25%;"><a href="bootstrap.pml.html">bootstrap.phyDat</a></td>
+<td>Bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="bootstrap.pml.html">bootstrap.pml</a></td>
+<td>Bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="bab.html">BranchAndBound</a></td>
+<td>Branch and bound for finding all most parsimonious trees</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="phyDat.html">c.phyDat</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">c.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">cbind.phyDat</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="chloroplast.html">chloroplast</a></td>
+<td>Chloroplast alignment</td></tr>
+<tr><td style="width: 25%;"><a href="CI.html">CI</a></td>
+<td>Consistency Index and Retention Index</td></tr>
+<tr><td style="width: 25%;"><a href="cladePar.html">cladePar</a></td>
+<td>Utility function to plot.phylo</td></tr>
+<tr><td style="width: 25%;"><a href="coalSpeciesTree.html">coalSpeciesTree</a></td>
+<td>Species Tree</td></tr>
+<tr><td style="width: 25%;"><a href="dna2codon.html">codon2dna</a></td>
+<td>Translate nucleic acid sequences into codons</td></tr>
+<tr><td style="width: 25%;"><a href="codonTest.html">codonTest</a></td>
+<td>codonTest</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">compatible</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="baseFreq.html">composition_test</a></td>
+<td>Summaries of alignments</td></tr>
+<tr><td style="width: 25%;"><a href="consensusNet.html">consensusNet</a></td>
+<td>Computes a consensusNetwork from a list of trees Computes a 'networx' object from a collection of splits.</td></tr>
+<tr><td style="width: 25%;"><a href="cophenetic.networx.html">cophenetic.networx</a></td>
+<td>Pairwise Distances from a Phylogenetic Network</td></tr>
+<tr><td style="width: 25%;"><a href="cophenetic.networx.html">cophenetic.splits</a></td>
+<td>Pairwise Distances from a Phylogenetic Network</td></tr>
+<tr><td style="width: 25%;"><a href="addConfidences.html">createLabel</a></td>
+<td>Compare splits and add support values to an object</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="delta.score.html">delta.score</a></td>
+<td>Computes the delta score</td></tr>
+<tr><td style="width: 25%;"><a href="densiTree.html">densiTree</a></td>
+<td>Plots a densiTree.</td></tr>
+<tr><td style="width: 25%;"><a href="designTree.html">designSplits</a></td>
+<td>Compute a design matrix or non-negative LS</td></tr>
+<tr><td style="width: 25%;"><a href="designTree.html">designTree</a></td>
+<td>Compute a design matrix or non-negative LS</td></tr>
+<tr><td style="width: 25%;"><a href="dfactorial.html">dfactorial</a></td>
+<td>Arithmetic Operators</td></tr>
+<tr><td style="width: 25%;"><a href="discrete.gamma.html">discrete.beta</a></td>
+<td>Discrete Gamma and Beta distribution</td></tr>
+<tr><td style="width: 25%;"><a href="discrete.gamma.html">discrete.gamma</a></td>
+<td>Discrete Gamma and Beta distribution</td></tr>
+<tr><td style="width: 25%;"><a href="dist.hamming.html">dist.hamming</a></td>
+<td>Pairwise Distances from Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="dist.hamming.html">dist.logDet</a></td>
+<td>Pairwise Distances from Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="dist.hamming.html">dist.ml</a></td>
+<td>Pairwise Distances from Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="dist.p.html">dist.p</a></td>
+<td>Pairwise Polymorphism P-Distances from DNA Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="distanceHadamard.html">distanceHadamard</a></td>
+<td>Distance Hadamard</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">distinct.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="getClans.html">diversity</a></td>
+<td>Clans, slices and clips</td></tr>
+<tr><td style="width: 25%;"><a href="dna2codon.html">dna2aa</a></td>
+<td>Translate nucleic acid sequences into codons</td></tr>
+<tr><td style="width: 25%;"><a href="dna2codon.html">dna2codon</a></td>
+<td>Translate nucleic acid sequences into codons</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pml.fit.html">edQt</a></td>
+<td>Internal maximum likelihood functions.</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="hadamard.html">fhm</a></td>
+<td>Hadamard Matrices and Fast Hadamard Multiplication</td></tr>
+<tr><td style="width: 25%;"><a href="parsimony.html">fitch</a></td>
+<td>Parsimony tree.</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="gap_as_state.html">gap_as_ambiguous</a></td>
+<td>Treat gaps as a state</td></tr>
+<tr><td style="width: 25%;"><a href="gap_as_state.html">gap_as_state</a></td>
+<td>Treat gaps as a state</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">genlight2phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="getClans.html">getClans</a></td>
+<td>Clans, slices and clips</td></tr>
+<tr><td style="width: 25%;"><a href="getClans.html">getClips</a></td>
+<td>Clans, slices and clips</td></tr>
+<tr><td style="width: 25%;"><a href="getClans.html">getDiversity</a></td>
+<td>Clans, slices and clips</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">getRoot</a></td>
+<td>Tree manipulation</td></tr>
+<tr><td style="width: 25%;"><a href="getClans.html">getSlices</a></td>
+<td>Clans, slices and clips</td></tr>
+<tr><td style="width: 25%;"><a href="baseFreq.html">glance.phyDat</a></td>
+<td>Summaries of alignments</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="hadamard.html">h2st</a></td>
+<td>Hadamard Matrices and Fast Hadamard Multiplication</td></tr>
+<tr><td style="width: 25%;"><a href="hadamard.html">h4st</a></td>
+<td>Hadamard Matrices and Fast Hadamard Multiplication</td></tr>
+<tr><td style="width: 25%;"><a href="hadamard.html">hadamard</a></td>
+<td>Hadamard Matrices and Fast Hadamard Multiplication</td></tr>
+<tr><td style="width: 25%;"><a href="gap_as_state.html">has_gap_state</a></td>
+<td>Treat gaps as a state</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="identify.networx.html">identify.networx</a></td>
+<td>Identify splits in a network</td></tr>
+<tr><td style="width: 25%;"><a href="image.phyDat.html">image.phyDat</a></td>
+<td>Plot of a Sequence Alignment</td></tr>
+</table>
+
+<h2><a id="K">-- K --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="midpoint.html">keep_as_tip</a></td>
+<td>Tree manipulation</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">KF.dist</a></td>
+<td>Distances between trees</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="latag2n.phyDat.html">latag2n.phyDat</a></td>
+<td>Replace leading and trailing alignment gaps with an ambiguous state</td></tr>
+<tr><td style="width: 25%;"><a href="Laurasiatherian.html">Laurasiatherian</a></td>
+<td>Laurasiatherian data (AWCMEE)</td></tr>
+<tr><td style="width: 25%;"><a href="dfactorial.html">ldfactorial</a></td>
+<td>Arithmetic Operators</td></tr>
+<tr><td style="width: 25%;"><a href="lento.html">lento</a></td>
+<td>Lento plot</td></tr>
+<tr><td style="width: 25%;"><a href="pml.fit.html">lli</a></td>
+<td>Internal maximum likelihood functions.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.html">logLik.pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mast.html">mast</a></td>
+<td>Maximum agreement subtree</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">matchSplits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="maxCladeCred.html">maxCladeCred</a></td>
+<td>Maximum clade credibility tree</td></tr>
+<tr><td style="width: 25%;"><a href="maxCladeCred.html">mcc</a></td>
+<td>Maximum clade credibility tree</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">midpoint</a></td>
+<td>Tree manipulation</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">midpoint.multiPhylo</a></td>
+<td>Tree manipulation</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">midpoint.phylo</a></td>
+<td>Tree manipulation</td></tr>
+<tr><td style="width: 25%;"><a href="mites.html">mites</a></td>
+<td>Morphological characters of Mites (Schäffer et al. 2010)</td></tr>
+<tr><td style="width: 25%;"><a href="modelTest.html">modelTest</a></td>
+<td>ModelTest</td></tr>
+<tr><td style="width: 25%;"><a href="pmlPart.html">multiphyDat2pmlPart</a></td>
+<td>Partition model.</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="neighborNet.html">neighborNet</a></td>
+<td>Computes a neighborNet from a distance matrix</td></tr>
+<tr><td style="width: 25%;"><a href="as.networx.html">networx</a></td>
+<td>Conversion among phylogenetic network objects</td></tr>
+<tr><td style="width: 25%;"><a href="NJ.html">NJ</a></td>
+<td>Neighbor-Joining</td></tr>
+<tr><td style="width: 25%;"><a href="nni.html">nni</a></td>
+<td>Tree rearrangements.</td></tr>
+<tr><td style="width: 25%;"><a href="designTree.html">nnls.networx</a></td>
+<td>Compute a design matrix or non-negative LS</td></tr>
+<tr><td style="width: 25%;"><a href="designTree.html">nnls.phylo</a></td>
+<td>Compute a design matrix or non-negative LS</td></tr>
+<tr><td style="width: 25%;"><a href="designTree.html">nnls.splits</a></td>
+<td>Compute a design matrix or non-negative LS</td></tr>
+<tr><td style="width: 25%;"><a href="designTree.html">nnls.tree</a></td>
+<td>Compute a design matrix or non-negative LS</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="parsimony.html">optim.parsimony</a></td>
+<td>Parsimony tree.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.html">optim.pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="ancestral.pml.html">pace</a></td>
+<td>Ancestral character reconstruction.</td></tr>
+<tr><td style="width: 25%;"><a href="parsimony.html">parsimony</a></td>
+<td>Parsimony tree.</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">path.dist</a></td>
+<td>Distances between trees</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">phyDat</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">phyDat2alignment</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="as.phyDat.html">phyDat2MultipleAlignment</a></td>
+<td>Conversion among Sequence Formats</td></tr>
+<tr><td style="width: 25%;"><a href="plot.networx.html">plot.networx</a></td>
+<td>plot phylogenetic networks</td></tr>
+<tr><td style="width: 25%;"><a href="plot.pml.html">plot.pml</a></td>
+<td>Plot phylogeny of a pml object</td></tr>
+<tr><td style="width: 25%;"><a href="plot.ancestral.html">plotAnc</a></td>
+<td>Plot ancestral character on a tree</td></tr>
+<tr><td style="width: 25%;"><a href="plotBS.html">plotBS</a></td>
+<td>Plotting trees with bootstrap values</td></tr>
+<tr><td style="width: 25%;"><a href="discrete.gamma.html">plotRates</a></td>
+<td>Discrete Gamma and Beta distribution</td></tr>
+<tr><td style="width: 25%;"><a href="plot.ancestral.html">plotSeqLogo</a></td>
+<td>Plot ancestral character on a tree</td></tr>
+<tr><td style="width: 25%;"><a href="discrete.gamma.html">plot_gamma_plus_inv</a></td>
+<td>Discrete Gamma and Beta distribution</td></tr>
+<tr><td style="width: 25%;"><a href="pml.html">pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.control.html">pml.control</a></td>
+<td>Auxiliary for Controlling Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="pml.fit.html">pml.fit</a></td>
+<td>Internal maximum likelihood functions.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.fit.html">pml.free</a></td>
+<td>Internal maximum likelihood functions.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.fit.html">pml.init</a></td>
+<td>Internal maximum likelihood functions.</td></tr>
+<tr><td style="width: 25%;"><a href="pmlCluster.html">pmlCluster</a></td>
+<td>Stochastic Partitioning</td></tr>
+<tr><td style="width: 25%;"><a href="pmlMix.html">pmlMix</a></td>
+<td>Phylogenetic mixture model</td></tr>
+<tr><td style="width: 25%;"><a href="pmlPart.html">pmlPart</a></td>
+<td>Partition model.</td></tr>
+<tr><td style="width: 25%;"><a href="pmlPart.html">pmlPart2multiPhylo</a></td>
+<td>Partition model.</td></tr>
+<tr><td style="width: 25%;"><a href="pml_bb.html">pml_bb</a></td>
+<td>Likelihood of a tree.</td></tr>
+<tr><td style="width: 25%;"><a href="parsimony.html">pratchet</a></td>
+<td>Parsimony tree.</td></tr>
+<tr><td style="width: 25%;"><a href="addConfidences.html">presenceAbsence</a></td>
+<td>Compare splits and add support values to an object</td></tr>
+<tr><td style="width: 25%;"><a href="write.ancestral.html">print.ancestral</a></td>
+<td>Export and convenience functions for ancestral reconstructions</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">print.phyDat</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="pml.html">print.pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">print.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">pruneTree</a></td>
+<td>Tree manipulation</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="parsimony.html">random.addition</a></td>
+<td>Parsimony tree.</td></tr>
+<tr><td style="width: 25%;"><a href="pml.control.html">ratchet.control</a></td>
+<td>Auxiliary for Controlling Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="writeDist.html">read.nexus.dist</a></td>
+<td>Writing and reading distances in phylip and nexus format</td></tr>
+<tr><td style="width: 25%;"><a href="read.nexus.splits.html">read.nexus.networx</a></td>
+<td>Function to import and export splits and networks</td></tr>
+<tr><td style="width: 25%;"><a href="read.nexus.partitions.html">read.nexus.partitions</a></td>
+<td>Function to import partitioned data from nexus files</td></tr>
+<tr><td style="width: 25%;"><a href="read.nexus.splits.html">read.nexus.splits</a></td>
+<td>Function to import and export splits and networks</td></tr>
+<tr><td style="width: 25%;"><a href="read.phyDat.html">read.phyDat</a></td>
+<td>Import and export sequence alignments</td></tr>
+<tr><td style="width: 25%;"><a href="writeDist.html">readDist</a></td>
+<td>Writing and reading distances in phylip and nexus format</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">removeAmbiguousSites</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">removeTrivialSplits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">removeUndeterminedSites</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">RF.dist</a></td>
+<td>Distances between trees</td></tr>
+<tr><td style="width: 25%;"><a href="CI.html">RI</a></td>
+<td>Consistency Index and Retention Index</td></tr>
+<tr><td style="width: 25%;"><a href="nni.html">rNNI</a></td>
+<td>Tree rearrangements.</td></tr>
+<tr><td style="width: 25%;"><a href="nni.html">rSPR</a></td>
+<td>Tree rearrangements.</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="parsimony.html">sankoff</a></td>
+<td>Parsimony tree.</td></tr>
+<tr><td style="width: 25%;"><a href="SH.test.html">SH.test</a></td>
+<td>Shimodaira-Hasegawa Test</td></tr>
+<tr><td style="width: 25%;"><a href="simSeq.html">simSeq</a></td>
+<td>Simulate sequences.</td></tr>
+<tr><td style="width: 25%;"><a href="simSeq.html">simSeq.phylo</a></td>
+<td>Simulate sequences.</td></tr>
+<tr><td style="width: 25%;"><a href="simSeq.html">simSeq.pml</a></td>
+<td>Simulate sequences.</td></tr>
+<tr><td style="width: 25%;"><a href="SOWH.test.html">SOWH.test</a></td>
+<td>Swofford-Olsen-Waddell-Hillis Test</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="splitsNetwork.html">splitsNetwork</a></td>
+<td>Phylogenetic Network</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">SPR.dist</a></td>
+<td>Distances between trees</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">sprdist</a></td>
+<td>Distances between trees</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">subset.phyDat</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="getClans.html">summary.clanistics</a></td>
+<td>Clans, slices and clips</td></tr>
+<tr><td style="width: 25%;"><a href="superTree.html">superTree</a></td>
+<td>Super Tree methods</td></tr>
+<tr><td style="width: 25%;"><a href="upgma.html">supgma</a></td>
+<td>UPGMA, WPGMA and sUPGMA</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="transferBootstrap.html">transferBootstrap</a></td>
+<td>Transfer Bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">treedist</a></td>
+<td>Distances between trees</td></tr>
+</table>
+
+<h2><a id="U">-- U --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="writeDist.html">unique.dist</a></td>
+<td>Writing and reading distances in phylip and nexus format</td></tr>
+<tr><td style="width: 25%;"><a href="phyDat.html">unique.phyDat</a></td>
+<td>Generic functions for class phyDat</td></tr>
+<tr><td style="width: 25%;"><a href="as.splits.html">unique.splits</a></td>
+<td>Splits representation of graphs and trees.</td></tr>
+<tr><td style="width: 25%;"><a href="NJ.html">UNJ</a></td>
+<td>Neighbor-Joining</td></tr>
+<tr><td style="width: 25%;"><a href="upgma.html">upgma</a></td>
+<td>UPGMA, WPGMA and sUPGMA</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pml.html">vcov.pml</a></td>
+<td>Likelihood of a tree.</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="upgma.html">wpgma</a></td>
+<td>UPGMA, WPGMA and sUPGMA</td></tr>
+<tr><td style="width: 25%;"><a href="treedist.html">wRF.dist</a></td>
+<td>Distances between trees</td></tr>
+<tr><td style="width: 25%;"><a href="write.ancestral.html">write.ancestral</a></td>
+<td>Export and convenience functions for ancestral reconstructions</td></tr>
+<tr><td style="width: 25%;"><a href="writeDist.html">write.nexus.dist</a></td>
+<td>Writing and reading distances in phylip and nexus format</td></tr>
+<tr><td style="width: 25%;"><a href="read.nexus.splits.html">write.nexus.networx</a></td>
+<td>Function to import and export splits and networks</td></tr>
+<tr><td style="width: 25%;"><a href="read.nexus.splits.html">write.nexus.splits</a></td>
+<td>Function to import and export splits and networks</td></tr>
+<tr><td style="width: 25%;"><a href="read.phyDat.html">write.phyDat</a></td>
+<td>Import and export sequence alignments</td></tr>
+<tr><td style="width: 25%;"><a href="write.pml.html">write.pml</a></td>
+<td>Export pml objects</td></tr>
+<tr><td style="width: 25%;"><a href="read.nexus.splits.html">write.splits</a></td>
+<td>Function to import and export splits and networks</td></tr>
+<tr><td style="width: 25%;"><a href="writeDist.html">writeDist</a></td>
+<td>Writing and reading distances in phylip and nexus format</td></tr>
+</table>
+
+<h2><a id="Y">-- Y --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="yeast.html">yeast</a></td>
+<td>Yeast alignment (Rokas et al.)</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="phyDat.html">[.phyDat</a></td>
+<td>Generic functions for class phyDat</td></tr>
+</table>
+</div></body></html>

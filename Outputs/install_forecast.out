@@ -1,0 +1,35 @@
+* installing *source* package ‘forecast’ ...
+** this is package ‘forecast’ version ‘9.0.2’
+** package ‘forecast’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c RcppExports.cpp -o RcppExports.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c calcBATS.cpp -o calcBATS.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c calcTBATS.cpp -o calcTBATS.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c etsTargetFunction.cpp -o etsTargetFunction.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c etsTargetFunctionWrapper.cpp -o etsTargetFunctionWrapper.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c etscalc.c -o etscalc.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c etspolyroot.c -o etspolyroot.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c makeBATSMatrices.cpp -o makeBATSMatrices.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c makeTBATSMatrices.cpp -o makeTBATSMatrices.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c updateMatrices.cpp -o updateMatrices.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'    -fopenmp -DR_NO_REMAP -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c updateTBATSMatrices.cpp -o updateTBATSMatrices.o
+g++ -std=gnu++20 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o forecast.so RcppExports.o calcBATS.o calcTBATS.o etsTargetFunction.o etsTargetFunctionWrapper.o etscalc.o etspolyroot.o makeBATSMatrices.o makeTBATSMatrices.o updateMatrices.o updateTBATSMatrices.o -fopenmp -llapack -lblas -lgfortran -lm -lquadmath -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-forecast/00new/forecast/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (forecast)

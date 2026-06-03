@@ -1,0 +1,217 @@
+AAbin                   Amino Acid Sequences
+CADM.global             Congruence among distance matrices
+DNAbin                  Manipulate DNA Sequences in Bit-Level Format
+DNAbin2indel            Recode Blocks of Indels
+FastME                  Tree Estimation Based on the Minimum Evolution
+                        Algorithm
+Initialize.corPhyl      Initialize a 'corPhyl' Structure Object
+LTT                     Theoretical Lineage-Through Time Plots
+MPR                     Most Parsimonious Reconstruction
+Moran.I                 Moran's I Autocorrelation Index
+SDM                     Construction of Consensus Distance Matrix With
+                        SDM
+ace                     Ancestral Character Estimation
+add.scale.bar           Add a Scale Bar to a Phylogeny Plot
+additive                Incomplete Distance Matrix Filling
+alex                    Alignment Explorer With Multiple Devices
+all.equal.DNAbin        Compare DNA Sets
+all.equal.phylo         Global Comparison of two Phylogenies
+alview                  Print DNA or AA Sequence Alignement
+ape-package             Analyses of Phylogenetics and Evolution
+apetools                Tools to Explore Files
+as.alignment            Conversion Among DNA Sequence Internal Formats
+as.bitsplits            Split Frequencies and Conversion Among Split
+                        Classes
+as.matching             Conversion Between Phylo and Matching Objects
+as.phylo                Conversion Among Tree and Network Objects
+as.phylo.formula        Conversion from Taxonomy Variables to
+                        Phylogenetic Trees
+axisPhylo               Axis on Side of Phylogeny
+balance                 Balance of a Dichotomous Phylogenetic Tree
+base.freq               Base frequencies from DNA Sequences
+bd.ext                  Extended Version of the Birth-Death Models to
+                        Estimate Speciation and Extinction Rates
+bd.time                 Time-Dependent Birth-Death Models
+binaryPGLMM             Phylogenetic Generalized Linear Mixed Model for
+                        Binary Data
+bind.tree               Binds Trees
+bionj                   Tree Estimation Based on an Improved Version of
+                        the NJ Algorithm
+bird.families           Phylogeny of the Families of Birds From Sibley
+                        and Ahlquist
+bird.orders             Phylogeny of the Orders of Birds From Sibley
+                        and Ahlquist
+birthdeath              Estimation of Speciation and Extinction Rates
+                        With Birth-Death Models
+boot.phylo              Tree Bipartition and Bootstrapping Phylogenies
+branching.times         Branching Times of a Phylogenetic Tree
+c.phylo                 Building Lists of Trees
+carnivora               Carnivora body sizes and life history traits
+checkAlignment          Check DNA Alignments
+checkLabel              Checking Labels
+checkValidPhylo         Check the Structure of a "phylo" Object
+cherry                  Number of Cherries and Null Models of Trees
+chiroptera              Bat Phylogeny
+chronoMPL               Molecular Dating With Mean Path Lengths
+chronopl                Molecular Dating With Penalized Likelihood
+chronos                 Molecular Dating by Penalised Likelihood and
+                        Maximum Likelihood
+clustal                 Multiple Sequence Alignment with External
+                        Applications
+coalescent.intervals    Coalescent Intervals
+collapse.singles        Collapse Single Nodes
+collapsed.intervals     Collapsed Coalescent Intervals
+compar.cheverud         Cheverud's Comparative Method
+compar.gee              Comparative Analysis with GEEs
+compar.lynch            Lynch's Comparative Method
+compar.ou               Ornstein-Uhlenbeck Model for Continuous
+                        Characters
+comparePhylo            Compare Two "phylo" Objects
+compute.brlen           Branch Lengths Computation
+compute.brtime          Compute and Set Branching Times
+consensus               Concensus Trees
+cophenetic.phylo        Pairwise Distances from a Phylogenetic Tree
+cophyloplot             Plots two phylogenetic trees face to face with
+                        links between the tips.
+corBlomberg             Blomberg et al.'s Correlation Structure
+corBrownian             Brownian Correlation Structure
+corClasses              Phylogenetic Correlation Structures
+corGrafen               Grafen's (1989) Correlation Structure
+corMartins              Martins's (1997) Correlation Structure
+corPagel                Pagel's "lambda" Correlation Structure
+corphylo                Correlations among Multiple Traits with
+                        Phylogenetic Signal
+correlogram.formula     Phylogenetic Correlogram
+data.nex                NEXUS Data Example
+dbd                     Probability Density Under Birth-Death Models
+def                     Definition of Vectors for Plotting or
+                        Annotating
+degree                  Vertex Degrees in Trees and Networks
+del.gaps                Delete Alignment Gaps in DNA or AA Sequences
+delta.plot              Delta Plots
+dist.dna                Pairwise Distances from DNA Sequences
+dist.gene               Pairwise Distances from Genetic Data
+dist.topo               Topological Distances Between Two Trees
+diversi.gof             Tests of Constant Diversification Rates
+diversi.time            Analysis of Diversification with Survival
+                        Models
+diversity.contrast.test
+                        Diversity Contrast Test
+dnds                    dN/dS Ratio
+drop.tip                Remove Tips in a Phylogenetic Tree
+edges                   Draw Additional Edges on a Plotted Tree
+evonet                  Evolutionary Networks
+ewLasso                 Incomplete distances and edge weights of
+                        unrooted topology
+gammaStat               Gamma-Statistic of Pybus and Harvey
+getAnnotationsGenBank   Read Annotations from GenBank
+hivtree                 Phylogenetic Tree of 193 HIV-1 Sequences
+howmanytrees            Calculate Numbers of Phylogenetic Trees
+identify.phylo          Graphical Identification of Nodes and Tips
+image.DNAbin            Plot of DNA Sequence Alignement
+is.binary               Test for Binary Tree
+is.compatible           Check Compatibility of Splits
+is.monophyletic         Is Group Monophyletic
+is.ultrametric          Test if a Tree is Ultrametric
+kronoviz                Plot Multiple Chronograms on the Same Scale
+label2table             Label Management
+ladderize               Ladderize a Tree
+latag2n                 Leading and Trailing Alignment Gaps to N
+lmorigin                Multiple regression through the origin
+ltt.plot                Lineages Through Time Plot
+makeLabel               Label Management
+makeNodeLabel           Makes Node Labels
+mantel.test             Mantel Test for Similarity of Two Matrices
+mat3                    Three Matrices
+mat5M3ID                Five Trees
+mat5Mrand               Five Independent Trees
+matexpo                 Matrix Exponential
+mcconwaysims.test       McConway-Sims Test of Homogeneous
+                        Diversification
+mcmc.popsize            Reversible Jump MCMC to Infer Demographic
+                        History
+mixedFontLabel          Mixed Font Labels for Plotting
+mrca                    Find Most Recent Common Ancestors Between Pairs
+mst                     Minimum Spanning Tree
+multi2di                Collapse and Resolve Multichotomies
+multiphylo              Manipulating Lists of Trees
+mvr                     Minimum Variance Reduction
+nj                      Neighbor-Joining Tree Estimation
+njs                     Tree Reconstruction from Incomplete Distances
+                        With NJ* or bio-NJ*
+node.dating             node.dating
+node.depth              Depth and Heights of Nodes and Tips
+nodelabels              Labelling the Nodes, Tips, and Edges of a Tree
+nodepath                Find Paths of Nodes
+parafit                 Test of host-parasite coevolution
+pcoa                    Principal Coordinate Analysis
+phydataplot             Tree Annotation
+phymltest               Fits a Bunch of Models with PhyML
+pic                     Phylogenetically Independent Contrasts
+pic.ortho               Phylogenetically Independent Orthonormal
+                        Contrasts
+plot.correlogram        Plot a Correlogram
+plot.phylo              Plot Phylogenies
+plot.phylo.extra        Extra Fuctions to Plot and Annotate Phylogenies
+plot.varcomp            Plot Variance Components
+plotTreeTime            Plot Tree With Time Axis
+print.phylo             Compact Display of a Phylogeny
+rDNAbin                 Random DNA Sequences
+rTraitCont              Continuous Character Simulation
+rTraitDisc              Discrete Character Simulation
+rTraitMult              Multivariate Character Simulation
+read.GenBank            Read DNA Sequences from GenBank via Internet
+read.caic               Read Tree File in CAIC Format
+read.dna                Read DNA Sequences in a File
+read.gff                Read GFF Files
+read.nexus              Read Tree File in Nexus Format
+read.nexus.data         Read Character Data In NEXUS Format
+read.tree               Read Tree File in Parenthetic Format
+reconstruct             Continuous Ancestral Character Estimation
+reorder.phylo           Internal Reordering of Trees
+richness.yule.test      Test of Diversification-Shift With the Yule
+                        Process
+rlineage                Tree Simulation Under the Time-Dependent
+                        Birth-Death Models
+root                    Roots Phylogenetic Trees
+rotate                  Swapping Sister Clades
+rtree                   Generate Random Trees
+rtt                     Root a Tree by Root-to-Tip Regression
+seg.sites               Find Segregating Sites in DNA Sequences
+skyline                 Skyline Plot Estimate of Effective Population
+                        Size
+skylineplot             Drawing Skyline Plot Graphs
+slowinskiguyer.test     Slowinski-Guyer Test of Homogeneous
+                        Diversification
+solveAmbiguousBases     Solve Ambiguous Bases in DNA Sequences
+speciesTree             Species Tree Estimation
+stree                   Generates Systematic Regular Trees
+subtreeplot             Zoom on a Portion of a Phylogeny by Successive
+                        Clicks
+subtrees                All subtrees of a Phylogenetic Tree
+summary.phylo           Print Summary of a Phylogeny
+trans                   Translation from DNA to Amino Acid Sequences
+treePop                 Tree Popping
+trex                    Tree Explorer With Multiple Devices
+triangMtd               Tree Reconstruction Based on the Triangles
+                        Method
+unique.multiPhylo       Revomes Duplicate Trees
+updateLabel             Update Labels
+varCompPhylip           Variance Components with Orthonormal Contrasts
+varcomp                 Compute Variance Component Estimates
+vcv                     Phylogenetic Variance-covariance or Correlation
+                        Matrix
+vcv2phylo               Variance-Covariance Matrix to Tree
+weight.taxo             Define Similarity Matrix
+where                   Find Patterns in DNA Sequences
+which.edge              Identifies Edges of a Tree
+woodmouse               Cytochrome b Gene Sequences of Woodmice
+write.dna               Write DNA Sequences in a File
+write.nexus             Write Tree File in Nexus Format
+write.nexus.data        Write Character Data in NEXUS Format
+write.phyloXML          Write Tree File in phyloXML Format
+write.tree              Write Tree File in Parenthetic Format
+yule                    Fits the Yule Model to a Phylogenetic Tree
+yule.cov                Fits the Yule Model With Covariates
+yule.time               Fits the Time-Dependent Yule Model
+zoom                    Zoom on a Portion of a Phylogeny

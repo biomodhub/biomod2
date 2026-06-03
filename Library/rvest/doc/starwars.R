@@ -1,0 +1,25 @@
+## ----echo = FALSE, results = "asis"-------------------------------------------
+library(rvest)
+crawl_html <- function(x) {
+  out <- gsub("\r", "", x)
+  out <- gsub("\n\n", "</p><p>", out)
+  out <- gsub("\n", " ", out) 
+  paste0("<p>", out, "</p>")
+}
+
+film_desc <- function(x) {
+  glue::glue_data(x, "
+  <section>
+    <h2 data-id='{episode_id}'>{title}</h2>
+    <p>Released: {release_date}</p>
+    <p>Director: <span class='director'>{director}</span></p>
+    <div class='crawl'>{crawl_html(opening_crawl)}</div>
+  </section>")
+}
+
+films <- repurrrsive::sw_films
+films <- films[order(sapply(films, "[[", "episode_id"))]
+
+descs <- vapply(films, film_desc, character(1))
+writeLines(descs)
+

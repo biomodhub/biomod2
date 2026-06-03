@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Martin R. Smith martin.smith@durham.ac.uk" />
+
+<meta name="date" content="2026-04-22" />
+
+<title>Loading phylogenetic trees into R</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Loading phylogenetic trees into R</h1>
+<h4 class="author">Martin R. Smith <a href="mailto:martin.smith@durham.ac.uk" class="email">martin.smith@durham.ac.uk</a></h4>
+<h4 class="date">2026-04-22</h4>
+
+
+
+<p>If a tree is available in a text-based format, it should not be too
+difficult to load into R.</p>
+<div id="manual-entry" class="section level2">
+<h2>Manual entry</h2>
+<p>A straightforward, if cumbersome, way to enter trees into R is by
+manual text entry:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>myTree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.tree</span>(<span class="at">text =</span> <span class="st">&quot;((A, B), ((C, D), (E, F)));&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">plot</span>(myTree)</span></code></pre></div>
+<p><img role="img" aria-label src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAEgCAMAAABrWDzDAAAAeFBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZmYAZrY6AAA6OmY6ZpA6ZrY6kLY6kNtmAABmOgBmOjpmkLZmkNtmtttmtv+QOgCQZjqQ27aQ2/+2ZgC2Zjq22/+2///bkDrbtmbbtpDb////tmb/25D/27b/29v//7b//9v///9BjpeIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAF7klEQVR4nO3dXVcjRRSG0Wb8II6Kn6iMxiFRwv//hy4ScjNcsPQ9RZ9Ye9/MXa+a08+CTlIplkcILGsvgMsmICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIqD5bJej65KLCWg6h9sv7uuuJqDpPNx8W3g1AU1nv/m58GoCam6p9rh990fl+gqvxQD1N+iu8hFIQN2V36CHm8oXYQLqrvwG1T4CCai78hu0vfqt8nICaq78BtU+Agmou+ob9HBzXXo9ATVXfYOKH4EE1F33G9R9fdPrfoO6r2963W9Q9/UNV/5RQbW1B/SK7usbrvsArK+57gOwvua6D8D6mus+AOtrrvsA6td3/ji+5jOx7vMbrvsA6tdnR2Kp7gOoX9+u9OP47vMbrvsABuxItKW1UvcBlK/vcHtdebnu8xuu+wDK39k+P0MX/RzqPr/hphuALa21phtA7TP0fPP71HQDqP1a2Hzz+9RsA6j9Zvx883thtgHUfjN+vvm9MNsA9pvnV2NFHc02vxemH0Bo+vlNP4DQ9PObfgCh0fMrfyO13OAB/N8ND2jw9WPtF9icgNZewIUT0NoLuHACWnsBF05Aay/gwglo7QW8vd3x1ef7mo/EBLT2At7e8fP4Q9FBUwJaewFv7nlPa9GnqgJaewFv7lzO3XXF1QS09gLe3HlL4rbkd5iA1l7AK+o/ujlvSRRQie4LHPe1Hr/CSnRf4ICDxk+PQB6ia3RfYPn6zo9Au5rN9QJaewGvqD9o/BTOw03N18MEtPYCXlG9vudHoL++u5A90d3vT/sF1h80/vRS7Or970XXE9DaC3jF7Ovr/v9vv8DZ19f9/99+gbOvr/v/v/+u/7UH9IrpA+qu+wAF1Fz3AQqoue4DFFBz3QcooOa6D1BAzY0Y4OHDZlm+qnkvWkDNDRjgfvP1/ePh7jL+1IGAQvUDfN4IVHRetICaqx/g+fs8NadtCqi58ne2qzYCnddXebEVrs+/dWHnRAuom6KtrGcCmo2AiJx/hRU9CwloNuev89R8r1BA89kt39w//v3L55fx554E1M/++2W5+qHmeCABkREQEQERERARAREREBEBEREQEQFN53D7tC3o6seaqwloOqcPwz5uHDDFf7JbntI53NacMCWg6WyP+zmq/vy3gKZz3FR/+FC0r0xAzZVvqj89Qy/vinZGC6i5QedE+wk0i1HnRDvmdxLlA9w6J3oq9QeNn/ZCV305Q0DNVQ/w+eX7nxsHjc9hzEHjy2c/FV1PQM11H6CAmus+QAE1132AwwMiNPgGpbqvb3rdb1D39U2v+w3qvr7pdb9B3dc3ve43qPv6ptf9BnVf3/SG3KD9puygRAE1N+QG3X1ZdlSrgJobcYN2V78W7YgWUHsDbtDh9rromPpHAbU34J3tpz2JdzUnJApoQsefPjV/5+BRQBM6boouO69eQLM5Pf7si77ZLKDpbJ+fhS5kSyvNPNxcP/1T9jJMQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQET+AQirwAFBTs6YAAAAAElFTkSuQmCC" alt width="75%" style="display: block; margin: auto;" /></p>
+<p>Beware common gotchas when entering text:</p>
+<ul>
+<li><p>Ensure that the tree string ends in a semi-colon.</p></li>
+<li><p>Make sure that brackets are matched. Some text editors, such as
+<a href="https://posit.co/">RStudio</a> or <a href="https://notepad-plus-plus.org/">Notepad++</a>, contain built-in
+syntax highlighting that will highlight the counterpart to each
+parenthesis as you type.</p></li>
+<li><p>Look out for ((double brackets)) or brackets enclosing a single
+node: the resultant ‘invisible nodes’ can cause R to crash.</p></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>badTree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.tree</span>(<span class="at">text =</span> <span class="st">&quot;((A, B), (((C, D), ((E), F))));&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">plot</span>(badTree)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>ape<span class="sc">::</span><span class="fu">nodelabels</span>(<span class="at">bg =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>))</span></code></pre></div>
+<p><img role="img" aria-label src="data:image/png;base64,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" alt width="75%" style="display: block; margin: auto;" /></p>
+<p>The text is expected in Newick format, so can contain edge lengths -
+but edge lengths must be included for every edge of the tree, or they
+will be ignored.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>myTree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">read.tree</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">text =</span> <span class="st">&quot;((A:1, B:1):2, ((C:1, D:1):2, (E:1, F:1):2):4);&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">plot</span>(myTree)</span></code></pre></div>
+<p><img role="img" aria-label src="data:image/png;base64,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" alt width="75%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="from-a-file" class="section level2">
+<h2>From a file</h2>
+<p>First off, make sure that you are comfortable <a href="filesystem-navigation.html">telling R where to find a
+file</a>.</p>
+<div id="nexus-files" class="section level3">
+<h3>Nexus files</h3>
+<p>You can load trees from a nexus file using:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>filename <span class="ot">&lt;-</span> <span class="st">&quot;my_file_name.nex&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>ape<span class="sc">::</span><span class="fu">read.nexus</span>(filename)</span></code></pre></div>
+<p>If the file contains multiple trees, this will return a list of all
+trees in the file, with the class <code>multiPhylo</code>. If there is a
+single tree, then this will be returned as a tree of class
+<code>phylo</code> unless the option
+<code>force.multiPhylo = TRUE</code>. This can be useful when an unknown
+number of trees are to be processed in bulk, for example by</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">lapply</span>(ape<span class="sc">::</span><span class="fu">read.nexus</span>(filename, <span class="at">force.multiPhylo =</span> <span class="cn">TRUE</span>), ape<span class="sc">::</span>consensus)</span></code></pre></div>
+</div>
+<div id="newick-files" class="section level3">
+<h3>Newick files</h3>
+<p>Newick trees can be read with <code>ape::read.tree(filename)</code>;
+<code>phytools::read.newick(filename)</code> does not report an error
+when a ‘node’ has a single descendant (which will often denote a
+misspecified tree).</p>
+</div>
+<div id="trees-from-tnt" class="section level3">
+<h3>Trees from TNT</h3>
+<p>Trees saved using <a href="https://www.lillo.org.ar/phylogeny/tnt/">TNT</a> can be opened in
+R using <code>ReadTntTree()</code>.</p>
+<p>Trees should be saved in parenthetical format (TNT command
+<code>tsav*</code>), rather than TNT’s compressed format (TNT command
+<code>tsav</code>).</p>
+<p>The TNT command <code>taxname=</code> will write taxon names to file,
+which results in larger but easier to read files. Trees in such a file
+will be read using the terminal names saved within the file. The TNT
+command <code>taxname-</code> saves just the numbers of the terminals.
+In order for the trees to be reunited with the names of their tips,
+terminal labels will be read from the linked matrix file listed in the
+first line of the .tre file. Ensure that this file exists in the
+expected location. If it does not, use
+<code>ReadTntTree(treeFile, relativePath = &#39;../path/to/tipNameFile&#39;)</code>,
+or <code>tipLabels</code> to manually specify the names of the tips
+(e.g.
+<code>ReadTntTree(treeFile, tipLabels = c(&#39;outgroup&#39;, letters[1:8])</code>).</p>
+</div>
+<div id="other-formats" class="section level3">
+<h3>Other formats</h3>
+<p>Are there other formats that should be listed here? Please let me
+know by <a href="https://github.com/ms609/TreeSearch/issues/new?title=Loading%20trees">opening
+an issue</a>.</p>
+</div>
+</div>
+<div id="export-write-trees" class="section level2">
+<h2>Export (write) trees</h2>
+<p>To save a tree to a text file, use
+<code>ape::write.tree(tree, file=&#39;filename.txt&#39;)</code> for Newick
+format (widely supported by most phylogenetic software), or
+<code>ape::write.nexus(tree, file=&#39;filename.nex&#39;)</code> for Nexus
+format.</p>
+</div>
+<div id="what-next" class="section level2">
+<h2>What next?</h2>
+<p>You might want to:</p>
+<ul>
+<li><p><a href="load-data.html">Load phylogenetic data</a> into
+R.</p></li>
+<li><p>Conduct parsimony search using Brazeau, Guillerme &amp; Smith’s
+<a href="https://ms609.github.io/TreeSearch/articles/tree-search.html">approach
+to inapplicable data</a>, or using <a href="https://ms609.github.io/TreeSearch/articles/profile.html">Profile
+parsimony</a>.</p></li>
+<li><p><a href="https://ms609.github.io/TreeDist/articles/Using-TreeDist.html">Calculate
+distances</a> between pairs of trees.</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

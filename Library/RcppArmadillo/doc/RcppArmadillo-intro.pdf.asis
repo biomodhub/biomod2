@@ -1,0 +1,5 @@
+%\VignetteIndexEntry{RcppArmadillo-introduction}
+%\VignetteKeywords{R, C++, Armadillo, linear algebra, kalman filter}
+%\VignettePackage{RcppArmadillo}
+%\VignetteEncoding{UTF-8}
+%\VignetteEngine{Rcpp::asis}

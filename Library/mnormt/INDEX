@@ -1,0 +1,6 @@
+biv.nt.prob       rectagle probabilities of bivariate normal and "t" 
+dmnorm            multivariate normal distribution
+dmt               multivariate "t" distribution
+pd.solve          inverse of a symmetric positive-definite matrix 
+sadmvn            rectangle probabilities of multivariate normal 
+sadmvt            rectangle probabilities of multivariate "t"

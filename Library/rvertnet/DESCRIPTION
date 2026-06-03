@@ -1,0 +1,42 @@
+Package: rvertnet
+Title: Search 'Vertnet', a 'Database' of Vertebrate Specimen Records
+Description: Retrieve, map and summarize data from the 'VertNet.org' 
+    archives (<https://vertnet.org/>).  Functions allow searching by many 
+    parameters, including 'taxonomic' names, places, and dates. In addition, 
+    there is an interface for conducting spatially delimited searches, and 
+    another for requesting large 'datasets' via email.
+Version: 0.8.4
+Authors@R: c(
+    person("Scott", "Chamberlain", email = "myrmecocystus@gmail.com",
+      role = c("aut", "cph"), comment = "0000-0003-1444-9135"),
+    person("Chris", "Ray", role = "ctb"),
+    person("Vijay", "Barve", role = "ctb"),
+    person("Dave", "Slager", email = "slager@uw.edu",
+      role = c("aut", "cre", "cph"), comment = "0000-0003-2525-2039")
+  )
+License: MIT + file LICENSE
+URL: https://github.com/ropensci/rvertnet,
+        https://docs.ropensci.org/rvertnet/
+BugReports: https://github.com/ropensci/rvertnet/issues
+Encoding: UTF-8
+Depends: R (>= 2.10)
+Imports: jsonlite (>= 1.5), crul (>= 0.5.2), dplyr (>= 0.5.0), tibble,
+        ggplot2, maps
+Suggests: knitr, rmarkdown, testthat, vcr, withr
+RoxygenNote: 7.3.1
+X-schema.org-applicationCategory: Data Access
+X-schema.org-keywords: species, occurrences, biodiversity, maps,
+        vertnet, mammals, mammalia, specimens
+X-schema.org-isPartOf: "https://ropensci.org"
+VignetteBuilder: knitr
+LazyData: true
+NeedsCompilation: no
+Packaged: 2024-02-15 17:15:18 UTC; dave
+Author: Scott Chamberlain [aut, cph] (0000-0003-1444-9135),
+  Chris Ray [ctb],
+  Vijay Barve [ctb],
+  Dave Slager [aut, cre, cph] (0000-0003-2525-2039)
+Maintainer: Dave Slager <slager@uw.edu>
+Repository: CRAN
+Date/Publication: 2024-02-15 23:10:02 UTC
+Built: R 4.6.0; ; 2026-05-22 09:31:12 UTC; unix

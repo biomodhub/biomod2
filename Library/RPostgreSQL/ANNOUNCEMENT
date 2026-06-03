@@ -1,0 +1,29 @@
+
+       RPostgreSQL version 0.5
+
+We are pround to announce the availability of the RPostgreSQL package on CRAN
+and its mirrors.  This package provides an a DBI-compliant interface between
+PostgreSQL and R.
+
+RPostgreSQL was developed as part of the Google Summer of Code 2008 program
+by Sameer Kumar Prayaga <sameer.bits@gmail.com>.
+
+Some highlights:
+
+  o  Binary data store in PostgreSQL bytea datatype.
+
+Known bugs/deficiencies:
+
+  o  Arrays are not converted vector or other datastructure.
+
+  o  Active issue list is at http://code.google.com/p/rpostgresql/issues/list
+
+RPostgreSQL is hosted on Github https://github.com/tomoakin/RPostgreSQL
+
+For security issues that should not directly go to public,
+you may contact:
+
+   Tomoaki Nishiyama <tomoakin@kenroku.kanazawa-u.ac.jp>
+   Neil Tiffin <neilt@neiltiffin.com>
+   Joe Conway <mail@joeconway.com>
+   Dirk Eddelbuettel <edd@debian.org>

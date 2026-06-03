@@ -1,0 +1,20 @@
+Package: magic
+Version: 1.6-1
+Title: Create and Investigate Magic Squares
+Authors@R: person(given=c("Robin", "K. S."), family="Hankin", role = c("aut","cre"), email="hankin.robin@gmail.com", comment = c(ORCID = "0000-0001-5982-0415"))
+Depends: R (>= 2.10), abind
+Description: A collection of functions for the manipulation and
+ analysis of arbitrarily dimensioned arrays.  The original motivation
+ for the package was the development of efficient, vectorized
+ algorithms for the creation and investigation of magic squares and
+ high-dimensional magic hypercubes.
+Maintainer: Robin K. S. Hankin <hankin.robin@gmail.com>
+License: GPL-2
+URL: https://github.com/RobinHankin/magic
+BugReports: https://github.com/RobinHankin/magic/issues
+NeedsCompilation: no
+Packaged: 2022-11-14 19:20:55 UTC; rhankin
+Author: Robin K. S. Hankin [aut, cre] (<https://orcid.org/0000-0001-5982-0415>)
+Repository: CRAN
+Date/Publication: 2022-11-16 03:50:05 UTC
+Built: R 4.6.0; ; 2026-05-22 08:26:48 UTC; unix

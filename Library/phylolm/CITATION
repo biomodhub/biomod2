@@ -1,0 +1,13 @@
+citHeader("To cite package 'phylolm' in publications use:")
+
+bibentry(
+  bibtype = "Article", 
+  author = c(as.person("Lam Si Tung Ho"), as.person("Cecile Ane")),
+  title = "A linear-time algorithm for Gaussian and non-Gaussian trait evolution models",
+  year = "2014", 
+  journal = "Systematic Biology",
+  volume = "63",
+  pages = "397-408",
+  textVersion = paste("Ho, L. S. T. and Ane, C. (2014)", 
+        "A linear-time algorithm for Gaussian and non-Gaussian trait evolution models", 
+        "Systematic Biology, 63(3):397-408."))

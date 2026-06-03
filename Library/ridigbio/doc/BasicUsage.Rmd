@@ -1,0 +1,167 @@
+---
+title: Introduction to ridigbio
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ridigbio}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The ridigbio package can be used to obtain records from [iDigBio](https://www.idigbio.org/) API's, including both the [Search API](https://github.com/idigbio/idigbio-search-api/wiki) and the [Media APIs](https://www.idigbio.org/wiki/index.php/IDigBio_API#Record_.26_Media_APIs).
+
+## General Overview
+
+In this demo we will cover how to:
+
+1.  Install `ridigbio`
+2.  Search for records with `idig_search_records()`
+3.  Search for media records with `idig_search_media()`
+
+## Getting Started
+
+First, you must install the ridigbio package. If you are new to R and R studio, please refer to our QUBES module to get started: Introduction to R with Biodiversity Data, [doi:10.25334/84FC-TE88](https://www.doi.org/10.25334/84FC-TE88) .
+
+The lastest version of our R package can be installed via CRAN.
+
+```{r eval=FALSE, include=TRUE}
+install.packages("ridigbio")
+```
+
+Before downloading any records, you must load the ridigbio package.
+
+```{r message=FALSE, warning=FALSE}
+library(ridigbio)
+```
+
+```{r echo = FALSE}
+
+verify_galax_records <- FALSE
+
+#Test that examples will run
+tryCatch({
+    # Your code that might throw an error
+    verify_galax_records <- idig_search_records(rq=list(scientificname="Galax urceolata"),
+      limit = 10
+    )
+}, error = function(e) {
+    # Code to run if an error occurs
+    cat("An error occurred during the idig_search_records call: ", e$message, "\n")
+    cat("Vignettes will not be fully generated. Please try again after resolving the issue.")
+    # Optionally, you can return NULL or an empty dataframe
+    verify_galax_records <- FALSE
+})
+```
+
+## Download Records
+
+To download records from the Search API, we will use the function `idig_search_records()`. Here the `rq`, or record query, indicates we want to download all the records where the `scientificname` is equal to [<i>Galax urceolata</i>](https://en.wikipedia.org/wiki/Galax).
+
+```{r eval=verify_galax_records}
+galax_records <- idig_search_records(rq=list(scientificname="Galax urceolata"))
+```
+
+```{r eval=verify_galax_records}
+colnames(galax_records)
+```
+
+When fields are not specified, default columns include the following:
+
+| Column             | Description                                                                                                |
+|----------------|--------------------------------------------------------|
+| uuid               | Universally Unique IDentifier assigned by iDigBio                                                          |
+| occurrenceid       | identifier for the occurrence, <https://rs.tdwg.org/dwc/terms/occurrenceID>                                |
+| catalognumber      | identifier for the record within the collection, <https://rs.tdwg.org/dwc/terms/catalogNumber>             |
+| family             | scientific name of the family, <https://rs.tdwg.org/dwc/terms/family>                                      |
+| genus              | scientific name of the genus, <https://rs.tdwg.org/dwc/terms/genus>                                        |
+| scientificname     | scientific name, <https://rs.tdwg.org/dwc/terms/scientificName>                                            |
+| country            | country, <https://rs.tdwg.org/dwc/terms/country>                                                           |
+| stateprovince      | name of the next smaller administrative region than country, <https://rs.tdwg.org/dwc/terms/stateProvince> |
+| geopoint.lon       | equivalent to decimalLongitude, <https://rs.tdwg.org/dwc/terms/decimalLongitude>                           |
+| geopoint.lat       | equivalent to decimalLatitude,<https://rs.tdwg.org/dwc/terms/decimalLatitude>                              |
+| datecollected      | [Modified field and could lack biological meaning](https://github.com/iDigBio/idb-backend/issues/229)      |
+| data.dwc:eventDate | equivalent to eventDate, <https://dwc.tdwg.org/list/#dwc_eventDate>                                        |
+| data.dwc:year      | year of collection event, <https://dwc.tdwg.org/list/#dwc_year>                                            |
+| data.dwc:month     | month of collection event, <https://dwc.tdwg.org/list/#dwc_month>                                          |
+| data.dwc:day       | day of collection event                                                                                    |
+| collector          | equivalent to recordedBy, <https://rs.tdwg.org/dwc/terms/recordedBy>                                       |
+| recordset          | indicates the iDigBio recordset the observation belongs too!                                               |
+
+### More ways to search
+
+In addition to `scientificname`, record query may be based on many other fields. For example, you can search for all members of the `family` [Diapensiaceae](https://en.wikipedia.org/wiki/Diapensiaceae):
+
+```{r eval=verify_galax_records}
+diapensiaceae_records <- idig_search_records(rq=list(family="Diapensiaceae"), limit=1000)
+```
+
+**What if you want to read in all the points for a family within an extent?**
+
+**Hint**: Use the [iDigBio portal](https://www.idigbio.org/portal/search) to determine the bounding box for your region of interest.
+
+The bounding box delimits the geographic extent.
+
+```{r eval=verify_galax_records}
+rq_input <- list("scientificname"=list("type"="exists"),
+                 "family"="Diapensiaceae", 
+                 geopoint=list(
+                   type="geo_bounding_box",
+                   top_left=list(lon = -98.16, lat = 48.92),
+                   bottom_right=list(lon = -64.02, lat = 23.06)
+                   )
+                 )
+```
+
+Search using the input you just made
+
+```{r eval=verify_galax_records}
+diapensiaceae_records_USA <- idig_search_records(rq_input, limit=1000)
+```
+
+## Download Media Records
+
+To download media records from the Media API, we will use the function `idig_search_media()`. Here the `rq`, or record query, indicates we want to download all the records where the `scientificname` is equal to [<i>Galax urceolata</i>](https://en.wikipedia.org/wiki/Galax).
+
+```{r eval=verify_galax_records}
+galax_media <- idig_search_media(rq=list(scientificname="Galax urceolata"))
+```
+
+```{r eval=verify_galax_records}
+colnames(galax_media)
+```
+
+When fields are not specified, default columns include the following:
+
+| Column         | Description                                                                                     |
+|---------------|---------------------------------------------------------|
+| accessuri      | Unique identifier for a resource, <https://ac.tdwg.org/termlist/#ac_accessURI>                  |
+| datemodified   | date last modified, which is assigned by iDigBio                                                |
+| dqs            | data quality score assigned by iDigBio                                                          |
+| etag           | tag assigned by iDigBio                                                                         |
+| flags          | data quality flag assigned by iDigBio                                                           |
+| format         | media format, <https://purl.org/dc/terms/format>                                                |
+| hasSpecimen    | TRUE or FALSE, indicates if there is an associated record for this media                        |
+| licenselogourl | media license, <https://ac.tdwg.org/termlist/#ac_licenseLogoURL>)                               |
+| mediatype      | media object type                                                                               |
+| modified       | date modified, <https://purl.org/dc/terms/modified>                                             |
+| recordids      | list of UUID for associated records                                                             |
+| records        | UUID for the associated record. Use this field to connect Record downloads with Media downloads |
+| recordset      | indicates the iDigBio recordset the observation belongs too!                                    |
+| rights         | media rights, <https://purl.org/dc/terms/rights>                                                |
+| tag            | general keywords or tags, <https://rs.tdwg.org/ac/terms/tag>                                    |
+| type           | media type, <https://purl.org/dc/terms/type>                                                    |
+| uuid           | Universally Unique IDentifier assigned by iDigBio                                               |
+| version        | media record version assigned by iDigBio                                                        |
+| webstatement   | media rights, <https://developer.adobe.com/xmp/docs/XMPNamespaces/xmpRights/>                   |
+| xpixels        | as defined by EXIF, x dimension in pixel                                                        |
+| ypixels        | as defined by EXIF,y dimension in pixels                                                        |
+
+### More ways to search
+
+The media search above retained `r tryCatch({if(nrow(galax_media)) nrow(galax_media) else "N/A"}, error = function(e){cat("error in vignette: ", e$message)})` rows, however some of these observations do not have information in the `accessuri` field. To only obtain records with `acessuri`, we indicate we only want records where `data.ac:accessURI` exist, by setting `mq`, or media query, as followed:
+
+```{r eval=verify_galax_records}
+galax_media2 <- idig_search_media(rq=list(scientificname="Galax urceolata"),
+                                  mq=list("data.ac:accessURI"=list("type"="exists")))
+```
+
+Now we have `r tryCatch({if(nrow(galax_media2)) nrow(galax_media2) else "N/A"}, error = function(e){cat("error in vignette: ", e$message)})` observations with `accessuri`!

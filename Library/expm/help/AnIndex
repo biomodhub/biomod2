@@ -1,0 +1,16 @@
+%^%	matpow
+.methComplex	expm
+.methSparse	expm
+balance	balance
+dgebal	balance
+expAtv	expAtv
+expm	expm
+expm.Higham08	expm.Higham08
+expmCond	expmCond
+expmFrechet	expmFrechet
+expmv	expAtv
+logm	logm
+matpow	matpow
+matStig	matStig
+mexp	expm
+sqrtm	sqrtm

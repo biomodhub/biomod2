@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Spatiotemporal Arrays, Raster and Vector Data Cubes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Spatiotemporal Arrays, Raster and Vector Data Cubes
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;stars&rsquo; version 0.7-2</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../demo">Code demos</a>.  Use <a href="../../utils/help/demo">demo()</a> to run them.</li>
+<li><a href="../NEWS.md">Package NEWS</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#I">I</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#W">W</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="aggregate.stars.html">aggregate</a></td>
+<td>spatially or temporally aggregate stars object</td></tr>
+<tr><td style="width: 25%;"><a href="aggregate.stars.html">aggregate.stars</a></td>
+<td>spatially or temporally aggregate stars object</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods.html">as</a></td>
+<td>Coerce stars object into a Raster raster or brick</td></tr>
+<tr><td style="width: 25%;"><a href="print_stars.html">as.data.frame.dimensions</a></td>
+<td>print stars or dimensions object</td></tr>
+<tr><td style="width: 25%;"><a href="st_coordinates.html">as.data.frame.stars</a></td>
+<td>retrieve coordinates for raster or vector cube cells</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">as.tbl_cube.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_coordinates.html">as_tibble.stars</a></td>
+<td>retrieve coordinates for raster or vector cube cells</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="bcsd_obs.html">bcsd_obs</a></td>
+<td>Monthly Gridded Meteorological Observations</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="c.stars.html">c.stars</a></td>
+<td>combine multiple stars objects, or combine multiple attributes in a single stars object into a single array</td></tr>
+<tr><td style="width: 25%;"><a href="c.stars.html">c.stars_proxy</a></td>
+<td>combine multiple stars objects, or combine multiple attributes in a single stars object into a single array</td></tr>
+<tr><td style="width: 25%;"><a href="coerce-methods.html">coerce-method</a></td>
+<td>Coerce stars object into a Raster raster or brick</td></tr>
+<tr><td style="width: 25%;"><a href="contour.stars.html">contour.stars</a></td>
+<td>plot contours of a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="cut_stars.html">cut.array</a></td>
+<td>cut methods for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="cut_stars.html">cut.matrix</a></td>
+<td>cut methods for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="cut_stars.html">cut.stars</a></td>
+<td>cut methods for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="cut_stars.html">cut_stars</a></td>
+<td>cut methods for stars objects</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="write_stars.html">detect.driver</a></td>
+<td>write stars object to gdal dataset (typically: to file)</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">dplyr</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="expand_dimensions.html">expand_dimensions</a></td>
+<td>expand the dimension values into a list</td></tr>
+<tr><td style="width: 25%;"><a href="expand_dimensions.html">expand_dimensions.dimensions</a></td>
+<td>expand the dimension values into a list</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="dplyr.html">filter.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">filter.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="geom_stars.html">geom_stars</a></td>
+<td>ggplot geom for stars objects</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="plot.html">image.stars</a></td>
+<td>plot stars object, with subplots for each level of first non-spatial dimension</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="L7_ETMs.html">L7_ETMs</a></td>
+<td>Landsat-7 bands for a selected region around Olinda, BR</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="make_intervals.html">make_intervals</a></td>
+<td>create an intervals object</td></tr>
+<tr><td style="width: 25%;"><a href="ops_stars.html">Math.stars</a></td>
+<td>S3 Ops Group Generic Functions for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="ops_stars.html">Math.stars_proxy</a></td>
+<td>S3 Ops Group Generic Functions for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="mdim.html">mdim</a></td>
+<td>Read or write data using GDAL's multidimensional array API</td></tr>
+<tr><td style="width: 25%;"><a href="merge.html">merge</a></td>
+<td>merge or split stars object</td></tr>
+<tr><td style="width: 25%;"><a href="merge.html">merge.stars</a></td>
+<td>merge or split stars object</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">mutate.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">mutate.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="ops_stars.html">Ops.stars</a></td>
+<td>S3 Ops Group Generic Functions for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="ops_stars.html">Ops.stars_proxy</a></td>
+<td>S3 Ops Group Generic Functions for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="ops_stars.html">ops_stars</a></td>
+<td>S3 Ops Group Generic Functions for stars objects</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="plot.html">plot</a></td>
+<td>plot stars object, with subplots for each level of first non-spatial dimension</td></tr>
+<tr><td style="width: 25%;"><a href="plot.html">plot.nc_proxy</a></td>
+<td>plot stars object, with subplots for each level of first non-spatial dimension</td></tr>
+<tr><td style="width: 25%;"><a href="plot.html">plot.stars</a></td>
+<td>plot stars object, with subplots for each level of first non-spatial dimension</td></tr>
+<tr><td style="width: 25%;"><a href="plot.html">plot.stars_proxy</a></td>
+<td>plot stars object, with subplots for each level of first non-spatial dimension</td></tr>
+<tr><td style="width: 25%;"><a href="prcomp.html">prcomp</a></td>
+<td>Principle components of stars object</td></tr>
+<tr><td style="width: 25%;"><a href="prcomp.html">prcomp.stars</a></td>
+<td>Principle components of stars object</td></tr>
+<tr><td style="width: 25%;"><a href="prcomp.html">prcomp.stars_proxy</a></td>
+<td>Principle components of stars object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.stars.html">predict.stars</a></td>
+<td>Predict values, given a model object, for a stars or stars_proxy object</td></tr>
+<tr><td style="width: 25%;"><a href="predict.stars.html">predict.stars_proxy</a></td>
+<td>Predict values, given a model object, for a stars or stars_proxy object</td></tr>
+<tr><td style="width: 25%;"><a href="print_stars.html">print.dimensions</a></td>
+<td>print stars or dimensions object</td></tr>
+<tr><td style="width: 25%;"><a href="print_stars.html">print.stars</a></td>
+<td>print stars or dimensions object</td></tr>
+<tr><td style="width: 25%;"><a href="print_stars.html">print_stars</a></td>
+<td>print stars or dimensions object</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">pull.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">pull.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mdim.html">read_mdim</a></td>
+<td>Read or write data using GDAL's multidimensional array API</td></tr>
+<tr><td style="width: 25%;"><a href="read_ncdf.html">read_ncdf</a></td>
+<td>Read NetCDF into stars object</td></tr>
+<tr><td style="width: 25%;"><a href="read_stars.html">read_stars</a></td>
+<td>read raster/array dataset from file or connection</td></tr>
+<tr><td style="width: 25%;"><a href="redimension.html">redimension</a></td>
+<td>redimension array, or collapse attributes into a new dimension</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">rename.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">rename.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">replace_na.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">replace_na.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="dplyr.html">select.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">select.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">slice.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">slice.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="merge.html">split</a></td>
+<td>merge or split stars object</td></tr>
+<tr><td style="width: 25%;"><a href="merge.html">split.stars</a></td>
+<td>merge or split stars object</td></tr>
+<tr><td style="width: 25%;"><a href="stars_sentinel2.html">stars_sentinel2</a></td>
+<td>Sentinel-2 sample tile</td></tr>
+<tr><td style="width: 25%;"><a href="stars_subset.html">stars_subset</a></td>
+<td>subset stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_apply.html">st_apply</a></td>
+<td>st_apply apply a function to one or more array dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="st_apply.html">st_apply.stars</a></td>
+<td>st_apply apply a function to one or more array dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sf.html">st_as_sf</a></td>
+<td>Convert stars object into an sf object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sf.html">st_as_sf.stars</a></td>
+<td>Convert stars object into an sf object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sf.html">st_as_sf.stars_proxy</a></td>
+<td>Convert stars object into an sf object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sf.html">st_as_sfc.stars</a></td>
+<td>Convert stars object into an sf object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.bbox</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.CFDataset</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.CFVariable</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.cubble_df</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.data.frame</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.default</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.list</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.ncdfgeom</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.OpenStreetMap</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.Raster</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.sf</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.SpatRaster</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.stars</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.stars_proxy</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_stars.html">st_as_stars.xts</a></td>
+<td>convert objects into a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_cells.html">st_cells</a></td>
+<td>return the cell index corresponding to the location of a set of points</td></tr>
+<tr><td style="width: 25%;"><a href="st_contour.html">st_contour</a></td>
+<td>Compute or plot contour lines or sets</td></tr>
+<tr><td style="width: 25%;"><a href="st_coordinates.html">st_coordinates</a></td>
+<td>retrieve coordinates for raster or vector cube cells</td></tr>
+<tr><td style="width: 25%;"><a href="st_coordinates.html">st_coordinates.stars</a></td>
+<td>retrieve coordinates for raster or vector cube cells</td></tr>
+<tr><td style="width: 25%;"><a href="st_crop.html">st_crop</a></td>
+<td>crop a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_crop.html">st_crop.mdim</a></td>
+<td>crop a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_crop.html">st_crop.stars</a></td>
+<td>crop a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_crop.html">st_crop.stars_proxy</a></td>
+<td>crop a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions.array</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions.default</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions.stars</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions&lt;-</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions&lt;-.list</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions&lt;-.stars</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_dimensions&lt;-.stars_proxy</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_dim_to_attr.html">st_dim_to_attr</a></td>
+<td>create an array with dimension values</td></tr>
+<tr><td style="width: 25%;"><a href="st_downsample.html">st_downsample</a></td>
+<td>downsample stars or stars_proxy objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_downsample.html">st_downsample.stars</a></td>
+<td>downsample stars or stars_proxy objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_downsample.html">st_downsample.stars_proxy</a></td>
+<td>downsample stars or stars_proxy objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_extract.html">st_extract</a></td>
+<td>Extract cell values at point locations</td></tr>
+<tr><td style="width: 25%;"><a href="st_extract.html">st_extract.stars</a></td>
+<td>Extract cell values at point locations</td></tr>
+<tr><td style="width: 25%;"><a href="stars_subset.html">st_flip</a></td>
+<td>subset stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_geotransform.html">st_geotransform</a></td>
+<td>get or set the geotransform, or rotation matrix</td></tr>
+<tr><td style="width: 25%;"><a href="st_geotransform.html">st_geotransform&lt;-</a></td>
+<td>get or set the geotransform, or rotation matrix</td></tr>
+<tr><td style="width: 25%;"><a href="st_geotransform.html">st_geotransform&lt;-.stars</a></td>
+<td>get or set the geotransform, or rotation matrix</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_get_dimension_values</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_intersects.stars.html">st_intersects.stars</a></td>
+<td>spatial intersect predicate for stars and sfc object</td></tr>
+<tr><td style="width: 25%;"><a href="st_join.stars.html">st_join.stars</a></td>
+<td>Spatially join a stars and an 'sf' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_mosaic.html">st_mosaic</a></td>
+<td>build mosaic (composite) of several spatially disjoint stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_mosaic.html">st_mosaic.character</a></td>
+<td>build mosaic (composite) of several spatially disjoint stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_mosaic.html">st_mosaic.stars</a></td>
+<td>build mosaic (composite) of several spatially disjoint stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_mosaic.html">st_mosaic.stars_proxy</a></td>
+<td>build mosaic (composite) of several spatially disjoint stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_normalize.html">st_normalize</a></td>
+<td>Move raster offset such that grid start at row/col (1,1)</td></tr>
+<tr><td style="width: 25%;"><a href="st_normalize.html">st_normalize.stars</a></td>
+<td>Move raster offset such that grid start at row/col (1,1)</td></tr>
+<tr><td style="width: 25%;"><a href="st_normalize.html">st_normalize.stars_proxy</a></td>
+<td>Move raster offset such that grid start at row/col (1,1)</td></tr>
+<tr><td style="width: 25%;"><a href="st_rasterize.html">st_rasterize</a></td>
+<td>rasterize simple feature geometries</td></tr>
+<tr><td style="width: 25%;"><a href="st_raster_type.html">st_raster_type</a></td>
+<td>get the raster type (if any) of a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="redimension.html">st_redimension</a></td>
+<td>redimension array, or collapse attributes into a new dimension</td></tr>
+<tr><td style="width: 25%;"><a href="redimension.html">st_redimension.stars</a></td>
+<td>redimension array, or collapse attributes into a new dimension</td></tr>
+<tr><td style="width: 25%;"><a href="redimension.html">st_redimension.stars_proxy</a></td>
+<td>redimension array, or collapse attributes into a new dimension</td></tr>
+<tr><td style="width: 25%;"><a href="st_res.html">st_res</a></td>
+<td>obtain (spatial) resolution of a stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_rgb.html">st_rgb</a></td>
+<td>reduce dimension to rgb (alpha) hex values</td></tr>
+<tr><td style="width: 25%;"><a href="st_rotate.html">st_rotate</a></td>
+<td>Transform rotated pole long/lat regular grid to unrotated curvilinear grid</td></tr>
+<tr><td style="width: 25%;"><a href="st_rotate.html">st_rotate.sf</a></td>
+<td>Transform rotated pole long/lat regular grid to unrotated curvilinear grid</td></tr>
+<tr><td style="width: 25%;"><a href="st_rotate.html">st_rotate.sfc</a></td>
+<td>Transform rotated pole long/lat regular grid to unrotated curvilinear grid</td></tr>
+<tr><td style="width: 25%;"><a href="st_rotate.html">st_rotate.stars</a></td>
+<td>Transform rotated pole long/lat regular grid to unrotated curvilinear grid</td></tr>
+<tr><td style="width: 25%;"><a href="st_set_bbox.html">st_set_bbox</a></td>
+<td>set bounding box parameters of regular grid</td></tr>
+<tr><td style="width: 25%;"><a href="st_dimensions.html">st_set_dimensions</a></td>
+<td>get dimensions from stars object</td></tr>
+<tr><td style="width: 25%;"><a href="st_xy2sfc.html">st_sfc2xy</a></td>
+<td>replace x y raster dimensions with simple feature geometry list (points, or polygons = rasterize) and vice versa</td></tr>
+<tr><td style="width: 25%;"><a href="st_tile.html">st_tile</a></td>
+<td>Specify parameters to load raster in blocks</td></tr>
+<tr><td style="width: 25%;"><a href="st_transform.html">st_transform</a></td>
+<td>transform geometries in stars objects to a new coordinate reference system, without warping</td></tr>
+<tr><td style="width: 25%;"><a href="st_transform.html">st_transform.stars</a></td>
+<td>transform geometries in stars objects to a new coordinate reference system, without warping</td></tr>
+<tr><td style="width: 25%;"><a href="st_transform.html">st_transform_proj.stars</a></td>
+<td>transform geometries in stars objects to a new coordinate reference system, without warping</td></tr>
+<tr><td style="width: 25%;"><a href="st_warp.html">st_warp</a></td>
+<td>Warp (resample) grids in stars objects to a new grid, possibly in an new coordinate reference system</td></tr>
+<tr><td style="width: 25%;"><a href="st_xy2sfc.html">st_xy2sfc</a></td>
+<td>replace x y raster dimensions with simple feature geometry list (points, or polygons = rasterize) and vice versa</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="geom_stars.html">theme_stars</a></td>
+<td>ggplot geom for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">transmute.stars</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="dplyr.html">transmute.stars_proxy</a></td>
+<td>dplyr verbs for stars objects</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mdim.html">write_mdim</a></td>
+<td>Read or write data using GDAL's multidimensional array API</td></tr>
+<tr><td style="width: 25%;"><a href="write_stars.html">write_stars</a></td>
+<td>write stars object to gdal dataset (typically: to file)</td></tr>
+<tr><td style="width: 25%;"><a href="write_stars.html">write_stars.stars</a></td>
+<td>write stars object to gdal dataset (typically: to file)</td></tr>
+<tr><td style="width: 25%;"><a href="write_stars.html">write_stars.stars_proxy</a></td>
+<td>write stars object to gdal dataset (typically: to file)</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="in-methods.html">%in%-method</a></td>
+<td>evaluate whether cube values are in a given set</td></tr>
+<tr><td style="width: 25%;"><a href="stars_subset.html">[.stars</a></td>
+<td>subset stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="stars_subset.html">[&lt;-.stars</a></td>
+<td>subset stars objects</td></tr>
+<tr><td style="width: 25%;"><a href="stars_subset.html">[&lt;-.stars_proxy</a></td>
+<td>subset stars objects</td></tr>
+</table>
+</div></body></html>

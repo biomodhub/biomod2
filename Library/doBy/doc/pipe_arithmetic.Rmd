@@ -1,0 +1,65 @@
+---
+title: "Pipe-friendly Arithmetic Helpers in doBy"
+author: "Søren Højsgaard"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pipe-friendly Arithmetic Helpers in doBy}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+The **doBy** package includes a suite of simple, *pipe-friendly* arithmetic
+helper functions that make common transformations clearer and more expressive
+when using the native R pipe (`|>`).  
+
+These helpers let you write transformations in readable pipelines
+without nested or hard-to-read expressions. All functions are
+vectorized and work with scalars or numeric vectors.
+
+---
+
+## Available functions
+
+- `add()`: add a constant
+- `subtract()`: subtract a constant
+- `mult()`: multiply by a constant
+- `divide()`: divide by a constant
+- `reciprocal()`: compute 1/x
+- `pow()`: raise to a power
+
+---
+
+## Load doBy
+
+```r
+library(doBy)
+x <- c(1, 2, 3)
+
+# Addition
+x |> add(5)
+# [1] 6 7 8
+
+# Subtraction
+x |> subtract(1)
+# [1] 0 1 2
+
+# Multiplication
+x |> mult(10)
+# [1] 10 20 30
+
+# Division
+x |> divide(2)
+# [1] 0.5 1.0 1.5
+
+# Reciprocal
+x |> reciprocal()
+# [1] 1.0000000 0.5000000 0.3333333
+
+# Power
+x |> pow(2)
+# [1] 1 4 9
+x |>
+  mult(2) |>
+  add(3) |>
+  reciprocal()
+```

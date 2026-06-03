@@ -1,0 +1,11 @@
+Package: RcppProgressExample
+Type: Package
+Title: Example use of the RcppProgress package
+Version: 0.2
+Date: 2012-04-17
+Author: Karl Forner <karl.forner@quartzbio.com>
+Maintainer: Karl Forner <karl.forner@quartzbio.com>
+Description: Example use of the RcppProgress package in a package
+License: GPL (>=3)
+Depends: Rcpp (>= 0.9.10), RcppProgress (>= 0.1)
+LinkingTo: Rcpp, RcppProgress

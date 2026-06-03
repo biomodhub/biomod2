@@ -1,0 +1,6 @@
+importFrom("grDevices", "col2rgb", "grey", "heat.colors", "rgb")
+importFrom("graphics", "image", "plot")
+import("methods")
+
+exportPattern("^[^\\.]")
+

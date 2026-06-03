@@ -1,0 +1,25 @@
+Package: prismatic
+Title: Color Manipulation Tools
+Version: 1.1.2
+Authors@R: 
+    person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0679-1945"))
+Description: Manipulate and visualize colors in a intuitive,
+    low-dependency and functional way.
+License: MIT + file LICENSE
+URL: https://emilhvitfeldt.github.io/prismatic/,
+        https://github.com/EmilHvitfeldt/prismatic
+BugReports: https://github.com/EmilHvitfeldt/prismatic/issues
+Depends: R (>= 3.2)
+Imports: graphics, farver (>= 2.0.1), grDevices
+Suggests: covr, cli, testthat (>= 3.0.0)
+Encoding: UTF-8
+RoxygenNote: 7.3.1
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2024-04-10 22:54:31 UTC; emilhvitfeldt
+Author: Emil Hvitfeldt [aut, cre] (<https://orcid.org/0000-0002-0679-1945>)
+Maintainer: Emil Hvitfeldt <emilhhvitfeldt@gmail.com>
+Repository: CRAN
+Date/Publication: 2024-04-10 23:10:03 UTC
+Built: R 4.6.0; ; 2026-05-22 08:32:21 UTC; unix

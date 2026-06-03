@@ -1,0 +1,30 @@
+Package: MatrixModels
+Version: 0.5-4
+VersionNote: Released 0.5-3 on 2023-11-06
+Date: 2025-03-25
+Title: Modelling with Sparse and Dense Matrices
+Contact: Matrix-authors@R-project.org
+Authors@R: c(
+  person("Douglas", "Bates", role = "aut", email = "bates@stat.wisc.edu",
+         comment = c(ORCID = "0000-0001-8316-9503")),
+  person("Martin", "Maechler", role = c("aut", "cre"), email = "mmaechler+Matrix@gmail.com",
+         comment = c(ORCID = "0000-0002-8685-9910")))
+Description: Generalized Linear Modelling with sparse and dense 'Matrix' matrices, using
+  modular prediction and response module classes.
+Depends: R (>= 3.6.0)
+Imports: stats, methods, Matrix (>= 1.6-0), Matrix(< 1.8-0)
+ImportsNote: _not_yet_stats4
+Encoding: UTF-8
+LazyLoad: yes
+License: GPL (>= 2)
+URL: https://Matrix.R-forge.R-project.org/,
+        https://r-forge.r-project.org/R/?group_id=61
+BugReports: https://R-forge.R-project.org/tracker/?func=add&atid=294&group_id=61
+NeedsCompilation: no
+Packaged: 2025-03-25 22:20:33 UTC; maechler
+Author: Douglas Bates [aut] (<https://orcid.org/0000-0001-8316-9503>),
+  Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>)
+Maintainer: Martin Maechler <mmaechler+Matrix@gmail.com>
+Repository: CRAN
+Date/Publication: 2025-03-26 08:50:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:28:18 UTC; unix

@@ -1,0 +1,44 @@
+Package: ggsci
+Type: Package
+Title: Scientific Journal and Sci-Fi Themed Color Palettes for
+        'ggplot2'
+Version: 5.0.0
+Authors@R: c(
+    person("Nan", "Xiao", email = "me@nanx.me", role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0002-0250-5673")),
+    person("Joshua", "Cook", email = "joshuacook0023@gmail.com", role = "ctb"),
+    person("Clara", "Jégousse", email = "cat3@hi.is", role = "ctb"),
+    person("Hui", "Chen", email = "huichen@zju.edu.cn", role = "ctb"),
+    person("Miaozhu", "Li", email = "miaozhu.li@duke.edu", role = "ctb"),
+    person("iTerm2-Color-Schemes contributors", role = c("ctb", "cph"),
+           comment = "iTerm2-Color-Schemes project"),
+    person("Winston", "Chang", role = c("ctb", "cph"),
+           comment = "staticimports.R")
+    )
+Maintainer: Nan Xiao <me@nanx.me>
+Description: A collection of 'ggplot2' color palettes inspired by
+    plots in scientific journals, data visualization libraries,
+    science fiction movies, and TV shows.
+License: GPL (>= 3)
+URL: https://nanx.me/ggsci/, https://github.com/nanxstats/ggsci
+BugReports: https://github.com/nanxstats/ggsci/issues
+Depends: R (>= 3.5.0)
+Imports: ggplot2 (>= 2.0.0), grDevices, rlang, scales
+Suggests: gridExtra, knitr, ragg, rmarkdown
+VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+NeedsCompilation: no
+Packaged: 2026-04-17 04:38:21 UTC; nanx
+Author: Nan Xiao [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0002-0250-5673>),
+  Joshua Cook [ctb],
+  Clara Jégousse [ctb],
+  Hui Chen [ctb],
+  Miaozhu Li [ctb],
+  iTerm2-Color-Schemes contributors [ctb, cph] (iTerm2-Color-Schemes
+    project),
+  Winston Chang [ctb, cph] (staticimports.R)
+Repository: CRAN
+Date/Publication: 2026-04-17 05:20:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:31:42 UTC; unix

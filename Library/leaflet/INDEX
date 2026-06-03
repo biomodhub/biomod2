@@ -1,0 +1,50 @@
+addAwesomeMarkers       Add Awesome Markers
+addControl              Graphics elements and layers
+addGraticule            Add a Graticule on the map
+addLayersControl        Add UI controls to switch layers on and off
+addLegend               Add a color legend to a map
+addMapPane              Add additional panes to leaflet map to control
+                        layer order
+addMeasure              Add a measure control to the map.
+addMiniMap              Add a minimap to the map
+addProviderTiles        Add a tile layer from a known map provider
+addRasterImage          Add a raster image as a layer
+addRasterLegend         Add a color legend for a SpatRaster to a map
+addScaleBar             Add or remove a scale bar
+addSimpleGraticule      Add a simple Graticule on the map
+addTerminator           Add a daylight layer on top of the map
+atlStorms2005           Atlantic Ocean storms 2005
+awesomeIconList         Make awesome-icon set
+awesomeIcons            Create a list of awesome icon data
+breweries91             Selected breweries in Franconia
+colorNumeric            Color mapping
+dispatch                Extension points for plugins
+easyButtonState         Create an easyButton statestate
+expandLimits            Notifies the map of new latitude/longitude of
+                        items of interest on the map
+expandLimitsBbox        Notifies the map of polygons of interest on the
+                        map
+gadmCHE                 Administrative borders of Switzerland (level 1)
+getMapData              Extract the map's data
+groupOptions            Set options on layer groups
+iconList                Make icon set
+icons                   Create a list of icon data
+leaflet                 Create a Leaflet map widget
+leafletDependencies     Various leaflet dependency functions for use in
+                        downstream packages
+leafletOutput           Wrapper functions for using 'leaflet' in
+                        'shiny'
+leafletProxy            Send commands to a Leaflet instance in a Shiny
+                        app
+leafletSizingPolicy     Leaflet sizing policy
+makeAwesomeIcon         Make Awesome Icon
+makeIcon                Define icon sets
+mapOptions              Set options on a leaflet map object
+previewColors           Color previewing utility
+providers               Providers
+removeControl           Remove elements from a map
+setView                 Methods to manipulate the map widget
+showGroup               Show or hide layer groups
+tileOptions             Extra options for map elements and layers
+validateCoords          Utility function to check if a coordinates is
+                        valid

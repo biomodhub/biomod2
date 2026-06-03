@@ -1,0 +1,129 @@
+clusterGeneration v1.3.8 (creation date: 2023-08-15)
+=================
+Changes:
+
+*  (1) fixed a bug in genMeanCov(): commented out for loop about 'eg'
+*  (2) fixed a bug in findNeighbors(): 'pos <- which(tmp < -1 || tmp > 1)' 
+*        should be 'pos <- which(tmp < -1 | tmp > 1)'
+*  (3) fixed format in NEWS file
+*  (4) fixed the bug 'Escaped LaTeX specials: \_' in Rd files
+
+clusterGeneration v1.3.7 (creation date: 2020-12-12)
+=================
+Changes:
+
+* (1) added function "genOrthogonal" to export list
+
+clusterGeneration v1.3.6 (creation date: 2020-11-21)
+=================
+Changes:
+
+* (1) added "na.rm=TRUE" when calling 'sum', 'max'
+* (2) when call a function, explicitly call its input
+* (3) fixed a bub in function 'genMeanCov': when calling 'genPositiveDefMat', the input 'eigenvalue' was missing.
+* (4) added input argument 'eigenvalue' to function 'genMeanCov' and 'genRandomClust' and 'genNoisyMeanCov' and 'simClustDesign'
+
+clusterGeneration v1.3.5 (creation date: 2020-10-03)
+=================
+Changes:
+
+*  (1) add new argument "eigenvalue" so that user can supply own eigenvalues for algorithm covMethod=c("eigen")
+*  (2) in genPositiveDefMat, using crossprod(Q * sqrt(egvalues)) instead of Sigma <- Q %*% u %*% t(Q) leads to nice improvements (3-4 times faster) when simulating large matrices (dim>500). Reason is that the new code does not require to form the u matrix, and that crossprod() is quite faster when used with a single argument (exploiting that output will be symmetric)
+  
+*  Thanks Dr. Matthieu Stigler (matthieu.stigler@gmail.com) for these 2 suggestions!
+
+*  (3) change maintainer's email address to <weiliang.qiu@gmail.com>
+
+clusterGeneration v1.3.2 (creation date: 2015-02-14)
+=================
+Changes:
+
+*  (1) fixed a few bugs in function 'getSepProjData':
+*    'u.cl <- unique(cl)' should be 
+*    'u.cl <- sort(unique(cl)'
+*    'yi <- y[cl == u.cl[i], , drop = FALSE]'
+*    should be
+*    'yi <- y[which(cl == u.cl[i]), , drop = FALSE]'
+
+clusterGeneration v1.3.1 (creation date: 2013-01-07)
+=================
+Changes:
+
+*  (1) added a space between 'Weiliang Qiu' and 
+*    '<stwxq@channing.harvard.edu>' in the 'Maintainer' slot
+*   in the DESCRIPTION file
+*   Thank Dr. Kurt Hornik for his kind help!
+
+clusterGeneration v1.3.0 (creation date: 2013-01-06)
+=================
+Changes:
+
+* (1) rename 'log.txt' file to 'NEWS'. 
+* Thanks for Mr. Suraj Gupta (<suraj@wingedfootcapital.com>) for this suggestion!
+
+clusterGeneration v1.2.9 (creation date: 2012-04-02)
+=================
+Changes:
+
+*  (1) fixed a bug pointed by Dr. Anton Korobeynikov 
+* <anton@korobeynikov.info>
+* Dear Dr. Weiliang Qiu,
+* 
+* Recently we tried to used your package clusterGeneration but found
+* that the behavior of genRandomClust() with clustszind == 3 is
+* definitely wrong compared to the one documented.
+* After looking into the implementation it became obvious that
+* genMemSize() function does wrong things: it tries to sample from 1:G
+* using provided clusterSizes as weights. Surely the output clusters
+* have wrong sizes (not the ones specified).
+* 
+* The fix is pretty simple: change the code for clustszind == 3 to
+* something like this:
+* 
+* mem <- sample(unlist(lapply(1:G, function(x) rep.int(x, times =
+* clustSizes[x]))))
+* N <- sum(clustSizes)
+* 
+* Or, maybe if you want to keep the current behavior it'd be better to
+* introduce new clustszind variant.
+* 
+*
+*  (2) add 'clustSizes<-as.integer(clustSizes)' before checking
+*      '!is.integer(clustSizes[i])'
+
+
+clusterGeneration v1.2.8 (creation date: 2012-03-19)
+=================
+Changes:
+
+*  (1) fixed a few warning messages:
+*   (a)>>
+* checking R code for possible problems ... NOTE
+*genNoisyMeanCov: warning in eigen(Sigma.noisy, sym = TRUE): partial
+* argument match of 'sym' to 'symmetric'
+
+*    (b)>>>
+** running examples for arch 'i386' ... WARNING
+*Found the following significant warnings:
+
+* Warning: sd(<matrix>) is deprecated.
+* Warning: sd(<matrix>) is deprecated.
+* Warning: sd(<matrix>) is deprecated.
+* Warning: sd(<matrix>) is deprecated.
+*Deprecated functions may be defunct as soon as of the next release of
+*R.
+*See ?Deprecated.
+** running examples for arch 'x64' ... WARNING
+*Found the following significant warnings:
+*
+* Warning: sd(<matrix>) is deprecated.
+* Warning: sd(<matrix>) is deprecated.
+* Warning: sd(<matrix>) is deprecated.
+* Warning: sd(<matrix>) is deprecated.
+*Deprecated functions may be defunct as soon as of the next release of
+*R.
+*See ?Deprecated.
+*
+
+*  (2) add 'na.rm=TRUE' to functions 'min', 'max', 'sum', 'mean', 'median', etc.
+

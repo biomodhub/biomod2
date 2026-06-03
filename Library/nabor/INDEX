@@ -1,0 +1,8 @@
+WKNNF-class             Wrapper classes for k-NN searches enabling
+                        repeated queries of the same tree
+kcpoints                List of 3 matrices containing 3D points from
+                        Drosophila neurons
+knn                     Find K nearest neighbours for multiple query
+                        points
+nabor-package           Wrapper for libnabo K Nearest Neighbours C++
+                        library

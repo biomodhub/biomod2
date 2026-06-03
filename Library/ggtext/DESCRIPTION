@@ -1,0 +1,43 @@
+Package: ggtext
+Type: Package
+Title: Improved Text Rendering Support for 'ggplot2'
+Version: 0.1.2
+Authors@R: 
+    c(
+      person(
+        given = "Claus O.",
+        family = "Wilke",
+        role = c("aut"),
+        email = "wilke@austin.utexas.edu",
+        comment = c(ORCID = "0000-0002-7470-9261")
+      ),
+      person(
+        given = "Brenton M.",
+        family = "Wiernik",
+        role = c("aut", "cre"),
+        email = "brenton@wiernik.org",
+        comment = c(ORCID = "0000-0001-9560-6336", Twitter = "@bmwiernik")
+      )
+    )
+Description: A 'ggplot2' extension that enables the rendering of
+    complex formatted plot labels (titles, subtitles, facet labels,
+    axis labels, etc.). Text boxes with automatic word wrap are also
+    supported.
+URL: https://wilkelab.org/ggtext/
+BugReports: https://github.com/wilkelab/ggtext/issues
+License: GPL-2
+Depends: R (>= 3.5)
+Imports: ggplot2 (>= 3.3.0), grid, gridtext, rlang, scales
+Suggests: cowplot, dplyr, glue, knitr, rmarkdown, testthat, vdiffr
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2022-09-15 13:50:50 UTC; brentonw
+Author: Claus O. Wilke [aut] (<https://orcid.org/0000-0002-7470-9261>),
+  Brenton M. Wiernik [aut, cre] (<https://orcid.org/0000-0001-9560-6336>,
+    @bmwiernik)
+Maintainer: Brenton M. Wiernik <brenton@wiernik.org>
+Repository: CRAN
+Date/Publication: 2022-09-16 11:36:07 UTC
+Built: R 4.6.0; ; 2026-05-22 09:34:43 UTC; unix

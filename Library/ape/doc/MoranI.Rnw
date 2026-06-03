@@ -1,0 +1,353 @@
+\documentclass[a4paper]{article}
+%\VignetteIndexEntry{Moran's I}
+%\VignettePackage{ape}
+\usepackage{ape}
+
+\newcommand{\ade}{\pkg{ade4}}
+\newcommand{\spatial}{\pkg{spatial}}
+\renewcommand{\sp}{\pkg{sp}}
+
+\author{Emmanuel Paradis}
+\title{Moran's Autocorrelation Coefficient in Comparative Methods}
+
+\begin{document}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom=\color{darkblue}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom=\color{black}\vspace{-1.5em}}
+\maketitle
+\tableofcontents\vspace*{1pc}\hrule
+
+<<echo=false,quiet=true>>=
+options(width = 80, prompt = "> ")
+@
+
+\vspace{1cm}
+
+This document clarifies the use of Moran's autocorrelation coefficient
+to quantify whether the distribution of a trait among a set of species
+is affected or not by their phylogenetic relationships.
+
+\section{Theoretical Background}
+
+Moran's autocorrelation coefficient (often denoted as $I$) is an
+extension of Pearson product-moment correlation coefficient to a univariate
+series \cite{Cliff1973, Moran1950}. Recall that Pearson's correlation
+(denoted as $\rho$) between two variables $x$ and $y$ both of length $n$ is:
+
+\begin{displaymath}
+\rho = \frac{\displaystyle\sum_{i=1}^n(x_i - \bar{x})(y_i -
+  \bar{y})}{\displaystyle\left[{\sum_{i=1}^n(x_i - \bar{x})^2\sum_{i=1}^n(y_i - \bar{y})^2}\right]^{1/2}},
+\end{displaymath}
+where $\bar{x}$ and $\bar{y}$ are the sample means of both
+variables. $\rho$ measures whether, on average, $x_i$ and $y_i$ are
+associated. For a single variable, say $x$, $I$ will
+measure whether $x_i$ and $x_j$, with $i\ne j$, are associated. Note
+that with $\rho$, $x_i$ and $x_j$ are {\em not} associated since the
+pairs $(x_i,y_i)$ are assumed to be independent of each other.
+
+In the study of spatial patterns and processes, we may logically
+expect that close observations are more likely to be similar than
+those far apart. It is usual to associate a {\em weight} to each
+pair $(x_i,x_j)$ which quantifies this \cite{Cliff1981}. In its simplest
+form, these weights will take values 1 for close neighbours, and 0
+otherwise. We also set $w_{ii}=0$. These weights are sometimes
+referred to as a {\em neighbouring function}.
+
+$I$'s formula is:
+
+\begin{equation}
+I = \frac{n}{S_0}
+\frac{\displaystyle\sum_{i=1}^n \sum_{j=1}^n w_{ij}(x_i - \bar{x})(x_j -
+  \bar{x})}{\displaystyle\sum_{i=1}^n (x_i - \bar{x})^2},\label{eq:morani}
+\end{equation}
+where $w_{ij}$ is the weight between observation $i$ and $j$, and
+$S_0$ is the sum of all $w_{ij}$'s:
+
+\begin{displaymath}
+S_0 = \sum_{i=1}^n \sum_{j=1}^n w_{ij}.
+\end{displaymath}
+
+Quite not so intuitively, the expected value of $I$ under the null
+hypothesis of no autocorrelation is not equal to zero but given by
+$I_0 = -1/(n-1)$. The expected variance of  $I_0$ is also known, and
+so we can make a test of the null hypothesis. If the observed value
+of $I$ (denoted $\hat{I}$) is significantly greater than $I_0$, then
+values of $x$ are positively autocorrelated, whereas if $\hat{I}<I_0$,
+this will indicate negative autocorrelation. This allows us to design
+one- or two-tailed tests in the standard way.
+
+Gittleman \& Kot \cite{Gittleman1990} proposed to use Moran's $I$ to
+test for ``phylogenetic effects''. They considered two ways to
+calculate the weights $w$:
+
+\begin{itemize}
+\item With phylogenetic distances among species, e.g., $w_{ij} =
+  1/d_{ij}$, where $d_{ij}$ are distances measured on a tree.
+\item With taxonomic levels where $w_{ij} = 1$ if species $i$ and $j$
+  belong to the same group, 0 otherwise.
+\end{itemize}
+
+Note that in the first situation, there are quite a lot of
+possibilities to set the weights. For instance, Gittleman \& Kot also proposed:
+
+\[\begin{array}{ll}
+w_{ij} = 1/d_{ij}^\alpha & \mathrm{if}\ d_{ij} \le c\\
+w_{ij} = 0 & \mathrm{if}\ d_{ij} > c,\\
+\end{array}\]
+where $c$ is a cut-off phylogenetic distance above which the species
+are considered to have evolved completely independently, and $\alpha$
+is a coefficient (see \cite{Gittleman1990} for details).
+By analogy to the use of a spatial correlogram where coefficients are
+calculated assuming different sizes of the ``neighbourhood'' and then
+plotted to visualize the spatial extent of autocorrelation, they
+proposed to calculate $I$ at different taxonomic levels.
+
+\section{Implementation in \ape}
+
+From version 1.2-6, \ape\ has functions \code{Moran.I} and
+\code{correlogram.formula} implementing the approach developed by Gittleman \&
+Kot. There was an error in the help pages of \code{?Moran.I}
+(corrected in ver.\ 2.1) where the weights were referred to as
+``distance weights''. This has been wrongly interpreted in my book
+\cite[pp.~139--142]{Paradis2006}. The analyses below aim to correct
+this.
+
+\subsection{Phylogenetic Distances}
+
+The data, taken from \cite{Cheverud1985}, are the log-transformed
+body mass and longevity of five species of primates:
+
+<<>>=
+body <- c(4.09434, 3.61092, 2.37024, 2.02815, -1.46968)
+longevity <- c(4.74493, 3.3322, 3.3673, 2.89037, 2.30259)
+names(body) <- names(longevity) <- c("Homo", "Pongo", "Macaca",
+                                     "Ateles", "Galago")
+@
+
+The tree has branch lengths scaled so that the root age is one. We
+read the tree with \ape, and plot it:
+
+<<fig=true,width=5,height=4>>=
+library(ape)
+trnwk <- "((((Homo:0.21,Pongo:0.21):0.28,Macaca:0.49):0.13,Ateles:0.62)"
+trnwk[2] <- ":0.38,Galago:1.00);"
+tr <- read.tree(text = trnwk)
+plot(tr)
+axisPhylo()
+@
+
+We choose the weights as $w_{ij}=1/d_{ij}$, where the $d$'s is the
+distances measured on the tree:
+
+<<>>=
+w <- 1/cophenetic(tr)
+w
+@
+Of course, we must set the diagonal to zero:
+
+<<>>=
+diag(w) <- 0
+@
+We can now perform the analysis with Moran's $I$:
+
+<<>>=
+Moran.I(body, w)
+@
+
+Not surprisingly, the results are opposite to those in
+\cite{Paradis2006} since, there, the distances (given by
+\code{cophenetic(tr)}) were used as weights. (Note that the argument
+\code{dist} has been since renamed \code{weight}.\footnote{The older
+  code was actually correct; nevertheless, it has been rewritten, and
+  is now much faster. The documentation has been clarified.
+  The function \code{correlogram.phylo}, which computed
+  Moran's $I$ for a tree given as argument using the distances among
+  taxa, has been removed.}) We can now conclude for a slighly
+significant positive phylogenetic correlation among body mass values
+for these five species.
+
+The new version of \code{Moran.I} gains the option \code{alternative}
+which specifies the alternative hypothesis (\code{"two-sided"} by
+default, i.e., H$_1$: $I \ne I_0$). As expected from the above result, we divide the $P$-value
+be two if we define H$_1$ as $I > I_0$:
+
+<<>>=
+Moran.I(body, w, alt = "greater")
+@
+
+The same analysis with \code{longevity} gives:
+
+<<>>=
+Moran.I(longevity, w)
+@
+
+As for \code{body}, the results are nearly mirrored compared to
+\cite{Paradis2006} where a non-significant negative phylogenetic
+correlation was found: it is now positive but still largely not
+significant.
+
+\subsection{Taxonomic Levels}
+
+The function \code{correlogram.formula} provides an interface to
+calculate Moran's $I$ for one or several variables giving a series of
+taxonomic levels. An example of its use was provided in
+\cite[pp.~141--142]{Paradis2006}. The code of this function has been
+simplified, and the graphical presentation of the results have been improved.
+
+\code{correlogram.formula}'s main argument is a formula which is ``sliced'',
+and \code{Moran.I} is called for each of these elements. Two things
+have been changed for the end-user at this level:
+
+\begin{enumerate}
+\item In the old version, the rhs of the formula was given in the
+  order of the taxonomic hierarchy: e.g.,
+  \code{Order/SuperFamily/Family/Genus}. Not respecting this order
+  resulted in an error. In the new version, any order is accepted, but
+  the order given is then respected when plotted the correlogram.
+\item Variable transformations (e.g., log) were allowed on the lhs of
+  the formula. Because of the simplification of the code, this is no
+  more possible. So it is the responsibility of the user to apply any
+  tranformation before the analysis.
+\end{enumerate}
+
+Following Gittleman \& Kot \cite{Gittleman1990}, the autocorrelation at a higher level
+(e.g., family) is calculated among species belonging to the same
+category and to different categories at the level below (genus).
+To formalize this, let us write the different levels as
+$X^1/X^2/X^3/\dots/X^n$ with $X^n$ being the lowest one (\code{Genus} in the
+above formula):
+
+\begin{displaymath}
+\begin{array}{l}
+\left.\begin{array}{ll}
+w_{ij}=1 & \mathrm{if}\ X_i^k = X_j^k\ \mathrm{and}\ X_i^{k+1} \ne X_j^{k+1}\\
+w_{ij}=0 & \mathrm{otherwise}\\
+\end{array} \right\} k < n
+\\\\
+\left.\begin{array}{ll}
+w_{ij}=1 & \mathrm{if}\ X_i^k = X_j^k\\
+w_{ij}=0 & \mathrm{otherwise}\\
+\end{array} \right\} k = n
+\end{array}
+\end{displaymath}
+This is thus different from the idea of a ``neighbourhood'' of
+different sizes, but rather similar to the idea of partial correlation
+where the influence of the lowest level is removed when considering
+the highest ones \cite{Gittleman1990}.
+
+To repeat the analyses on the \code{carnivora} data set, we first
+log$_{10}$-transform the variables mean body mass (\code{SW}) and the
+mean female body mass (\code{FW}):
+
+<<>>=
+data(carnivora)
+carnivora$log10SW <- log10(carnivora$SW)
+carnivora$log10FW <- log10(carnivora$FW)
+@
+We first consider a single variable analysis (as in \cite{Paradis2006}):
+
+<<fig=true,width=6,height=5>>=
+fm1.carn <- log10SW ~ Order/SuperFamily/Family/Genus
+co1 <- correlogram.formula(fm1.carn, data = carnivora)
+plot(co1)
+@
+
+A legend now appears by default, but can be removed with \code{legend
+= FALSE}. Most of the appearance of the graph can be customized via
+the option of the plot method (see \code{?plot.correlogram} for
+details). This is the same analysis than the one displayed on Fig.~6.3
+of \cite{Paradis2006}.
+
+When a single variable is given in the lhs in
+\code{correlogram.formula}, an object of class \code{"correlogram"} is
+returned as above. If several variables are analysed simultaneously,
+the object returned is of class \code{"correlogramList"}, and the
+correlograms can be plotted together with the appropriate plot method:
+
+<<fig=true,width=6,height=4>>=
+fm2.carn <- log10SW + log10FW ~ Order/SuperFamily/Family/Genus
+co2 <- correlogram.formula(fm2.carn, data = carnivora)
+print(plot(co2))
+@
+
+By default, lattice is used to plot the correlograms on separate
+panels; using \code{lattice = FALSE} (actually the second argument,
+see \code{?plot.correlogramList}) makes a standard graph superimposing
+the different correlograms:
+
+<<fig=true,width=6,height=5>>=
+plot(co2, FALSE)
+@
+
+The options are roughly the same than above, but do not have always
+the same effect since lattice and base graphics do not have the same
+graphical parameters. For instance, \code{legend = FALSE} has no
+effect if \code{lattice = TRUE}.
+
+\section{Implementation in \ade}
+
+The analysis done with \ade\ in \cite{Paradis2006} suffers from the
+same error than the one done with \code{Moran.I} since it was also
+done with a distance matrix. So I correct this below:
+
+\begin{Schunk}
+\begin{Sinput}
+> library(ade4)
+> gearymoran(w, data.frame(body, longevity))
+\end{Sinput}
+\begin{Soutput}
+class: krandtest
+Monte-Carlo tests
+Call: as.krandtest(sim = matrix(res$result, ncol = nvar, byr = TRUE),
+    obs = res$obs, alter = alter, names = test.names)
+
+Test number:   2
+Permutation number:   999
+Alternative hypothesis: greater
+
+       Test         Obs   Std.Obs Pvalue
+1      body -0.06256789 2.1523342  0.001
+2 longevity -0.22990437 0.3461414  0.414
+
+other elements: NULL
+\end{Soutput}
+\end{Schunk}
+
+The results are wholly consistent with those from \ape, but the
+estimated coefficients are substantially different. This is because
+the computational methods are not the same in both packages. In \ade,
+the weight matrix is first transformed as a relative frequency matrix with
+$\tilde{w}_{ij} = w_{ij}/S_0$. The weights are further transformed with:
+
+\begin{displaymath}
+p_{ij} = \tilde{w}_{ij} - \sum_{i=1}^n\tilde{w}_{ij}\sum_{j=1}^n\tilde{w}_{ij},
+\end{displaymath}
+with $p_{ij}$ being the elements of the matrix denoted as $P$. Moran's
+$I$ is finally computed with $x^\mathrm{T}Px$. In \ape, the weights
+are first row-normalized:
+
+\begin{displaymath}
+w_{ij} \Big/ \sum_{i=1}^n w_{ij},
+\end{displaymath}
+then eq.~\ref{eq:morani} is applied.
+
+Another difference between both packages, though less
+important, is that in \ade\ the weight matrix is forced to be
+symmetric with $(W+W^\mathrm{T})/2$. In \ape, this matrix is assumed
+to be symmetric, which is likely to be the case like in the examples above.
+
+\section{Other Implementations}
+
+Package \sp\ has several functions, including
+\code{moran.test}, that are more specifically targeted to the analysis
+of spatial data. Package \spatial\ has the function \code{correlogram}
+that computes and plots spatial correlograms.
+
+\section*{Acknowledgements}
+
+I am thankful to Thibaut Jombart for clarifications on Moran's $I$.
+
+\bibliographystyle{plain}
+\bibliography{ape}
+\addcontentsline{toc}{section}{References}
+
+\end{document}

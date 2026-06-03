@@ -1,0 +1,112 @@
+import(methods)
+import(sp)
+import(lattice)
+importFrom(stats, aggregate, cov, na.omit, time, start, end, reshape,
+	prcomp, predict, as.formula)
+importFrom(utils, stack, unstack, untar, read.table, write.table)
+importFrom(graphics, lines)
+importFrom(xts, xts, as.xts, timeBased)
+importFrom(zoo, index, na.locf, na.spline, na.approx, as.zoo, zoo)
+importFrom(intervals, interval_overlap, Intervals)
+
+exportClasses(
+	xts, zoo,
+	ST, STF, STFDF,
+	STS, STSDF,
+	STI, STIDF,
+	STT, STTDF,
+	ltraj
+)
+
+export(delta,
+	ST,
+	STF, STFDF,
+	STS, STSDF,
+	STI, STIDF,
+	STT, STTDF,
+	stConstruct,
+	stInteraction,
+	read.tgrass,
+	write.tgrass,
+	eof, EOF, mnf,
+	nbMult,
+	# zoo methods:
+	index, na.locf, na.spline, na.approx, as.zoo
+)
+
+exportMethods(
+	# aggregate,
+	bbox,
+	coordnames,
+	geometry,
+	over,
+	plot,
+	stbox,
+	stplot,
+	timeMatch
+)
+
+S3method(aggregate, ST)
+S3method(aggregate, STFDF)
+S3method(as.array, STFDF)
+S3method(as.data.frame, STF)
+S3method(as.data.frame, STS)
+S3method(as.data.frame, STI)
+S3method(as.data.frame, STFDF)
+S3method(as.data.frame, STSDF)
+S3method(as.data.frame, STIDF)
+S3method(as.xts, STIDF)
+S3method(cbind, ST)
+S3method(dim, ST)
+S3method(dim, STF)
+S3method(dim, STS)
+S3method(dim, STI)
+S3method(dim, STT)
+S3method(dim, STFDF)
+S3method(dim, STSDF)
+S3method(dim, STIDF)
+S3method(dim, STTDF)
+S3method(index, STF)
+S3method(index, STS)
+S3method(index, STI)
+S3method(index, STT)
+S3method(index, STFDF)
+S3method(index, STSDF)
+S3method(index, STIDF)
+S3method(index, STTDF)
+S3method(length, STF)
+S3method(length, STS)
+S3method(length, STI)
+S3method(length, STT)
+S3method(length, STFDF)
+S3method(length, STSDF)
+S3method(length, STIDF)
+S3method(length, STTDF)
+S3method(lines, STTDF)
+S3method(mnf,matrix)
+S3method(mnf,mts)
+S3method(mnf,RasterBrick)
+S3method(mnf,RasterStack)
+S3method(mnf,SpatialGridDataFrame)
+S3method(mnf,SpatialPixelsDataFrame)
+S3method(mnf,STSDF)
+S3method(mnf,STFDF)
+S3method(mnf,zoo)
+S3method(na.omit, STFDF)
+S3method(predict,mnf)
+S3method(rbind, STIDF)
+S3method(rbind, STSDF)
+S3method(rbind, STFDF)
+S3method(print, summary.ST)
+S3method(stack, STFDF)
+S3method(stack, STSDF)
+S3method(stack, STIDF)
+S3method(unstack, STFDF)
+
+S3method(start, ST)
+S3method(end, ST)
+S3method(time, ST)
+S3method(na.locf, STFDF)
+S3method(na.spline, STFDF)
+S3method(na.approx, STFDF)
+S3method(as.zoo, STFDF)

@@ -676,6 +676,10 @@ BIOMOD_Modeling <- function(bm.format,
   # }
   
   ## 6. Check CV.user.table / CV.do.full.models arguments ---------------------
+  if (is.null(CV.do.full.models)) {
+    CV.do.full.models <- FALSE
+    .message("CV.do.full.models set to FALSE (no '_allData_allRun' set computed)")
+  }
   if (CV.strategy == "user.defined" && !is.null(CV.user.table)) {
     if (!("_allData_allRun" %in% colnames(CV.user.table)) && CV.do.full.models == TRUE) { 
       CV.do.full.models <- FALSE

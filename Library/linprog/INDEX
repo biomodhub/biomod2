@@ -1,0 +1,6 @@
+print.solveLP           Print Objects of Class solveLP
+readMps                 Read MPS Files
+solveLP                 Solve Linear Programming / Optimization
+                        Problems
+summary.solveLP         Summary Results for Objects of Class solveLP
+writeMps                Write MPS Files

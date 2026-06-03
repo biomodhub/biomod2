@@ -1,0 +1,82 @@
+DataApes                Example dataset
+DataCetaceans           Example dataset
+DataFelids              Example dataset
+DataOrnithodirans       Example dataset
+DataSimians             Example dataset
+DataUng                 Example dataset
+PGLS_fossil             Phylogenetic Generalized Least Square with
+                        phylogenies including fossils
+RRphylo                 Evolutionary rates computation along
+                        phylogenies
+RRphylo-defunct         Defunct functions in Package RRphylo
+RRphylo-deprecated      Deprecated functions in Package RRphylo
+RRphylo-package         Phylogenetic Ridge Regression Methods for
+                        Comparative Studies
+StableTraitsR           Run StableTraits from within R
+angle.matrix            Ontogenetic shape vectors analysis
+colorbar                Draw colorbar on a plot
+compRates               Comparing average absolute rates between clades
+conv.map                Mapping morphological convergence on 3D
+                        surfaces
+cutPhylo                Cut the phylogeny at a given age or node
+distNodes               Finding distance between nodes and tips
+evo.dir                 Phylogenetic vector analysis of phenotypic
+                        change
+fix.poly                Resolving polytomies to non-zero length
+                        branches
+getGenus                Taxonomic inspection of the tree at the genus
+                        level
+getMommy                Upward tip or node to root path
+getSis                  Get sister clade
+lollipoPlot             Lollipop charts
+makeFossil              Make fossil species on a phylogeny
+makeL                   Matrix of branch lengths along root-to-tip
+                        paths
+makeL1                  Matrix of branch lengths along a root-to-node
+                        path
+move.lineage            Move tips or clades
+namesCompare            Checking species names for misspelling and
+                        synonyms
+node.paths              Tracing nodes along paths
+overfitPGLS             Testing PGLS_fossil overfit
+overfitRR               Testing RRphylo overfit
+overfitSC               Testing search.conv overfit
+overfitSS               Testing search.shift overfit
+overfitST               Testing search.trend overfit
+phyloclust              Test for phylogenetic clustering
+plotConv                Graphical representation of search.conv results
+plotRR                  Plot the RRphylo output onto the phylogenetic
+                        tree
+plotRates               Plot RRphylo rates at a specified node
+plotShift               Graphical representation of search.shift
+                        results
+plotTrend               Graphical representation of search.trend
+                        results
+random.evolvability.test
+                        Randomization test for phylogenetic structuring
+                        in evolvability
+rate.map                Mapping rate and direction of phenotypic change
+                        on 3D surfaces.
+rateHistory             Computing historical rates
+resampleTree            Altering phylogenetic trees
+rescaleRR               Rescaling phylogenetic trees
+retrieve.angles         Extracting a user-specified subset of the
+                        evo.dir results
+scaleTree               Phylogenetic tree calibration
+search.conv             Searching for morphological convergence among
+                        species and clades
+search.shift            Locating shifts in phenotypic evolutionary
+                        rates
+search.trend            Searching for evolutionary trends in phenotypes
+                        and rates
+setBM                   Producing simulated phenotypes with trends
+sig2BM                  Brownian Motion rate computation
+sizedsubtree            Find a node subtending to a clade of desired
+                        size
+swapONE                 Create alternative phylogenies from a given
+                        tree
+tips                    Get descending tips
+tree.merger             Fast construction of phylogenetic trees
+treeCompare             Visualize the difference between phylogenetic
+                        trees
+treedataMatch           Cross-reference tree and data

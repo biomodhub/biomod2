@@ -1,0 +1,53 @@
+- version 1.0-2:
+Author: Florian Gerber <flora.fauna.gerber@gmail.com>
+Date:   Wed Feb 10 11:46:16 2021 -0700
+(1) migrate git repo to github.com
+(1) change maintainer email address
+
+- version 1.0-1: 
+commit 6f389aa916dc8cbc2398b2ed3635713a4ecf1778
+Author: Florian Gerber <florian.gerber@math.uzh.ch>
+Date:   Tue Apr 21 15:26:15 2020 -0600
+(1) pkg 'lbfgsb3' removed from suggest because the package has been archived.
+(2) 'fn' and 'gr' can now have multiple arguments mixed with '...'.
+
+- version 1.0: 
+commit 373ce0334eb05a7c382bd95d086b83966ceb64e1
+Author: Florian Gerber <florian.gerber@math.uzh.ch>
+Date:   Mon Feb 24 17:51:45 2020 -0700
+(1) bug fix: hessian has now correct sign if 'fnscale=-1'.
+(2) Vignette and citation info updated.
+
+- version 0.8: 
+commit f0a8ed6e658cb481d549fd908d5640bf03abf394
+Author: Florian Gerber <florian.gerber@math.uzh.ch>
+Date:   Mon Feb 25 18:38:17 2019 +0100
+(1) the mechanism to call 'fn' and 'gr' in parallel
+    was improved to avoid unecessary copies of objects
+    between processes in the cluster.
+(2) the 'BFGS' and 'GC' methods are nolonger supported. 
+
+- version 0.7-4: bug fix
+commit 813a06269b6e777157fbe529bc62e38fc4d59de4
+Author: Florian Gerber <florian.gerber@math.uzh.ch>
+Date:   Mon Oct 15 22:40:37 2018 -0600
+(1) 'fn' and 'gr' can now be functions from other packages 
+    calling compiled code, e.g., 
+    optimParallel(par=1, fn=dnorm, mean=3)
+
+- version 0.7-3: bug fix
+commit 01ebb9016000a7b087c01b190db0b7ab9d4778d6
+Author: Florian Gerber <florian.gerber@math.uzh.ch>
+Date:   Fri Jul 27 22:40:37 2018 -0600
+(1) indexing 'par' by names inside 'fn' works now. 
+    e.g. optimParallel(par=c(a=1), fn <- function(x) {x["a"]^2})
+(2) using functions and method from loaded packages works now.
+    'fn' and 'gr' have now .GlobalEnv as parent environment.
+(3) the default value for the argument 'method' is now "L-BFGS-B".
+(4) the help page ?optimParallel contains a new section 'Notes' 
+    summarizing considerations for the practical use. 
+
+- version 0.7-2: CRAN release
+commit f46556cee870a5c13145ddfdf5f2e3998ea0b317
+Author: Florian Gerber <florian.gerber@math.uzh.ch>
+Date:   Tue May 1 12:43:35 2018 +0200

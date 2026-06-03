@@ -1,0 +1,349 @@
+% Mon Jun 20 22:48:30 CEST 2011
+
+\documentclass[nogin,a4paper]{article}
+
+%\usepackage[OT1]{fontenc}
+
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{Sweave}
+\usepackage[utf8]{inputenc}
+\newcommand{\code}[1]{{\tt #1}}
+
+\title{\bf Spatio-temporal overlay and aggregation }
+
+\author{
+\includegraphics[width=5cm]{ifgi-logo_int} \hspace{.5cm}
+\includegraphics[width=4cm]{logo52n} \\
+\href{mailto:edzer.pebesma@uni-muenster.de}{Edzer Pebesma}
+}
+\date{\small \today }
+
+\begin{document}
+% \VignetteIndexEntry{ Spatio-temporal overlay and aggregation }
+\maketitle
+
+\begin{abstract}
+The so-called ``map overlay'' is not very well defined and does not
+have a simple equivalent in space-time. This paper will explain how
+the {\tt over} method for combining two spatial features (and/or
+grids), defined in package {\tt sp} and extended in package {\tt
+rgeos}, is implemented for spatio-temporal objects in package {\tt
+spacetime}. It may carry out the numerical spatio-temporal overlay,
+and can be used for aggregation of spatio-temporal data over space,
+time, or space-time.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+The so-called {\em map overlay} is a key GIS operation that does not
+seem to have a very sharp definition. The \code{over} vignette in
+package {\tt sp} (Pebesma, 2012) comments on what paper (visual)
+overlays are, and discusses the {\tt over} and {\tt aggregate}
+methods for spatial data.
+
+In the
+ESRI
+ArcGIS tutorial (ESRI, 2012), it can be read that
+\begin{quotation}
+{\em An overlay operation is much more than a simple merging of linework;
+all the attributes of the features taking part in the overlay are
+carried through, as shown in the example below, where parcels
+(polygons) and flood zones (polygons) are overlayed (using the
+Union tool) to create a new polygon layer. The parcels are split
+where they are crossed by the flood zone boundary, and new polygons
+created. The FID\_flood value indicates whether polygons are outside
+(-1) or inside the flood zone, and all polygons retain their original
+land use category values.}
+\end{quotation}
+It later on mentions {\em raster overlays}, such as the addition
+of two (matching) raster layers (so, potentially the whole of map
+algebra functions, where two layers are involved).
+
+In the open source arena, with no budgets for English language editing, the
+\href{http://grass.fbk.eu/grass70/manuals/html70_user/v.overlay.html}{Grass
+7.0 documentation} mentions the following:
+\begin{quotation}
+{\em {\tt v.overlay} allows the user to overlay two vector area maps. The
+resulting output map has a merged attribute-table. The origin
+column-names have a prefix (a\_ and b\_) which results from the ainput-
+and binput-map. [...] 
+Operator defines features written to output vector map Feature
+is written to output if the result of operation 'ainput operator
+binput' is true. Input feature is considered to be true, if category
+of given layer is defined.  Options: and, or, not, xor. }
+\end{quotation}
+
+\section{Overlay with method {\tt over}}
+
+We loosely define {\em map overlay} as
+\begin{itemize}
+\item an operation involving at least two maps
+\item asymmetric -- {\em over}lay is different from {\em under}lay
+\item either a {\em visual} or a {\em numerical} activity.
+\end{itemize}
+
+The method {\tt over}, as defined in package {\tt sp}, provides
+a way to numerically combine two maps. In particular,
+<<eval=FALSE>>=
+over(x, geometry(y))
+@
+returns an integer vector of length {\tt length(x)} with {\tt x[i]}
+the index of {\tt y}, spatially corresponding to {\tt x[i]}, so
+{\tt x[i]=j} means that {\tt x[i]} and {\tt y[j]} match (have the
+same location, touch, or overlap/intersect etc.), or {\tt x[i]=NA}
+if there is no match.  If {\tt y} has data values (attributes), then
+<<eval=FALSE>>=
+over(x, y)
+@
+retrieves a {\tt data.frame} with {\tt length(x)} rows, where row
+{\tt i} contains the attributes of {\tt y} at the spatial location
+of {\tt x[i]}, and NA values if there is no match.
+
+If the relationship is more complex, e.g. a polygon or grid cell
+{\tt x} containing more than one point of {\tt y}, the command
+<<eval=FALSE>>=
+over(x, y, returnList = TRUE)
+@
+returns a list of length {\tt length(x)}, with each list element
+a numeric vector with all indices if {\tt y} is geometry only,
+or else a data frame with all attribute table rows of {\tt y}
+that spatially matches {\tt x[i]}.
+
+\section{Spatio-temporal overlay with method {\tt over}}
+
+Package {\tt spacetime} adds {\tt over} methods to those defined 
+for spatial data in package {\tt sp}:
+<<>>=
+library(sp)
+library(spacetime)
+showMethods(over)
+@
+
+% <<keep.source=TRUE>>=
+% download.file("http://ifgi.uni-muenster.de/~epebe_01/cw.rda", "cw.rda")
+% load("cw.rda")
+% unlink("cw.rda")
+% @
+
+\subsection{Time intervals or time instances?}
+
+When computing the overlay 
+<<eval=FALSE>>=
+over(x, y)
+@
+A space-time feature matches another space-time feature when their
+spatial locations match (coincide, touch, intersect or overlap),
+and when their temporal properties match. For temporal properties,
+it is crucial whether time is a time interval, or a time instance.
+When all \code{endTime} values are equal to the \code{time} times,
+time is considered instance. When one or more \code{endTime} values
+are larger than \code{time}, time is considered to reflect intervals.
+
+Suppose we have two time sequences, $T: t_1,t_2,...,t_n$ and $U:
+u_1, u_2, ..., u_m$. Both are ordered: $t_i \le t_{i+1}$.
+
+Both $T$ and $U$ can reflect time {\em instances} or time
+{\em intervals}. In case they reflect time {\em instances}, an
+observation at $t_i$ takes place at the time instance $t_i$, and
+has an unregistered (possibly ignorable) duration. In case they
+reflect time {\em intervals}, an observation ``at'' $t_i$ takes
+place during, or is representatitive for, the time interval
+$t_{i} \le t < t_{i+1}$. (The last time interval $t_n$ is obtained
+by adopting the one-but-last time interval duration: $t_n \le t <
+t_n + (t_n - t_{n-1})$).
+
+We define the time (instance or interval) pair $\{t_i,u_j\}$ to match if
+\begin{description}
+\item[for $T$ instance, $U$ instance:]
+$$t_i = u_j$$
+\item[for $T$ interval, $U$ instance]
+$$t_i \le u_j < t_{i+1}$$
+\item[for $T$ instance, $U$ interval]
+$$u_j \le t_i < u_{j+1}$$
+\item[for $T$ interval, $U$ interval]
+$$\exists t : t_i \le t < t_{i+1} \wedge u_j \le t < u_{j+1} $$
+which can be rephrased as the negation of
+$t_{i+1} \le u_j \vee t_i \ge u_{j+1}$ (where $\vee$ denotes `or'), 
+or alternatively expressed as
+$$t_{i+1} > u_j \wedge t_i < u_{j+1}$$
+where $\wedge$ denotes `and'.
+\end{description}
+All these conditions fail for intervals having zero width (empty
+intervals), i.e. the case where $T$ is interval and for some $i$,
+$t_{i+1}-t_i=0$ or the case where $U$ is interval and for some $j$,
+$u_{j+1}-u_j=0$.
+
+
+\section{Aggregating spatio-temporal data}
+
+The {\tt aggregate} method for a {\tt data.frame} is defined as
+<<eval=FALSE>>=
+aggregate(x, by, FUN, ..., simplify = TRUE)
+@
+where {\tt x} is the {\tt data.frame} to be aggregated, {\tt by}
+indicates how groups of {\tt x} are formed, {\tt FUN} is applied to
+each group, and {\tt simplify} indicates whether the output should
+be simplified (to vector), or remain a {\tt data.frame}. The {\tt
+...} are passed to {\tt FUN}, e.g. passing {\tt na.rm=TRUE} is useful
+when {\tt FUN} is {\tt mean} and missing values need to be ignored.
+
+For spatio-temporal data, the {\tt x} argument needs to be of class
+{\tt STFDF}, {\tt STSDF} or {\tt STIDF}. The {\tt by} argument
+needs to specify an aggregation medium: time, space, or space-time.
+
+\subsection{Example data: PM10}
+
+Air quality example data are loaded by
+<<>>=
+data(air)
+rural = STFDF(stations, dates, data.frame(PM10 = as.vector(air)))
+class(rural)
+class(DE_NUTS1)
+@
+it provides PM10 daily mean values (taken from
+\href{http://acm.eionet.europa.eu/databases/airbase}{AirBase -
+the European Air quality dataBase}), for Germany, 1998-2009, where
+only stations classified as {\em rural background} were selected.
+The object {\tt DE\_NUTS1} contains NUTS-1 level state boundaries
+for Germany, downloaded from \href{http://www.gadm.org/}{GADM}.
+
+\subsection{Spatial aggregation}
+
+To aggregate {\em completely} over space, we can coerce the
+data to a matrix and apply a function to the rows:
+<<>>=
+x = as(rural[,"2008"], "xts")
+apply(x, 1, mean, na.rm=TRUE)[1:5]
+@
+
+A more refined spatial aggregation of time series can be obtained by grouping
+them to the state (``Bundesland'') level. Here, states are passed as
+a {\tt SpatialPolygons} object:
+<<>>=
+dim(rural[,"2008"])
+x = aggregate(rural[,"2008"], DE_NUTS1, mean, na.rm=TRUE)
+dim(x)
+summary(x)
+stplot(x, mode = "tp")
+@
+the result of which is shown in figure \ref{fig:tp1}, which was
+created by
+<<eval=FALSE>>=
+stplot(x, mode = "tp", par.strip.text = list(cex=.5))
+@
+
+\begin{figure}
+<<fig=TRUE,echo=FALSE>>=
+print(stplot(x, mode = "tp", par.strip.text = list(cex=.5)))
+@
+\caption{Daily PM10 values, aggregated (averaged) over states}
+\label{fig:tp1}
+\end{figure}
+
+An aggregation for all stations selected within a single
+area is obtained by using the country boundary \code{DE},
+and aggregating the observations within Germany for
+each moment in time:
+<<>>=
+x = aggregate(rural[,"2008"], DE, mean, na.rm=TRUE)
+class(x)
+plot(x[,"PM10"])
+@
+the plot of which is shown in figure \ref{fig:x}.
+
+\begin{figure}
+<<fig=TRUE,echo=FALSE>>=
+plot(x[,"PM10"])
+@
+\caption{Time series plot of daily rural background PM10, averaged
+over Germany}
+\label{fig:x}
+\end{figure}
+
+\subsection{Temporal aggregation}
+
+To aggregate {\em completely} over time, we can coerce the
+data to a matrix and apply a function to the columns:
+<<>>=
+x = as(rural[,"2008"], "xts")
+apply(x, 2, mean, na.rm=TRUE)[1:5]
+@
+
+Aggregating values {\em temporally} is done by passing
+a character string or a function to the {\tt by} argument.
+For monthly data, we will first select those stations that
+have measured (non-NA) values in 2008,
+<<>>=
+sel = which(!apply(as(rural[,"2008"], "xts"), 2, function(x) all(is.na(x))))
+x = aggregate(rural[sel,"2008"], "month", mean, na.rm=TRUE)
+stplot(x, mode = "tp")
+@
+shown in figure \ref{fig:tp2}
+
+\begin{figure}
+<<fig=TRUE,echo=FALSE>>=
+print(stplot(x, mode = "tp", par.strip.text = list(cex=.5)))
+@
+\caption{ Monthly averaged PM10 values, for those rural background
+stations in Germany having measured values }
+\label{fig:tp2}
+\end{figure}
+
+The strings that can be passed are e.g. {\tt "year"}, but also {\tt
+"3 days"}. See {\tt ?cut.Date} for possible values. Aggregation using
+this way is only possible if the time index is of class {\tt Date}
+or {\tt POSIXct}.
+
+An alternative is to provide a function for temporal aggregation. The
+function \code{as.yearqtr} from package \code{zoo} transforms dates
+to quarters, and hence allows aggregation {\em to} quarterly values,
+in this example medians:
+<<>>=
+library(zoo)
+x = aggregate(rural[sel,"2005::2011"], as.yearqtr, median, na.rm=TRUE)
+stplot(x, mode = "tp")
+@
+shown in figure \ref{fig:tp3}. Aggregating to monthly values is obtained
+by function \code{as.yearmon}, aggregating to years by creating the
+function
+<<>>=
+as.year <- function(x) as.numeric(floor(as.yearmon(x)))
+@
+Further information can be found in {\tt ?aggregate.zoo}, which is
+the function used to do the processing.
+
+\begin{figure}
+<<fig=TRUE,echo=FALSE>>=
+print(stplot(x, mode = "tp", par.strip.text = list(cex=.5)))
+@
+\caption{PM10 values, averaged to quarterly medians of daily averages}
+\label{fig:tp3}
+\end{figure}
+
+\subsection{Spatio-temporal aggregation}
+
+Aggregation over spatio-temporal volumes can be done by passing
+an object inheriting from {\tt ST} to the {\tt by} argument:
+<<>>=
+DE.years = STF(DE, as.Date(c("2008-01-01", "2009-01-01")))
+aggregate(rural[,"2008::2009"], DE.years, mean, na.rm=TRUE)
+@
+
+\subsection{Time intervals}
+
+If all data concern time instances (endTime equals time), then time
+instances are being matched, else overlapping time intervals are
+being matched. In case intervals are being matched, empty intervals
+are never matched.
+
+\subsection*{References}
+\begin{itemize}
+\item ESRI (2012) ESRI ArcGIS Tutorial. \url{http://webhelp.esri.com/arcgisdesktop/9.2/index.cfm?TopicName=Overlay_analysis}
+\item Pebesma, 2012. Map overlay and
+spatial aggregation in sp. Vignette in package sp,
+\url{https://cran.r-project.org/web/packages/sp/vignettes/over.pdf}
+\end{itemize}
+
+\end{document}

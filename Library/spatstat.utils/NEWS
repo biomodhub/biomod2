@@ -1,0 +1,558 @@
+
+        CHANGES IN spatstat.utils VERSION 3.2-3
+
+OVERVIEW
+
+    o Internal improvements.
+
+        CHANGES IN spatstat.utils VERSION 3.2-2
+
+OVERVIEW
+
+    o Capitalise words
+
+NEW FUNCTIONS
+
+    o capitalise
+    Make the first letter of each word a capital letter.
+
+        CHANGES IN spatstat.utils VERSION 3.2-1
+
+OVERVIEW
+
+    o Lagged difference of long vector.
+
+NEW FUNCTIONS
+
+    o difflong
+    Calculates diff() for a long vector.
+    
+        CHANGES IN spatstat.utils VERSION 3.2-0
+
+OVERVIEW
+
+    o spatstatLocator now supports `snap' behaviour (rounding).
+
+    o Minor improvements.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o spatstatLocator
+    Now supports rounding of the location to the nearest point on a grid.
+    New arguments 'snap.step' and 'snap.origin' control the grid spacing
+    and grid position, respectively.
+
+    o revcumsum
+    If x is logical, the result is now an integer vector.
+
+        CHANGES IN spatstat.utils VERSION 3.1-5
+
+OVERVIEW
+
+    o Internal improvements.
+
+        CHANGES IN spatstat.utils VERSION 3.1-4
+
+OVERVIEW
+
+    o Extension to 'fastFindInterval'.
+
+    o Internal improvements.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o fastFindInterval
+    New argument 'left.open' controls whether intervals
+    are left-open, right-closed or left-closed, right-open.
+
+        CHANGES IN spatstat.utils VERSION 3.1-3
+
+OVERVIEW
+
+    o Recognise powers of an integer.
+
+NEW FUNCTIONS
+
+    o is.square, is.cube, is.power
+    Recognise whether a given integer is a square number, a cube,
+    or a power of another integer.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o primefactors
+    Computation for large numbers improved.
+
+        CHANGES IN spatstat.utils VERSION 3.1-2
+
+OVERVIEW
+
+    o Internal improvements.
+
+
+        CHANGES IN spatstat.utils VERSION 3.1-1
+
+OVERVIEW
+
+    o Internal improvements.
+
+
+        CHANGES IN spatstat.utils VERSION 3.1-0
+
+OVERVIEW
+
+    o Efficiency improvement for prime factorisation.
+
+    o spatstat.utils now requires R 3.5.0 or later.
+
+    o Bug fix
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o primefactors, divisors, is.prime
+    Computation for large numbers accelerated.
+
+BUG FIXES
+
+    o xysegPcircle
+    Interpreted its arguments incorrectly,
+    and incorrectly gave the same result as 'xysegXcircle'.
+    Fixed.
+
+        CHANGES IN spatstat.utils VERSION 3.0-5
+
+OVERVIEW
+
+    o Internal improvements.
+
+
+        CHANGES IN spatstat.utils VERSION 3.0-4
+
+OVERVIEW
+
+    o Improved error messages.
+
+    o Bug fix.
+
+    o Minor changes to package information.
+
+BUG FIXES
+
+    o primefactors
+    The default method (method = "C") did not handle numbers
+    greater than the largest integer (n > .Machine$integer.max).
+    Fixed.
+
+
+        CHANGES IN spatstat.utils VERSION 3.0-3
+
+OVERVIEW
+
+    o Minor improvements.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o asNumericMatrix
+    Argument x can be a list, provided it can be converted to a data frame.
+
+    o articlebeforenumber
+    Now handles non-integer values correctly.
+    
+    o articlebeforenumber
+    New argument 'teenhundreds'.
+    
+        CHANGES IN spatstat.utils VERSION 3.0-2
+
+OVERVIEW
+
+    o Modest improvements in speed.
+
+    o Minor changes to package information.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o check.named.vector, check.named.list
+    New argument 'xtitle'
+
+        CHANGES IN spatstat.utils VERSION 3.0-1
+
+OVERVIEW
+
+    o Minor changes to package information.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Package dependence
+    The suggested package 'spatstat.model' is available from
+    spatstat.r-universe.dev until it is released on CRAN.
+    
+        CHANGES IN spatstat.utils VERSION 3.0-0
+
+OVERVIEW
+
+    o Minor changes to package information.
+
+    o Harmonic mean.
+
+    o Bug fixes
+
+NEW FUNCTIONS
+
+    o harmonicmean, harmonicsum
+    The harmonic mean of a set of numbers, calculated robustly.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Package dependence
+    'spatstat.utils' now suggests the new package 'spatstat.model'
+    instead of the old 'spatstat.core'.
+
+BUG FIXES
+
+    o do.call.matched
+    Crashed if 'matchfirst=TRUE' and 'names(arglist) = NULL'.
+    Fixed.
+    
+        CHANGES IN spatstat.utils VERSION 2.3-1
+
+OVERVIEW
+
+    o Minor improvements and bug fixes.
+
+    o Some code now runs faster.
+
+    o More of the existing functions are documented.
+    
+NEW FUNCTIONS
+
+    o fastFindInterval
+    Faster alternative to 'findInterval' for equally-spaced intervals.
+
+    o geomseq
+    Make a geometric sequence.
+
+    o "%orifnull%"
+    Specify a value with a default.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o check.1.real, check.1.integer, check.1.string
+    New argument 'warn'.
+    
+        CHANGES IN spatstat.utils VERSION 2.3-0
+
+OVERVIEW
+
+    o Minor improvements and bug fixes.
+
+    o Some code accelerated.
+
+NEW FUNCTIONS
+
+    o which.min.fair, which.max.fair
+    Find the location of the minimum or maximum,
+    and if there are multiple minima or maxima,
+    choose one of them at random.
+    
+BUG FIXES
+
+    o tapplysum
+    Crashed if do.names=TRUE when 'flist' contained only one factor.
+    Fixed.
+
+        CHANGES IN spatstat.utils VERSION 2.2-0
+
+OVERVIEW
+
+    o New function to compute breakpoints for a cut operation.
+
+    o Internal tweaks to improve efficiency.
+
+NEW FUNCTIONS
+
+    o exactCutBreaks
+    Compute the exact numerical values of the breakpoints
+    used in cut.default.
+    
+        CHANGES IN spatstat.utils VERSION 2.1-0
+
+OVERVIEW
+
+    o New functions providing NA and zero values, and empty vectors,
+    of the appropriate type.
+    
+NEW FUNCTIONS
+
+    o RelevantNA
+    Return a missing value of the appropriate type.
+
+    o RelevantEmpty
+    Return a zero-length vector of the appropriate type.
+
+    o RelevantZero
+    Return a value equivalent to 0, of the appropriate type.
+
+
+        CHANGES IN spatstat.utils VERSION 2.0-1
+
+OVERVIEW
+
+    o Tweaks.
+
+        CHANGES IN spatstat.utils VERSION 2.0-0
+
+OVERVIEW
+
+    o Updated to new spatstat family.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o package dependence
+    spatstat.utils now suggests the package spatstat.core
+    which is part of the new spatstat family.
+
+        CHANGES IN spatstat.utils VERSION 1.20-0
+
+OVERVIEW
+
+    o Computation is slightly accelerated.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o general
+    Overall speed of computation is slightly increased.
+
+        CHANGES IN spatstat.utils VERSION 1.19-0
+
+OVERVIEW
+
+    o Minor improvements.
+
+
+        CHANGES IN spatstat.utils VERSION 1.18-0
+
+OVERVIEW
+
+    o Minor improvements.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o do.call.matched, do.call.without
+    New argument 'envir' determines the environment in which
+    the call will be evaluated.
+
+        CHANGES IN spatstat.utils VERSION 1.17-0
+
+OVERVIEW
+
+    o Bug fixes in internal code.
+
+        CHANGES IN spatstat.utils VERSION 1.16-0
+
+OVERVIEW
+
+    o Bug fixes in internal code.
+
+        CHANGES IN spatstat.utils VERSION 1.15-0
+
+OVERVIEW
+
+    o Added more internal code.
+
+
+        CHANGES IN spatstat.utils VERSION 1.14-1
+
+OVERVIEW
+
+    o Minor administrative changes.
+
+        CHANGES IN spatstat.utils VERSION 1.14-0
+
+NEW FUNCTIONS
+
+    o taperoff
+    Utility for tapering values smoothly to zero.
+    
+
+        CHANGES IN spatstat.utils VERSION 1.13-0
+
+OVERVIEW
+
+    o internal bug fix.
+
+        CHANGES IN spatstat.utils VERSION 1.12-0
+
+NEW FUNCTIONS
+
+    o percentage
+    Programmer's utility to convert a number to a percentage.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o queueSpatstatLocator
+    Handles any data acceptable to xy.coords()
+    
+        CHANGES IN spatstat.utils VERSION 1.11-0
+
+NEW FUNCTIONS
+
+    o queueSpatstatLocator
+    Add (x,y) coordinate pairs to a queue
+    that can be accessed by 'spatstatLocator'.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o spatstatLocator
+    Now works in non-interactive sessions,
+    returning previously-queued coordinates,
+    for use in software testing.
+
+        CHANGES IN spatstat.utils VERSION 1.10-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o NEWS file
+    spatstat.utils now has its own NEWS file.
+
+        CHANGES IN spatstat.utils VERSION 1.9-5
+	
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o None.
+    Minor internal improvements only.
+    
+        CHANGES IN spatstat.utils VERSION 1.9-4
+
+BUG FIXES
+
+    o orderwhich
+    Crashed if decreasing=TRUE.
+    Fixed.
+    
+        CHANGES IN spatstat.utils VERSION 1.9-3
+
+NEW FUNCTIONS
+
+    o sortunique
+    A faster version of sort(unique(x)) for numeric x.
+
+        CHANGES IN spatstat.utils VERSION 1.9-2
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o orderwhich
+    Accelerated.
+    
+        CHANGES IN spatstat.utils VERSION 1.9-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o orderstats
+    Accelerated.
+    
+        CHANGES IN spatstat.utils VERSION 1.9-0
+
+NEW FUNCTIONS
+
+    o check.anyvector
+    Utility to check for a vector or factor with correct length.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o tapplysum
+    Argument 'x' can contain complex numbers.
+    
+        CHANGES IN spatstat.utils VERSION 1.8-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o slight increase in speed.
+    
+        CHANGES IN spatstat.utils VERSION 1.8-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o tapplysum
+    Now works in dimension 1
+    (i.e. when 'flist' is a list containing a single factor).
+    
+BUG FIXES
+
+   o graphics code
+   'zlim' was not recognised as a graphics parameter in some cases.
+   Fixed.
+
+        CHANGES IN spatstat.utils VERSION 1.7-1
+
+BUG FIXES
+
+   o graphics code
+   'main' was not recognised as a graphics parameter in some cases.
+   Fixed.
+
+
+        CHANGES IN spatstat.utils VERSION 1.7-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o fastFindInterval
+    Labels are shorter (generated when labels=TRUE).
+    New argument 'dig.lab' controls their length.
+    
+    
+BUG FIXES
+
+   o expand.polynom
+   Result was syntactically incorrect in some cases.
+   Fixed.
+
+
+        CHANGES IN spatstat.utils VERSION 1.6-0
+
+NEW FUNCTIONS
+
+    o "lhs.of.formula<-", "rhs.of.formula<-"
+    Assignment operators for formulae.
+    
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o matchIntegerDataFrames
+    New argument 'sort'.
+    
+BUG FIXES
+
+   o verbalogic
+   Returned prematurely in some cases.
+   Fixed.
+
+
+        CHANGES IN spatstat.utils VERSION 1.5-1
+
+NEW FUNCTIONS
+
+    o matchIntegerDataFrames
+    A fast function for finding identical rows in two data frames of integers.
+    
+        CHANGES IN spatstat.utils VERSION 1.5-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Internal changes to satisfy CRAN requirements.
+
+
+        CHANGES IN spatstat.utils VERSION 1.4-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Internal changes to satisfy CRAN requirements.
+    
+
+        CHANGES IN spatstat.utils VERSION 1.4-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Internal code now runs in the Datacamp environment.
+    
+
+
+
+   

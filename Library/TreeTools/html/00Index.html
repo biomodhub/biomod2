@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Create, Modify and Analyse Phylogenetic Trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Create, Modify and Analyse Phylogenetic Trees
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;TreeTools&rsquo; version 2.3.0</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS.md">Package NEWS</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#J">J</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#P">P</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#X">X</a>
+<a href="#Y">Y</a>
+<a href="#Z">Z</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="AddTip.html">AddTip</a></td>
+<td>Add a tip to a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="AddTip.html">AddTipEverywhere</a></td>
+<td>Add a tip to a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="ImposeConstraint.html">AddUnconstrained</a></td>
+<td>Force a tree to match a constraint</td></tr>
+<tr><td style="width: 25%;"><a href="ListAncestors.html">AllAncestors</a></td>
+<td>List ancestors</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels.list</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels.matrix</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels.multiPhylo</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels.phylo</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels.Splits</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">AllTipLabels.TreeNumber</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="ApeTime.html">ApeTime</a></td>
+<td>Read modification time from "ape" Nexus file</td></tr>
+<tr><td style="width: 25%;"><a href="ArtificialExtinction.html">ArtEx</a></td>
+<td>Artificial Extinction</td></tr>
+<tr><td style="width: 25%;"><a href="ArtificialExtinction.html">ArtificialExtinction</a></td>
+<td>Artificial Extinction</td></tr>
+<tr><td style="width: 25%;"><a href="ArtificialExtinction.html">ArtificialExtinction.matrix</a></td>
+<td>Artificial Extinction</td></tr>
+<tr><td style="width: 25%;"><a href="ArtificialExtinction.html">ArtificialExtinction.phyDat</a></td>
+<td>Artificial Extinction</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable.html">as.ClusterTable</a></td>
+<td>Convert phylogenetic tree to 'ClusterTable'</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable.html">as.ClusterTable.list</a></td>
+<td>Convert phylogenetic tree to 'ClusterTable'</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable.html">as.ClusterTable.multiPhylo</a></td>
+<td>Convert phylogenetic tree to 'ClusterTable'</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable.html">as.ClusterTable.phylo</a></td>
+<td>Convert phylogenetic tree to 'ClusterTable'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.logical.Splits</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable-methods.html">as.matrix.ClusterTable</a></td>
+<td>S3 methods for 'ClusterTable' objects</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase.integer64</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase.MixedBase</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase.multiPhylo</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase.numeric</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase.phylo</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.MixedBase.TreeNumber</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="as.multiPhylo.html">as.multiPhylo</a></td>
+<td>Convert object to 'multiPhylo' class</td></tr>
+<tr><td style="width: 25%;"><a href="as.multiPhylo.html">as.multiPhylo.list</a></td>
+<td>Convert object to 'multiPhylo' class</td></tr>
+<tr><td style="width: 25%;"><a href="as.multiPhylo.html">as.multiPhylo.phyDat</a></td>
+<td>Convert object to 'multiPhylo' class</td></tr>
+<tr><td style="width: 25%;"><a href="as.multiPhylo.html">as.multiPhylo.phylo</a></td>
+<td>Convert object to 'multiPhylo' class</td></tr>
+<tr><td style="width: 25%;"><a href="as.multiPhylo.html">as.multiPhylo.Splits</a></td>
+<td>Convert object to 'multiPhylo' class</td></tr>
+<tr><td style="width: 25%;"><a href="as.Newick.html">as.Newick</a></td>
+<td>Write a phylogenetic tree in Newick format</td></tr>
+<tr><td style="width: 25%;"><a href="as.Newick.html">as.Newick.list</a></td>
+<td>Write a phylogenetic tree in Newick format</td></tr>
+<tr><td style="width: 25%;"><a href="as.Newick.html">as.Newick.multiPhylo</a></td>
+<td>Write a phylogenetic tree in Newick format</td></tr>
+<tr><td style="width: 25%;"><a href="as.Newick.html">as.Newick.phylo</a></td>
+<td>Write a phylogenetic tree in Newick format</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.phylo.MixedBase</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.phylo.numeric</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.phylo.TreeNumber</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.character</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.integer</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.list</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.logical</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.matrix</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.multiPhylo</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.numeric</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.phylo</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">as.Splits.Splits</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.TreeNumber</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.TreeNumber.character</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.TreeNumber.MixedBase</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.TreeNumber.multiPhylo</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.TreeNumber.phylo</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">as.TreeNumber.TreeNumber</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="GenerateTree.html">BalancedTree</a></td>
+<td>Generate pectinate, balanced or random trees</td></tr>
+<tr><td style="width: 25%;"><a href="brewer.html">brewer</a></td>
+<td>Brewer palettes</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="CharacterInformation.html">CharacterInformation</a></td>
+<td>Character information content</td></tr>
+<tr><td style="width: 25%;"><a href="Cherries.html">Cherries</a></td>
+<td>Count cherries in a tree</td></tr>
+<tr><td style="width: 25%;"><a href="Cherries.html">Cherries.numeric</a></td>
+<td>Count cherries in a tree</td></tr>
+<tr><td style="width: 25%;"><a href="Cherries.html">Cherries.phylo</a></td>
+<td>Count cherries in a tree</td></tr>
+<tr><td style="width: 25%;"><a href="CladeSizes.html">CladeSizes</a></td>
+<td>Clade sizes</td></tr>
+<tr><td style="width: 25%;"><a href="CladisticInfo.html">CladisticInfo</a></td>
+<td>Cladistic information content of a tree</td></tr>
+<tr><td style="width: 25%;"><a href="CladisticInfo.html">CladisticInfo.list</a></td>
+<td>Cladistic information content of a tree</td></tr>
+<tr><td style="width: 25%;"><a href="CladisticInfo.html">CladisticInfo.multiPhylo</a></td>
+<td>Cladistic information content of a tree</td></tr>
+<tr><td style="width: 25%;"><a href="CladisticInfo.html">CladisticInfo.phylo</a></td>
+<td>Cladistic information content of a tree</td></tr>
+<tr><td style="width: 25%;"><a href="CladisticInfo.html">CladisticInfo.Splits</a></td>
+<td>Cladistic information content of a tree</td></tr>
+<tr><td style="width: 25%;"><a href="CladisticInfo.html">CladisticInformation</a></td>
+<td>Cladistic information content of a tree</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable.html">ClusterTable</a></td>
+<td>Convert phylogenetic tree to 'ClusterTable'</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable-methods.html">ClusterTable-methods</a></td>
+<td>S3 methods for 'ClusterTable' objects</td></tr>
+<tr><td style="width: 25%;"><a href="CollapseNode.html">CollapseEdge</a></td>
+<td>Collapse nodes on a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="CollapseNode.html">CollapseNode</a></td>
+<td>Collapse nodes on a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="CollapseNode.html">CollapseNode.phylo</a></td>
+<td>Collapse nodes on a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="Consensus.html">Consensus</a></td>
+<td>Construct consensus trees</td></tr>
+<tr><td style="width: 25%;"><a href="ConsensusWithout.html">ConsensusWithout</a></td>
+<td>Reduced consensus, omitting specified taxa</td></tr>
+<tr><td style="width: 25%;"><a href="ConsensusWithout.html">ConsensusWithout.list</a></td>
+<td>Reduced consensus, omitting specified taxa</td></tr>
+<tr><td style="width: 25%;"><a href="ConsensusWithout.html">ConsensusWithout.multiPhylo</a></td>
+<td>Reduced consensus, omitting specified taxa</td></tr>
+<tr><td style="width: 25%;"><a href="ConsensusWithout.html">ConsensusWithout.phylo</a></td>
+<td>Reduced consensus, omitting specified taxa</td></tr>
+<tr><td style="width: 25%;"><a href="ConstrainedNJ.html">ConstrainedNJ</a></td>
+<td>Constrained neighbour-joining tree</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Decompose.html">Decompose</a></td>
+<td>Decompose additive (ordered) phylogenetic characters</td></tr>
+<tr><td style="width: 25%;"><a href="DescendantEdges.html">DescendantEdges</a></td>
+<td>Identify descendant edges</td></tr>
+<tr><td style="width: 25%;"><a href="DescendantEdges.html">DescendantTips</a></td>
+<td>Identify descendant edges</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">DoubleFactorial</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">DoubleFactorial64</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="doubleFactorials.html">doubleFactorials</a></td>
+<td>Double factorials</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTip</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTip.list</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTip.multiPhylo</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTip.NULL</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTip.phylo</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTip.Splits</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">DropTipPhylo</a></td>
+<td>Drop leaves from tree</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="EdgeAncestry.html">EdgeAncestry</a></td>
+<td>Ancestors of an edge</td></tr>
+<tr><td style="width: 25%;"><a href="EdgeDistances.html">EdgeDistances</a></td>
+<td>Distance between edges</td></tr>
+<tr><td style="width: 25%;"><a href="EdgeRatio.html">EdgeRatio</a></td>
+<td>Ratio of external:internal edge length</td></tr>
+<tr><td style="width: 25%;"><a href="EdgeRatio.html">EdgeRatio.phylo</a></td>
+<td>Ratio of external:internal edge length</td></tr>
+<tr><td style="width: 25%;"><a href="edge_to_splits.html">edge_to_splits</a></td>
+<td>Efficiently convert edge matrix to splits</td></tr>
+<tr><td style="width: 25%;"><a href="EndSentence.html">EndSentence</a></td>
+<td>Add full stop to end of a sentence</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="match.Splits.html">FirstMatchingSplit</a></td>
+<td>Split matching</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="GenerateTree.html">GenerateTree</a></td>
+<td>Generate pectinate, balanced or random trees</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Hamming.html">Hamming</a></td>
+<td>Hamming distance between taxa in a phylogenetic dataset</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="N1Spr.html">IC1Spr</a></td>
+<td>Number of trees one SPR step away</td></tr>
+<tr><td style="width: 25%;"><a href="ImposeConstraint.html">ImposeConstraint</a></td>
+<td>Force a tree to match a constraint</td></tr>
+<tr><td style="width: 25%;"><a href="is.TreeNumber.html">is.TreeNumber</a></td>
+<td>Is an object a 'TreeNumber' object?</td></tr>
+</table>
+
+<h2><a id="J">-- J --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="J1Index.html">J1Index</a></td>
+<td>Robust universal tree balance index</td></tr>
+<tr><td style="width: 25%;"><a href="J1Index.html">JQIndex</a></td>
+<td>Robust universal tree balance index</td></tr>
+</table>
+
+<h2><a id="K">-- K --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTip</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTip.list</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTip.multiPhylo</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTip.NULL</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTip.phylo</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTip.Splits</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTipPostorder</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="DropTip.html">KeepTipPreorder</a></td>
+<td>Drop leaves from tree</td></tr>
+<tr><td style="width: 25%;"><a href="KeptPaths.html">KeptPaths</a></td>
+<td>Paths present in reduced tree</td></tr>
+<tr><td style="width: 25%;"><a href="KeptPaths.html">KeptPaths.data.frame</a></td>
+<td>Paths present in reduced tree</td></tr>
+<tr><td style="width: 25%;"><a href="KeptPaths.html">KeptPaths.matrix</a></td>
+<td>Paths present in reduced tree</td></tr>
+<tr><td style="width: 25%;"><a href="KeptVerts.html">KeptVerts</a></td>
+<td>Identify vertices retained when leaves are dropped</td></tr>
+<tr><td style="width: 25%;"><a href="KeptVerts.html">KeptVerts.numeric</a></td>
+<td>Identify vertices retained when leaves are dropped</td></tr>
+<tr><td style="width: 25%;"><a href="KeptVerts.html">KeptVerts.phylo</a></td>
+<td>Identify vertices retained when leaves are dropped</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="LabelSplits.html">LabelSplits</a></td>
+<td>Label splits</td></tr>
+<tr><td style="width: 25%;"><a href="LeafLabelInterchange.html">LeafLabelInterchange</a></td>
+<td>Leaf label interchange</td></tr>
+<tr><td style="width: 25%;"><a href="ListAncestors.html">ListAncestors</a></td>
+<td>List ancestors</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">LnDoubleFactorial</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">LnDoubleFactorial.int</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">LnRooted</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">LnRooted.int</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="SplitMatchProbability.html">LnSplitMatchProbability</a></td>
+<td>Probability of matching this well</td></tr>
+<tr><td style="width: 25%;"><a href="TreesMatchingSplit.html">LnTreesMatchingSplit</a></td>
+<td>Number of trees matching a bipartition split</td></tr>
+<tr><td style="width: 25%;"><a href="TreesMatchingTree.html">LnTreesMatchingTree</a></td>
+<td>Number of trees containing a tree</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">LnUnrooted</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">LnUnrooted.int</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">LnUnrootedMult</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">LnUnrootedSplits</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="UnrootedTreesMatchingSplit.html">LnUnrootedTreesMatchingSplit</a></td>
+<td>Number of trees consistent with split</td></tr>
+<tr><td style="width: 25%;"><a href="Lobo.data.html">Lobo.data</a></td>
+<td>Data from Zhang et al. 2016</td></tr>
+<tr><td style="width: 25%;"><a href="Lobo.data.html">Lobo.phy</a></td>
+<td>Data from Zhang et al. 2016</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">Log2DoubleFactorial</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">Log2Rooted</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">Log2Rooted.int</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="TreesMatchingSplit.html">Log2TreesMatchingSplit</a></td>
+<td>Number of trees matching a bipartition split</td></tr>
+<tr><td style="width: 25%;"><a href="TreesMatchingTree.html">Log2TreesMatchingTree</a></td>
+<td>Number of trees containing a tree</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">Log2Unrooted</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">Log2Unrooted.int</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">Log2UnrootedMult</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">Log2UnrootedSplits</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="UnrootedTreesMatchingSplit.html">Log2UnrootedTreesMatchingSplit</a></td>
+<td>Number of trees consistent with split</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">LogDoubleFactorial</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="DoubleFactorial.html">LogDoubleFactorial.int</a></td>
+<td>Double factorial</td></tr>
+<tr><td style="width: 25%;"><a href="logDoubleFactorials.html">logDoubleFactorials</a></td>
+<td>Natural logarithms of double factorials</td></tr>
+<tr><td style="width: 25%;"><a href="LongBranch.html">LongBranch</a></td>
+<td>Identify taxa with long branches</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="MakeTreeBinary.html">MakeTreeBinary</a></td>
+<td>Generate binary tree by collapsing polytomies</td></tr>
+<tr><td style="width: 25%;"><a href="ConsensusWithout.html">MarkMissing</a></td>
+<td>Reduced consensus, omitting specified taxa</td></tr>
+<tr><td style="width: 25%;"><a href="match.Splits.html">match</a></td>
+<td>Split matching</td></tr>
+<tr><td style="width: 25%;"><a href="match.Splits.html">match-method</a></td>
+<td>Split matching</td></tr>
+<tr><td style="width: 25%;"><a href="match.multiPhylo.html">match-method</a></td>
+<td>Tree matching</td></tr>
+<tr><td style="width: 25%;"><a href="MatchEdges.html">MatchEdges</a></td>
+<td>Match nodes and edges between trees</td></tr>
+<tr><td style="width: 25%;"><a href="MatchEdges.html">MatchNodes</a></td>
+<td>Match nodes and edges between trees</td></tr>
+<tr><td style="width: 25%;"><a href="MatchStrings.html">MatchStrings</a></td>
+<td>Check for mismatch between character vectors</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixToPhyDat.html">MatrixToPhyDat</a></td>
+<td>Convert between matrices and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="MorphoBankDecode.html">MorphoBankDecode</a></td>
+<td>Decode MorphoBank text</td></tr>
+<tr><td style="width: 25%;"><a href="ReadMrBayesTrees.html">MrBayesTrees</a></td>
+<td>Read posterior tree sample produced by MrBayes</td></tr>
+<tr><td style="width: 25%;"><a href="MRCA.html">MRCA</a></td>
+<td>Most recent common ancestor</td></tr>
+<tr><td style="width: 25%;"><a href="MSTEdges.html">MSTEdges</a></td>
+<td>Minimum spanning tree</td></tr>
+<tr><td style="width: 25%;"><a href="MSTEdges.html">MSTLength</a></td>
+<td>Minimum spanning tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitInformation.html">MultiSplitInformation</a></td>
+<td>Phylogenetic information content of splitting leaves into two partitions</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="N1Spr.html">N1Spr</a></td>
+<td>Number of trees one SPR step away</td></tr>
+<tr><td style="width: 25%;"><a href="NDescendants.html">NDescendants</a></td>
+<td>Count descendants for each node in a tree</td></tr>
+<tr><td style="width: 25%;"><a href="NewickTree.html">NewickTree</a></td>
+<td>Write Newick Tree</td></tr>
+<tr><td style="width: 25%;"><a href="NJTree.html">NJTree</a></td>
+<td>Generate a neighbour joining tree</td></tr>
+<tr><td style="width: 25%;"><a href="NodeDepth.html">NodeDepth</a></td>
+<td>Distance of each node from tree exterior</td></tr>
+<tr><td style="width: 25%;"><a href="NodeNumbers.html">NodeNumbers</a></td>
+<td>Numeric index of each node in a tree 'NodeNumbers()' returns a sequence corresponding to the nodes in a tree</td></tr>
+<tr><td style="width: 25%;"><a href="NodeOrder.html">NodeOrder</a></td>
+<td>Number of edges incident to each node in a tree</td></tr>
+<tr><td style="width: 25%;"><a href="NPartitionPairs.html">NPartitionPairs</a></td>
+<td>Distributions of tips consistent with a partition pair</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NPartitions</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">NRooted</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">NRooted64</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="nRootedShapes.html">nRootedShapes</a></td>
+<td>Number of rooted / unrooted tree shapes</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.character</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.ClusterTable</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.list</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.multiPhylo</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.NULL</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.numeric</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.phylo</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NSplits.html">NSplits.Splits</a></td>
+<td>Number of distinct splits</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.default</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.list</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.matrix</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.multiPhylo</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.phyDat</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.phylo</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NTip.html">NTip.Splits</a></td>
+<td>Number of leaves in a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">NUnrooted</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">NUnrooted64</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">NUnrootedMult</a></td>
+<td>Number of trees</td></tr>
+<tr><td style="width: 25%;"><a href="nRootedShapes.html">nUnrootedShapes</a></td>
+<td>Number of rooted / unrooted tree shapes</td></tr>
+<tr><td style="width: 25%;"><a href="NRooted.html">NUnrootedSplits</a></td>
+<td>Number of trees</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="PairwiseDistances.html">PairwiseDistances</a></td>
+<td>Distances between each pair of trees</td></tr>
+<tr><td style="width: 25%;"><a href="PathLengths.html">PathLengths</a></td>
+<td>Calculate length of paths between each pair of vertices within tree</td></tr>
+<tr><td style="width: 25%;"><a href="GenerateTree.html">PectinateTree</a></td>
+<td>Generate pectinate, balanced or random trees</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">PhyDat</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="MatrixToPhyDat.html">PhyDatToMatrix</a></td>
+<td>Convert between matrices and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="PhyToString.html">PhyDatToString</a></td>
+<td>Convert between strings and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="PhyToString.html">PhydatToString</a></td>
+<td>Convert between strings and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="PhyToString.html">PhyToString</a></td>
+<td>Convert between strings and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="PolarizeSplits.html">PolarizeSplits</a></td>
+<td>Polarize splits on a single taxon</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable-methods.html">print.ClusterTable</a></td>
+<td>S3 methods for 'ClusterTable' objects</td></tr>
+<tr><td style="width: 25%;"><a href="print.TreeNumber.html">print.TreeNumber</a></td>
+<td>Print 'TreeNumber' object</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="GenerateTree.html">RandomTree</a></td>
+<td>Generate pectinate, balanced or random trees</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadAsPhyDat</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadCharacters</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadMrBayesTrees.html">ReadMrBayes</a></td>
+<td>Read posterior tree sample produced by MrBayes</td></tr>
+<tr><td style="width: 25%;"><a href="ReadMrBayesTrees.html">ReadMrBayesTrees</a></td>
+<td>Read posterior tree sample produced by MrBayes</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadNotes</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadTNTAsPhyDat</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadTntAsPhyDat</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadTNTCharacters</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadCharacters.html">ReadTntCharacters</a></td>
+<td>Read phylogenetic characters from file</td></tr>
+<tr><td style="width: 25%;"><a href="ReadTntTree.html">ReadTntTree</a></td>
+<td>Parse TNT Tree</td></tr>
+<tr><td style="width: 25%;"><a href="Renumber.html">Renumber</a></td>
+<td>Renumber a tree's nodes and tips</td></tr>
+<tr><td style="width: 25%;"><a href="RenumberTips.html">RenumberTips</a></td>
+<td>Renumber a tree's tips</td></tr>
+<tr><td style="width: 25%;"><a href="RenumberTips.html">RenumberTips.list</a></td>
+<td>Renumber a tree's tips</td></tr>
+<tr><td style="width: 25%;"><a href="RenumberTips.html">RenumberTips.multiPhylo</a></td>
+<td>Renumber a tree's tips</td></tr>
+<tr><td style="width: 25%;"><a href="RenumberTips.html">RenumberTips.NULL</a></td>
+<td>Renumber a tree's tips</td></tr>
+<tr><td style="width: 25%;"><a href="RenumberTips.html">RenumberTips.phylo</a></td>
+<td>Renumber a tree's tips</td></tr>
+<tr><td style="width: 25%;"><a href="RenumberTips.html">RenumberTips.Splits</a></td>
+<td>Renumber a tree's tips</td></tr>
+<tr><td style="width: 25%;"><a href="sapply64.html">replicate64</a></td>
+<td>Apply a function that returns 64-bit integers over a list or vector</td></tr>
+<tr><td style="width: 25%;"><a href="Reweight.html">Reweight</a></td>
+<td>Reweight phylogenetic characters</td></tr>
+<tr><td style="width: 25%;"><a href="RightmostCharacter.html">RightmostCharacter</a></td>
+<td>Rightmost character of string</td></tr>
+<tr><td style="width: 25%;"><a href="RoguePlot.html">RoguePlot</a></td>
+<td>Visualize position of rogue taxa</td></tr>
+<tr><td style="width: 25%;"><a href="RootNode.html">RootNode</a></td>
+<td>Which node is a tree's root?</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">RootNodeDist</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">RootNodeDistance</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">RootNodeDistance.character</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">RootNodeDistance.numeric</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="RootTree.html">RootOnNode</a></td>
+<td>Root or unroot a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="RootTree.html">RootTree</a></td>
+<td>Root or unroot a phylogenetic tree</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="SampleOne.html">SampleOne</a></td>
+<td>Select element at random</td></tr>
+<tr><td style="width: 25%;"><a href="sapply64.html">sapply64</a></td>
+<td>Apply a function that returns 64-bit integers over a list or vector</td></tr>
+<tr><td style="width: 25%;"><a href="TrivialTree.html">SingleTaxonTree</a></td>
+<td>Generate trivial trees</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">SisterSize</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">SisterSize.character</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">SisterSize.numeric</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">sort.multiPhylo</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+<tr><td style="width: 25%;"><a href="SortTree.html">SortTree</a></td>
+<td>Sort tree</td></tr>
+<tr><td style="width: 25%;"><a href="SortTree.html">SortTree.list</a></td>
+<td>Sort tree</td></tr>
+<tr><td style="width: 25%;"><a href="SortTree.html">SortTree.multiPhylo</a></td>
+<td>Sort tree</td></tr>
+<tr><td style="width: 25%;"><a href="SortTree.html">SortTree.phylo</a></td>
+<td>Sort tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitConsistent.html">SplitConflicts</a></td>
+<td>Identify consistent / conflicting splits</td></tr>
+<tr><td style="width: 25%;"><a href="SplitConsistent.html">SplitConsistent</a></td>
+<td>Identify consistent / conflicting splits</td></tr>
+<tr><td style="width: 25%;"><a href="SplitFrequency.html">SplitFrequency</a></td>
+<td>Frequency of splits</td></tr>
+<tr><td style="width: 25%;"><a href="TipsInSplits.html">SplitImbalance</a></td>
+<td>Tips contained within splits</td></tr>
+<tr><td style="width: 25%;"><a href="TipsInSplits.html">SplitImbalance.phylo</a></td>
+<td>Tips contained within splits</td></tr>
+<tr><td style="width: 25%;"><a href="TipsInSplits.html">SplitImbalance.Splits</a></td>
+<td>Tips contained within splits</td></tr>
+<tr><td style="width: 25%;"><a href="SplitInformation.html">SplitInformation</a></td>
+<td>Phylogenetic information content of splitting leaves into two partitions</td></tr>
+<tr><td style="width: 25%;"><a href="SplitInformation.html">SplitInformation.numeric</a></td>
+<td>Phylogenetic information content of splitting leaves into two partitions</td></tr>
+<tr><td style="width: 25%;"><a href="SplitInformation.html">SplitInformation.phylo</a></td>
+<td>Phylogenetic information content of splitting leaves into two partitions</td></tr>
+<tr><td style="width: 25%;"><a href="SplitInformation.html">SplitInformation.Splits</a></td>
+<td>Phylogenetic information content of splitting leaves into two partitions</td></tr>
+<tr><td style="width: 25%;"><a href="SplitMatchProbability.html">SplitMatchProbability</a></td>
+<td>Probability of matching this well</td></tr>
+<tr><td style="width: 25%;"><a href="Splits.html">Splits</a></td>
+<td>Convert object to 'Splits'</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.default</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.list</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.multiPhylo</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.NULL</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.numeric</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.phylo</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="SplitsInBinaryTree.html">SplitsInBinaryTree.Splits</a></td>
+<td>Maximum splits in an _n_-leaf tree</td></tr>
+<tr><td style="width: 25%;"><a href="GenerateTree.html">StarTree</a></td>
+<td>Generate pectinate, balanced or random trees</td></tr>
+<tr><td style="width: 25%;"><a href="Treeness.html">Stemminess</a></td>
+<td>Relative length of internal branches</td></tr>
+<tr><td style="width: 25%;"><a href="Stemwardness.html">Stemwardness</a></td>
+<td>"Stemwardness" of a leaf</td></tr>
+<tr><td style="width: 25%;"><a href="PhyToString.html">StringToPhyDat</a></td>
+<td>Convert between strings and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="PhyToString.html">StringToPhydat</a></td>
+<td>Convert between strings and 'phyDat' objects</td></tr>
+<tr><td style="width: 25%;"><a href="Subsplit.html">Subsplit</a></td>
+<td>Subset of a split on fewer leaves</td></tr>
+<tr><td style="width: 25%;"><a href="Subtree.html">Subtree</a></td>
+<td>Extract a subtree</td></tr>
+<tr><td style="width: 25%;"><a href="ClusterTable-methods.html">summary.ClusterTable</a></td>
+<td>S3 methods for 'ClusterTable' objects</td></tr>
+<tr><td style="width: 25%;"><a href="SupportColour.html">SupportColor</a></td>
+<td>Colour for node support value</td></tr>
+<tr><td style="width: 25%;"><a href="SupportColour.html">SupportColour</a></td>
+<td>Colour for node support value</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="TotalCopheneticIndex.html">TCIContext</a></td>
+<td>Total Cophenetic Index</td></tr>
+<tr><td style="width: 25%;"><a href="TotalCopheneticIndex.html">TCIContext.numeric</a></td>
+<td>Total Cophenetic Index</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.character</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.default</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.list</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.logical</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.matrix</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.MixedBase</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.multiPhylo</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.numeric</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.phyDat</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.phylo</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.Splits</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipLabels.html">TipLabels.TreeNumber</a></td>
+<td>Extract tip labels</td></tr>
+<tr><td style="width: 25%;"><a href="TipsInSplits.html">TipsInSplits</a></td>
+<td>Tips contained within splits</td></tr>
+<tr><td style="width: 25%;"><a href="TipsInSplits.html">TipsInSplits.phylo</a></td>
+<td>Tips contained within splits</td></tr>
+<tr><td style="width: 25%;"><a href="TipsInSplits.html">TipsInSplits.Splits</a></td>
+<td>Tips contained within splits</td></tr>
+<tr><td style="width: 25%;"><a href="TipTimedTree.html">TipTimedTree</a></td>
+<td>Display time-calibrated tree using tip information only</td></tr>
+<tr><td style="width: 25%;"><a href="ReadTntTree.html">TNTText2Tree</a></td>
+<td>Parse TNT Tree</td></tr>
+<tr><td style="width: 25%;"><a href="ReadTntTree.html">TntText2Tree</a></td>
+<td>Parse TNT Tree</td></tr>
+<tr><td style="width: 25%;"><a href="TopologyOnly.html">TopologyOnly</a></td>
+<td>Remove metadata from trees</td></tr>
+<tr><td style="width: 25%;"><a href="TotalCopheneticIndex.html">TotalCopheneticIndex</a></td>
+<td>Total Cophenetic Index</td></tr>
+<tr><td style="width: 25%;"><a href="TreeIsRooted.html">TreeIsRooted</a></td>
+<td>Is tree rooted?</td></tr>
+<tr><td style="width: 25%;"><a href="Treeness.html">Treeness</a></td>
+<td>Relative length of internal branches</td></tr>
+<tr><td style="width: 25%;"><a href="TreeNumber.html">TreeNumber</a></td>
+<td>Unique integer indices for bifurcating tree topologies</td></tr>
+<tr><td style="width: 25%;"><a href="TreesMatchingSplit.html">TreesMatchingSplit</a></td>
+<td>Number of trees matching a bipartition split</td></tr>
+<tr><td style="width: 25%;"><a href="TreesMatchingTree.html">TreesMatchingTree</a></td>
+<td>Number of trees containing a tree</td></tr>
+<tr><td style="width: 25%;"><a href="TrivialSplits.html">TrivialSplits</a></td>
+<td>Identify and remove trivial splits</td></tr>
+<tr><td style="width: 25%;"><a href="TrivialTree.html">TrivialTree</a></td>
+<td>Generate trivial trees</td></tr>
+</table>
+
+<h2><a id="U">-- U --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Unquote.html">Unquote</a></td>
+<td>Remove quotation marks from a string</td></tr>
+<tr><td style="width: 25%;"><a href="UnrootedTreesMatchingSplit.html">UnrootedTreesMatchingSplit</a></td>
+<td>Number of trees consistent with split</td></tr>
+<tr><td style="width: 25%;"><a href="RootTree.html">UnrootTree</a></td>
+<td>Root or unroot a phylogenetic tree</td></tr>
+<tr><td style="width: 25%;"><a href="UnshiftTree.html">UnshiftTree</a></td>
+<td>Add tree to start of list</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="sapply64.html">vapply64</a></td>
+<td>Apply a function that returns 64-bit integers over a list or vector</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="TrivialSplits.html">WithoutTrivialSplits</a></td>
+<td>Identify and remove trivial splits</td></tr>
+<tr><td style="width: 25%;"><a href="WriteTntCharacters.html">WriteTntCharacters</a></td>
+<td>Write morphological character matrix to TNT file</td></tr>
+<tr><td style="width: 25%;"><a href="WriteTntCharacters.html">WriteTntCharacters.matrix</a></td>
+<td>Write morphological character matrix to TNT file</td></tr>
+<tr><td style="width: 25%;"><a href="WriteTntCharacters.html">WriteTntCharacters.phyDat</a></td>
+<td>Write morphological character matrix to TNT file</td></tr>
+</table>
+
+<h2><a id="X">-- X --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="xor.html">xor</a></td>
+<td>Exclusive OR operation</td></tr>
+<tr><td style="width: 25%;"><a href="xor.html">xor-method</a></td>
+<td>Exclusive OR operation</td></tr>
+</table>
+
+<h2><a id="Y">-- Y --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="GenerateTree.html">YuleTree</a></td>
+<td>Generate pectinate, balanced or random trees</td></tr>
+</table>
+
+<h2><a id="Z">-- Z --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="TrivialTree.html">ZeroTaxonTree</a></td>
+<td>Generate trivial trees</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="match.Splits.html">%in%-method</a></td>
+<td>Split matching</td></tr>
+<tr><td style="width: 25%;"><a href="match.multiPhylo.html">%in%-method</a></td>
+<td>Tree matching</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">&lt;.MixedBase</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">&lt;.phylo</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">==.MixedBase</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">==.phylo</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">&gt;.MixedBase</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+<tr><td style="width: 25%;"><a href="sort.multiPhylo.html">&gt;.phylo</a></td>
+<td>Sort a list of phylogenetic trees</td></tr>
+</table>
+</div></body></html>

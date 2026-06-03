@@ -1,0 +1,4335 @@
+		CHANGES IN APE VERSION 5.8-1
+
+
+NEW FEATURES
+
+    o write.nexus() has a new option, digitis = 10, similar to the one
+      with the same name in write.tree(). The help page of the latter
+      has been clarified (see PR #130 on GitHub).
+
+    o kronoviz() has two new options, 'direction' and 'side', to add
+      more flexibbility to the plot.
+
+
+BUG FIXES
+
+    o plot.phylo() shifted the coordinates when the tree was plotted
+      left- or downwards (see PR #119 on GitHub).
+
+    o Newick strings with a single tip and multiple nodes were not
+      correctly parsed. Also, if a root edge was present it was not
+      correctly decoded (see issue #124 on GitHub).
+
+    o dist.nodes() returned a (meaningless) result for trees with no
+      branch lengths (sometimes a segfault occurred). This function
+      has now the option 'fail.if.no.length = FALSE' so that branch
+      lengths, if absent in the tree, are fixed to one (with a
+      warning). An error is returned if this option is set to FALSE.
+
+
+OTHER CHANGES
+
+    o Plotting circular trees has been improved (see PR #129 on GitHub).
+
+    o axisPhylo(): the new default is axisPhylo(side = NULL) instead
+      of axisPhylo(side = 1).
+
+
+
+		CHANGES IN APE VERSION 5.8
+
+
+NEW FEATURES
+
+    o dist.topo() has a new option 'mc.cores'. With the default PH85
+      distance, the gain of using several cores is visible with 200+
+      trees. The internal code for the score distance has been
+      improved and is twice faster with a single core, and 4-5 times
+      faster with mc.cores = 2.
+
+    o keep.tip() gains a '...' argument which is passed to drop.tip().
+      The behaviour of the latter is changed so that node labels, if
+      available, are used to create new tip labels when subtree = TRUE
+      (see PR #90 on GitHub).
+
+    o nj() can now handle distances stored in long vectors. There was
+      previously an implicit limit to 46,341 observations (see PR #97
+      on GitHub).
+
+    o del.gaps(), del.colgapsonly(), and del.rowgapsonly() now accepts
+      objects of class "AAbin". Besides, the class of the input object
+      is always respected (it used to be "DNAbin" only even when it
+      had several elements).
+
+    o makeNodeLabel() is now generic with methods for the "phylo" and
+      "multiPhylo" classes.
+
+    o unroot() gains two options, 'collapse.singles' and
+      'keep.root.edge', to handle some complicated situations (see
+      issue #103 on GitHub).
+
+    o read.GenBank() has a new argument 'type' to download AA
+      sequences. The default is type = "DNA", and the other choice is
+      type = "AA".
+
+
+BUG FIXES
+
+    o rtt() was fixed when dates include NAs (issue #73 on GitHub).
+
+    o njs(), bionj(), bionjs(), fastme.bal(), and fastme.ols() now
+      check that there are at least three observations in the distance
+      matrix (issue #84 on GitHub).
+
+    o nodelabels(, frame = "circle") used to ignore the argument
+      'adj'. This is fixed (issue #85 on GitHub).
+
+    o write.tree() ignored tree names. This bug was introduced in ape
+      5.7 (see issue #101 on GitHub).
+
+    o read.tree() now reads correctly trees with many nodes but a
+      single tip such as "(());" (see issue #104 on GitHub).
+
+    o bitsplits() failed with large trees. There are now checks on
+      memory requirements; some explanations have been added in the
+      help page.
+
+    o comparePhylo() failed with two large trees. This is fixed.
+
+
+OTHER CHANGES
+
+    o .uncompressTipLabel() now returns an object of the same class
+      than the input object (previously the returned object was always
+      of class "multiPhylo").
+
+    o The help page of is.binary() has been clarified that branch
+      lengths are ignored (issue #83 on GitHub).
+
+    o dist.nodes() has an improved internal C code with unlimited tree
+      size. The code is three times faster with small trees; twice
+      faster with ~1000 tips (the gain is less with bigger trees).
+
+    o ace() now uses node labels, if available, in the output.
+
+    o comparePhylo() now restores the graphical window in its previous
+      state (i.e., after calling layout() if plot = TRUE).
+
+    o read.tree() now gives a warning (still returning NULL) if there
+      is (are) no semicolon(s) [end of tree(s)] in the Newick string.
+
+    o write.tree() now gives a warning if the length of the node
+      labels does not match the number of nodes given by '$Nnode'.
+
+
+
+		CHANGES IN APE VERSION 5.7-1
+
+
+BUG FIXES
+
+    o Some very unbalanced trees resulted in a segfault (see issue #70
+      on GitHub).
+
+
+OTHER CHANGES
+
+    o ape 5.7 introduced an implicit dependence on R >= 4.1. This has
+      been corrected and this version should work with R >= 3.4 (and
+      certainly with R >= 3.2).
+
+    o All examples should now write files in the TMP directory (some
+      still used to do this in the user's working directory).
+
+
+
+		CHANGES IN APE VERSION 5.7
+
+
+NEW FEATURES
+
+    o The new function muscle5 calls MUSCLE5. There are two other new
+      functions that depend on this program, efastats and letterconf,
+      to compute summaries for a set of alternative alignments and
+      display the confidence in each site in HTML, respectively.
+
+    o print.LargeNumber() gains the options 'latex' (FALSE by default)
+      and 'digits' (depends on 'latex').
+
+    o drop.tip() and keep.tip() are now generic functions with methods
+      for the classes "phylo" and "multiPhylo".
+
+
+BUG FIXES
+
+    o A bug was fixed in multi2di() and di2multi() for compressed
+      "multiPhylo" objects causing an error if the object had to be
+      reordered internally (see PR #51 on GitHub).
+
+    o unroot() now accepts different "order" of the "phylo" object
+      (see PR #52 on GitHub).
+
+    o write.tree(), ladderize(), and balance() failed with very
+      unbalanced trees (issues #53 and #54 on GitHub).
+
+    o PGLS models used a wrong ordering of data if 'species' was a
+      factor in corBrownian(, form = ~species) or other correlation
+      structure functions.
+
+    o A bug was fixed in the calculations of the variance of the TN93
+      distance (dist.dna).
+
+    o consensus() did not use postprocess.prop.part() and might
+      scramble nodelabels (see PR #65 on GitHub).
+
+    o is.binary.phylo() used to return TRUE with trees such as
+      ((a:1):1,b:2,c:2):1;. This test now conforms with what is
+      written in the documentation.
+
+
+OTHER CHANGES
+
+    o reconstruct() gains the options 'low_alpha = 0.0001' and
+      'low_alpha = 1' to allow estimation of values of alpha greater
+      than 1.
+
+    o src/me.c and src/me.h are now OK with -Wstrict-prototypes flag.
+
+    o makeNodeLabel(method = "md5sum") now uses the function digest
+      from the package of the same name. The package tools has been
+      removed from the Imports list.
+
+
+
+		CHANGES IN APE VERSION 5.6-2
+
+
+NEW FEATURES
+
+    o plot.phylo() can now plot "tidy" trees with the option type =
+      "t[idy]" (see: van der Ploeg, 2014, Drawing non-layered tidy
+      trees in linear time. J. Software: Practice and Experience
+      44:1467).
+
+
+BUG FIXES
+
+    o is.monophyletic() didn't work correctly with duplicated labels
+      (issue #50 on GH).
+
+    o birthdeath()'s 'if' conditions should be now all of length 1.
+
+
+
+		CHANGES IN APE VERSION 5.6-1
+
+
+BUG FIXES
+
+    o axisPhylo() misplaced the scale with some trees drawn with
+      plot(type = "fan").
+
+    o The internal code of bitsplits() has been improved and can now
+      handle all types of unrooted trees.
+
+
+
+		CHANGES IN APE VERSION 5.6
+
+
+NEW FEATURES
+
+    o The new generic function degree returns the degrees of all nodes
+      in a tree or network. There are methods for "phylo" and "evonet"
+      objects.
+
+    o The new function solveAmbiguousBases replaces R, Y, W, ... by A,
+      G, C, or T using columnwise base frequencies.
+
+    o There is a new method as.phylo.default() for any object
+      inheriting the class "phylo".
+
+    o read.dna() and read.FASTA() can now read gzipped files.
+
+    o where() now works also with objects of class "AAbin". 'NULL' is
+      now returned, instead of an error, if the sequence is shorter
+      than the searched pattern (useful with lists with some short
+      sequences; issue #28 on GH).
+
+    o comparePhylo() has a new '...' argument for options passed to
+      plot.phylo(), and two new options: 'commons' to specify whether
+      to show the splits in common, and 'location' for the legend (PRs
+      #41 and #42 on GH).
+
+    o The code of dnds() has been rewritten which fixes some minor
+      bugs, is more robust, and gains the options 'details' to print
+      the numbers of TS and TV for each degeneracy category, and
+      'return.category' to return the degeneracy categories of the
+      original data (see ?dnds for details).
+
+
+BUG FIXES
+
+    o A bug was introduced in read.tree() in ape 5.5 when reading
+      trees with quoted labels (issue #14 on GH).
+
+    o nj() did not duplicate the distances if originally stored in a
+      "dist" object (issue #12 on GH).
+
+    o The double-centered matrix computed by pcoa() is now more
+      strictly symmetric, thus avoiding complex eigenvalues in some
+      cases (issue #17 on GH).
+
+    o chronos() failed with discrete models when branch lengths were
+      extremely heterogeneous leading to badly initial rate values.
+
+    o multi2di() sometimes resulted in an ultrametric tree to become
+      non-ultrametric (see issue #23 on GH).
+
+    o read.nexus() failed to read correctly files with labels
+      containing spaces in the TRANSLATION bloc (PR #29 on GH).
+
+    o ace(, type = "d") now woks with n = 2.
+
+    o drop.tip() used to remove the root edge of a tree if the option
+      'root.edge = 0' was set. Since the latter is the default, the
+      side-effect was to possibly turn a rooted tree into an unrooted
+      one (see issue #32 on GH). The root edge is now removed only if
+      the option 'rooted = TRUE' is used. The help page has been
+      clarified on this point.
+
+    o as.hclust.phylo() now returns the correct order of leaves so
+      that plot() does not cross lines (PR #33 on GH).
+
+    o unique.multiPhylo() failed with a single tree in the list or
+      with an empty list (PR #38 on GH).
+
+    o trans() failed with a matrix with a single codon. A similar bug
+      affected as.character.AAbin().
+
+    o rTraitDisc() now uses expm::expm unless this package is not
+      installed in which case ape::matexpo is used.
+
+
+OTHER CHANGES
+
+    o multi2di() is faster as it avoids calling which() repeatedly.
+
+    o dist.nodes() now gives an error with an explicit error message
+      if the tree is too large (i.e., more than 46,340 tips + nodes).
+
+    o The default values of the options 'edge.color', 'edge.width',
+      and 'edge.lty' of plot.phylo() are now taken from the graphical
+      parameters: par("fg"), par("lwd"), and par("lty"), respectively.
+
+    o The visual aspect of circular trees (type = "f" in plot.phylo)
+      has been improved.
+
+    o ace() now accepts trees with some branch lengths equal to zero.
+
+    o write.tree() now accepts simple lists of trees.
+
+    o chronos(, model = "clock") is a short-cut to specifying model =
+      "discrete" and a single category of rates in the settings.
+
+
+
+		CHANGES IN APE VERSION 5.5
+
+
+NEW FEATURES
+
+    o The new functions rtopology and rmtopology generate random trees
+      with equal frequencies of *labelled* topologies. rtree(,
+      equiprob = TRUE) now gives equal frequencies of *unlabelled*
+      topologies. These features are described in the new vignette
+      "RandomTopologies".
+
+    o dist.dna()'s internal code has been improved: it now accepts up
+      to 2.1 billion sequences each up to 2.1 Gb (see CHANGES in APE
+      VERSION 4.0 below).
+
+    o nj()'s internal code has been improved and is slightly more
+      efficient: combined with the improved dist.dna(), boot.phylo()
+      with an NJ tree is now about 10% faster.
+
+    o howmanytrees() can now compute (approximately) the number of
+      binary, (un)rooted, labelled topologies beyond the standard
+      resolution of numeric values (i.e., > 10^308) thanks to the new
+      utility function LargeNumber.
+
+
+BUG FIXES
+
+    o bind.tree() sometimes returned badly conformed trees.
+
+    o write.FASTA() made R crash if the output file was in a
+      non-existing directory (thanks to Richel Bilderbeek for the
+      report).
+
+    o ltt.plot.coords() now handles correctly trees with singleton
+      nodes. This also fixes functions calling this one (e.g.,
+      ltt.plot).
+
+    o estimate.dates() now works with non-bifurcating trees.
+
+    o root(phy, outgroup, resolve.root = TRUE) failed to place
+      correctly the new root if 'outgroup' was of longer two or
+      more and paraphyletic (although monophyletic once 'phy' was
+      unrooted).
+
+    o pcoa() failed when a single axis was returned.
+
+
+OTHER CHANGES
+
+    o node- and tiplabels(pie = ) now accept data frames (or a
+      single-column matrix/data frame).
+
+    o boot.phylo() now returns integer(0) with a warning if there are
+      less than 4 rows in the data (argument x).
+      In case of unrooted trees, the first support value is now NA
+      (it used to be B, the number of bootstrap replications).
+
+    o prop.part() and is now faster thanks to some internal
+      improvements. This also affects dist.topo() which is twice
+      faster for small trees, and up to 30 times faster for trees with
+      1000 tips.
+
+    o bitsplits() now gives an error with rooted trees
+
+
+
+		CHANGES IN APE VERSION 5.4-1
+
+
+NEW FEATURES
+
+    o rtree() gains several improvements:
+      * The new option 'equiprob = TRUE' generates all topologies in
+        equal proportions; 'equiprob = FALSE' generates unbalanced
+        topologies in higher proportions (as in previous versions of
+        ape). The latter is the default because several packages use
+        rtree() with set.seed() in their examples.
+      * Rooted trees with n = 1 tip can now be simulated.
+      * Vector of tip labels supplied by the user are now checked and
+        a warning is issued if its length does not match 'n'.
+      * The internals of the code have been rewritten and are now more
+	efficient (particularly if 'equiprob = TRUE').
+
+    o multi2di() gains an option 'equiprob' similar to rtree().
+
+    o The new function nexus2DNAbin is a helper to convert outputs
+      from read.nexus.data().
+
+
+BUG FIXES
+
+    o is.monophyletic() might return the wrong answer if the tips were
+      given as labels not alphabetically sorted.
+
+    o boot.phylo() returned bootstrap values all equal to 0.
+
+
+
+		CHANGES IN APE VERSION 5.4
+
+
+NEW FEATURES
+
+    o The new function getAnnotationsGenBank reads annotations from
+      GenBank and returns them in data frame(s).
+
+    o read.GenBank() gains two options: 'chunk.size' to set the number
+      of sequences downloaded together, and 'quiet' to display the
+      download progress (will also display the name of the temporary
+      file where the sequences were saved). The options 'gene.names'
+      has been removed.
+
+    o The new convenience function latag2n (leading and traling
+      alignment gaps to N) substitutes leading and trailing gaps in
+      DNA alignments into N's. The gaps in the middle of the sequences
+      are left unchanged.
+
+    o There are new cbind() and rbind() methods for the class "AAbin".
+
+    o seg.sites() gains two options: 'strict' and 'trailingGapsAsN' to
+      give more flexibility in the presence of ambiguous bases and/or
+      alignment gaps.
+
+    o read.nexus.data() now handles polymorphisms in discrete
+      characters (however with no distinction between ambiguous or
+      true polymorphic characters).
+
+    o trans() now supports genetic codes 1 to 6 (dnds() still supports
+      only genetic codes 1 and 2).
+
+    o chronos() has been improved with contributions by Santiago
+      Claramunt:
+      * Some errors were fixed in the calculation of the log-
+        likelihood of the "discrete" models with more than one
+        category of rates.
+      * Calculations are now faster with "discrete" models.
+      * A general convergence diagnostic has been added in the output.
+
+      Some other contributions by Guillaume Louvel:
+      * Improved algorithm to find initial dates.
+      * There is now a parameter 'epsilon' to check convergence.
+      * The number of iterations is output in the final results.
+
+    o Phylogenetic correlation structures (functions with class
+      "corPhyl") can now specify grouping factors via the arguments
+      'form' and 'covariates' (which are no more ignored; see examples
+      in ?ape::corClasses). This can be used, for instance, to specify
+      species names to match the tree with the covariates.
+
+
+BUG FIXES
+
+    o A bug was fixed in pcoa() (thanks to Jesse Connell).
+
+    o A bug was fixed in countBipartitions().
+
+    o unroot() did not handle node labels correctly.
+
+    o label2table() now keeps all levels in labels (not only the first
+      three ones.
+
+    o A bug was fixed in drop.tip(, root.edge = ).
+
+    o rphylo() failed with time-dependent parameters.
+
+    o is.monophyletic() now returns an error if some labels are not
+      found in the tree (thanks to David Winter for the fix).
+
+    o read.tree() and read.nexus() crashed R if the numbers of left
+      and right parentheses in a Newick string were not equal: this is
+      fixed and an error is now returned.
+
+
+OTHER CHANGES
+
+    o The option 'tbr' in fastme.bal() has been disabled.
+
+
+
+		CHANGES IN APE VERSION 5.3
+
+
+NEW FEATURES
+
+    o The new function dnds calculates pairwise dN/dS ratios.
+
+    o alview() has a new option 'showpos' to display the positions of
+      the sites (can be a subset of these). Previously, only the
+      position of the last site was printed.
+
+
+BUG FIXES
+
+    o mantel.test() returned NA if the second matrix had its diagonal
+      with at least one NA.
+
+    o Several bugs were fixed in plot.popsize(). It gains the options
+      'xlab', 'ylab', and 'log' for more flexible plotting.
+
+
+OTHER CHANGES
+
+    o NAMESPACE has now explicit exports. The present version has 325
+      exported objects. Most internal functions are not exported, as
+      well as several methods.
+
+    o checkLabel() is now documented.
+
+    o The running times of write.tree() now scales with N (number of
+      trees) instead of N^2: writing 2 million trees with 9 tips now
+      takes 8 mins instead of 28 hrs with ape 5.2.
+
+
+
+		CHANGES IN APE VERSION 5.2
+
+
+NEW FEATURES
+
+    o The new function keep.tip does the opposite operation than
+      drop.tip().
+
+    o The new function rDNAbin generates random DNA sequences.
+
+    o The new generic function updateLabel changes some (or all)
+      labels in an object giving two vectors 'old' and 'new' of
+      labels. There are methods for the following classes: DNAbin,
+      AAbin, phylo, evonet, data.frame, and matrix.
+
+    o read.gff() has a new option 'GFF3' (TRUE by default) to set
+      correctly the column names of GFF2 (aka GTF) files.
+
+    o Xplor() has the new option from = "HOME" which is passed to
+      Xplorefiles().
+
+    o ace() can take state uncertainty for discrete characters into
+      account: this should be coded with R's NA.
+
+    o plotTreeTime() has a new option, color (TRUE by default).
+
+    o as.phylo.formula() has a new option, collapse, to add a single
+      node if a given taxonomic level has only one representative
+      (contributed by Eric Marcon).
+
+
+BUG FIXES
+
+    o read.FASTA(, type = "AA") failed.
+
+    o image.DNAbin() failed with a single sequence.
+
+    o write.nexus.data() wrote the binary representation of DNA or AA
+      sequences.
+
+    o read.tree() failed to read correctly single-quoted node labels
+      unless some tip labels were also single-quoted.
+
+    o node.height(, clado.style = TRUE) returned the wrong vector (it
+      used to return the same result than node.depth().
+
+    o tiplabels() did not align labels properly if the tree was
+      plotted with plot(, type = "fan", align.tip.label = TRUE).
+
+
+OTHER CHANGES
+
+    o print.DNAbin() now prints nicely the total number of bases.
+
+    o drop.tip(tr, 1:Ntip(tr), trim.internal = FALSE) now returns a
+      tree with all the terminal branches of tr removed, unless it has
+      less than three nodes.
+
+
+
+                CHANGES IN APE VERSION 5.1
+
+
+NEW FEATURES
+
+    o The new function write.FASTA is much more efficient than
+      write.dna(, format = "fasta") for very big data set. It can also
+      write "AAbin" objects into FASTA files.
+
+    o The new function comparePhylo compares two trees with optional
+      plot showing the differences.
+
+    o There are three new methods as.AAbin() to convert from
+      BioConductor for the classes "AAString", "AAStringSet", and
+      "AAMultipleAlignment".
+
+    o read.FASTA() can now read amino acid sequences; it has a new
+      option type = "DNA" by default.
+
+    o write.nexus.data() can now handle continuous and standard data
+      thanks to a contribution by Thomas Guillerme.
+
+    o muscle(), clustal(), and clustalomega() have new arguments to do
+      tree-guided or progressive alignment, and a new option 'file' to
+      save the alignment in a file (see ?details). These functions
+      now handle "AAbin" sequences.
+
+    o mantel.test() can now analyse asymmetric matrices following a
+      suggestion by Andrzej Galecki.
+
+    o as.prop.part.bitsplits() gains an option 'include.trivial =
+      FALSE', and the generic as.prop.part() gains a '...' argument.
+
+
+BUG FIXES
+
+    o as.hclust.phylo() failed with two-tip trees.
+
+    o drop.tip(, subtree = TRUE) failed when dropping a single tip.
+      Thanks to Thomas Sibley for the fix.
+
+    o nj() now checks that there are at least three observations.
+
+    o chronos() better finds initial dates in difficult situations,
+      particularly when the root age is unknown.
+
+    o chronos() now exits with the current estimates if the plogLik is
+      NA/NaN. Thanks to Daniel Lang for the fix.
+
+    o plot.phylo(phy, type = "p", edge.color = x) failed if 'phy' had
+      singleton nodes and 'x' was a vector of length > 1.
+
+    o bind.tree() failed if the trees had unordered edges. Thanks to
+      Veronika Boskova for the fix.
+
+    o cbind.DNAbin() now checks that the rownames of each matrix are
+      not duplicated (unless check.names = FALSE).
+
+
+OTHER CHANGES
+
+    o branching.times() now returns a zero-length vector and a warning
+      if the tree has no branch length (it used to return an error).
+
+    o igraph is now a suggested package.
+
+    o The as.DNAbin() methods to convert from BioConductor are more
+      efficient.
+
+
+
+		CHANGES IN APE VERSION 5.0
+
+
+NEW FEATURES
+
+    o ape now supports all types of phylogenetic trees and nerworks
+      (see details below).
+
+    o The new functions read.evonet and write.evonet read and write
+      files in Newick extended format (Cardona et al. 2008. BMC
+      Bioinformatics 9:532).
+
+    o Four new functions contributed by Franz Krah help to manipulate
+      AA sequences: methods c(), as.list(), and as.matrix() for the
+      class "AAbin", and as.AAbin() for lists.
+
+    o The new function has.singles tests if a tree has single nodes:
+      such trees can now be plotted with plot.phylo().
+
+    o There are two new convenience functions cladewise() and
+      postorder() which are short-cuts to reorder(, index.only =
+      TRUE).
+
+    o The new function Xplor shows all data files on the local machine
+      in a Web browser with clickable links to the directories and
+      files; it is based on the Xplorefiles() function.
+
+    o image.DNAbin() and image.AAbin() gain two options, grid and
+      show.base (or show.aa), to display a grid and the symbols of the
+      bases (or amino acids), and three options to control the aspect
+      of the latter: base.cex, base.font, and base.col (or aa.cex,
+      aa.font, and aa.col).
+
+    o image.AAbin() now shows the polymorphic positions.
+
+    o Several internal improvements were made to pcoa(). biplot.pcoa()
+      gains an optional argument 'main' to add a title.
+
+    o tiplabels() has a new option 'offset' to position the labels
+      with respect to the tips of the tree. This can be used in
+      combination with 'adj' and works for all types of trees (except
+      unrooted ones).
+
+    o phydataplot(type = "mosaic", continuous = FALSE) allows to
+      define the colours more flexibly thanks to a suggestion by
+      Elizabeth Purdom; this can be done if the function passed with
+      'funcol' returns a named vector. Also, the values are now sorted
+      alphabetically in the legend.
+
+    o phydataplot(type = "mosaic", legend = "none") does not display
+      the legend.
+
+    o read.tree() and read.nexus() can now read trees with singleton
+      nodes (i.e., nodes of degree 2) thanks to Klaus.
+
+    o read.tree() can now read labels with special characters within
+      single quotes.
+
+    o There are reorder() and Nedge() methods for objects of class
+      "evonet", and a new generic as.evonet() with a method for the
+      class "phylo".
+
+    o LLT() gains a '...' argument (e.g., to use log = "y").
+
+    o drop.tip() and extract.clade() gain an option 'collapse.singles'
+      (TRUE by default).
+
+
+BUG FIXES
+
+    o CADM.*(... make.sym = FALSE) failed: this is now fixed.
+
+    o phydataplot(x, , type = "mosaic") now works if x is a vector or
+      a one-column matrix.
+
+    o as.igraph.phylo() has been improved to work with igraph >= 1.0.
+
+    o reorder.multiPhylo() failed with compressed lists.
+
+    o arecompatible() returned FALSE when comparing two identical
+      splits.
+
+    o as.hclust.phylo() failed if internal branches near the root have
+      length zero, so sorting the branching times failed due to
+      rounding errors.
+
+    o plot.phylo() failed when branch lengths were very long compared
+      to the tip labels: use of the plotting space has been improved.
+
+
+OTHER CHANGES
+
+    o getMRCA() is now much faster (thanks to Joseph Brown and Klaus).
+
+    o read.tree() and read.nexus() are now based on C code (thanks to
+      Klaus) and should be several times faster.
+
+    o The default read.tree(, comment.char = "#") has been changed to
+      comment.char = "" so that extended Newick files can be read.
+
+    o The internal code of prop.part() and of reorder.phylo() have
+      been rewritten in C++ and should be several times faster.
+      collapse.singles(), drop.tip(), and extract.clade() are also
+      much faster.
+
+    o dist.topo() is much faster with the default distance.
+
+    o write.tree() and write.nexus() used to replace multiple
+      underscores or dashes in labels by single ones: they are now
+      left unchanged. The help page ?write.tree has been clarified on
+      how tip and node labels are checked before being printed.
+
+
+
+		CHANGES IN APE VERSION 4.1
+
+
+NEW FEATURES
+
+    o The new function read.fastq reads FASTQ files returning a
+      "DNAbin" object with an attribute "QUAL".
+
+    o The new functions Xplorefiles, bydir, and edit.file.extensions
+      help to find files on the local disk.
+
+    o read.FASTA() can now read connections thanks to a contribution
+      by RJ Ewing: the help page shows how to read *.zip, *.gz, or
+      *.bz2 files. This function can now read remote files through
+      secure connections (with HTTPS or FTPS). These also work for
+      read.dna(format = "fasta").
+
+    o read.nexus() has a new option, force.multi (FALSE by default),
+      to always return an object of class "multiPhylo" even if the
+      file contains a single tree (to keep the tree name which is lost
+      in the object of class "phylo").
+
+
+BUG FIXES
+
+    o read.FASTA() crashed when reading a file with no sequence or a
+      compressed file not identified as such (see above about the
+      support for connections).
+
+    o read.GenBank() failed when at least one accession number was
+      wrong: it now returns the sequences eventually read and prints a
+      warning with the accession numbers not read.
+
+    o extract.clade() failed with trees previously rooted with
+      root(resolve.root = TRUE).
+
+    o A bug was fixed in estimate.dates().
+
+    o A bug was fixed in multi2di.multiPhylo().
+
+    o drop.tip() failed when dropping all tips but one.
+
+    o nj() now checks for infinite distances (it used to return a
+      badly conformed tree).
+
+
+OTHER CHANGES
+
+    o chronos() now checks the presence of branch lengths in the tree.
+
+    o print.DNAbin() now prints base frequencies until 10 million
+      bases. The display of labels has been improved.
+
+
+
+		CHANGES IN APE VERSION 4.0
+
+
+NEW FEATURES
+
+    o Two new functions, estimate.mu and estimate.dates, contributed
+      by Bradley Jones, estimate the mutation rate and the dates for a
+      rooted phylogenetic tree with dated tips.
+
+    o The function plotTreeTime plots a non-ultrametric tree together
+      with the dates of the tips.
+
+    o The new function read.gff reads GFF files.
+
+    o The new method all.equal.DNAbin compares two sets of DNA
+      sequences mainly to compare alignments with a graphical display
+      of the differences.
+
+    o boot.phylo() has two new options: 'jumble' (TRUE by default) to
+      randomize the order of the rows of the data matrix (and avoid
+      artificially too large bootstrap values associated with very
+      short branches), and 'mc.cores' to perform parallel bootstraps.
+
+    o reconstruct() now computes ancestral states under directional
+      models (Brownian with trend and OU; see: Royer-Carenzi, M. and
+      Didier, G. 2016. A comparison of ancestral state reconstruction
+      methods for quantitative characters. J Theor Biol, 404:126-142).
+
+    o root() has the new option 'edgelabel' to treat node labels as
+      edge labels so they are associated with the correct edges when
+      using drawSupportOnEdges (edgelabel = FALSE by default).
+
+    o read.GenBank() is faster and more flexible: it can read records
+      such as contigs or scaffolds (based on a code available on
+      GitHub for a while).
+
+    o is.ultrametric() has a new argument, option, to change the
+      criterion used to test ultrametricity.
+
+    o .compressTipLabel() has a new option (ref = NULL) to constrain
+      the order of the tips.
+
+
+BUG FIXES
+
+    o plot.phylo() used to fail with NAs in branch lengths: they are
+      now ignored with a warning.
+
+    o plot.phylo(, type = "unrooted", label.offset = 1) used to have
+      no effect (unless lab4ut = "a" was used).
+
+    o checkValidPhylo() failed with trees with a single node.
+
+    o unroot() returned badly conformed trees in some situations.
+
+    o richness.yule.test() failed when the speciation rate(s) is high:
+      the code has been improved with better starting values for the
+      optimization.
+
+    o dist.topo() now checks that the trees have the same labels. The
+      code is ~100 times faster for comparing 100 trees with 100
+      labels.
+
+    o as.character.AAbin() striped matrix rownames (thanks to Shaun
+      Wilkinson for the report).
+
+
+OTHER CHANGES
+
+    o clustal(), clustalomega(), muscle(), and tcoffee() now give a
+      more explicit error message when they fail to find the
+      executable. The help page has been completed and gives some
+      recommendations.
+
+    o "DNAbin" objects larger than 2.1 billion bases (exactly 2^31-1)
+      can now be handled by most functions in ape. The limitations are
+      the same than in base R: 2^52 (~4.5*10^15) elements, and the
+      numbers of rows and columns of matrices cannot exceed 2^31-1.
+      read.dna() can now read FASTA files larger than 2.1 gigabytes.
+      Two functions are still limited to 2.1 Gb: dist.dna and
+      DNAbin2indel (the limit applies to the product of the numbers of
+      sequences by the sequence length since they work with matrices).
+
+    o As a side-effect of the above, several functions are slightly
+      faster as several calls to .C have been replaced by .Call.
+
+    o The following functions are now generic with methods for the
+      classes "phylo" and "multiPhylo": di2multi, multi2di, Ntip,
+      Nnode, Nedge, reorder, is.ultrametric, root, unroot, is.rooted,
+      and is.binary (new function name, see below).
+
+    o c.phylo() and c.multiPhylo() have now recursive = TRUE by
+      default and try to return a list of single trees unless some
+      objects are not trees or lists of trees.
+
+    o image.DNAbin() and image.AAbin() now order rows from top to
+      bottom.
+
+    o read.GenBank() now uses HTTPS in place of HTTP.
+
+    o ape now requires R 3.2.0 (or higher).
+
+    o boot.phylo() now checks for duplicated labels.
+
+    o checkAlignment() now prints the gap lengths that are on the
+      borders of the alignment.
+
+
+DEPRECATED & DEFUNCT
+
+    o is.binary.tree() is now obsolete and will be removed soon. It
+      currently calls is.binary().
+
+    o The data sets landplants.newick and opsin were removed.
+
+
+
+		CHANGES IN APE VERSION 3.5
+
+
+NEW FEATURES
+
+    o Eleven new functions are provided to work with the new class
+      "AAbin":
+
+        - trans() translates DNA to AA sequences;
+
+        - complement() returns the reverse complement of DNA sequences;
+
+        - Six methods to manipulate and display objects of class
+          "AAbin": print, [, labels, as.character, as.phyDat, and
+          image (alview() works also on AA sequences);
+
+        - New generic as.AAbin() with a method for the class "character";
+
+        - dist.aa() computes pairwise Hamming distances;
+
+        - AAsubst() returns the indices of polymporphic sites (similar
+          to seg.sites() for "DNAbin").
+
+    o The new function checkAlignment performs diagnostics on a DNA
+      alignment.
+
+    o The new functions plotBreakLongEdges and drawSupportOnEdges help
+      to plot and annotate trees.
+
+    o del.colgapsonly() gains two options: threshold (1 by default) to
+      delete columns with less than 100% of gaps, and freq.only (FALSE
+      by default) to return only the number of gaps for each column.
+
+    o The new function del.rowgapsonly does the same operation than
+      del.colgapsonly but on the rows (with the same new options).
+
+
+BUG FIXES
+
+    o root() did not calculate the basal branch length correctly
+      (thanks to Liam Revell for the report).
+
+    o clustal() failed with long labels.
+
+    o as.DNAbin.character() now works with uppercase letters as well.
+
+    o prop.clades() now returns a sensible results whatever the value
+      of its option 'rooted' (fixed by Klaus). The code is also faster.
+
+    o root(resolve.root = TRUE) failed in some situations.
+
+
+OTHER CHANGES
+
+    o boot.phylo(phy, ....) has now by default rooted = is.rooted(phy).
+
+
+
+		CHANGES IN APE VERSION 3.4
+
+
+NEW FEATURES
+
+    o The new function checkValidPhylo checks the internal structure
+      of a "phylo" object.
+
+    o The new function clustalomega calls Clustal-Omega from R.
+
+    o The new function DNAbin2indel recodes DNA sequences with gaps
+      as numeric values.
+
+    o The new function alview prints an alignment in a user-friendly
+      way in the console or a file.
+
+    o Three new functions, label2table, stripLabel and
+      abbreviateGenus, help to manage taxa labels.
+
+    o phydataplot() now accepts style="boxplot" and style="dotchart",
+      and has a new option 'scaling' when the data are on a very
+      different scale than the branch lengths of the tree.
+
+    o phydataplot() now accepts style="mosaic" to plot discrete or
+      continuous variables in matrix form, and gains three options
+      (width, continuous, funcol) that work with this option.
+
+    o plot.phylo() has a new option (align.tip.label) to align the
+      labels of the tips even when the tree is not ultrametric.
+
+
+BUG FIXES
+
+    o parafit() did not work with data frames or "dist" objects: this
+      is now fixed.
+
+    o plot.phylo() did not manage space correctly when show.tip.label
+      = FALSE and some tip labels were long (thanks to David Bapst for
+      the report and to Liam Revell for the fix).
+
+    o collapse.singles() failed in some situations, returning trees
+      that could make R crash. The function was completely re-written.
+
+    o In clustal(), the default path and executable names were not
+      correctly set under Windows.
+
+    o balance() failed after reordering a tree (bug reported by
+      G. Valiente in January 2008).
+
+    o seg.sites() failed to find some segregating sites in some
+      specific situations: gaps and ambiguous nucleotides are now
+      handled correctly. The code is slightly faster.
+
+    o rtt() didn't find the optimal root if located on a long branch.
+
+    o plot.phylo(, type = "f") sometimes failed when colouring the
+      edges of a tree with multichotomies (thanks to François
+      Michonneau for the fix).
+
+    o rphylo() now returns better conformed trees.
+
+    o drop.tip() sometimes shuffled node labels.
+
+    o edgelabels() did not put the labels in the correct place with
+      "fan" trees (fixed by Klaus).
+
+    o reorder.phylo(, index.only = TRUE) sometimes returned the tree
+      if it has a single node.
+
+    o as.hclust.phylo() returned node heights divided by two.
+
+    o ladderize() did not work with trees not in "cladewise" postorder.
+
+    o dist.dna(, model = "indelblock") has been fixed.
+
+    o as.hclust.phylo failed when trees had ties in their branching
+      times.
+
+    o root() failed with some trees returned by phangorn.
+
+
+OTHER CHANGES
+
+    o Updated NAMESPACE file for r-devel.
+
+    o root() gives a more explicit error message when the outgroup is
+      not among the labels of the tree.
+
+
+
+		CHANGES IN APE VERSION 3.3
+
+
+NEW FEATURES
+
+    o Two new functions contributed by Anthony Ives, binaryPGLMM and
+      binaryPGLMM.sim, fit phylogenetic generalized linear mixed
+      models to binary data and simulate such data.
+
+    o The new function corphylo, contributed by Anthony Ives,
+      calculates Pearson correlation coefficients for multiple
+      continuous traits that may have phylogenetic signal.
+
+    o The new function rphylo simulates trees under any time-dependent
+      model of diversification using the method from Stadler (2011,
+      Syst Biol 60: 676) which conditions the simulation on a fixed
+      number of living species at present time.
+
+    o The new function del.colgapsonly removes the columns of a DNA
+      alignment that contain only gaps (useful when a small matrix is
+      extracted from a large alignment).
+
+    o There is a sort() method for objects of class "bitsplits".
+
+    o plot.phylo(type = "fan", root.edge = TRUE) now draws the root
+      edge. Besides, the root edge is now coloured like the other
+      edges if they are all of the same colour (for all tree types).
+
+    o dist.topo() now accepts lists of trees.
+
+
+BUG FIXES
+
+    o prop.clades() failed with compressed lists of trees.
+
+    o read.tree() did not ignore comments inside straight brackets
+      (contrary to what is written in ape's FAQ) potentially resulting
+      in wrongly conformed "phylo" objects.
+
+    o dbdTime(x = 0, ...., conditional = TRUE) did not return 0.
+
+    o parafit() required a fix when F2.stat could not be calculated.
+
+    o write.nexus.data() did not write "DATATYPE=" correctly so that
+      the output NEXUS file could not be read by some other programs
+      (thanks to Robin Cristofari for the fix).
+
+    o seg.sites() made R crash when all sequences ended with N's.
+
+    o root(phy, node = Ntip(phy) + 1, resolve.root = TRUE) now returns
+      an explicit error.
+
+
+OTHER CHANGES
+
+    o plot.prop.part() has been improved: it now uses image()
+      internally, and gains a new option (col). It is now much more
+      efficient to display very large numbers of bipartitions.
+
+    o as.character.DNAbin() and as.DNAbin.character() are much faster
+      (contributed by Klaus Schliep).
+
+
+DEPRECATED & DEFUNCT
+
+    o node.height.clado() has been removed.
+
+
+
+		CHANGES IN APE VERSION 3.2
+
+
+NEW FEATURES
+
+    o The new function reconstruct, contributed by Manuela
+      Royer-Carenzi and Gilles Didier, does ancestral character state
+      reconstruction using new algorithms based on matrix computations.
+
+    o The new function vcv2phylo, contributed by Simon Blomberg,
+      transforms a variance-covariance matrix into a phylogenetic tree
+      (ultrametric or not).
+
+    o The new function def helps to (re)define attributes for plotting
+      and annotating trees using taxon names, labels, or other vectors
+      of character strings.
+
+    o There are four new as.DNAbin functions (S3 methods) to convert
+      objects storing DNA sequences in BioConductor. The supported
+      (S4) classes are: DNAString, DNAStringSet, DNAMultipleAlignment,
+      and PairwiseAlignmentsSingleSubject (the examples show how to
+      convert from the class DNAStringSetList).
+
+    o The new function nodepath finds paths of nodes in a tree.
+
+    o axisPhylo() gains two options: root.time and backward (similar
+      to ltt.plot).
+
+    o write.nexus.data() now accepts matrices (it accepted only lists
+      in previous versions).
+
+
+BUG FIXES
+
+    o dist.dna() did not compute distances correctly if gamma = TRUE.
+
+    o read.nexus() sometimes failed on files with no TRANSLATION block.
+
+    o read.nexus() failed to read correctly tree names (thanks to
+      Graham Gower for the fix).
+
+    o multi2di() used to return trees with elements as doubles instead
+      of integers (this was not a problem for most applications).
+
+    o In the output of phymltest(), the model F84 and HKY were
+      swapped (thanks to Luiz Max Fagundes de Carvalho for the fix).
+
+
+OTHER CHANGES
+
+    o plot.phylo() now saves the element 'root.time' of the plotted
+      tree (if present) in the environment .PlotPhyloEnv.
+
+    o write.nexus.data() now writes correctly all "DNAbin" objects
+      (matrices and lists). The help page has been clarified.
+
+
+
+		CHANGES IN APE VERSION 3.1-4
+
+
+BUG FIXES
+
+    o A bug was fixed in which.edge().
+
+
+OTHER CHANGES
+
+    o This file is no more distributed with the sources of ape and can
+      be found at: http://ape-package.ird.fr/NEWS.
+
+
+
+		CHANGES IN APE VERSION 3.1-3
+
+
+NEW FEATURES
+
+    o The new function rtt contributed by Rosemary McCloskey roots a
+      tree with dated tips in the location most compatible with the
+      assumption of a strict molecular clock.
+
+
+BUG FIXES
+
+    o root(, resolve.root = TRUE) did not manage node labels correctly
+      in the case where 'outgroup' was already an outgroup of the tree.
+
+    o read.dna(file, format = "fasta") works (again) with URIs (i.e.,
+      file = "http://..." or "ftp://...").
+
+    o rotate() made R crash if the tree was not in cladewise order.
+
+    o which.edge() did not work correctly for trees not in cladewise
+      order.
+
+    o read.GenBank failed to read older GenBank records.
+
+
+
+		CHANGES IN APE VERSION 3.1-2
+
+
+NEW FEATURES
+
+    o plot.phylo: the option 'open.angle' now works also when type =
+      "radial". The option 'lab4ut' now works also for type = "radial"
+      or "fan"; the default is now NULL since it will behave
+      differently depending on 'type'.
+
+    o ace(, type = "discrete") gains an option 'marginal' (FALSE by
+      default). The default is now to do a joint reconstruction of
+      ancestral states.
+
+
+BUG FIXES
+
+    o chronos: the gradients were not correctly computed when the age
+      of the root was unknown.
+
+    o prop.part() did not work with objects of class composite like
+      c("chronos", "phylo"). (Thanks to Steve Walker for the fix.)
+
+    o bionjs: a bug was fixed in the C code.
+
+    o read.GenBank() failed if a line starts with "ORIGIN" in the
+      description of the sequence (thanks to Sofia Sal Bregua for the
+      fix).
+
+    o cophyloplot() works better with length.line = 0.
+
+    o The internal function clado.build used to return trees with the
+      'edge' matrix stored as double instead of integer.
+
+
+OTHER CHANGES
+
+    o base.freq() now checks the class of the data.
+
+
+
+		CHANGES IN APE VERSION 3.1-1
+
+
+BUG FIXES
+
+    o rTraitCont: a bug was introduced in the previous release.
+
+
+OTHER CHANGES
+
+    o ape now requires R 3.0.0 or higher.
+
+
+
+		CHANGES IN APE VERSION 3.1
+
+
+NEW FEATURES
+
+    o Two new functions, bitsplits and countBipartitions, handle
+      bipartitions (aka splits) more efficiently.
+
+    o The new generic function as.prop.part helps to convert among
+      classes of bipartitions.
+
+    o Two new functions, phydataplot and ring, helps to graphically
+      annotate trees. The help page has many examples.
+
+    o The new function LLT draws the theoretical LTT-plot under
+      specified values of speciation and extinction rates together
+      with a prediction interval. The function has several options for
+      flexible plotting.
+
+    o predict.compar.gee() gains a new option, newdata, to predict
+      values from new observations of the predictors. This works like
+      most predict() methods.
+
+
+BUG FIXES
+
+    o root: the fix introduced in the previous version was not correct.
+
+    o compar.gee: using a user-defined link failed.
+
+    o plot.phylo: the tip labels were often outside the plotting area
+      with direction = "downward".
+
+    o unique.multiPhylo() did not work correctly with compressed lists.
+      This function now returns a vector of integers giving the
+      correspondance among similar trees.
+
+
+OTHER CHANGES
+
+    o add.scale.bar() now draws a longer bar by default.
+
+    o In boot.phylo(), the data 'x' must be a matrix-like object
+      (lists are no more accepted).
+
+    o boot.phylo() uses by default (ie, if rooted = FALSE) the new
+      function countBipartitions, and so should be much faster even
+      with small sample sizes and especially if the number of
+      bootstrap replicates is large.
+
+    o plot.phylo(, type = "fan") now colours the arcs in the same way
+      than the default type = "p".
+
+    o All instances of DUP=FALSE in calls of .C have been removed.
+
+
+
+		CHANGES IN APE VERSION 3.0-11
+
+
+BUG FIXES
+
+    o branching.times() now reorders the tree if needed.
+
+    o root(, resolved.root = TRUE) sometimes misplaced the root when
+      'outgroup' was of length one.
+
+    o nodelabels() didn't work with versions of R older than 3.0.0.
+
+
+OTHER CHANGES
+
+    o The code of branching.times() is now ca. 3 times faster.
+
+
+
+		CHANGES IN APE VERSION 3.0-10
+
+
+NEW FEATURES
+
+    o The new function rotateConstr rotates internal branches given a
+      constraint on the order of the tips.
+
+    o plot.phylo() has a new option, node.depth, to specify the depths
+      of nodes when the tree is plotted without branch lengths.
+      node.depth() has a new option, method, with the same effect.
+
+    o ace() has a new option, use.eigen, used when type = "d" to avoid
+      computing matrix exponentials. With other coding improvements,
+      the function is now about five times faster.
+
+
+BUG FIXES
+
+    o node.height() and node.height.clado() returned wrong values.
+
+    o pie charts drawn by nodelabels(), and other functions, used to
+      draw a "3-o'clock" segment when only one proportion was equal to
+      one (fixed by Klaus).
+
+    o plot(phy, main = "title...") now works again.
+
+
+OTHER CHANGES
+
+    o Improved DESCRIPTION and NAMESPACE files.
+
+    o The C routines are now registered.
+
+    o The generic function as.igraph has been removed from ape as it
+      is now defined in the package igraph.
+
+    o node.height() has now an option 'clado.style' (FALSE by default).
+      node.height.clado() will be removed soon.
+
+    o The code of several functions has been improved.
+
+
+DEPRECATED & DEFUNCT
+
+    o mst() has been moved to pegas.
+
+
+
+		CHANGES IN APE VERSION 3.0-9
+
+
+NEW FEATURES
+
+    o getMRCA() is now documented.
+
+
+BUG FIXES
+
+    o ace(, type = "d") now checks for zero or negative branch lengths.
+
+    o ace(, type = "d") now catches the error if the SEs of the rates
+      cannot be calculated (usually due to a poor model fit).
+
+    o reorder.phylo() made R crash with badly conformed "phylo" trees.
+
+    o drop.tip(phy, interactive = TRUE) did not work.
+
+    o drop.tip() now returns NULL (with a warning) if all tips are
+      dropped.
+
+    o mixedFontLabel() failed when passed only one vector of
+      labels. It also failed when labels included - or '. In some
+      cases, spaces in labels were not treated correctly.
+
+    o root(, resolve.root = TRUE) wrongly placed the new root node
+      when the outgroup has more than one tip. This is fixed, and now
+      the root node is placed at the MRCA of the outgroup (and not of
+      the ingroup).
+
+    o where() failed with matrices.
+
+
+
+		CHANGES IN APE VERSION 3.0-8
+
+
+NEW FEATURES
+
+    o The new function ewLasso tests whether an incomplete set of
+      distances uniquely determines the edge weights of a given
+      unrooted topology using the 'Lasso' method by Dress et
+      al. (2012, J. Math. Biol. 65:77).
+
+    o ace() gains a new option 'use.expm' to use expm() from the
+      package of the same name in place of matexpo().
+
+
+BUG FIXES
+
+    o read.dna(, "fasta") may add '\r' in labels: this is fixed.
+
+    o prop.clades() returned wrong numbers when the tip labels of
+      'phy' are not in the same order than the list of trees (thanks
+      to Rupert Collins for the report).
+
+    o CADM.post() displayed "1" on the diagonal of the matrix of
+      Mantel p-values. It now displays "NA" on the diagonal,
+      indicating that no test of significance is computed between a
+      distance matrix and itself.
+
+    o rtree(n, rooted = FALSE) returned trees with an 'edge' matrix
+      stored as doubles instead of integers for n > 4.
+
+
+OTHER CHANGES
+
+    o The files CDAM.global.R and CDAM.post.R have been renamed
+      CADM.global.R and CADM.post.R.
+
+    o ace() has a new default for its option 'method': this is "REML"
+      for continuous characters and "ML" for discrete ones.
+
+    o ape does not import gee anymore so the latter doesn't need to
+      be installed.
+
+
+
+		CHANGES IN APE VERSION 3.0-7
+
+
+NEW FEATURES
+
+    o The new function chronos estimates chronograms by penalised
+      likelihood and maximum likelihood with a completely reworked
+      code and interface. There is a new function makeChronosCalib to
+      set the calibration points easily. chronos() will eventually
+      replace chronopl().
+
+    o The new function 'where' searches patterns in DNA sequences.
+
+    o pic() gains an option 'rescaled.tree = FALSE' to return the tree
+      with its branch lengths rescaled for the PIC calculation.
+
+    o clustal(), muscle(), and tcoffee() gain an option
+      'original.ordering = TRUE' to ease the comparisons of
+      alignments.
+
+    o plot.phylo() has a new option, open.angle, used when plotting
+      circular trees.
+
+    o The new function read.FASTA reads FASTA files much faster and
+      more efficiently. It is called internally by read.dna(, "fasta")
+      or can be called directly.
+
+
+BUG FIXES
+
+    o drop.tip() shuffled node labels on some trees.
+
+    o axisPhylo() now works correctly with circular trees, and gives a
+      sensible error message when type = "r" or "u".
+
+
+OTHER CHANGES
+
+    o .compressTipLabel() is 10 times faster thanks to Joseph Brown.
+
+    o base.freq() is now faster with lists.
+
+    o as.matrix.DNAbin() should be faster and more efficient with
+      lists; it now accepts vectors.
+
+
+
+		CHANGES IN APE VERSION 3.0-6
+
+
+NEW FEATURES
+
+    o reorder.phylo() has a new order, "postorder", and a new option
+      index.only = TRUE to return only the vector of indices (the tree
+      is unmodified, see ?reorder.phylo for details).
+
+    o The three new functions node.depth.edgelength, node.height, and
+      node.height.clado make some internal code available from R. See
+      ?node.depth (which was already documented) for details.
+
+
+BUG FIXES
+
+    o reorder(, "pruningwise") made R crash if the rows of the edge
+      matrix are in random order: this is now fixed.
+
+    o drop.tip() sometimes shuffled node labels (thanks to Rebecca
+      Best for the report).
+
+    o drop.tip(phy, "") returned a tree with zero-length tip labels:
+      it now returns the tree unchanged (thanks to Brian Anacker for
+      the report).
+
+    o plot.phylo() made R crash if the tree has zero-length tip
+      labels: it now returns NULL (thanks again to Brian Anacker).
+
+
+OTHER CHANGES
+
+    o dist.nodes() is now 6 to 10 times faster.
+
+    o reorder(, "cladewise") is now faster. The change is not very
+      visible for small trees (n < 1000) but this can be more than
+      1000 faster for big trees (n >= 1e4).
+
+    o The attribute "order" of the objects of class "phylo" is now
+      strongly recommended, though not mandatory. Most functions in
+      ape should return a tree with this attribute correctly set.
+
+    o dbd() is now vectorized on both arguments 'x' (number of species
+      in clade) and 't' (clade age) to make likelihood calculations
+      easier and faster.
+
+
+
+		CHANGES IN APE VERSION 3.0-5
+
+
+BUG FIXES
+
+    o ace() should better catch errors when SEs cannot be computed.
+
+
+OTHER CHANGES
+
+    o write.dna(format = "fasta") now conforms more closely to the
+      FASTA standard thanks to François Michonneau.
+
+    o print.DNAbin() does not print base compositions if there are more
+      than one million nucleotides.
+
+
+
+		CHANGES IN APE VERSION 3.0-4
+
+
+BUG FIXES
+
+    o read.dna() failed to read Phylip files if the first line used
+      tabulations instead of white spaces.
+
+    o read.dna() failed to read Phylip or Clustal files with less than
+      10 nucleotides. (See other changes in this function below.)
+
+OTHER CHANGES
+
+    o read.dna() now requires at least one space (or tab) between the
+      taxa names and the sequences (whatever the length of taxa
+      names). write.dna() now follows the same rule.
+
+    o The option 'seq.names' of read.dna has been removed.
+
+    o The files ape-defunct.R and ape-defunct.Rd, which have not been
+      modified for almost two years, have been removed.
+
+    o The C code of bionj() has been reworked: it is more stable (by
+      avoiding passing character strings), slightly faster (by about
+      20%), and numerically more accurate.
+
+    o The C code of fastme.*() has been slightly modified and should
+      be more stable by avoiding passing character strings (the
+      results are identical to the previous versions).
+
+    o The file src/newick.c has been removed.
+
+
+
+		CHANGES IN APE VERSION 3.0-3
+
+
+BUG FIXES
+
+    o birthdeath() now catches errors and warnings much better so that
+      a result is returned in most cases.
+
+
+OTHER CHANGES
+
+    o Because of problems with character string manipulation in C, the
+      examples in ?bionj and in ?fastme have been disallowed. In the
+      meantime, these functions might be unstable. This will be solved
+      for the next release.
+
+
+
+		CHANGES IN APE VERSION 3.0-2
+
+
+NEW FEATURES
+
+    o The new function alex (alignment explorator) zooms in a DNA
+      alignment and opens the result in a new window.
+
+
+BUG FIXES
+
+    o compute.brtime() did not completely randomized the order of the
+      branching times.
+
+    o write.nexus() did not work correctly with rooted trees (thanks
+      to Matt Johnson for the fix).
+
+    o mltt.plot(, backward = FALSE) did not set the x-axis correctly.
+
+    o A bug was introduced in prop.clades() with ape 3.0. The help page
+      has been clarified relative to the use of the option 'rooted'.
+
+    o mantel.test() printed a useless warning message.
+
+    o plot.phylo(, direction = "downward") ignored 'y.lim'.
+
+    o is.monophyletic() did not work correctly if 'tips' was not stored
+      as integers.
+
+    o prop.part() could make R crash if the first tree had many
+      multichotomies.
+
+    o njs(), bionjs(), and mvrs() now return an error if 'fs < 1'.
+
+    o SDM() did not work correctly. The code has also been generally
+      improved.
+
+
+OTHER CHANGES
+
+    o The DESCRIPTION file has been updated.
+
+    o The option 'original.data' of write.nexus() has been removed.
+
+    o The files bionjs.c, mvr.c, mvrs.c, njs.c, triangMtd.c, and
+      triangMtds.c have been improved which should fix some bugs in
+      the corresponding functions.
+
+    o dist.gene() now coerces input data frame as matrix resulting in
+      much faster calculations (thanks to a suggestion by Markus
+      Schlegel).
+
+
+
+		CHANGES IN APE VERSION 3.0-1
+
+
+NEW FEATURES
+
+    o dist.dna() has two new models: "indel" and "indelblock".
+
+    o bind.tree() now accepts 'position' > 0 when the trees have no
+      banch length permitting to create a node in 'x' when grafting
+      'y' (see ?bind.tree for details).
+
+
+BUG FIXES
+
+    o cophyloplot( , rotate = TRUE) made R hanged after a few clicks.
+      Also the tree is no more plotted twice.
+
+    o read.GenBank() has been updated to work with EFetch 2.0.
+
+    o unroot() on trees in "pruningwise" order did not respect this
+      attribute.
+
+
+
+		CHANGES IN APE VERSION 3.0
+
+
+NEW FEATURES
+
+    o The three functions dyule, dbd, and dbdTime calculate the
+      density probability (i.e., the distribution of the number of
+      species) for the Yule, the constant and the time-dependent
+      birth-beath models, respectively. These probabilities can be
+      conditional on no extinction and/or on a log-scale.
+
+    o plot.phylo() has a new option 'rotate.tree' to rotate unrooted,
+      fan, or radial trees around the center of the plot.
+
+    o boot.phylo() and prop.clades() have a new option rooted =
+      FALSE. Note that the behaviour of prop.part() is unchanged.
+
+    o edgelabels() has a new option 'date' to place labels on edges of
+      chronograms using the time scale (suggestion by Rob Lanfear).
+
+
+BUG FIXES
+
+    o In chronopl(), the code setting the initial dates failed in
+      complicated settings (several dates known within intervals).
+      This has been generally improved and should result in faster
+      and more efficient convergence even in simple settings.
+
+    o mantel.test() sometimes returned P-values > 1 with the default
+      two-tailed test.
+
+    o extract.clade() sometimes shuffled some tip labels (thanks to
+      Ludovic Mallet and Mahendra Mariadassou for the fix).
+
+    o clustal() should now find by default the executable under Windows.
+
+
+OTHER CHANGES
+
+    o The code of yule() has been simplified and is now much faster for
+      big trees.
+
+    o The code of mantel.test() has been adjusted to be consistent
+      with common permutation tests.
+
+    o The C code of base.freq() has been improved and is now nearly 8
+      times faster.
+
+    o The option 'original.data' of write.nexus() is now deprecated and
+      will be removed in a future release.
+
+    o The code of is.ultrametric() has been improved and is now 3 times
+      faster.
+
+    o The code of vcv.phylo() has been improved and is now 10 or 30
+      times faster for 100 or 1000 tips, respectively. Consequently,
+      fitting models with PGLS will be faster overall.
+
+
+
+		CHANGES IN APE VERSION 2.8
+
+
+NEW FEATURES
+
+    o Twelve new functions have been written by Andrei-Alin Popescu:
+      additive, ultrametric, is.compatible, arecompatible, mvr, mvrs,
+      njs, bionjs, SDM, treePop, triangMtd, triangMtd*.
+
+    o A new class "bitsplits" has been created by Andrei-Alin Popescu
+      to code splits (aka, bipartition).
+
+    o There is a new generic function as.bitsplits with a method to
+      convert from the class "prop.part" to the class "bitsplits".
+
+    o The new function ltt.coplot plots on the same scales a tree and
+      the derived LTT plot.
+
+    o ltt.plot() has two new options: backward and tol. It can now
+      handle non-ultrametic trees and its internal coding has been
+      improved. The coordinates of the plot can now be computed with
+      the new function ltt.plot.coords.
+
+
+BUG FIXES
+
+    o prop.part() crashed if some trees had some multichotomies.
+
+
+
+		CHANGES IN APE VERSION 2.7-3
+
+
+NEW FEATURES
+
+    o The new function compute.brtime computes and sets branching times.
+
+    o mantel.test() has a new argument 'alternative' which is
+      "two-sided" by default. Previously, this test was one-tailed
+      with no possibility to change.
+
+    o ace() can now do REML estimation with continuous characters,
+      giving better estimates of the variance of the Brownian motion
+      process.
+
+
+BUG FIXES
+
+    o Branch lengths were wrongly updated with bind.tree(, where = <tip>,
+      position = 0). (Thanks to Liam Revell for digging this bug out.)
+
+    o Simulation of OU process with rTraitCont() did not work correctly.
+      This now uses formula from Gillespie (1996) reduced to a BM
+      process when alpha = 0 to avoid division by zero. The option
+      'linear' has been removed.
+
+    o Cross-validation in chronopl() did not work when 'age.max' was
+      used.
+
+    o consensus(, p = 0.5) could return an incorrect tree if some
+      incompatible splits occur in 50% of the trees (especially with
+      small number of trees).
+
+    o c() with "multiPhylo" did not work correctly (thanks to Klaus
+      Schliep for the fix).
+
+    o root() failed in some cases with an outgroup made of several tips.
+      The help page has been clarified a bit.
+
+
+
+		CHANGES IN APE VERSION 2.7-2
+
+
+NEW FEATURES
+
+    o There is a new class "evonet" to code evolutionary networks, with
+      a constructor function evonet(), a print() and a plot() methods,
+      and four conversion methods to the classes "phylo", "networx",
+      "network", and "igraph".
+
+    o The new function rTraitMult does multivariate traits simulation
+      with user-defined models.
+
+    o plot.phylo() has a new option 'plot = TRUE'. If FALSE, the tree
+      is not plotted but the graphical device is set and the
+      coordinates are saved as usual.
+
+    o diversity.contrast.test() gains a fourth version of the test with
+      method = "logratio"; the literature citations have been clarified.
+
+    o add.scale.bar() has two new options, 'lwd' and 'lcol', to modify
+      the aspect of the bar.
+
+    o boot.phylo() now displays a progress bar by default (can be off
+      if 'quiet = TRUE').
+
+    o There is a new predict() method for compar.gee().
+
+
+BUG FIXES
+
+    o bionj() made R crash if distances were too large. It now returns
+      an error if at least one distance is greater than 100.
+
+    o drop.tip() returned a wrong tree if 'tip' was of zero length.
+
+    o read.nexus.data() failed with URLs.
+
+    o boot.phylo() returned overestimated support values in the
+      presence of identical or nearly identical sequences.
+
+
+OTHER CHANGES
+
+    o The data bird.families, bird.orders, cynipids, and woodmouse are
+      now provided as .rda files.
+
+
+
+		CHANGES IN APE VERSION 2.7-1
+
+
+NEW FEATURES
+
+    o The new function trex does tree exploration with multiple
+      graphical devices.
+
+    o The new function kronoviz plots several rooted (dated) trees on
+      the scale scale.
+
+    o identify.phylo() has a new option 'quiet' (FALSE by default).
+
+
+BUG FIXES
+
+    o A bug was introduced in read.nexus() in ape 2.7.
+
+    o image.DNAbin() did not colour correctly the bases if there were
+      some '-' and no 'N'.
+
+    o .compressTipLabel() failed with a list with a single tree.
+
+    o identify.phylo() returned a wrong answer when the x- and y-scales
+      are very different.
+
+    o write.nexus() failed with lists of trees with compressed labels.
+
+
+OTHER CHANGES
+
+    o identify.phylo() now returns NULL if the user right- (instead of
+      left-) clicks (an error was returned previously).
+
+    o read.nexus() should be robust to commands inserted in the TREES
+      block.
+
+
+
+		CHANGES IN APE VERSION 2.7
+
+
+NEW FEATURES
+
+    o There is a new image() method for "DNAbin" objects: it plots DNA
+      alignments in a flexible and efficient way.
+
+    o Two new functions as.network.phylo and as.igraph.phylo convert
+      trees of class "phylo" into these respective network classes
+      defined in the packages of the same names.
+
+    o The three new functions clustal, muscle, and tcoffee perform
+      nucleotide sequence alignment by calling the external programs
+      of the same names.
+
+    o Four new functions, diversity.contrast.test, mcconwaysims.test,
+      richness.yule.test, and slowinskiguyer.test, implement various
+      tests of diversification shifts using sister-clade comparisons.
+
+    o base.freq() gains an option 'all' to count all the possible bases
+      including the ambiguous ones (defaults to FALSE).
+
+    o write.nexus() now writes tree names in the NEXUS file if given a
+      list of trees with names.
+
+
+BUG FIXES
+
+    o prop.part() failed in some situations with unrooted trees.
+
+    o read.nexus() shuffled node labels when a TRANSLATE block was
+      present.
+
+    o varCompPhylip() did not work if 'exec' was specified.
+
+    o bind.tree() shuffled node labels when position > 0 and 'where'
+      was not the root.
+
+
+OTHER CHANGES
+
+    o BaseProportion in src/dist_dna.c has been modified.
+
+    o A number of functions in src/tree_build.c have been modified.
+
+    o The matching representation has now only two columns as the third
+      column was redundant.
+
+
+
+		CHANGES IN APE VERSION 2.6-3
+
+
+NEW FEATURES
+
+    o rTraitCont() and rTraitDisc() gains a '...' argument used with
+      user-defined models (suggestion by Gene Hunt).
+
+
+BUG FIXES
+
+    o as.hclust.phylo() now returns an error with unrooted trees.
+
+    o as.hclust.phylo() failed with trees with node labels (thanks to
+      Jinlong Zhang for pointing this bug out).
+
+    o read.dna(, "fasta") failed if sequences were not all of the same
+      length.
+
+    o plot.phylo() did not recycle values of 'font', 'cex' and
+      'tip.color' correctly when type = "fan" or "radial".
+
+    o plot.phylo() ignored 'label.offset' when type = "radial", "fan", or
+      "unrooted" with lab4ut = "axial" (the placement of tip labels still
+      needs to be improved with lab4ut = "horizontal").
+
+
+OTHER CHANGES
+
+    o In drop.fossil() the default tol = 0 has been raised to 1e-8.
+
+    o The help command ?phylo now points to the man page of read.tree()
+      where this class is described. Similarly, ?matching points to the
+      man page of as.matching().
+
+
+
+		CHANGES IN APE VERSION 2.6-2
+
+
+NEW FEATURES
+
+    o Two new functions, pic.ortho and varCompPhylip, implements the
+      orthonormal contrasts of Felsenstein (2008, Am Nat, 171:713). The
+      second function requires Phylip to be installed on the computer.
+
+    o bd.ext() has a new option conditional = TRUE to use probabilities
+      conditioned on no extinction for the taxonomic data.
+
+
+BUG FIXES
+
+    o write.tree() failed to output correctly tree names.
+
+    o dist.nodes() returned duplicated column(s) with unrooted and/or
+      multichotomous trees.
+
+    o mcmc.popsize() terminated unexpectedly if the progress bar was
+      turned off.
+
+    o prop.part(x) made R frozen if 'x' is of class "multiPhylo".
+
+    o Compilation under Mandriva failed (thanks to Jos Käfer for the fix).
+
+    o drop.tip() shuffled tip labels with subtree = TRUE or trim.internal
+      = FALSE.
+
+    o Objects returned by as.hclust.phylo() failed when analysed with
+      cutree() or rect.hclust().
+
+    o write.tree() did not output correctly node labels (thanks to Naim
+      Matasci and Jeremy Beaulieu for the fix).
+
+    o ace(type = "discrete") has been improved thanks to Naim Marasci and
+      Jeremy Beaulieu.
+
+
+
+		CHANGES IN APE VERSION 2.6-1
+
+
+NEW FEATURES
+
+    o The new function speciesTree calculates the species tree from a set
+      of gene trees. Several methods are available including maximum tree
+      and shallowest divergence tree.
+
+
+BUG FIXES
+
+    o A bug introduced in write.tree() with ape 2.6 has been fixed.
+
+    o as.list.DNAbin() did not work correctly with vectors.
+
+    o as.hclust.phylo() failed with trees with node labels (thanks to
+      Filipe Vieira for the fix).
+
+
+
+		CHANGES IN APE VERSION 2.6
+
+
+NEW FEATURES
+
+    o The new functions rlineage and rbdtree simulate phylogenies under
+      any user-defined time-dependent speciation-extinction model. They
+      use continuous time algorithms.
+
+    o The new function drop.fossil removes the extinct species from a
+      phylogeny.
+
+    o The new function bd.time fits a user-defined time-dependent
+      birth-death model. It is a generalization of yule.time() taking
+      extinction into account.
+
+    o The new function MPR does most parsimonious reconstruction of
+      discrete characters.
+
+    o The new function Ftab computes the contingency table of base
+      frequencies from a pair of sequences.
+
+    o There is now an 'as.list' method for the class "DNAbin".
+
+    o dist.dna() can compute the number of transitions or transversions
+      with the option model = "Ts" or model = "Tv", respectively.
+
+    o [node|tip|edge]labels() gain three options with default values to
+      control the aspect of thermometers: horiz = TRUE, width = NULL,
+      and height = NULL.
+
+    o compar.gee() has been improved with the new option 'corStruct' as an
+      alternative to 'phy' to specify the correlation structure, and
+      calculation of the QIC (Pan 2001, Biometrics). The display of the
+      results has also been improved.
+
+    o read.GenBank() has a new option 'gene.names' to return the name of
+      the gene (FALSE by default).
+
+
+BUG FIXES
+
+    o extract.clade() sometimes shuffled the tip labels.
+
+    o plot.phylo(type = "unrooted") did not force asp = 1 (thanks to Klaus
+      Schliep for the fix)
+
+    o dist.dna(model = "logdet") used to divide distances by 4. The
+      documentation has been clarified on the formulae used.
+
+
+OTHER CHANGES
+
+    o rTraitCont(model = "OU") has an option 'linear = TRUE' to possibly
+      change the parameterisation (see ?rTraitCont for details).
+
+    o pic() now returns a vector with the node labels of the tree (if
+      available) as names.
+
+    o write.tree() and read.tree() have been substantially improved thanks
+      to contributions by Klaus Schliep.
+
+
+
+		CHANGES IN APE VERSION 2.5-3
+
+
+NEW FEATURES
+
+    o The new function mixedFontLabel helps to make labels with bits of
+      text to be plotted in different fonts.
+
+    o There are now replacement operators for [, [[, and $ for the class
+      "multiPhylo" (i.e., TREES[11:20] <- rmtree(10, 100)). They possibly
+      check that the tip labels are the same in all trees.
+
+    o Objects of class "multiPhylo" can be built with c(): there are
+      methods for the classes "phylo" and "multiPhylo".
+
+    o The internal functions .compressTipLabel and .uncompressTipLabel are
+      now documented.
+
+
+BUG FIXES
+
+    o bind.tree(x, y, where, position = 0) did not work correctly if 'y'
+      was a single-edge tree and 'where' was a tip.
+
+    o rTraitCont() did not use the square-root of branch lengths when
+      simulating a Brownian motion model.
+
+
+
+		CHANGES IN APE VERSION 2.5-2
+
+
+NEW FEATURES
+
+    o There is now a print method for results from ace().
+
+    o There is a labels() method for objects of class "DNAbin".
+
+    o read.dna() has a new option 'as.matrix' to possibly force sequences
+      in a FASTA file to be stored in a matrix (see ?read.dna for details).
+
+
+BUG FIXES
+
+    o as.phylo.hclust() used to multiply edge lengths by 2.
+
+    o A minor bug was fixed in rTraitDisc().
+
+    o ace() sometimes failed (parameter value was NaN and the optimisation
+      failed).
+
+
+DEPRECATED & DEFUNCT
+
+    o evolve.phylo() and plot.ancestral() have been removed.
+
+    o chronogram(), ratogram(), and NPRS.criterion() have been removed.
+
+
+OTHER CHANGES
+
+    o nj() has been improved and is now about 30% faster.
+
+    o The default option 'drop' of [.DNAbin has been changed to FALSE to
+      avoid dropping rownames when selecting a single sequence.
+
+    o print.DNAbin() has been changed to summary.DNAbin() which has been
+      removed.
+
+
+
+		CHANGES IN APE VERSION 2.5-1
+
+
+NEW FEATURES
+
+    o The new function stree generates trees with regular shapes.
+
+    o It is now possible to bind two trees with x + y (see ?bind.tree for
+      details).
+
+    o drop.tip(), extract.clade(), root(), and bind.tree() now have an
+      'interactive' option to make the operation on a plotted tree.
+
+    o cophyloplot() gains two new arguments 'lwd' and 'lty' for the
+      association links; they are recycled like 'col' (which wasn't before).
+
+
+BUG FIXES
+
+    o rTraitDisc() did not use its 'freq' argument correctly (it was
+      multiplied with the rate matrix column-wise instead of row-wise).
+
+    o [node|tip|edge]labels(thermo = ) used to draw empty thermometers
+      with NA values. Nothing is drawn now like with 'text' or 'pch'.
+      The same bug occurred with the 'pie' option.
+
+    o A bug was fixed in compar.ou() and the help page was clarified.
+
+    o bind.tree() has been rewritten fixing several bugs and making it
+      more efficient.
+
+    o plot.phylo(type = "p") sometimes failed to colour correctly the
+      vertical lines representing the nodes.
+
+    o plot.phylo(direction = "l", x.lim = 30) failed to plot the branches
+      in the correct direction though the tip labels were displayed
+      correctly.
+
+
+OTHER CHANGES
+
+    o The c, cbind, and rbind methods for "DNAbin" objetcs now check that
+      the sequences are correctly stored (in a list for c, in a matrix
+      for the two other functions).
+
+
+
+		CHANGES IN APE VERSION 2.5
+
+
+NEW FEATURES
+
+    o The new function parafit by Pierre Legendre tests for the
+      coevolution between hosts and parasites. It has a companion
+      function, pcoa, that does principal coordinate decomposition.
+      The latter has a biplot method.
+
+    o The new function lmorigin by Pierre Legendre performs multiple
+      regression through the origin with testing by permutation.
+
+    o The new functions rTraitCont and rTraitDisc simulate continuous and
+      discrete traits under a wide range of evolutionary models.
+
+    o The new function delta.plot does a delta plot following Holland et
+      al. (2002, Mol. Biol. Evol. 12:2051).
+
+    o The new function edges draws additional branches between any nodes
+      and/or tips on a plotted tree.
+
+    o The new function fancyarrows enhances arrows from graphics with
+      triangle and harpoon heads; it can be called from edges().
+
+    o add.scale.bar() has a new option 'ask' to draw interactively.
+
+    o The branch length score replaces the geodesic distance in dist.topo.
+
+    o Three new data sets are included: the gopher-lice data (gopher.D),
+      SO2 air pollution in 41 US cities (lmorigin.ex1, from Sokal &
+      Rohlf 1995), and some host-parasite specificity data
+      (lmorigin.ex2, from Legendre & Desdevises 2009).
+
+
+BUG FIXES
+
+    o add.scale.bar() drew the bar outside the plotting region with the
+      default options with unrooted or radial trees.
+
+    o dist.topo() made R stuck when the trees had different sizes (thanks
+      to Otto Cordero for the fix).
+
+
+OTHER CHANGES
+
+    o The geodesic distance has been replaced by the branch length score
+      in dist.topo().
+
+
+
+		CHANGES IN APE VERSION 2.4-1
+
+
+NEW FEATURES
+
+    o rtree() and rcoal() now accept a numeric vector for the 'br'
+      argument.
+
+    o vcv() is a new generic function with methods for the classes "phylo"
+      and "corPhyl" so that it is possible to calculate the var-cov matrix
+      for "transformation models". vcv.phylo() can still be used for trees
+      of class "phylo"; its argument 'cor' has been renamed 'corr'.
+
+
+BUG FIXES
+
+    o bind.tree() failed when 'y' had no root edge.
+
+    o read.nexus() shuffled tip labels when the trees have no branch
+      lengths and there is a TRANSLATE block.
+
+    o read.nexus() does not try to translate node labels if there is a
+      translation table in the NEXUS file. See ?read.nexus for a
+      clarification on this behaviour.
+
+    o plot.multiPhylo() crashed R when plotting a list of trees with
+      compressed tip labels.
+
+    o write.nexus() did not translate the taxa names when asked for.
+
+    o plot.phylo(type = "fan") did not rotate the tip labels correctly
+      when the tree has branch lengths.
+
+    o ace(type = "continuous", method = "ML") now avoids sigma² being
+      negative (which resulted in an error).
+
+    o nj() crashed with NA/NaN in the distance matrix: an error in now
+      returned.
+
+
+
+		CHANGES IN APE VERSION 2.4
+
+
+NEW FEATURES
+
+    o base.freq() has a new option 'freq' to return the counts; the
+      default is still to return the proportions.
+
+
+BUG FIXES
+
+    o seg.sites() did not handle ambiguous nucleotides correctly: they
+      are now ignored.
+
+    o plot(phy, root.edge = TRUE) failed if there was no $root.edge in
+      the tree: the argument is now ignored.
+
+    o add.scale.bar() failed when 'x' and 'y' were given (thanks to Janet
+      Young for the fix).
+
+
+OTHER CHANGES
+
+    o Trying to plot a tree with a single tip now returns NULL with a
+      warning (it returned an error previously).
+
+    o The way lines representing nodes are coloured in phylograms has
+      been modified (as well as their widths and types) following some
+      users' request; this is only for dichotomous nodes.
+
+    o The argument 'adj' in [node][tip][edge]labels() now works when
+      using 'pie' or 'thermo'.
+
+    o A more informative message error is now returned by dist.dna() when
+      'model' is badly specified (partial matching of this argument is
+      done now).
+
+    o Deprecated functions are now listed in a help page: see
+      help("ape-defunct") with the quotes.
+
+
+DEPRECATED & DEFUNCT
+
+    o The functions heterozygosity, nuc.div, theta.h, theta.k and
+      theta.s have been moved from ape to pegas.
+
+    o The functions mlphylo, DNAmodel and sh.test have been removed.
+
+
+
+		CHANGES IN APE VERSION 2.3-3
+
+
+BUG FIXES
+
+    o add.scale.bar() always drew a horizontal bar.
+
+    o zoom() shuffled tips with unrooted trees.
+
+    o write.nexus() failed to write correctly trees with a "TipLabel"
+      attribute.
+
+    o rcoal() failed to compute branch lengths with very large n.
+
+    o A small bug was fixed in compar.cheverud() (thanks to Michael
+      Phelan for the fix).
+
+    o seg.sites() failed when passing a vector.
+
+    o drop.tip() sometimes shuffled tip labels.
+
+    o root() shuffled node labels with 'resolve.root = TRUE'.
+
+
+
+		CHANGES IN APE VERSION 2.3-2
+
+
+BUG FIXES
+
+    o all.equal.phylo() did not compare unrooted trees correctly.
+
+    o dist.topo(... method = "PH85") did not treat unrooted trees
+      correctly (thanks to Tim Wallstrom for the fix).
+
+    o root() sometimes failed to test for the monophyly of the
+      outgroup correctly.
+
+    o extract.clade() sometimes included too many edges.
+
+    o vcv.phylo() did not work correctly when the tree is in
+      "pruningwise" order.
+
+    o nj() did not handle correctly distance matrices with many 0's.
+      The code has also been significantly improved: 7, 70, 160 times
+      faster with n = 100, 500, 1000, respectively.
+
+
+
+		CHANGES IN APE VERSION 2.3-1
+
+
+NEW FEATURES
+
+    o The new function is.monophyletic tests the monophyly of a group.
+
+    o There is now a c() method for lists of class "DNAbin".
+
+    o yule.cov() now fits the null model, and its help page has been
+      corrected with respect to this change.
+
+    o drop.tip() has a new option 'rooted' to force (or not) a tree
+      to be treated as (un)rooted.
+
+
+BUG FIXES
+
+    o dist.gene() failed on most occasions with the default
+      pairwise.deletion = FALSE.
+
+    o read.tree() failed to read correctly the tree name(s).
+
+    o boot.phylo() now treats correctly data frames.
+
+    o del.gaps() did not copy the rownames of a matrix.
+
+    o A small bug was fixed in CDAM.global().
+
+    o ace() failed with large data sets. Thanks to Rich FitzJohn for
+      the fix. With other improvements, this function is now about 6
+      times faster.
+
+    o write.tree() failed with objects of class "multiPhylo".
+
+    o drop.tip(, subtree = TRUE) sometimes shuffled tip labels.
+
+
+OTHER CHANGES
+
+    o [.multiPhylo and [.DNAbin now respect the original class.
+
+    o Instances of the form class(phy) == "phylo" have been replaced
+      by inherits(phy, "phylo").
+
+    o rcoal() is now faster.
+
+
+DEPRECATED & DEFUNCT
+
+    o klastorin() has been removed.
+
+
+
+		CHANGES IN APE VERSION 2.3
+
+
+NEW FEATURES
+
+    o The new functions CADM.global and CADM.post, contributed by
+      Pierre Legendre, test the congruence among several distance
+      matrices.
+
+    o The new function yule.time fits a user-defined time-dependent
+      Yule model by maximum likelihood.
+
+    o The new function makeNodeLabel creates and/or modifies node
+      labels in a flexible way.
+
+    o read.tree() and write.tree() have been modified so that they can
+      handle individual tree names.
+
+    o plot.phylo() has a new argument 'edge.lty' that specifies the
+      types of lines used for the edges (plain, dotted, dashed, ...)
+
+    o phymltest() has been updated to work with PhyML 3.0.1.
+
+
+BUG FIXES
+
+    o drop.tip() shuffled tip labels in some cases.
+
+    o drop.tip() did not handle node.label correctly.
+
+    o is.ultrametric() now checks the ordering of the edge matrix.
+
+    o ace() sometimes returned negative values of likelihoods of
+      ancestral states (thanks to Dan Rabosky for solving this long
+      lasting bug).
+
+
+OTHER CHANGES
+
+    o The data set xenarthra has been removed.
+
+
+
+		CHANGES IN APE VERSION 2.2-4
+
+BUG FIXES
+
+    o The bug fix in read.nexus() in version 2.2-3 was wrong: this is
+      now fixed. (Thanks to Peter Wragg for the fix!)
+
+    o A warning message occurred for no reason with ace(method="GLS").
+
+
+OTHER CHANGES
+
+    o There is now a general help page displayed with '?ape'.
+
+
+
+		CHANGES IN APE VERSION 2.2-3
+
+
+NEW FEATURES
+
+    o The new function extract.clade extracts a clade from a tree by
+      specifying a node number or label.
+
+    o fastme.bal() has two new options 'spr' and 'tbr' to perform tree
+      operations of the same names.
+
+    o dist.dna() can now return the number of site differences by
+      specifying model="N".
+
+
+BUG FIXES
+
+    o chronopl() did not work with CV = TRUE.
+
+    o read.nexus() did not work correctly in some situations (trees on
+      multiple lines with different numbers of lines and/or with
+      comments inserted within the trees).
+
+    o ltt.plot(), ltt.lines(), and mltt.plot() did not count correctly
+      the number of lineages with non-binary trees.
+
+
+OTHER CHANGES
+
+    o ape has now a namespace.
+
+    o drop.tip() has been improved: it should be much faster and work
+      better in some cases (e.g., see the example in ?zoom).
+
+
+
+		CHANGES IN APE VERSION 2.2-2
+
+
+NEW FEATURES
+
+    o dist.gene() has been substantially improved and gains an option
+      'pairwise.deletion'.
+
+    o cbind.DNAbin() has a new option 'fill.with.gaps' and is now
+      more flexible.
+
+
+BUG FIXES
+
+    o prop.part() failed with a single tree with the default option
+     'check.labels = TRUE'.
+
+   o summary.DNAbin() failed to display correctly the summary of
+     sequence lengths with lists of sequences of 10,000 bases or more
+     (because summary.default uses 4 significant digits by default).
+
+   o read.nexus() failed to read a file with a single tree with line
+     breaks in the Newick string.
+
+   o del.gaps() returned a list of empty sequences when there were no
+     gaps.
+
+
+OTHER CHANGES
+
+    o phymltest() has been updated for PhyML 3.0 and gains an option
+      'append', whereas the option 'path2exec' has been removed.
+
+    o rbind.DNAbin() and cbind.DNAbin() now accept a single matrix
+      which is returned unchanged (instead of an error).
+
+    o The data sets bird.orders and bird.families are now stored as
+      Newick strings; i.e., the command data(bird.orders) calls
+      read.tree().
+
+
+
+		CHANGES IN APE VERSION 2.2-1
+
+
+NEW FEATURES
+
+    o The new function makeLabel() helps to modify labels of trees,
+      lists of trees, or DNA sequences, with several utilities to
+      truncate and/or make them unique, substituting some
+      characters, and so on.
+
+    o The new function del.gaps() removes insertion gaps ("-") in a
+      set of DNA sequences.
+
+    o read.dna() can now read Clustal files (*.aln).
+
+
+BUG FIXES
+
+    o root() failed with 'resolve.root = TRUE' when the root was
+      already the specified root.
+
+    o Several bugs were fixed in mlphylo().
+
+    o collapsed.singles() did not propagate the 'Nnode' and
+      'node.labels' elements (thanks to Elizabeth Purdom for the fix).
+
+    o read.nexus() failed to remove correctly the comments within
+      trees.
+
+    o read.nexus() failed to read a file with a single tree and no
+      translation of tip labels.
+
+    o read.nexus() failed to place correctly tip labels when reading
+      a single tree with no edge lengths.
+
+    o A bug was fixed in sh.test().
+
+
+OTHER CHANGES
+
+    o unique.multiPhylo() is faster thanks to a suggestion by Vladimir
+      Minin.
+
+    o The option 'check.labels' of consensus() and prop.part() is now
+      TRUE by default.
+
+    o write.dna() now does not truncate names to 10 characters with
+      the Phylip formats.
+
+
+
+		CHANGES IN APE VERSION 2.2
+
+
+NEW FEATURES
+
+    o Four new functions have been written by Damien de Vienne for the
+      graphical exploration of large trees (cophyloplot, subtrees,
+      subtreeplot), and to return the graphical coordinates of tree
+      (without plotting).
+
+    o The new functions corPagel and corBlomberg implement the Pagel's
+      "lambda" and Blomberg et al.'s "ACDC" correlation structures.
+
+    o chronopl() has been improved and gains several options: see its
+      help page for details.
+
+    o boot.phylo() has now an option 'trees' to possibly return the
+      bootstraped trees (the default is FALSE).
+
+    o prop.part() has been improved and should now be faster in all
+      situations.
+
+
+BUG FIXES
+
+    o read.dna() failed if "?" occurred in the first 10 sites of the
+      first sequence.
+
+    o The x/y aspect of the plot is now respected when plotting a
+      circular tree (type = "r" or "f").
+
+    o Drawing the tip labels sometimes failed when plotting circular
+      trees.
+
+    o zoom() failed when tip labels were used instead of their numbers
+      (thanks to Yan Wong for the fix).
+
+    o drop.tip() failed with some trees (fixed by Yan Wong).
+
+    o seg.sites() failed with a list.
+
+    o consensus() failed in some cases. The function has been improved
+      as well and is faster.
+
+
+
+		CHANGES IN APE VERSION 2.1-3
+
+
+BUG FIXES
+
+    o A bug in read.nexus() made the Windows R-GUI crash.
+
+    o An error was fixed in the computation of ancestral character
+      states by generalized least squares in ace().
+
+    o di2multi() did not modify node labels correctly.
+
+    o multi2di() failed if the tree had its attribute "order" set to
+      "cladewise".
+
+
+
+		CHANGES IN APE VERSION 2.1-2
+
+
+NEW FEATURES
+
+    o There three new methods for the "multiPhylo" class: str, $,
+      and [[.
+
+    o root() gains the options 'node' and 'resolve.root'
+      (FALSE by default) as well as its code being improved.
+
+    o mltt.plot() has now an option 'log' used in the same way
+      than in plot.default().
+
+
+BUG FIXES
+
+    o mltt.plot() failed to display the legend with an unnamed
+      list of trees.
+
+    o nodelabels() with pies now correcly uses the argument
+      'cex' to draw symbols of different sizes (which has
+      worked already for thermometers).
+
+    o read.nexus() generally failed to read very big files.
+
+
+OTHER CHANGES
+
+    o The argument 'family' of compar.gee() can now be a function
+      as well as a character string.
+
+    o read.tree() and read.nexus() now return an unnamed list if
+      'tree.names = NULL'.
+
+    o read.nexus() now returns a modified object of class "multiPhylo"
+      when there is a TRANSLATE block in the NEXUS file: the individual
+      trees have no 'tip.label' vector, but the list has a 'TipLabel'
+      attribute. The new methods '$' and '[[' set these elements
+      correctly when extracting trees.
+
+
+
+		CHANGES IN APE VERSION 2.1-1
+
+
+NEW FEATURES
+
+    o The new function rmtree generates lists of random trees.
+
+    o rcoal() now generates a genuine coalescent tree by default
+      (thanks to Vladimir Minin for the code).
+
+
+BUG FIXES
+
+    o nuc.div() returned an incorrect value with the default
+      pairwise.deletion = FALSE.
+
+
+OTHER CHANGES
+
+    o The internal codes of bionj(), fastme.bal(), and fastme.ols()
+      have been improved so that they are stabler and faster.
+
+    o R packages used by ape are now loaded silently; lattice and gee
+      are loaded only when needed.
+
+
+
+		CHANGES IN APE VERSION 2.1
+
+
+NEW FEATURES
+
+    o The new function identify.phylo identifies clades on a plotted
+      tree using the mouse.
+
+    o It is now possible to subset a list of trees (object of class
+      "multiPhylo") with "[" while keeping its class correct.
+
+    o The new function as.DNAbin.alignment converts DNA sequences
+      stored in the "alignment" format of the package seqinr into
+      an object of class "DNAbin".
+
+    o The new function weight.taxo2 helps to build similarity matrices
+      given two taxonomic levels (usually called by other functions).
+
+    o write.tree() can now take a list of trees (class "multiPhylo")
+      as its main argument.
+
+    o plot.correlogram() and plot.correlogramList() have been
+      improved, and gain several options (see the help page for
+      details). A legend is now plotted by default.
+
+
+BUG FIXES
+
+    o dist.dna() returned some incorrect values with `model = "JC69"'
+      and `pairwise.deletion = TRUE'. This affected only the
+      distances involving sequences with missing values. (Thanks
+      to Bruno Toupance for digging this bug out.)
+
+    o write.tree() failed with some trees: this is fixed by removing
+      the `multi.line' option (trees are now always printed on a
+      single line).
+
+    o read.nexus() did not correctly detect trees with multiple root
+      edges (see OTHER CHANGES).
+
+
+OTHER CHANGES
+
+    o The code of mlphylo() has been almost entirely rewritten, and
+      should be much stabler. The options have been also greatly
+      simplified (see ?mlphylo and ?DNAmodel for details).
+
+    o The internal function nTips has been renamed klastorin_nTips.
+
+    o The code of is.ultrametric() contained redundancies and has
+      been cleaned-up.
+
+    o The code of Moran.I() and of correlogram.formula() have been
+      improved.
+
+    o read.tree() and read.nexus() now return an error when trying to
+      read a tree with multiple root edges (see BUG FIXES). The
+      correction applied in previous version did not work in all
+      situations.
+
+    o The class c("multi.tree", "phylo") has been renamed
+      "multiPhylo".
+
+
+DOCUMENTATION
+
+    o There is now a vignette in ape: see vignette("MoranI", "ape").
+
+
+DEPRECATED & DEFUNCT
+
+    o as.matching() and as.phylo.matching() do not support branch
+      lengths.
+
+    o correlogram.phylo() and discrete.dist() have been removed.
+
+
+
+		CHANGES IN APE VERSION 2.0-2
+
+
+NEW FEATURES
+
+    o The new function matexpo computes the exponential of a square
+      matrix.
+
+    o The new function unique.multi.tree removes duplicate trees from
+      a list.
+
+    o yule() has a new option `use.root.edge = FALSE' that specifies
+      to ignore, by default, the root edge of the tree if it exists.
+
+
+BUG FIXES
+
+    o which.edge() failed when the index of a single terminal edge was
+      looked for.
+
+    o In diversi.time(), the values returned for model C were
+      incorrect.
+
+    o A bug was fixed in yule() that affected the calculation of the
+      likelihood in the presence of ties in the branching times.
+
+    o There was a bug in the C function mat_expo4x4 affecting the
+      calculations of the transition probabilities for models HKY and
+      GTR in mlphylo().
+
+    o A small bug was fixed in as.matrix.DNAbin (thanks to James
+      Bullard).
+
+    o rtree() did not `shuffle' the tip labels by default, so only a
+      limited number of labelled topologies could be generated.
+
+
+
+		CHANGES IN APE VERSION 2.0-1
+
+
+NEW FEATURES
+
+    o The three new functions bionj, fastme.ols, and fastme.bal
+      perform phylogeny estimation by the BIONJ and fastME methods in
+      OLS and balanced versions. This is a port to R of previous
+      previous programs done by Vincent Lefort.
+
+    o The new function chronoMPL performs molecular dating with the
+      mean path lengths method of Britton et al. (2002, Mol. Phyl.
+      Evol. 24: 58).
+
+    o The new function rotate, contributed by Christoph Heibl, swaps
+      two clades connected to the same node. It works also with
+      multichotomous nodes.
+
+    o The new `method' as.matrix.DNAbin() may be used to convert
+      easily DNA sequences stored in a list into a matrix while
+      keeping the names and the class.
+
+
+BUG FIXES
+
+    o chronopl() failed when some branch lengths were equal to zero:
+      an error message is now returned.
+
+    o di2multi() failed when there was a series of consecutive edges
+      to remove.
+
+
+
+		CHANGES IN APE VERSION 1.10-2
+
+
+NEW FEATURES
+
+    o plot.phylo() can now plot circular trees: the option is type =
+      "fan" or type = "f" (to avoid the ambiguity with type = "c").
+
+    o prop.part() has a new option `check.labels = FALSE' which allows
+      to considerably speed-up the calculations of bipartitions. As a
+      consequence, calculations of bootstrap values with boot.phylo()
+      should be much faster.
+
+
+BUG FIXES
+
+    o read.GenBank() did not return correctly the list of species as
+      from ape 1.10: this is fixed in this version
+
+    o Applying as.phylo() on a tree of class "phylo" failed: the
+      object is now returned unchanged.
+
+
+
+		CHANGES IN APE VERSION 1.10-1
+
+
+NEW FEATURES
+
+    o The three new functions Ntip, Nnode, and Nedge return, for a
+      given tree, the number of tips, nodes, or edges, respectively.
+
+
+BUG FIXES
+
+    o read.nexus() did not set correctly the class of the returned
+      object when reading multiple trees.
+
+    o mllt.plot() failed with objects of class c("multi.tree",
+      "phylo").
+
+    o unroot() did not work correctly in most cases.
+
+    o reorder.phylo() made R freeze in some occasions.
+
+    o Plotting a tree in pruningwise order failed.
+
+    o When plotting an unrooted tree, the tip labels where not all
+      correctly positioned if the option `cex' was used.
+
+
+
+		CHANGES IN APE VERSION 1.10
+
+
+NEW FEATURES
+
+    o Five new `method' functions have been introduced to manipulate
+      DNA sequences in binary format (see below).
+
+    o Three new functions have been introduced to convert between the
+      new binary and the character formats.
+
+    o The new function as.alignment converts DNA sequences stored as
+      single characters into the class "alignment" used by the package
+      seqinr.
+
+    o read.dna() and read.GenBank() have a new argument `as.character'
+      controlling whether the sequences are returned in binary format
+      or as character.
+
+
+BUG FIXES
+
+    o root() failed when the tree had node labels: this is fixed.
+
+    o plot.phylo() did not correctly set the limits on the y-axis with
+      the default setting: this is fixed.
+
+    o dist.dna() returned a wrong result for the LogDet, paralinear,
+      and BH87 models with `pairwise.deletion = TRUE'.
+
+
+OTHER CHANGES
+
+    o DNA sequences are now internally stored in a binary format. See
+      the document "A Bit-Level Coding Scheme for Nucleotides" for the
+      details. Most functions analyzing DNA functions have been
+      modified accordingly and are now much faster (dist.dna is now
+      ca. 60 times faster).
+
+
+
+		CHANGES IN APE VERSION 1.9-4
+
+
+BUG FIXES
+
+    o A bug was fixed in edgelabels().
+
+    o as.phylo.hclust() did not work correctly when the object of
+      class "hclust" has its labels set to NULL: the returned tree has
+      now its tip labels set to "1", "2", ...
+
+    o consensus could fail if some tip labels are a subset of others
+      (e.g., "a" and "a_1"): this is now fixed.
+
+    o mlphylo() failed in most cases if some branch lengths of the
+      initial tree were greater than one: an error message is now
+      issued.
+
+    o mlphylo() failed in most cases when estimating the proportion of
+      invariants: this is fixed.
+
+
+
+      		CHANGES IN APE VERSION 1.9-3
+
+
+NEW FEATURES
+
+    o The new function edgelabels adds labels on the edge of the tree
+      in the same way than nodelabels or tiplabels.
+
+
+BUG FIXES
+
+    o multi2di() did not handle correctly branch lengths with the
+      default option `random = TRUE': this is now fixed.
+
+    o A bug was fixed in nuc.div() when using pairwise deletions.
+
+    o A bug occurred in the analysis of bipartitions with large
+      numbers of large trees, with consequences on prop.part,
+      prop.clades, and boot.phylo.
+
+    o The calculation of the Billera-Holmes-Vogtmann distance in
+      dist.topo was wrong: this has been fixed.
+
+
+
+		CHANGES IN APE VERSION 1.9-2
+
+
+NEW FEATURES
+
+    o The new function ladderize reorganizes the internal structure of
+      a tree to plot them left- or right-ladderized.
+
+    o The new function dist.nodes computes the patristic distances
+      between all nodes, internal and terminal, of a tree. It replaces
+      the option `full = TRUE' of cophenetic.phylo (see below).
+
+
+BUG FIXES
+
+    o A bug was fixed in old2new.phylo().
+
+    o Some bugs were fixed in chronopl().
+
+    o The edge colours were not correctly displayed by plot.phylo
+      (thank you to Li-San Wang for the fix).
+
+    o cophenetic.phylo() failed with multichotomous trees: this is
+      fixed.
+
+
+OTHER CHANGES
+
+    o read.dna() now returns the sequences in a matrix if they are
+      aligned (interleaved or sequential format). Sequences in FASTA
+      format are still returned in a list.
+
+    o The option `full' of cophenetic.phylo() has been removed because
+      it could not be used from the generic.
+
+
+DEPRECATED & DEFUNCT
+
+    o rotate() has been removed; this function did not work correctly
+      since ape 1.9.
+
+
+
+		CHANGES IN APE VERSION 1.9-1
+
+
+BUG FIXES
+
+    o Trees with a single tip were not read correctly in R as the
+      element `Nnode' was not set: this is fixed.
+
+    o unroot() did not set correctly the number of nodes of the
+      unrooted tree in most cases.
+
+    o read.GenBank() failed when fetching very long sequences,
+      particularly of the BX-series.
+
+    o A bug was introduced in read.tree() with ape 1.9: it has been
+      fixed
+
+
+
+		CHANGES IN APE VERSION 1.9
+
+
+NEW FEATURES
+
+    o There are two new print `methods' for trees of class "phylo" and
+      lists of trees of class "multi.tree", so that they are now
+      displayed in a compact and informative way.
+
+    o There are two new functions, old2new.phylo and new2old.phylo,
+      for converting between the old and new coding of the class
+      "phylo".
+
+    o dist.dna() has three new models: Barry and Hartigan ("BH87"),
+      LogDet ("logdet"), and paralinear ("paralin").
+
+    o compute.brlen() has been extended: several methods are now
+      available to compute branch lengths.
+
+    o write.dna() can now handle matrices as well as lists.
+
+
+BUG FIXES
+
+    o cophenetic.phylo() sometimes returned a wrong result with
+      multichotomous trees: this is fixed.
+
+    o rotate() failed when a single tip was specified: the tree is now
+      returned unchanged.
+
+    o ace() did not return the correct index matrix with custom
+      models: this is fixed.
+
+    o multi2di() did not work correctly when resolving multichotomies
+      randomly: the topology was always the same, only the arrangement
+      of clades was randomized: this is fixed. This function now
+      accepts trees with no branch lengths.
+
+    o The output of diversi.gof() was blurred by useless prints when a
+      user distribution was specified. This has been corrected, and
+      the help page of this function has been expanded.
+
+
+OTHER CHANGES
+
+    o The internal structure of the class "phylo" has been changed:
+      see the document "Definition of Formats for Coding Phylogenetic
+      Trees in R" for the details. In addition, the code of most
+      functions has been improved.
+
+    o Several functions have been improved by replacing some R codes
+      by C codes: pic, plot.phylo, and reorder.phylo.
+
+    o There is now a citation information: see citation("ape") in R.
+
+    o write.tree() now does not add extra 0's to branch lengths so
+      that 1.23 is printed "1.23" by default, not "1.2300000000".
+
+    o The syntax of bind.tree() has been simplified. This function now
+      accepts trees with no branch lengths, and handles correctly node
+      labels.
+
+    o The option `as.numeric' of mrca() has been removed.
+
+    o The unused options `format' and `rooted' of read.tree() have
+      been removed.
+
+    o The unused option `format' of write.tree() has been removed.
+
+    o The use of node.depth() has been simplified.
+
+
+
+		CHANGES IN APE VERSION 1.8-5
+
+
+NEW FEATURES
+
+    o Two new functions read.nexus.data() and write.nexus.data(),
+      contributed by Johan Nylander, allow to read and write molecular
+      sequences in NEXUS files.
+
+    o The new function reorder.phylo() reorders the internal structure
+      of a tree of class "phylo". It is used as the generic, e.g.,
+      reorder(tr).
+
+    o read.tree() and read.nexus() can now read trees with a single
+      edge.
+
+    o The new data set `cynipids' supplies a set of protein sequences
+      in NEXUS format.
+
+
+BUG FIXES
+
+    o The code of all.equal.phylo() has been completely rewritten
+      (thanks to Benoît Durand) which fixes several bugs.
+
+    o read.tree() and read.nexus() now checks the labels of the tree
+      to remove or substitute any characters that are illegal in the
+      Newick format (parentheses, etc.)
+
+    o A negative P-value could be returned by mantel.test(): this is
+      now fixed.
+
+
+
+		CHANGES IN APE VERSION 1.8-4
+
+
+NEW FEATURES
+
+    o The new function sh.test() computes the Shimodaira-
+      Hasegawa test.
+
+    o The new function collapse.singles() removes the nodes with a
+      single descendant from a tree.
+
+    o plot.phylo() has a new argument `tip.color' to specify the
+      colours of the tips.
+
+    o mlphylo() has now an option `quiet' to control the display of
+      the progress of the analysis (the default is FALSE).
+
+
+BUG FIXES
+
+    o read.dna() did not read correctly sequences in sequential format
+      with leading alignment gaps "-": this is fixed.
+
+    o ace() returned a list with no class so that the generic
+      functions (anova, logLik, ...) could not be used directly. This
+      is fixed as ace() now returns an object of class "ace".
+
+    o anova.ace() had a small bug when computing the number of degrees
+      of freedom: this is fixed.
+
+    o mlphylo() did not work when the sequences were in a matrix or
+      a data frame: this is fixed.
+
+    o rtree() did not work correctly when trying to simulate an
+      unrooted tree with two tips: an error message is now issued.
+
+
+OTHER CHANGES
+
+    o The algorithm of rtree() has been changed: it is now about 40,
+      100, and 130 times faster for 10, 100, and 1000 tips,
+      respectively.
+
+
+
+		CHANGES IN APE VERSION 1.8-3
+
+
+NEW FEATURES
+
+    o There are four new `method' functions to be used with the
+      results of ace(): logLik(), deviance(), AIC(), and anova().
+
+    o The plot method of phymltest has two new arguments: `main' to
+      change the title, and `col' to control the colour of the
+      segments showing the AIC values.
+
+    o ace() has a new argument `ip' that gives the initial values used
+      in the ML estimation with discrete characters (see the examples
+      in ?ace). This function now returns a matrix giving the indices
+      of the estimated rates when analysing discrete characters.
+
+    o nodelabels() and tiplabels() have a new argument `pie' to
+      represent proportions, with any number of categories, as
+      piecharts. The use of the option `thermo' has been improved:
+      there is now no limitation on the number of categories.
+
+
+BUG FIXES
+
+    o mlphylo() did not work with more than two partitions: this is
+      fixed.
+
+    o root() failed if the proposed outgroup was already an outgroup
+      in the tree: this is fixed.
+
+    o The `col' argument in nodelabels() and tiplabels() was not
+      correctly passed when `text' was used: this is fixed.
+
+    o Two bugs were fixed in mlphylo(): parameters were not always
+      correctly output, and the estimation failed in some cases.
+
+    o plot.phylo() was stuck when given a tree with a single tip: this
+      is fixed and a message error is now returned.
+
+    o An error was corrected in the help page of gammaStat regarding
+      the calculation of P-values.
+
+    o Using gls() could crash R when the number of species in the tree
+      and in the variables were different: this is fixed.
+
+
+
+    		CHANGES IN APE VERSION 1.8-2
+
+
+NEW FEATURES
+
+    o The new function mlphylo() fits a phylogenetic tree by maximum
+      likelihood from DNA sequences. Its companion function DNAmodel()
+      is used to define the substitution model which may include
+      partitioning. There are methods for logLik(), deviance(), and
+      AIC(), and the summary() method has been extended to display in
+      a friendly way the results of this model fitting. Currently, the
+      functionality is limited to estimating the substitution and
+      associated parameters and computing the likelihood.
+
+    o The new function drop1.compar.gee (used as, e.g., drop1(m))
+      tests for single effects in GEE-based comparative method. A
+      warning message is printed if there is not enough degrees of
+      freedom.
+
+
+BUG FIXES
+
+    o An error message was sometimes issued by plot.multi.tree(),
+      though with no consequence.
+
+
+
+		CHANGES IN APE VERSION 1.8-1
+
+
+NEW FEATURES
+
+    o There is a new plot method for lists of trees (objects of class
+      "multi.tree"): it calls plot.phylo() internally and is
+      documented on the same help page.
+
+
+BUG FIXES
+
+    o A bug was fixed in the C code that analyzes bipartitions: this
+      has impact on several functions like prop.part, prop.clades,
+      boot.phylo, or consensus.
+
+    o root() did not work correctly when the specified outgroup had
+      more than one element: this is fixed.
+
+    o dist.dna() sometimes returned a warning inappropriately: this
+      has been corrected.
+
+    o If the distance object given to nj() had no rownames, nj()
+      returned a tree with no tip labels: it now returns tips labelled
+      "1", "2", ..., corresponding to the row numbers.
+
+
+OTHER CHANGES
+
+    o nj() has been slightly changed so that tips with a zero distance
+      are first aggregated with zero-lengthed branches; the usual NJ
+      procedure is then performed on a distance matrix without 0's.
+
+
+
+		CHANGES IN APE VERSION 1.8
+
+
+NEW FEATURES
+
+    o The new function chronopl() estimates dates using the penalized
+      likelihood method by Sanderson (2002; Mol. Biol. Evol., 19:101).
+
+    o The new function consensus() calculates the consensus tree of a
+      list of trees.
+
+    o The new function evolve.phylo() simulates the evolution of
+      continuous characters along a phylogeny under a Brownian model.
+
+    o The new plot method for objects of class "ancestral" displays a
+      tree together with ancestral values, as returned by the above
+      function.
+
+    o The new function as.phylo.formula() returns a phylogeny from a
+      set of nested taxonomic variables given as a formula.
+
+    o The new function read.caic() reads trees in CAIC format.
+
+    o The new function tiplabels() allows to add labels to the tips
+      of a tree using text or plotting symbols in a flexible way.
+
+    o The new function unroot() unroots a phylogeny.
+
+    o multi2di() has a new option, `random', which specifies whether
+      to resolve the multichotomies randomly (the default) or not.
+
+    o prop.part() now returns an object of class "prop.part" for which
+      there are print (to display a partition in a more friendly way)
+      and summary (to extract the numbers) methods.
+
+    o plot.phylo() has a new option, `show.tip.label', specifying
+      whether to print the labels of the tips. The default is TRUE.
+
+    o The code of nj() has been replaced by a faster C code: it is now
+      about 10, 25, and 40 times faster for 50, 100, and 200 taxa,
+      respectively.
+
+    o write.nexus() now writes whether a tree is rooted or not.
+
+
+BUG FIXES
+
+    o Two bugs have been fixed in root(): unrooted trees are now
+      handled corretly, and node labels are now output normally.
+
+    o A bug was fixed in phymltest(): the executable couldn't be found
+      in some cases.
+
+    o Three bugs have been fixed in ace(): computing the likelihood of
+      ancestral states of discrete characters failed, custom models
+      did not work, and the function failed with a null gradient (a
+      warning message is now returned; this latter bug was also
+      present in yule.cov() as well and is now fixed).
+
+    o pic() hanged out when missing data were present: an error is now
+      returned.
+
+    o A small bug was fixed in dist.dna() where the gamma correction
+      was not always correctly dispatched.
+
+    o plot.phylo() plotted correctly the root edge only when the tree
+      was plotted rightwards: this works now for all directions.
+
+
+OTHER CHANGES
+
+    o dist.taxo() has been renamed as weight.taxo().
+
+    o dist.phylo() has been replaced by the method cophenetic.phylo().
+
+    o Various error and warning messages have been improved.
+
+
+
+		CHANGES IN APE VERSION 1.7
+NEW FEATURES
+
+    o The new function ace() estimates ancestral character states for
+      continuous characters (with ML, GLS, and contrasts methods), and
+      discrete characters (with ML only) for any number of states.
+
+    o The new function compar.ou() fits the Ornstein-Uhlenbeck model
+      of directional evolution for continuous characters. The user
+      specifies the node(s) of the tree where the character optimum
+      changes.
+
+    o The new function is.rooted() tests whether a tree (of class
+      "phylo") is rooted.
+
+    o The new function rcoal() generates random ultrametric trees with
+      the possibility to specify the function that generates the
+      inter-nodes distances.
+
+    o The new function mrca() gives for all pairs of tips in a tree
+      (and optionally nodes too) the most recent common ancestor.
+
+    o nodelabels() has a new option `thermo' to plot proportions (up
+      to three classes) on the nodes of a tree.
+
+    o rtree() has been improved: it can now generate rooted or
+      unrooted trees, and the mathematical function that generates the
+      branch lengths may be specified by the user. The tip labels may
+      be given directly in the call to rtree. The limit cases (n = 2,
+      3) are now handled correctly.
+
+    o dist.topo() has a new argument `method' with two choices: "PH85"
+      for Penny and Henny's method (already available before and now
+      the default), and "BHV01" for the geometric distance by Billera
+      et al. (2001, Adv. Appl. Math. 27:733).
+
+    o write.tree() has a new option, `digits', which specifies the
+      number of digits to be printed in the Newick tree. By default
+      digits = 10. The numbers are now always printed in decimal form
+      (i.e., 1.0e-1 is now avoided).
+
+    o dist.dna() can now compute the raw distances between pairs of
+      DNA sequences by specifying model = "raw".
+
+    o dist.phylo() has a new option `full' to possibly compute the
+      distances among all tips and nodes of the tree. The default is
+      `full = FALSE'.
+
+
+BUG FIXES
+
+    o Several bugs were fixed in all.equal.phylo().
+
+    o dist.dna() did not handle correctly gaps ("-") in alignments:
+      they are now considered as missing data.
+
+    o rotate() did not work if the tips were not ordered: this is
+      fixed.
+
+    o mantel.test() returned NA in some special cases: this is fixed
+      and the function has been improved and is now faster.
+
+    o A bug was fixed in diversi.gof() where the calculation of A² was
+      incorrect.
+
+    o cherry() did not work correctly under some OSs (mainly Linux):
+      this is fixed.
+
+    o is.binary.tree() has been modified so that it works with both
+      rooted and unrooted trees.
+
+    o The documentation of theta.s() was not correct: this has been
+      fixed.
+
+    o plot.mst() did not work correctly: this is fixed.
+
+
+
+		CHANGES IN APE VERSION 1.6
+
+
+NEW FEATURES
+
+    o The new function dist.topo() computes the topological distances
+      between two trees.
+
+    o The new function boot.phylo() performs a bootstrap analysis on
+      phylogeny estimation.
+
+    o The new functions prop.part() and prop.clades() analyse
+      bipartitions from a series of trees.
+
+
+OTHER CHANGES
+
+    o read.GenBank() now uses the EFetch utility of NCBI instead of
+      the usual Web interface: it is now much faster (e.g., 12 times
+      faster to retrieve 8 sequences, 37 times for 60 sequences).
+
+
+BUG FIXES
+
+    o Several bugs were fixed in read.dna().
+
+    o Several bugs were fixed in diversi.time().
+
+    o is.binary.tree() did not work correctly if the tree has no edge
+      lengths: this is fixed.
+
+    o drop.tip() did not correctly propagated the `node.label' of a
+      tree: this is fixed.
+
+
+
+ 		CHANGES IN APE VERSION 1.5
+
+
+NEW FEATURES
+
+    o Two new functions, as.matching.phylo() and as.phylo.matching(),
+      convert objects between the classes "phylo" and "matching". The
+      latter implements the representation of binary trees introduced by
+      Diaconis and Holmes (1998; PNAS 95:14600). The generic function
+      as.matching() has been introduced as well.
+
+    o Two new functions, multi2di() and di2multi(), allow to resolve
+      and collapse multichotomies with branches of length zero.
+
+    o The new function nuc.div() computes the nucleotide diversity
+      from a sample a DNA sequences.
+
+    o dist.dna() has been completely rewritten with a much faster
+      (particularly for large data sets) C code. Eight models are
+      available: JC69, K80, F81, K81, F84, T92, TN93, and GG95 (the
+      option `method' has been renamed `model'). Computation of variance
+      is available for all models. A gamma-correction is possible for
+      JC69, K80, F81, and TN93. There is a new option, pairwise.deletion,
+      to remove sites with missing data on a pairwise basis. The option
+      `GCcontent' has been removed.
+
+    o read.GenBank() has a new option (species.names) which specifies
+      whether to return the species names of the organisms in addition
+      to the accession numbers of the sequences (this is the default
+      behaviour).
+
+    o write.nexus() can now write several trees in the same NEXUS file.
+
+    o drop.tip() has a new option `root.edge' that allows to specify the
+      new root edge if internal branches are trimmed.
+
+
+BUG FIXES
+
+    o as.phylo.hclust() failed if some labels had parentheses: this
+      is fixed.
+
+    o Several bugs were fixed in all.equal.phylo(). This function now
+      returns the logical TRUE if the trees are identical but with
+      different representations (a report was printed previously).
+
+    o read.GenBank() did not correctly handle ambiguous base codes:
+      this is fixed.
+
+
+OTHER CHANGES
+
+    o birthdeath() now returns an object of class "birthdeath" for
+      which there is a print method.
+
+
+
+		CHANGES IN APE VERSION 1.4
+
+
+NEW FEATURES
+
+    o The new function nj() performs phylogeny estimation with the
+      neighbor-joining method of Saitou and Nei (1987; Mol. Biol.
+      Evol., 4:406).
+
+    o The new function which.edge() identifies the edges of a tree
+      that belong to a group specified as a set of tips.
+
+    o The new function as.phylo.phylog() converts an object of class
+      "phylog" (from the package ade4) into an object of class
+      "phylo".
+
+    o The new function axisPhylo() draws axes on the side of a
+      phylogeny plot.
+
+    o The new function howmanytrees() calculates the number of trees
+      in different cases and giving a number of tips.
+
+    o write.tree() has a new option `multi.line' (TRUE by default) to
+      write a Newick tree on several lines rather than on a single
+      line.
+
+    o The functionalities of zoom() have been extended. Several
+      subtrees can be visualized at the same time, and they are marked
+      on the main tree with colors. The context of the subtrees can be
+      marked with the option `subtree' (see below).
+
+    o drop.tip() has a new option `subtree' (FALSE by default) which
+      specifies whether to output in the tree how many tips have been
+      deleted and where.
+
+    o The arguments of add.scale.bar() have been redefined and have
+      now default values (see ?add.scale.bar for details). This
+      function now works even if the plotted tree has no edge length.
+
+    o plot.phylo() can now plot radial trees, but this does not take
+      edge lengths into account.
+
+    o In plot.phylo() with `type = "phylogram"', if the values of
+      `edge.color' and `edge.width' are identical for sister-branches,
+      they are propagated to the vertical line that link them.
+
+
+BUG FIXES
+
+    o Repeated calls to as.phylo.hclust() or as.hclust.phylo() made R
+      crashing. This is fixed.
+
+    o In plot.phylo(), the options `edge.color' and `edge.width' are
+      now properly recycled; their default values are now "black" and
+      1, respectively.
+
+    o A bug has been fixed in write.nexus().
+
+
+OTHER CHANGES
+
+    o The function node.depth.edgelength() has been removed and
+      replaced by a C code.
+
+
+
+		CHANGES IN APE VERSION 1.3-1
+
+
+NEW FEATURES
+
+    o The new function nodelabels() allows to add labels to the nodes
+      of a tree using text or plotting symbols in a flexible way.
+
+    o In plot.phylo() the arguments `x.lim' and `y.lim' can now be two
+      numeric values specifying the lower and upper limits on the x-
+      and y-axes. This allows to leave some space on any side of the
+      tree. If a single value is given, this is taken as the upper
+      limit (as before).
+
+
+
+		CHANGES IN APE VERSION 1.3
+
+
+NEW FEATURES
+
+    o The new function phymltest() calls the software PHYML and fits
+      28 models of DNA sequence evolution. There are a print method to
+      display likelihood and AIC values, a summary method to compute
+      the hierarchical likelihood ratio tests, and a plot method to
+      display graphically the AIC values of each model.
+
+    o The new function yule.cov() fits the Yule model with covariates,
+      a model where the speciation rate is affected by several species
+      traits through a generalized linear model. The parameters are
+      estimated by maximum likelihood.
+
+    o Three new functions, corBrownian(), corGrafen(), and
+      corMartins(), compute the expected correlation structures among
+      species given a phylogeny under different models of evolution.
+      These can be used for GLS comparative phylogenetic methods (see
+      the examples). There are coef() and corMatrix() methods and an
+      Initialize.corPhyl() function associated.
+
+    o The new function compar.cheverud() implements Cheverud et al.'s
+      (1985; Evolution 39:1335) phylogenetic comparative method.
+
+    o The new function varcomp() estimates variance components; it has
+      a plot method.
+
+    o Two new functions, panel.superpose.correlogram() and
+      plot.correlogramList(), allow to plot several phylogenetic
+      correlograms.
+
+    o The new function node.leafnumber() computes the number of leaves
+      of a subtree defined by a particular node.
+
+    o The new function node.sons() gets all tags of son nodes from a
+      given parent node.
+
+    o The new function compute.brlen() computes the branch lengths of
+      a tree according to a specified method.
+
+    o plot.phylo() has three new options: "cex" controls the size of
+      the (tip and node) labels (thus it is no more needed to change
+      the global graphical parameter), "direction" which allows to
+      plot the tree rightwards, leftwards, upwards, or downwards, and
+      "y.lim" which sets the upper limit on the y-axis.
+
+
+BUG FIXES
+
+    o Some functions which try to match tip labels and names of
+      additional data (e.g. vector) are likely to fail if there are
+      typing or syntax errors. If both series of names do not perfectly
+      match, they are ignored and a warning message is now issued.
+      These functions are bd.ext, compar.gee, pic. Their help pages
+      have been clarified on this point.
+
+
+
+		CHANGES IN APE VERSION 1.2-7
+
+
+NEW FEATURES
+
+    o The new function root() reroots a phylogenetic tree with respect
+      to a specified outgroup.
+
+    o The new function rotate() rotates an internal branch of a tree.
+
+    o In plot.phylo(), the new argument "lab4ut" (labels for unrooted
+      trees) controls the display of the tip labels in unrooted trees.
+      This display has been greatly improved: the tip labels are now not
+      expected to overlap with the tree (particularly if lab4ut =
+      "axial"). In all cases, combining appropriate values of "lab4ut"
+      and the font size (via "par(cex = )") should result in readable
+      unrooted trees. See ?plot.phylo for some examples.
+
+    o In drop.tip(), the argument `tip' can now be numeric or character.
+
+
+BUG FIXES
+
+    o drop.tip() did not work correctly with trees with no branch
+      lengths: this is fixed.
+
+    o A bug in plot.phylo(..., type = "unrooted") made some trees being
+      plotted with some line crossings: this is now fixed.
+
+
+
+		CHANGES IN APE VERSION 1.2-6
+
+
+NEW FEATURES
+
+    o Six new functions (Moran.I, correlogram.formula, discrete.dist,
+      correlogram.phylo, dist.taxo, plot.correlogram) have been added
+      to implement comparative methods with an autocorrelation approach.
+
+    o A new data set describing some life history traits of Carnivores
+      has been included.
+
+
+BUG FIXES
+
+    o A fix was made on mcmc.popsize() to conform to R 2.0.0.
+
+
+OTHER CHANGES
+
+    o When plotting a tree with plot.phylo(), the new default of the
+      option `label.offset' is now 0, so the labels are always visible.
+
+
+
+		CHANGES IN APE VERSION 1.2-5
+
+
+NEW FEATURES
+
+    o The new function bd.ext() fits a birth-death model with combined
+      phylogenetic and taxonomic data, and estimates the corresponding
+      speciation and extinction rates.
+
+
+OTHER CHANGES
+
+    o The package gee is no more required by ape but only suggested
+      since only the function compar.gee() calls gee.
+
+
+
+		CHANGES IN APE VERSION 1.2-4
+
+
+NEW FEATURES
+
+    o Four new functions (mcmc.popsize, extract.popsize, plot.popsize,
+      and lines.popsize) implementing a new approach for inferring the
+      demographic history from genealogies using a reversible jump
+      MCMC have been introduced.
+
+    o The unit of time in the skyline plot and in the new plots can
+      now be chosen to be actual years, rather than substitutions.
+
+
+
+		CHANGES IN APE VERSION 1.2-3
+
+
+NEW FEATURES
+
+    o The new function rtree() generates a random binary tree with or
+      without branch lengths.
+
+    o Two new functions for drawing lineages-through-time (LTT) plots
+      are provided: ltt.lines() adds a LTT curve to an existing plot,
+      and mltt.plot() does a multiple LTT plot giving several trees as
+      arguments (see `?ltt.plot' for details).
+
+
+BUG FIXES
+
+    o Some taxon names made R crashing when calling as.phylo.hclust():
+      this is fixed.
+
+    o dist.dna() returned an error with two identical DNA sequences
+      (only using the Jukes-Cantor method returned 0): this is fixed.
+
+
+OTHER CHANGES
+
+    o The function dist.phylo() has been re-written using a different
+      algorithm: it is now about four times faster.
+
+    o The code of branching.times() has been improved: it is now about
+      twice faster.
+
+
+
+		CHANGES IN APE VERSION 1.2-2
+
+
+NEW FEATURES
+
+    o The new function seg.sites() finds the segregating sites in a
+      sample of DNA sequences.
+
+
+BUG FIXES
+
+    o A bug introduced in read.tree() and in read.nexus() with version
+      1.2-1 was fixed.
+
+    o A few errors were corrected and a few examples were added in the
+      help pages.
+
+
+
+		CHANGES IN APE VERSION 1.2-1
+
+
+NEW FEATURES
+
+    o plot.phylo() can now draw the edge of the root of a tree if it
+      has one (see the new option `root.edge', its default is FALSE).
+
+
+BUG FIXES
+
+    o A bug was fixed in read.nexus(): files with semicolons inside
+      comment blocks were not read correctly.
+
+    o The behaviour of read.tree() and read.nexus() was corrected so
+      that tree files with badly represented root edges (e.g., with
+      an extra pair of parentheses, see the help pages for details)
+      are now correctly represented in the object of class "phylo";
+      a warning message is now issued.
+
+
+
+		CHANGES IN APE VERSION 1.2
+
+
+NEW FEATURES
+
+    o plot.phylo() has been completely re-written and offers several
+      new functionalities. Three types of trees can now be drawn:
+      phylogram (as previously), cladogram, and unrooted tree; in
+      all three types the branch lengths can be drawn using the edge
+      lengths of the phylogeny or not (e.g., if the latter is absent).
+      The vertical position of the nodes can be adjusted with two
+      choices (see option `node.pos'). The code has been re-structured,
+      and two new functions (potentially useful for developpers) are
+      documented separately: node.depth.edgelength() and node.depth();
+      see the respective help pages for details.
+
+    o The new function zoom() allows to explore very large trees by
+      focusing on a small portion of it.
+
+    o The new function yule() fits by maximum likelihood the Yule model
+      (birth-only process) to a phylogenetic tree.
+
+    o Support for writing DNA sequences in FASTA format has been
+      introduced in write.dna() (support for reading sequences in
+      this format was introduced in read.dna() in version 1.1-2).
+      The function has been completely re-written, fixing some bugs
+      (see below); the default behaviour is no more to display the
+      sequences on the standard output. Several options have been
+      introduced to control the sequence printing in a flexible
+      way. The help page has been extended.
+
+    o A new data set is included: a supertree of bats in NEXUS format.
+
+
+BUG FIXES
+
+    o In theta.s(), the default of the option `variance' has
+      been changed to `FALSE' (as was indicated in the help page).
+
+    o Several bugs were fixed in the code of all.equal.phylo().
+
+    o Several bugs were fixed in write.dna(), particularly this
+      function did not work with `format = "interleaved"'.
+
+    o Various errors were corrected in the help pages.
+
+
+OTHER CHANGES
+
+    o The argument names of as.hclust.phylo() have been changed
+      from "(phy)" to "(x, ...)" to conform to the definition of
+      the corresponding generic function.
+
+    o gamma.stat() has been renamed gammaStat() to avoid confusion
+      since gamma() is a generic function.
+
+
+
+		CHANGES IN APE VERSION 1.1-3
+
+
+BUG FIXES
+
+    o base.freq() previously did not return a value of 0 for
+      bases absent in the data (e.g., a vector of length 3 was
+      returned if one base was absent). This is now fixed (a
+      vector of length 4 is always returned).
+
+    o Several bugs were fixed in read.nexus(), including that this
+      function did not work in this absence of a "TRANSLATE"
+      command in the NEXUS file, and that the commands were
+      case-sensitive.
+
+
+
+		CHANGES IN APE VERSION 1.1-2
+
+
+NEW FEATURES
+
+    o The Tamura and Nei (1993) model of DNA distance is now implemented
+      in dist.dna(): five models are now available in this function.
+
+    o A new data set is included: a set of 15 sequences of the
+      cytochrome b mitochondrial gene of the woodmouse (Apodemus
+      sylvaticus).
+
+
+BUG FIXES
+
+    o A bug in read.nexus() was fixed.
+
+    o read.dna() previously did not work correctly in most cases.
+      The function has been completely re-written and its help page
+      has been considerably extended (see ?read.dna for details).
+      Underscores (_) in taxon names are no more replaced with
+      spaces (this behaviour was undocumented).
+
+    o A bug was fixed in write.dna().
+
+
+
+		CHANGES IN APE VERSION 1.1-1
+
+
+BUG FIXES
+
+    o A bug in read.tree() introduced in APE 1.1 was fixed.
+
+    o A bug in compar.gee() resulted in an error when trying to fit
+      a model with `family = "binomial"'. This is now fixed.
+
+
+
+ 		CHANGES IN APE VERSION 1.1
+
+
+NEW FEATURES
+
+    o The Klastorin (1982) method as suggested by Misawa and Tajima
+      (2000, Mol. Biol. Evol. 17:1879-1884) for classifying genes
+      on the basis of phylogenetic trees has been implemented (see
+      the function klastorin()).
+
+    o Functions have been added to convert APE's "phylo" objects in
+      "hclust" cluster objects and vice versa (see the help page of
+      as.phylo for details).
+
+    o Three new functions, ratogram(), chronogram() and NPRS.criterion(),
+      are introduced for the estimation of absolute evolutionary rates
+      (ratogram) and dated clock-like trees (chronogram) from
+      phylogenetic trees using the non-parametric rate smoothing approach
+      by MJ Sanderson (1997, Mol. Biol. Evol. 14:1218-1231).
+
+    o A summary method is now provided printing a summary information on a
+      phylogenetic tree with, for instance, `summary(tree)'.
+
+    o The behaviour of read.tree() was changed so that all spaces and
+      tabulations in tree files are now ignored. Consequently, spaces in tip
+      labels are no more allowed. Another side effect is that read.nexus()
+      now does not replace the underscores (_) in tip labels with spaces
+      (this behaviour was undocumented).
+
+    o The function plot.phylo() has a new option (`underscore') which
+      specifies whether the underscores in tip labels should be written on
+      the plot as such or replaced with spaces (the default).
+
+    o The function birthdeath() now computes 95% confidence intervals of
+      the estimated parameters using profile likelihood.
+
+    o Three new data sets are included: a gene tree estimated from 36
+      landplant rbcL sequences, a gene tree estimated from 32 opsin
+      sequences, and a gene tree for 50 BRCA1 mammalian sequences.
+
+
+BUG FIXES
+
+    o A bug was fixed in dist.gene() where nothing was returned.
+
+    o A bug in plot.mst() was fixed.
+
+    o A bug in vcv.phylo() resulted in false correlations when the
+      option `cor = TRUE' was used (now fixed).
+
+
+
+		CHANGES IN APE VERSION 1.0
+
+
+NEW FEATURES
+
+    o Two new functions, read.dna() and write.dna(), read/write in a file
+      DNA sequences in interleaved or in sequential format.
+
+    o Two new functions, read.nexus() and write.nexus(), read/write trees
+      in a NEXUS file.
+
+    o The new function bind.tree() allows to bind two trees together,
+      possibly handling root edges to give internal branches.
+
+    o The new function drop.tip() removes the tips in a phylogenetic tree,
+      and trims (or not) the corresponding internal branches.
+
+    o The new function is.ultrametric() tests if a tree is ultrametric.
+
+    o The function plot.phylo() has more functionalities such as drawing the
+      branches with different colours and/or different widths, showing the
+      node labels, controling the position and font of the labels, rotating
+      the labels, and controling the space around the plot.
+
+    o The function read.tree() can now read trees with no branch length,
+      such as "(a,b),c);". Consequently, the element `edge.length' in
+      objects of class "phylo" is now optional.
+
+    o The function write.tree() has a new default behaviour: if the default
+      for the option `file' is used (i.e. file = ""), then a variable of
+      mode character containing the tree in Newick format is returned which
+      can thus be assigned (e.g., tree <- write.tree(phy)).
+
+    o The function read.tree() has a new argument `text' which allows
+      to read the tree in a variable of mode character.
+
+    o A new data set is included: the phylogenetic relationships among
+      the orders of birds from Sibley and Ahlquist (1990).
+
+
+
+		CHANGES IN APE VERSION 0.2-1
+
+
+BUG FIXES
+
+    o Several bugs were fixed in the help pages.
+
+
+
+		CHANGES IN APE VERSION 0.2
+
+
+NEW FEATURES
+
+    o The function write.tree() writes phylogenetic trees (objects of class
+      "phylo") in an ASCII file using the Newick parenthetic format.
+
+    o The function birthdeath() fits a birth-death model to branching times
+      by maximum likelihood, and estimates the corresponding speciation and
+      extinction rates.
+
+    o The function scale.bar() adds a scale bar to a plot of a phylogenetic
+      tree.
+
+    o The function is.binary.tree() tests whether a phylogeny is binary.
+
+    o Two generic functions, coalescent.intervals() and collapsed.intervals(),
+      as well as some methods are introduced.
+
+    o Several functions, including some generics and methods, for computing
+      skyline plot estimates (classic and generalized) of effective
+      population size through time are introduced and replace the function
+      skyline.plot() in version 0.1.
+
+    o Two data sets are now included: the phylogenetic relationships among
+      the families of birds from Sibley and Ahlquist (1990), and an
+      estimated clock-like phylogeny of HIV sequences sampled in the
+      Democratic Republic of Congo.
+
+
+DEPRECATED & DEFUNCT
+
+    o The function skyline.plot() in ape 0.1 has been deprecated and
+      replaced by more elaborate functions (see above).
+
+
+BUG FIXES
+
+    o Two important bugs were fixed in plot.phylo(): phylogenies with
+      multichotomies not at the root or not with only terminal branches,
+      and phylogenies with a single node (i.e. only terminal branches)
+      did not plot. These trees should be plotted correctly now.
+
+    o Several bugs were fixed in diversi.time() in the computation of
+      AICs and LRTs.
+
+    o Various errors were corrected in the help pages.

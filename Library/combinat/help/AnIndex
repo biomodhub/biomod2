@@ -1,0 +1,13 @@
+combn	combn
+combn2	combn
+dmnom	dmnom
+fact	dmnom
+hcube	hcube
+logfact	dmnom
+nCm	combn
+nsimplex	nsimplex
+permn	permn
+rmultinomial	rmultinomial
+rmultz2	rmultinomial
+x2u	x2u
+xsimplex	xsimplex

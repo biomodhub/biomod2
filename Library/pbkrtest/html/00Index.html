@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Parametric Bootstrap, Kenward-Roger and Satterthwaite Based
+Methods for Test in Mixed Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Parametric Bootstrap, Kenward-Roger and Satterthwaite Based
+Methods for Test in Mixed Models
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;pbkrtest&rsquo; version 0.5.5</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS">Package NEWS</a></li>
+<li><a href="../README.md">Package README</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="anovax.html">anovax</a></td>
+<td>anova like function</td></tr>
+<tr><td style="width: 25%;"><a href="anovax.html">anovax.default</a></td>
+<td>anova like function</td></tr>
+<tr><td style="width: 25%;"><a href="anovax.html">anovax.lmerMod</a></td>
+<td>anova like function</td></tr>
+<tr><td style="width: 25%;"><a href="anovax_list.html">anovax_list</a></td>
+<td>Various different tests for model comparison</td></tr>
+<tr><td style="width: 25%;"><a href="data-beets.html">beets</a></td>
+<td>Sugar beets data</td></tr>
+<tr><td style="width: 25%;"><a href="data-budworm.html">budworm</a></td>
+<td>Budworm data</td></tr>
+<tr><td style="width: 25%;"><a href="compare_column_space.html">compare_column_space</a></td>
+<td>Compare column spaces</td></tr>
+<tr><td style="width: 25%;"><a href="data-beets.html">data-beets</a></td>
+<td>Sugar beets data</td></tr>
+<tr><td style="width: 25%;"><a href="data-budworm.html">data-budworm</a></td>
+<td>Budworm data</td></tr>
+<tr><td style="width: 25%;"><a href="get_ddf_Lb.html">ddf_Lb</a></td>
+<td>Adjusted denominator degrees of freedom for linear estimate for linear mixed model.</td></tr>
+<tr><td style="width: 25%;"><a href="get_modcomp.html">getKR</a></td>
+<td>Extract (or "get") components from a 'KRmodcomp' or 'SATmodcomp' object.</td></tr>
+<tr><td style="width: 25%;"><a href="getLRT.html">getLRT</a></td>
+<td>Likelihood Ratio Test Between Nested Models</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">getLRT.mer</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="get_modcomp.html">getSAT</a></td>
+<td>Extract (or "get") components from a 'KRmodcomp' or 'SATmodcomp' object.</td></tr>
+<tr><td style="width: 25%;"><a href="get_ddf_Lb.html">get_ddf_Lb</a></td>
+<td>Adjusted denominator degrees of freedom for linear estimate for linear mixed model.</td></tr>
+<tr><td style="width: 25%;"><a href="get_ddf_Lb.html">get_ddf_Lb.lmerMod</a></td>
+<td>Adjusted denominator degrees of freedom for linear estimate for linear mixed model.</td></tr>
+<tr><td style="width: 25%;"><a href="get_ddf_Lb.html">get_Lb_ddf</a></td>
+<td>Adjusted denominator degrees of freedom for linear estimate for linear mixed model.</td></tr>
+<tr><td style="width: 25%;"><a href="get_ddf_Lb.html">get_Lb_ddf.lmerMod</a></td>
+<td>Adjusted denominator degrees of freedom for linear estimate for linear mixed model.</td></tr>
+<tr><td style="width: 25%;"><a href="get_modcomp.html">get_modcomp</a></td>
+<td>Extract (or "get") components from a 'KRmodcomp' or 'SATmodcomp' object.</td></tr>
+<tr><td style="width: 25%;"><a href="get_nested_model_info.html">get_nested_model_info</a></td>
+<td>Resolve Nested Model Representation</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">get_SigmaG</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">get_SigmaG.lmerMod</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">get_SigmaG.mer</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="internal-pbkrtest.html">internal-pbkrtest</a></td>
+<td>pbkrtest internal</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">kr-vcovAdj</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr__modcomp.html">KRmodcomp</a></td>
+<td>F-test and degrees of freedom based on Kenward-Roger approximation</td></tr>
+<tr><td style="width: 25%;"><a href="kr__modcomp.html">KRmodcomp.lmerMod</a></td>
+<td>F-test and degrees of freedom based on Kenward-Roger approximation</td></tr>
+<tr><td style="width: 25%;"><a href="kr__modcomp.html">KRmodcomp.mer</a></td>
+<td>F-test and degrees of freedom based on Kenward-Roger approximation</td></tr>
+<tr><td style="width: 25%;"><a href="kr__modcomp.html">KRmodcomp_internal</a></td>
+<td>F-test and degrees of freedom based on Kenward-Roger approximation</td></tr>
+<tr><td style="width: 25%;"><a href="any_modcomp.html">kr_modcomp</a></td>
+<td>Compare two models</td></tr>
+<tr><td style="width: 25%;"><a href="kr__modcomp.html">kr__modcomp</a></td>
+<td>F-test and degrees of freedom based on Kenward-Roger approximation</td></tr>
+<tr><td style="width: 25%;"><a href="get_ddf_Lb.html">Lb_ddf</a></td>
+<td>Adjusted denominator degrees of freedom for linear estimate for linear mixed model.</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">LMM_Sigma_G</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="model-coerce.html">make_model_matrix</a></td>
+<td>Conversion between a model object and a restriction matrix</td></tr>
+<tr><td style="width: 25%;"><a href="model-coerce.html">make_restriction_matrix</a></td>
+<td>Conversion between a model object and a restriction matrix</td></tr>
+<tr><td style="width: 25%;"><a href="any_modcomp.html">modcomp</a></td>
+<td>Compare two models</td></tr>
+<tr><td style="width: 25%;"><a href="model-coerce.html">model-coerce</a></td>
+<td>Conversion between a model object and a restriction matrix</td></tr>
+<tr><td style="width: 25%;"><a href="model-coerce.html">model2restriction_matrix</a></td>
+<td>Conversion between a model object and a restriction matrix</td></tr>
+<tr><td style="width: 25%;"><a href="pb-refdist.html">pb-refdist</a></td>
+<td>Calculate reference distribution using parametric bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">PBmodcomp</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">PBmodcomp.lm</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">PBmodcomp.mer</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">PBmodcomp.merMod</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="pb-refdist.html">PBrefdist</a></td>
+<td>Calculate reference distribution using parametric bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="pb-refdist.html">PBrefdist.gls</a></td>
+<td>Calculate reference distribution using parametric bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="pb-refdist.html">PBrefdist.lm</a></td>
+<td>Calculate reference distribution using parametric bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="pb-refdist.html">PBrefdist.merMod</a></td>
+<td>Calculate reference distribution using parametric bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="any_modcomp.html">pb_modcomp</a></td>
+<td>Compare two models</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">pb__modcomp</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">plot.XXmodcomp</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="anovax.html">print.anovax</a></td>
+<td>anova like function</td></tr>
+<tr><td style="width: 25%;"><a href="model-coerce.html">restriction_matrix2model</a></td>
+<td>Conversion between a model object and a restriction matrix</td></tr>
+<tr><td style="width: 25%;"><a href="sat__modcomp.html">SATmodcomp</a></td>
+<td>F-test and degrees of freedom based on Satterthwaite approximation</td></tr>
+<tr><td style="width: 25%;"><a href="sat__modcomp.html">SATmodcomp.lmerMod</a></td>
+<td>F-test and degrees of freedom based on Satterthwaite approximation</td></tr>
+<tr><td style="width: 25%;"><a href="any_modcomp.html">sat_modcomp</a></td>
+<td>Compare two models</td></tr>
+<tr><td style="width: 25%;"><a href="sat__modcomp.html">sat__modcomp</a></td>
+<td>F-test and degrees of freedom based on Satterthwaite approximation</td></tr>
+<tr><td style="width: 25%;"><a href="pb__modcomp.html">seqPBmodcomp</a></td>
+<td>Model comparison using parametric bootstrap methods.</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">vcovAdj</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">vcovAdj.lmerMod</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">vcovAdj.mer</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">vcovAdj0</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">vcovAdj2</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="kr-vcovAdj.html">vcovAdj_internal</a></td>
+<td>Adjusted covariance matrix for linear mixed models according to Kenward and Roger</td></tr>
+<tr><td style="width: 25%;"><a href="x2__modcomp.html">X2modcomp</a></td>
+<td>Chisq test</td></tr>
+<tr><td style="width: 25%;"><a href="x2__modcomp.html">X2modcomp.default</a></td>
+<td>Chisq test</td></tr>
+<tr><td style="width: 25%;"><a href="any_modcomp.html">x2_modcomp</a></td>
+<td>Compare two models</td></tr>
+<tr><td style="width: 25%;"><a href="x2__modcomp.html">x2__modcomp</a></td>
+<td>Chisq test</td></tr>
+</table>
+</div></body></html>

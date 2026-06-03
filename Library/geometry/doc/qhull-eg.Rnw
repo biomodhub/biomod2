@@ -1,0 +1,113 @@
+%\VignetteIndexEntry{Qhull examples}
+\documentclass{article}
+\usepackage{Sweave}
+\SweaveOpts{echo=TRUE}
+\usepackage{hyperref}
+\usepackage[british]{babel}
+
+\title{Qhull examples}
+\author{David C. Sterratt}
+
+\begin{document}
+
+\maketitle
+
+This document presents examples of the \texttt{geometry} package
+functions which implement functions using the
+\href{http://www.qhull.org}{Qhull library}.
+
+\section{Convex hulls in 2D}
+\label{qhull-eg:sec:convex-hull-2d}
+
+\subsection{Calling \texttt{convhulln} with one argument}
+\label{qhull-eg:sec:call-convh-with}
+
+With one argument, convhulln returns the indices of the points of the
+convex hull.
+<<>>=
+library(geometry)
+ps <-matrix(rnorm(30), , 2)
+ch <- convhulln(ps)
+head(ch)
+@ 
+
+\subsection{Calling \texttt{convhulln} with \texttt{options}}
+\label{qhull-eg:sec:call-convh-with}
+
+We can supply Qhull options to \texttt{convhulln}; in this case it
+returns an object of class \texttt{convhulln} which is also a list.
+For example \texttt{FA} returns the generalised \texttt{area} and
+
+\texttt{vol}ume. Confusingly in 2D the generalised area is the length
+of the perimeter, and the generalised volume is the area.
+<<>>=
+ps <-matrix(rnorm(30), , 2)
+ch <- convhulln(ps, options="FA")
+print(ch$area)
+print(ch$vol)
+@ 
+
+A \texttt{convhulln} object can also be plotted. 
+<<fig=TRUE>>=
+plot(ch)
+@ 
+
+We can also find the normals to the ``facets'' of the convex hull:
+<<>>=
+ch <- convhulln(ps, options="n")
+head(ch$normals)
+@ 
+Here the first two columns and the $x$ and $y$ direction of the normal,
+and the third column defines the position at which the face intersects
+that normal.
+
+\subsection{Testing if points are inside a convex hull with \texttt{inhulln}}
+\label{qhull-eg:sec:testing-if-points}
+
+The function \texttt{inhulln} can be used to test if points are inside
+a convex hull. Here the function \texttt{rbox} is a handy way to
+create points at random locations.
+<<fig=TRUE>>=
+tp <- rbox(n=200, D=2, B=4)
+in_ch <- inhulln(ch, tp)
+plot(tp[!in_ch,], col="gray")
+points(tp[in_ch,], col="red")
+plot(ch, add=TRUE)
+@ 
+
+\section{Delaunay triangulation in 2D}
+\label{qhull-eg:sec:dela-triang-2d}
+
+\subsection{Calling \texttt{delaunayn} with one argument}
+\label{qhull-eg:sec:call-delaunayn-with}
+
+With one argument, a set of points, \texttt{delaunayn} returns the
+indices of the points at each vertex of each triangle in the triangulation.
+<<fig=TRUE>>=
+ps <- rbox(n=10, D=2)
+dt <- delaunayn(ps)
+head(dt)
+trimesh(dt, ps)
+points(ps)
+@ 
+
+\subsection{Calling \texttt{delaunayn} with \texttt{options}}
+\label{qhull-eg:sec:call-dela-with}
+
+We can supply Qhull options to \texttt{delaunayn}; in this case it
+returns an object of class \texttt{delaunayn} which is also a list.
+For example \texttt{Fa} returns the generalised \texttt{area} of each
+triangle. In 2D the generalised area is the actual area; in 3D it
+would be the volume.
+<<>>=
+dt2 <- delaunayn(ps, options="Fa")
+print(dt2$areas)
+dt2 <- delaunayn(ps, options="Fn")
+print(dt2$neighbours)
+@
+
+\end{document}
+
+
+%  LocalWords:  Qhull convhulln ps rnorm ume inhulln rbox tp gray dt
+%  LocalWords:  delaunayn trimesh Fn

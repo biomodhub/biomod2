@@ -1,0 +1,301 @@
+Dtest                   Conducts correlational D-test from stochastic
+                        mapping
+add.arrow               Add an arrow pointing to a tip or node on the
+                        tree
+add.color.bar           Add color bar to a plot
+add.everywhere          Add tip to all edges in a tree
+add.random              Add tips at random to the tree
+add.simmap.legend       Add legend to stochastically mapped tree
+add.species.to.genus    Add species to genus on a phylogeny or bind
+                        simulated species subtrees to a backbone genus
+                        tree
+aic.w                   Computes Akaike weights
+allFurcTrees            Generate all bi- and multifurcating unrooted
+                        trees
+anc.Bayes               Bayesian ancestral character estimation
+anc.ML                  Ancestral character estimation using likelihood
+anc.trend               Ancestral character estimation with a trend
+ancThresh               Ancestral character estimation under the
+                        threshold model using Bayesian MCMC
+ancr                    Compute marginal or joint ancestral state
+                        estimates
+anoletree               Phylogenetic datasets
+ansi_phylo              Graph a phylogeny using only ANSI characters
+applyBranchLengths      Applies the branch lengths of a reference tree
+                        to a target
+as.Qmatrix              Convert a fitted M_k_ model to a Q-matrix
+as.multiPhylo           Conversion to object of class '"multiPhylo"'
+ave.rates               Average the posterior rates
+averageTree             Compute an average tree from a set of trees and
+                        related operations
+bd                      Convert object of class '"birthdeath"' to raw
+                        birth & death rates
+bind.tip                Attaches a new tip to a tree
+bind.tree.simmap        Binds two trees of class '"simmap"'
+bmPlot                  Simulates and visualizes continuous trait
+                        evolution on a phylogeny
+bounded_bm              Fits bounded and wrapped Brownian motion models
+branching.diffusion     Animation of branching random diffusion
+brownie.lite            Likelihood test for rate variation in a
+                        continuous trait
+brownieREML             REML version of 'brownie.lite'
+cladelabels             Add labels to subtrees of a plotted phylogeny
+collapse.to.star        Collapse a subtree to a star phylogeny
+collapseTree            Interactive tree visualizer
+compare.chronograms     Compares two chronograms with precisely
+                        matching nodes in a visual manner
+consensus.edges         Compute consensus edges for a tree under some
+                        criterion
+contMap                 Map continuous trait evolution on the tree
+cophylo                 Creates a co-phylogenetic plot
+cospeciation            Conducts a statistical test of cospeciation
+                        between two trees
+countSimmap             Counts the number of character changes on a
+                        object of class '"simmap"' or '"multiSimmap"'
+ctt                     Generates (or simulates) a 'changes through
+                        time' plot from a set of stochastic map
+                        character histories
+density.multiSimmap     Computes a posterior distribution for the
+                        number and types of changes on the tree
+densityMap              Plot posterior density of stochastic mapping on
+                        a tree
+densityTree             Plots a posterior sample of trees
+describe.simmap         Summarizes a stochastic mapped tree or set of
+                        trees
+di2multi.simmap         Collapse or resolve polytomies in a tree with a
+                        character painted on the edges
+dotTree                 Creates a phylogenetic dot plot
+drop.clade              Drop a clade from a tree
+drop.leaves             Drop all the leaves (tips) from a tree
+drop.tip.contMap        Drop tip or tips from an object of class
+                        '"contMap"' or '"densityMap"'
+drop.tip.multiSimmap    Drop or keep tip or tips from an object of
+                        class '"multiSimmap"'
+drop.tip.simmap         Drop tips or extract clade from tree with
+                        mapped discrete character
+edge.widthMap           Map continuous trait evolution on the tree
+edgeProbs               Compute the relative frequencies of state
+                        changes along edges
+estDiversity            Estimate diversity at each node of the tree
+evol.rate.mcmc          Bayesian MCMC method for identifying
+                        exceptional phenotypic diversification in a
+                        phylogeny
+evol.vcv                Likelihood test for variation in the
+                        evolutionary variance-covariance matrix
+evolvcv.lite            Likelihood test for a shift in the evolutionary
+                        correlation between traits
+exhaustiveMP            Exhaustive and branch & bound MP optimization
+expand.clade            Expands (or contracts) the tip-spacing of a
+                        given clade or clades
+export.as.xml           Export trees & data in XML format
+fancyTree               Plots special types of phylogenetic trees
+fastAnc                 (Reasonably) fast estimation of ML ancestral
+                        states
+fastBM                  (Reasonably) fast quantitative trait simulation
+                        on phylogenies
+fastMRCA                Get the MRCA (or height above the root of the
+                        MRCA) of a pair of tip taxa
+findMRCA                Get the MRCA of a set of taxa
+fit.bd                  Fits birth-death (speciation/extinction) model
+                        to reconstructed phylogeny
+fitBayes                Evolutionary model fitting with intraspecific
+                        variability using Bayesian MCMC
+fitDiversityModel       Fit diversity-dependent phenotypic evolution
+                        model
+fitMk                   Fits extended M_k_ model for discrete character
+                        evolution
+fitPagel                Function to test for correlated evolution of
+                        binary traits
+fitThresh               Fits binary, multi-state, and semi-threshold
+                        models using the discretized diffusion
+                        approximation
+fitcontMk               Fits binary discrete character evolution model
+                        where the transition rate varies as a function
+                        of a continuous trait
+fitmultiBM              Fits multi-rate (or multi-trend) discrete
+                        character dependent continuous trait evolution
+force.ultrametric       Coerces a phylogenetic tree to be ultrametric
+gamma_pruning           Internally used function
+gammatest               gamma test of Pybus & Harvey (2000)
+genSeq                  Simulate a DNA alignment on the tree under a
+                        model
+geo.legend              Adds a geological (or other temporal) legend to
+                        a plotted tree
+get.treepos             Get position or node of a plotted tree
+                        interactively
+getCladesofSize         Get all subtrees larger than or equal to a
+                        specified size
+getDescendants          Get descendant node numbers
+getExtant               Returns a list of the extant or extinct
+                        lineages in a tree containing
+                        non-contemporaneous tips
+getSisters              Get the sister node number, label, or set of
+                        nodes for a node or tip
+getStates               Get the states at nodes or tips from a mapped
+                        tree
+labelnodes              Function to interactively label nodes of a
+                        plotted tree
+ladderize.simmap        Ladderize a tree with a mapped discrete
+                        character
+lambda.transform        lambda transformation of matrix
+likMlambda              Likelihood for joint lambda
+linklabels              Function to add tip labels to a plotted tree
+                        with linking lines
+locate.fossil           Locate a fossil lineage in a tree using
+                        continuous characters
+locate.yeti             Locate a cryptic, recently extinct, or missing
+                        taxon on a tree
+ls.tree                 Least squares branch lengths for a given tree
+ltt                     Creates lineage-through-time plot (including
+                        extinct lineages)
+ltt95                   Creates a (1-alpha)% CI for a set of LTTs
+make.era.map            Create "era" map on a phylogenetic tree
+make.simmap             Simulate stochastic character maps on a
+                        phylogenetic tree or trees
+map.overlap             Proportional overlap between two mapped
+                        character histories on a tree
+map.to.singleton        Converts a tree without singletons to a tree
+                        with singleton nodes
+mapped.states           Returns a vector, matrix, or list of the mapped
+                        states on a tree or set of trees
+markChanges             Add marked changes to a plotted tree with
+                        mapped discrete character
+matchNodes              Matches nodes between two trees
+mergeMappedStates       Merge two or more mapped states into one state
+midpoint_root           Midpoint root a phylogeny
+minRotate               Rotates all nodes of the tree to minimize the
+                        difference in order with a vector
+minSplit                Finding the minimum (median) split in the
+                        posterior sample
+modified.Grafen         Computes modified Grafen edge lengths
+mrp.supertree           Matrix representation parsimony supertree
+                        estimation
+multi.mantel            Multiple matrix regression (partial Mantel
+                        test)
+multiC                  Returns a list with phylogenetic VCV matrix for
+                        each mapped state
+multiRF                 Computes Robinson-Foulds distance between a set
+                        of trees
+multirateBM             Function to fit a multi-rate Brownian evolution
+                        model
+nodeHeights             Compute the heights above the root of each node
+nodelabels.cophylo      Add labels to a plotted "cophylo" object
+optim.phylo.ls          Phylogeny inference using the least squares
+                        method
+orderMappedEdge         Order the columns of 'mapped.edge' to match
+                        across trees
+paintSubTree            Paint sub-trees with a discrete character
+paste.tree              Paste two trees together
+pbtree                  Simulate pure-birth or birth-death stochastic
+                        tree or trees
+pgls.Ives               Phylogenetic regression with intraspecific
+                        sampling error
+phenogram               Plot traitgram (phenogram)
+phyl.RMA                Phylogenetic reduced major axis (RMA)
+                        regression
+phyl.cca                Phylogenetic canonical correlation analysis
+phyl.pairedttest        Phylogenetic paired _t_-test
+phyl.pca                Phylogenetic principal components analysis
+phyl.resid              Phylogenetic size-correction via GLS regression
+phyl.vcv                Compute evolutionary VCV matrix for a tree &
+                        dataset
+phylANOVA               Phylogenetic ANOVA and post-hoc tests
+phylo.heatmap           Creates a phylogenetic heat map
+phylo.impute            Phylogenetic imputation for multivariate
+                        continuous character data
+phylo.to.map            Plot tree with tips linked to geographic
+                        coordinates
+phylo.toBackbone        Converts tree to backbone or vice versa
+phyloDesign             Compute design matrix for least squares
+                        analyses
+phylomorphospace        Creates phylomorphospace plot
+phylomorphospace3d      Creates three-dimensional phylomorphospace plot
+phylosig                Compute phylogenetic signal with two methods
+phytools-package        phytools: Phylogenetic Tools for comparative
+                        biology (and other things)
+plot.backbonePhylo      Plots backbone tree with triangles as clades
+plotBranchbyTrait       Plot branch colors by a quantitative trait or
+                        value
+plotSimmap              Plot stochastic character mapped tree
+plotThresh              Tree plotting with posterior probabilities of
+                        ancestral states from the threshold model
+plotTree                Plots rooted phylogenetic tree
+plotTree.datamatrix     Plot a tree with a discrete (or continuous)
+                        character data matrix at the tips
+plotTree.errorbars      Plot a tree with error bars around divergence
+                        dates
+plotTree.lollipop       Plot a tree with one or more matched lollipop
+                        plots
+plotTree.wBars          Plot a tree with bars at the tips
+posterior.evolrate      Analysis of the posterior sample from
+                        evol.rate.mcmc
+posthoc                 Generic post-hoc test
+print.backbonePhylo     Print method for backbone phylogeny
+pscore                  Compute the parsimony score
+ratebystate             Method for investigating the rate of one trait
+                        as a function of the state of another
+ratebytree              Likelihood test for rate variation among trees,
+                        clades, or traits
+rateshift               Find the temporal position of one or more rate
+                        shifts
+read.newick             Newick or Nexus style tree reader
+read.simmap             Read SIMMAP style trees from file
+reorder.backbonePhylo   Reorders a backbone phylogeny
+reorderSimmap           Reorder edges of a '"simmap"' tree
+rep.phylo               Replicate a tree or set of trees
+reroot                  Re-root a tree along an edge
+rerootingMethod         Get marginal ancestral state reconstructions by
+                        re-rooting
+rescale                 Rescale phylogenetic objects of different types
+rescale.simmap          Rescale object of class '"simmap"'
+resolveNode             Compute all possible resolutions of a node or
+                        all nodes in a multifurcating tree
+rotateNodes             Rotates a node or set of nodes in a
+                        phylogenetic tree
+roundBranches           Rounds the branch lengths of a tree
+roundPhylogram          Plot a round, sigmoidal, or spline phylogram or
+                        cladogram
+rstate                  Pick a random state according to a vector of
+                        probabilities
+sampleFrom              Sample from a set of distributions
+setMap                  Set color map for various phylogenetic objects
+                        of classes
+sim.corrs               Multivariate Brownian simulation with multiple
+                        correlations and rates
+sim.history             Simulate character history or a discrete
+                        character at the tips of the tree under some
+                        model
+sim.ratebystate         Conduct simulation of state dependent rate
+                        variation
+sim.rates               Brownian or OU simulation with multiple
+                        evolutionary regimes
+simBMphylo              Creates a graphical illustration of Brownian
+                        motion evolution on a phylogeny
+skewers                 Matrix comparison using the method of random
+                        skewers
+splitEdgeColor          Split edge colors when descendant edges have
+                        different mapped states
+splitTree               Split tree at a point
+splitplotTree           Plots a phylogeny in two columns
+starTree                Create star phylogeny
+strahlerNumber          Computes Strahler number for trees and nodes
+threshBayes             Threshold model using Bayesian MCMC
+threshDIC               Deviance Information Criterion from the
+                        threshold model
+threshState             Computes value for a threshold character from a
+                        liability and thresholds
+to.matrix               Convert a character vector to a binary matrix
+tree.grow               Creates an animation of a tree growing from
+                        left-to-right or upwards
+treeSlice               Slices the tree at a particular point and
+                        returns all subtrees, or the tree rootward of
+                        the point
+untangle                Attempts to untangle crossing branches for
+                        plotting
+vcvPhylo                Calculates cophenetic (i.e., phylogenetic VCV)
+                        matrix
+write.simmap            Write a stochastic character mapped tree to
+                        file
+writeAncestors          Write a tree to file with ancestral states and
+                        (optionally) CIs at nodes
+writeNexus              Write a tree to file in Nexus format

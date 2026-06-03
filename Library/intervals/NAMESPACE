@@ -1,0 +1,66 @@
+######## Compiled code
+
+useDynLib( "intervals", .registration = TRUE )
+
+######## Imports
+
+# Class, method, and regular imports from the methods package are not listed
+# here, since we depend on the package.
+
+import("methods")
+
+importFrom( "utils", "head", "tail" )
+importFrom( "graphics", "par", "points", "text", "axis", "segments" )
+
+######## Exports
+
+export( "Intervals", "Intervals_full" )
+
+S3method( "split", "Intervals_virtual" )
+S3method( "as.matrix", "Intervals_virtual" )
+S3method( "c", "Intervals" )
+S3method( "c", "Intervals_full" )
+S3method( "plot", "Intervals" )
+S3method( "plot", "Intervals_full" )
+exportClasses(
+  "Intervals",
+  "Intervals_full",
+  "Intervals_virtual",
+  "Intervals_virtual_or_numeric"
+)
+
+exportMethods(
+  "[",
+  "[<-",
+  "as.matrix",
+  "adjust_closure",
+  "close_intervals",
+  "closed",
+  "closed<-",
+  "clusters",
+  "coerce",
+  "contract",
+  "distance_to_nearest",
+  "empty",
+  "expand",
+  "head",
+  "initialize",
+  "interval_complement",
+  "interval_difference",
+  "interval_included",
+  "interval_intersection",
+  "interval_overlap",
+  "interval_union",
+  "is.na",
+  "open_intervals",
+  "plot",
+  "reduce",
+  "show",
+  "size",
+  "split",
+  "t",
+  "tail",
+  "type",
+  "type<-",
+  "which_nearest"
+)

@@ -1,0 +1,3 @@
+useDynLib(fastmatch, C_fmatch = fmatch, C_ctapply = ctapply, C_coalesce = coalesce, C_append = append, mk_hash, get_table, get_values)
+export(fmatch, fmatch.hash, ctapply, coalesce, "%fin%", "%!fin%")
+S3method(print, match.hash)

@@ -1,0 +1,2615 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Identification of Data Flags</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Identification of Data Flags</h1>
+
+
+
+<p>Code here written by <a href="https://orcid.org/0000-0003-3192-0080">Erica Krimmel</a>.</p>
+<div id="general-overview" class="section level2">
+<h2>General Overview</h2>
+<p>In this use case for the <a href="https://github.com/iDigBio/idigbio-search-api/wiki">iDigBio
+API</a> we look at how to search for specimen records that have a
+specific data quality flag. See <a href="https://github.com/iDigBio/idigbio-search-api/wiki/Data-Quality-Flags">here</a>
+for more information about iDigBio’s data quality flags.</p>
+<p>In this demo we will cover how to:</p>
+<ol style="list-style-type: decimal">
+<li>Write a query to search for specimens using
+<code>idig_search_records</code></li>
+<li>Explore data quality flags</li>
+</ol>
+</div>
+<div id="load-packages" class="section level2">
+<h2>Load Packages</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Load core libraries; install these packages if you have not already</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(ridigbio)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># Load library for making nice HTML output</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code></pre></div>
+</div>
+<div id="write-a-query-to-search-for-specimen-records" class="section level2">
+<h2>Write a query to search for specimen records</h2>
+<p>First, let’s find all the specimen records for the data quality flag
+we are interested in. Do this using the <code>idig_search_records</code>
+function from the <code>ridigbio</code> package. You can learn more
+about this function from the <a href="https://github.com/iDigBio/idigbio-search-api/wiki">iDigBio API
+documentation</a> and <a href="https://cran.r-project.org/package=ridigbio/ridigbio.pdf">ridigbio
+documentation</a>.</p>
+<p>In this example, we want to start by searching for specimens flagged
+with “rev_geocode_flip” which means that iDigBio has swapped the values
+of the latitude and longitude fields in order to place the coordinate
+point in the country stated by the record. For example, iDigBio ingests
+a record with the coordinates “-87.646166, 41.89542” that says it was
+collected in the United States, but the verbatim coordinates actually
+plot to Antarctica. If the latitude and longitude are flipped, then the
+coordinates plot to the United States, so iDigBio assumes that this is
+what the data provider meant.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Edit the fields (e.g. `flags` or `institutioncode`) and values (e.g. </span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># &quot;rev_geocode_flip&quot; or &quot;fmnh&quot;) in `list()` to adjust your query and the fields</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># (e.g. `uuid`) in `fields` to adjust the columns returned in your results</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>records <span class="ot">&lt;-</span> <span class="fu">idig_search_records</span>(<span class="at">rq =</span> <span class="fu">list</span>(<span class="at">flags =</span> <span class="st">&quot;rev_geocode_flip&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>                                              <span class="at">institutioncode =</span> <span class="st">&quot;fmnh&quot;</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>                    <span class="at">fields =</span> <span class="fu">c</span>(<span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>                               <span class="st">&quot;institutioncode&quot;</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>                               <span class="st">&quot;collectioncode&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>                               <span class="st">&quot;country&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:country&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>                               <span class="st">&quot;stateprovince&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>                               <span class="st">&quot;county&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>                               <span class="st">&quot;locality&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>                               <span class="st">&quot;geopoint&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:decimalLongitude&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:decimalLatitude&quot;</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>                    <span class="at">limit =</span> <span class="dv">100000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  <span class="co"># Rename fields to more easily reflect their provenance (either from the</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>  <span class="co"># data provider directly or modified by the data aggregator)</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">provider_lon =</span> <span class="st">`</span><span class="at">data.dwc:decimalLongitude</span><span class="st">`</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>         <span class="at">provider_lat =</span> <span class="st">`</span><span class="at">data.dwc:decimalLatitude</span><span class="st">`</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>         <span class="at">provider_country =</span> <span class="st">`</span><span class="at">data.dwc:country</span><span class="st">`</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>         <span class="at">aggregator_lon =</span> <span class="st">`</span><span class="at">geopoint.lon</span><span class="st">`</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>         <span class="at">aggregator_lat =</span> <span class="st">`</span><span class="at">geopoint.lat</span><span class="st">`</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>         <span class="at">aggregator_country =</span> country,</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>         <span class="at">aggregator_stateprovince =</span> stateprovince,</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>         <span class="at">aggregator_county =</span> county,</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>         <span class="at">aggregator_locality =</span> locality) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>  <span class="co"># Reorder columns for easier viewing</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>  <span class="fu">select</span>(uuid, institutioncode, collectioncode, provider_lat, aggregator_lat,</span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>         provider_lon, aggregator_lon, provider_country, aggregator_country,</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>         aggregator_stateprovince, aggregator_county, aggregator_locality)</span></code></pre></div>
+<p>Here is what our query result data looks like:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+uuid
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+institutioncode
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+collectioncode
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_lat
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_lat
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_lon
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_lon
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_country
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_country
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_stateprovince
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_county
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_locality
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+032387ec-d2c0-4e31-9217-06142b99ab45
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.646166
+</td>
+<td style="text-align:right;">
+41.89542
+</td>
+<td style="text-align:left;">
+41.89542
+</td>
+<td style="text-align:right;">
+-87.64617
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+04dba613-bb9a-4281-8dba-eb4bf59cd777
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.107013
+</td>
+<td style="text-align:right;">
+41.86614
+</td>
+<td style="text-align:left;">
+41.86614
+</td>
+<td style="text-align:right;">
+-88.10701
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+wheaton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+05679624-d82c-4488-bd4b-ab13f40abb0b
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+75
+</td>
+<td style="text-align:right;">
+38.00000
+</td>
+<td style="text-align:left;">
+38
+</td>
+<td style="text-align:right;">
+75.00000
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+china
+</td>
+<td style="text-align:left;">
+xinjiang uygur
+</td>
+<td style="text-align:left;">
+kashi pref
+</td>
+<td style="text-align:left;">
+taxkorgan tajik aut co, near little kara kul, ‘kara su’ river
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0bdf0231-dae7-4de5-a43b-c756e96cb74e
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.818397
+</td>
+<td style="text-align:right;">
+42.03420
+</td>
+<td style="text-align:left;">
+42.034196
+</td>
+<td style="text-align:right;">
+-87.81840
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co.
+</td>
+<td style="text-align:left;">
+oak park, pheasent and harlem
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0de28396-f117-4a0f-bca7-0d08cc58dc5a
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.140531
+</td>
+<td style="text-align:right;">
+41.79461
+</td>
+<td style="text-align:left;">
+41.79461
+</td>
+<td style="text-align:right;">
+-88.14053
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+naperville, 1520 maple knoll ct.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0f85a79f-2f5b-4d0d-8770-6e3f262c2834
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.090019
+</td>
+<td style="text-align:right;">
+41.71987
+</td>
+<td style="text-align:left;">
+41.719872
+</td>
+<td style="text-align:right;">
+-88.09002
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+will co.
+</td>
+<td style="text-align:left;">
+naperville, 25 w. 540 royce rd.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+109555a6-3fcf-43ec-ae83-450ea6e85e5e
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+fishes
+</td>
+<td style="text-align:left;">
+-80.85
+</td>
+<td style="text-align:right;">
+-6.45000
+</td>
+<td style="text-align:left;">
+-6.45
+</td>
+<td style="text-align:right;">
+-80.85000
+</td>
+<td style="text-align:left;">
+Peru
+</td>
+<td style="text-align:left;">
+peru
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+lobos de tierra bay
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1252e5dc-1fe6-4d78-a775-ba4c0ae5af67
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.067012
+</td>
+<td style="text-align:right;">
+41.87753
+</td>
+<td style="text-align:left;">
+41.877529
+</td>
+<td style="text-align:right;">
+-88.06701
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+glen ellyn, roosevelt &amp; park
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1561e1ce-23b9-43ab-a59c-2b299037f5b2
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.973949
+</td>
+<td style="text-align:right;">
+41.75198
+</td>
+<td style="text-align:left;">
+41.751975
+</td>
+<td style="text-align:right;">
+-87.97395
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+darien
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1ac87a63-1df9-48c4-984b-85f52d8d1f95
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.050341
+</td>
+<td style="text-align:right;">
+41.74697
+</td>
+<td style="text-align:left;">
+41.746975
+</td>
+<td style="text-align:right;">
+-88.05034
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+woodridge
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1f734bc6-130c-48d2-b47f-26cacfa5c722
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+31.3999996
+</td>
+<td style="text-align:right;">
+24.86667
+</td>
+<td style="text-align:left;">
+24.8666706
+</td>
+<td style="text-align:right;">
+31.40000
+</td>
+<td style="text-align:left;">
+Egypt
+</td>
+<td style="text-align:left;">
+egypt
+</td>
+<td style="text-align:left;">
+matruh
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+salum, sidi omar
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22717ba0-9ec5-4e1c-88fc-26452b9cdb22
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+75
+</td>
+<td style="text-align:right;">
+38.00000
+</td>
+<td style="text-align:left;">
+38
+</td>
+<td style="text-align:right;">
+75.00000
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+china
+</td>
+<td style="text-align:left;">
+xinjiang uygur
+</td>
+<td style="text-align:left;">
+kashi pref
+</td>
+<td style="text-align:left;">
+taxkorgan tajik aut co, near little kara kul, ‘kara su’ river
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+27236f31-f92b-4f42-8c76-be4f38599fc7
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.050341
+</td>
+<td style="text-align:right;">
+41.74697
+</td>
+<td style="text-align:left;">
+41.746975
+</td>
+<td style="text-align:right;">
+-88.05034
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+woodridge
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2c475317-1113-4dca-a32c-9f7673026a98
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+31.3999996
+</td>
+<td style="text-align:right;">
+24.86667
+</td>
+<td style="text-align:left;">
+24.8666706
+</td>
+<td style="text-align:right;">
+31.40000
+</td>
+<td style="text-align:left;">
+Egypt
+</td>
+<td style="text-align:left;">
+egypt
+</td>
+<td style="text-align:left;">
+matruh
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+salum, sidi omar
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+30fe1434-1e75-45e2-97d4-84520e0d1f90
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.107013
+</td>
+<td style="text-align:right;">
+41.86614
+</td>
+<td style="text-align:left;">
+41.86614
+</td>
+<td style="text-align:right;">
+-88.10701
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+wheaton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+334800d8-7f2f-472a-92ac-d242e6b4f2bc
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.090019
+</td>
+<td style="text-align:right;">
+41.71987
+</td>
+<td style="text-align:left;">
+41.719872
+</td>
+<td style="text-align:right;">
+-88.09002
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+will co.
+</td>
+<td style="text-align:left;">
+naperville, 25 w. 540 royce rd.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+33551039-8928-43fe-be46-26a2fb0f0150
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+invertebrate zoology
+</td>
+<td style="text-align:left;">
+-73
+</td>
+<td style="text-align:right;">
+-41.67000
+</td>
+<td style="text-align:left;">
+-41.67
+</td>
+<td style="text-align:right;">
+-73.00000
+</td>
+<td style="text-align:left;">
+Chile
+</td>
+<td style="text-align:left;">
+chile
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+chaica, senode reloncavi, llongothue
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+37c644b4-b1d8-4ab4-8a82-306502700307
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-89.97818
+</td>
+<td style="text-align:right;">
+42.08053
+</td>
+<td style="text-align:left;">
+42.080535
+</td>
+<td style="text-align:right;">
+-89.97818
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+carroll co.
+</td>
+<td style="text-align:left;">
+mt. carroll, 1 mile south of mount carroll
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+38e73860-a1ee-4585-8687-945cdec490ca
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.646166
+</td>
+<td style="text-align:right;">
+41.89542
+</td>
+<td style="text-align:left;">
+41.89542
+</td>
+<td style="text-align:right;">
+-87.64617
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+39c28ede-a1a2-4654-b530-62b926b522c6
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.087747
+</td>
+<td style="text-align:right;">
+42.63685
+</td>
+<td style="text-align:left;">
+42.636849
+</td>
+<td style="text-align:right;">
+-88.08775
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+wisconsin
+</td>
+<td style="text-align:left;">
+kenosha co
+</td>
+<td style="text-align:left;">
+kansasville, 23000 burlington rd., 53139
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3dc63226-5b38-47f0-b02d-ce6c1e99baea
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.087747
+</td>
+<td style="text-align:right;">
+42.63685
+</td>
+<td style="text-align:left;">
+42.636849
+</td>
+<td style="text-align:right;">
+-88.08775
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+wisconsin
+</td>
+<td style="text-align:left;">
+kenosha co
+</td>
+<td style="text-align:left;">
+kansasville, 23000 burlington rd., 53139
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+40f45ef7-1fc3-430e-9b84-d198ef87124a
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+invertebrate zoology
+</td>
+<td style="text-align:left;">
+-70.012086
+</td>
+<td style="text-align:right;">
+43.74296
+</td>
+<td style="text-align:left;">
+43.742961
+</td>
+<td style="text-align:right;">
+-70.01209
+</td>
+<td style="text-align:left;">
+United States of America
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+maine
+</td>
+<td style="text-align:left;">
+cumberland
+</td>
+<td style="text-align:left;">
+south harpswell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+419092db-710b-4823-9ada-cef1dc27d413
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.67913
+</td>
+<td style="text-align:right;">
+41.96874
+</td>
+<td style="text-align:left;">
+41.968745
+</td>
+<td style="text-align:right;">
+-87.67913
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co.
+</td>
+<td style="text-align:left;">
+chicago, damen and lawrence
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+422e0874-3c59-4e97-8838-ab0faed00b16
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.968099
+</td>
+<td style="text-align:right;">
+42.27394
+</td>
+<td style="text-align:left;">
+42.273935
+</td>
+<td style="text-align:right;">
+-87.96810
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+lake co.
+</td>
+<td style="text-align:left;">
+libertyville, 911 creastfield ave.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+46e7dca6-bd0f-4710-a2ae-066e47a96e59
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+invertebrate zoology
+</td>
+<td style="text-align:left;">
+-73
+</td>
+<td style="text-align:right;">
+-41.66670
+</td>
+<td style="text-align:left;">
+-41.6667
+</td>
+<td style="text-align:right;">
+-73.00000
+</td>
+<td style="text-align:left;">
+Chile
+</td>
+<td style="text-align:left;">
+chile
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+llangothie, senode, relocnavi, chaica
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4b6340c2-8d61-4f06-8539-0c174cd03f3b
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+75
+</td>
+<td style="text-align:right;">
+38.00000
+</td>
+<td style="text-align:left;">
+38
+</td>
+<td style="text-align:right;">
+75.00000
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+china
+</td>
+<td style="text-align:left;">
+xinjiang uygur
+</td>
+<td style="text-align:left;">
+kashi pref
+</td>
+<td style="text-align:left;">
+taxkorgan tajik aut co, near little kara kul, ‘subashi’ pass
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4c5a8228-8b47-4c9b-b7b7-8a4748061691
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.058783
+</td>
+<td style="text-align:right;">
+41.79092
+</td>
+<td style="text-align:left;">
+41.790922
+</td>
+<td style="text-align:right;">
+-88.05878
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+lisle, 5321 westview, 60532
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4f4ecf74-48cd-4d44-bbec-117ce36cc805
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-89.869212
+</td>
+<td style="text-align:right;">
+42.25056
+</td>
+<td style="text-align:left;">
+42.250559
+</td>
+<td style="text-align:right;">
+-89.86921
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+stephenson co.
+</td>
+<td style="text-align:left;">
+near pearl city-loran/nw
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4f56899f-6bfd-482a-89e8-d47f31ca6b73
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.107013
+</td>
+<td style="text-align:right;">
+41.86614
+</td>
+<td style="text-align:left;">
+41.86614
+</td>
+<td style="text-align:right;">
+-88.10701
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+wheaton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5c836443-dfbc-4298-a0b9-499f587117b9
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.056212
+</td>
+<td style="text-align:right;">
+41.88147
+</td>
+<td style="text-align:left;">
+41.881469
+</td>
+<td style="text-align:right;">
+-88.05621
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+glen ellyn, 735 cresent blvd.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6385b5e2-4219-4154-a4b1-aee2e297f0ee
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.050341
+</td>
+<td style="text-align:right;">
+41.74697
+</td>
+<td style="text-align:left;">
+41.746975
+</td>
+<td style="text-align:right;">
+-88.05034
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+woodridge
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+65b73f92-d0a6-4d95-b2ac-e9f9dcf703fc
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.646166
+</td>
+<td style="text-align:right;">
+41.89542
+</td>
+<td style="text-align:left;">
+41.89542
+</td>
+<td style="text-align:right;">
+-87.64617
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6b14ca0a-5a3c-4078-9629-385a0fbb0768
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.060564
+</td>
+<td style="text-align:right;">
+41.84333
+</td>
+<td style="text-align:left;">
+41.843331
+</td>
+<td style="text-align:right;">
+-88.06056
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+glen ellyn, willowbrook nature trail
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6ee726f3-18a8-402f-bdd1-5b8da939dfba
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.107013
+</td>
+<td style="text-align:right;">
+41.86614
+</td>
+<td style="text-align:left;">
+41.86614
+</td>
+<td style="text-align:right;">
+-88.10701
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+wheaton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7204a2b2-512b-4431-a95b-c0ed166a0633
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+29.75
+</td>
+<td style="text-align:right;">
+24.83333
+</td>
+<td style="text-align:left;">
+24.833334
+</td>
+<td style="text-align:right;">
+29.75000
+</td>
+<td style="text-align:left;">
+Egypt
+</td>
+<td style="text-align:left;">
+egypt
+</td>
+<td style="text-align:left;">
+matruh
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+siwa oasis, el malfa swamp
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7437a46e-f784-4b2b-ba13-b98254b5255b
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+29.75
+</td>
+<td style="text-align:right;">
+24.83333
+</td>
+<td style="text-align:left;">
+24.833334
+</td>
+<td style="text-align:right;">
+29.75000
+</td>
+<td style="text-align:left;">
+Egypt
+</td>
+<td style="text-align:left;">
+egypt
+</td>
+<td style="text-align:left;">
+matruh
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+el malfa, siwa, 110 km w
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+763c9b19-74a7-43a3-9a5b-4684fef8a585
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.174751
+</td>
+<td style="text-align:right;">
+41.76673
+</td>
+<td style="text-align:left;">
+41.766727
+</td>
+<td style="text-align:right;">
+-88.17475
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+naperville, river and aurora
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+79ff24fc-5a16-4adc-8270-a4576176666c
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.058356
+</td>
+<td style="text-align:right;">
+41.87121
+</td>
+<td style="text-align:left;">
+41.871205
+</td>
+<td style="text-align:right;">
+-88.05836
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+glen ellyn, montclaire and turner
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7e51a7c1-de80-4e19-82e8-231cbd440fb7
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.107013
+</td>
+<td style="text-align:right;">
+41.86614
+</td>
+<td style="text-align:left;">
+41.86614
+</td>
+<td style="text-align:right;">
+-88.10701
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+wheaton
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7e8abc27-d38a-47a6-937b-978822afc72f
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.73599
+</td>
+<td style="text-align:right;">
+41.79169
+</td>
+<td style="text-align:left;">
+41.79169
+</td>
+<td style="text-align:right;">
+-87.73599
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co.
+</td>
+<td style="text-align:left;">
+chicago, 5555 s. kolmar ave
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7f5970d1-b69b-4255-a780-aed284ba1ac8
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-89.4903273
+</td>
+<td style="text-align:right;">
+45.59772
+</td>
+<td style="text-align:left;">
+45.5977178
+</td>
+<td style="text-align:right;">
+-89.49033
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+wisconsin
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+oneida, sec 29, town 36 n, range 8e
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7fdb9011-93c3-4d11-a6c2-96e3a4764d19
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+31.3999996
+</td>
+<td style="text-align:right;">
+24.86667
+</td>
+<td style="text-align:left;">
+24.8666706
+</td>
+<td style="text-align:right;">
+31.40000
+</td>
+<td style="text-align:left;">
+Egypt
+</td>
+<td style="text-align:left;">
+egypt
+</td>
+<td style="text-align:left;">
+matruh
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+salum, sidi omar
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+823e6998-3bc1-43b1-ab51-3f83b945219d
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.670626
+</td>
+<td style="text-align:right;">
+42.02282
+</td>
+<td style="text-align:left;">
+42.022825
+</td>
+<td style="text-align:right;">
+-87.67063
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+cook co.
+</td>
+<td style="text-align:left;">
+chicago, 1550 w. juneway terrace, 60626
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+836d1a77-3eed-4785-8f3c-7f2bfb33d8ed
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.087113
+</td>
+<td style="text-align:right;">
+41.86226
+</td>
+<td style="text-align:left;">
+41.862257
+</td>
+<td style="text-align:right;">
+-88.08711
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+wheaton, blanchard and illinois
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+83d136cc-a41e-4128-a682-64aa6dba9e51
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.090019
+</td>
+<td style="text-align:right;">
+41.71987
+</td>
+<td style="text-align:left;">
+41.719872
+</td>
+<td style="text-align:right;">
+-88.09002
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+will co.
+</td>
+<td style="text-align:left;">
+naperville, 25 w. 540 royce rd.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+920b9297-a114-4474-aa66-ddaaf6e5ca36
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+29.75
+</td>
+<td style="text-align:right;">
+24.83333
+</td>
+<td style="text-align:left;">
+24.833334
+</td>
+<td style="text-align:right;">
+29.75000
+</td>
+<td style="text-align:left;">
+Egypt
+</td>
+<td style="text-align:left;">
+egypt
+</td>
+<td style="text-align:left;">
+matruh
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+siwa oasis, el malfa swamp
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+92535d43-dcaf-42b9-8e0d-6236a746847d
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+75
+</td>
+<td style="text-align:right;">
+38.00000
+</td>
+<td style="text-align:left;">
+38
+</td>
+<td style="text-align:right;">
+75.00000
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+china
+</td>
+<td style="text-align:left;">
+xinjiang uygur
+</td>
+<td style="text-align:left;">
+kashi pref
+</td>
+<td style="text-align:left;">
+taxkorgan tajik aut co, near little kara kul, ‘kara su’ river
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9757887b-ebef-485e-9acc-cd3ed0aa88e4
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-88.060564
+</td>
+<td style="text-align:right;">
+41.84333
+</td>
+<td style="text-align:left;">
+41.843331
+</td>
+<td style="text-align:right;">
+-88.06056
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+glen ellyn, willowbrook nature trail
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+97d7edc5-17e3-44b1-8fa8-b2ccb11a9ab2
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.92895
+</td>
+<td style="text-align:right;">
+41.83281
+</td>
+<td style="text-align:left;">
+41.832808
+</td>
+<td style="text-align:right;">
+-87.92895
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+illinois
+</td>
+<td style="text-align:left;">
+dupage co.
+</td>
+<td style="text-align:left;">
+oak brook, kimberly and charlatan
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9e1b6b23-7b91-4f95-9a95-8c7ef0a232c8
+</td>
+<td style="text-align:left;">
+fmnh
+</td>
+<td style="text-align:left;">
+mammals
+</td>
+<td style="text-align:left;">
+-87.963927
+</td>
+<td style="text-align:right;">
+44.52909
+</td>
+<td style="text-align:left;">
+44.529095
+</td>
+<td style="text-align:right;">
+-87.96393
+</td>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+united states
+</td>
+<td style="text-align:left;">
+wisconsin
+</td>
+<td style="text-align:left;">
+brown co.
+</td>
+<td style="text-align:left;">
+green bay, 1660 e. shore dr. 54302
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>If a data provider wants to fix these records in a local collection
+management system, it might be useful to have them in a CSV format
+rather than only in R. Here is how we can save our results as a CSV:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Save `records` as a CSV for reintegration into a local collection management</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># system</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">write_csv</span>(records, <span class="st">&quot;records.csv&quot;</span>)</span></code></pre></div>
+<p>It is important for you as a data provider or data user to review the
+results of the data quality flags and confirm that iDigBio’s
+interpretation matches your expectations. For example, coordinates
+representing marine localities and localities in or near Antarctica are
+prone to misinterpretation.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

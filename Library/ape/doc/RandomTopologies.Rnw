@@ -1,0 +1,608 @@
+\documentclass[a4paper]{article}
+%\VignetteIndexEntry{Random Topology}
+%\VignettePackage{ape}
+\usepackage{ape}
+\author{Emmanuel Paradis}
+\title{Enumeration and Simulation of Random Tree Topologies}
+
+\begin{document}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom=\color{darkblue}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom=\color{black}\vspace{-1.5em}}
+
+\maketitle
+\tableofcontents\vspace*{1pc}\hrule
+
+<<echo=false,quiet=true>>=
+options(width = 80, prompt = "> ")
+@
+
+\vspace{1cm}
+
+This document describes how phylogenetic trees are simulated in \ape\
+and discusses some issues related to solving multichotomies.
+
+\section{Theoretical Background}
+
+We use here the term \emph{topology} to mean the shape of a tree
+without consideration of its branch lengths. The number of possible
+topologies for $n$ tips (or leaves), denoted as $N_n$, is notoriously
+large. This has been studied by Felsenstein \cite{Felsenstein1978} and
+later reviewed in his book \cite{Felsenstein2004}. A particularly
+relevant case is that of rooted, binary, labeled trees where the
+number of possible topologies is given by the double factorial:
+
+\begin{equation}
+N_n=(2n-3)!!=1\times 3\times 5\times\cdots\times 2n-3.\label{eq:dblfact}
+\end{equation}
+
+The function \code{howmanytrees} in \ape\ calculates the
+number of possible topologies with respect to three criteria: rooted
+\textit{vs.}\ unrooted, binary \textit{vs.}\ multichotomous, and
+labeled \textit{vs.}\ unlabeled. These three options should make eight
+possible cases, but the number of unlabeled topologies can be computed
+only for rooted, binary trees, so only five cases are effectively
+considered. The returned number is obviously an integer which grows
+dramatically with $n$:\footnote{This function is not vectorized, so we
+  use here \code{sapply}. We could also use
+  \code{Vectorize(howmanytrees)(n)}.}
+
+<<>>=
+library(ape)
+n <- 1:10
+data.frame(N.topo = sapply(n, howmanytrees))
+@
+
+\noindent With ten labeled tips, a rooted, binary phylogenetic tree
+has more than 34 million possible topologies. Suppose we analyze a
+sample of $n=25$ sequences (a very modest sample size in today's
+standards), this number would be:
+
+<<>>=
+howmanytrees(25)
+@
+
+\noindent Imagine we want to print each of these topologies on an A4
+paper sheet and arrange them side by side to make a (huge)
+poster. This would require (in meters):
+
+<<>>=
+howmanytrees(25) * 0.21
+@
+
+\noindent The diameter of the observable
+Universe\footnote{\texttt{https://en.wikipedia.org/wiki/Observable\_universe}}
+is estimated to be $\approx 8.8\times 10^{26}$~m, so it would not be
+wide enough to display our trees.
+
+The number of topologies grows much more gently if they are unlabeled,
+but still reaching huge values if $n$ is moderately large:
+
+<<>>=
+data.frame(N.topo = sapply(n, howmanytrees, labeled = FALSE))
+@
+<<>>=
+n2 <- c(50, 100, 200)
+data.frame(N.topo = sapply(n2, howmanytrees, labeled = FALSE),
+           row.names = n2)
+@
+
+\noindent The formula is more complicated than for the labeled cases
+and is computed by recursion setting $N_1=1$:
+
+\begin{displaymath}
+N_n =\left\{
+\begin{array}{ll}
+N_1N_{n-1}+N_2N_{n-2}+\dots +\displaystyle\frac{N_{n/2}^2+1}{2}&\quad n\ \mathrm{even}\\[1em]
+N_1N_{n-1}+N_2N_{n-2}+\dots +N_{(n-1)/2}N_{(n+1)/2}&\quad n\ \mathrm{odd}\\
+\end{array}\right.
+\end{displaymath}
+
+These numbers are so large that the probability to randomly
+draw twice the same topology when drawing randomly (and independently)
+two trees is very close to zero:
+
+<<>>=
+1 / howmanytrees(50)
+@
+
+\noindent However, for small values of $n$, this is clearly not negligible:
+
+<<>>=
+1 / sapply(n, howmanytrees)
+@
+
+\noindent These probabilities are of course larger if the topologies are unlabeled:
+
+<<>>=
+1 / sapply(n, howmanytrees, labeled = FALSE)
+@
+
+\noindent The potential problem is when sampling a large number of
+trees, their topologies might not be represented adequately if the
+algorithm does not draw them with equal probability.
+
+\phangorn\ has the function \code{allTrees}, but, very wisely, it
+accepts only values of $n\le 9$ (or 10 if the trees are unrooted,
+which is the default for this function). We consider here $n=4$, so
+there are 15 possible labeled topologies and 2 possible unlabeled topologies:
+
+<<>>=
+library(phangorn)
+TR <- allTrees(4, rooted = TRUE)
+TR
+@
+\setkeys{Gin}{width=\textwidth}
+<<fig=true,height=4>>=
+layout(matrix(1:15, 3, 5))
+par(mar = rep(1.5, 4), xpd = TRUE)
+for (i in 1:15) plot(TR[[i]], "c", cex = 1.2, font = 1)
+@
+
+\noindent This shows that the two unlabeled topologies do not have the
+same number of labeled cases: there are 12 for the unbalanced
+topologies, and 3 for the balanced one. Thus, if we
+sample the unlabeled topologies with equal probabilities, the labeled
+ones will not be represented in equal frequencies. However, we have
+seen above that the probability to draw twice the same topology is very
+small if $n$ is sufficiently large, but this will also depend on the
+number of trees sampled, denoted here as $K$.
+
+What is the probability $P$ to have at least twice the same unlabeled
+topology when drawing $K$ trees assuming equal probability of
+sampling?  We have seen above that the probability to draw a specific
+topology is the inverse of the possible number of topologies, so the
+number of times any topology is drawn out of $K$ draws follows a
+binomial distribution with parameters $K$ and $1/N_n$.  The
+probability to have at least twice this topology is one minus the
+probability to have it zero time and minus the probability to have it
+once. Let's calculate this for $n=50$ and $K=100$:
+
+<<>>=
+K <- 100
+n <- 50
+N <- howmanytrees(n, labeled = FALSE)
+p <- 1/N
+1 - (dbinom(0, K, p) + dbinom(1, K, p))
+@
+
+\noindent These calculations are very close to the numerical precision
+of most computers, which may result in (very small) negative
+probabilities, for instance, if we omit the parentheses in the last expression:
+
+<<>>=
+1 - dbinom(0, K, p) - dbinom(1, K, p)
+@
+
+\noindent We now assess these probabilities for a range of values of
+$n$ and $K$:
+
+<<fig=true,height=5>>=
+f <- function(n, K) {
+    N <- howmanytrees(n, labeled = FALSE)
+    p <- 1/N
+    1 - (dbinom(0, K, p) + dbinom(1, K, p))
+}
+DF <- expand.grid(n = 4:20, K = c(2, 5, 10, 100, 1e3, 1e4))
+DF$P <- mapply(f, n = DF$n, K = DF$K)
+library(lattice)
+xyplot(P ~ n, DF, groups = K, panel = panel.superpose,
+     type = "b", auto.key = list(x = .8, y = .9, title = "K"))
+@
+
+\noindent We can print the probabilities for a specific value $n$, or
+calculate them for other values of $n$ and $K$:
+
+<<>>=
+subset(DF, n == 20)
+@
+<<>>=
+f(20, 1e5)
+@
+<<>>=
+f(30, 1e6)
+@
+
+If the number of tips is small ($n<20$), we cannot ignore the
+probability to draw more than once the same topology unless a small
+number of trees are sampled (e.g., $K<10$ for $n=10$). On the other
+hand, if $n\ge 20$ it is unlikely to draw twice the same topology even
+when sampling 10,000 trees. We have to keep in mind that these results
+were obtained assuming that each unlabeled topology has the same
+probability to be sampled.
+
+\section{Simulating Trees with \ape}
+
+There are five functions to simulate trees in \ape~5.4:
+
+\begin{center}
+  \begin{tabular}{ll}
+    \code{rtree}&random topology with fixed $n$ and
+                  random branch lengths\\
+    \code{rcoal}&random coalescent tree with fixed $n$\\
+    \code{rphylo}&random birth--death tree with fixed $n$\\
+    \code{rbdtree}&random birth--death tree with fixed
+                    time and only the surviving lineages\\
+    \code{rlineage}&random birth--death tree with fixed
+                     time and all lineages\\
+  \end{tabular}
+\end{center}
+
+\noindent \code{rcoal}, \code{rphylo}, and \code{rbdtree} always
+generate ultrametric trees (also \code{rlineage} if the death
+rate is equal to zero). All functions generate fully binary trees.\footnote{The
+function \code{stree} generates trees with specific shapes, including
+multichotomies.}
+
+\subsection{The function \code{rtree}}\label{sec:rtree}
+
+We focus on the function \code{rtree} since it is the most general one
+(the other functions have an underlying evolutionary model). Its
+algorithm is \cite{Paradis2012}:
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Draw randomly an integer $a$ on the interval $[1, n - 1]$. Set
+  $b = n - a$.
+\item If $a > 1$, apply (recursively) step 1 after substituting $n$ by
+  $a$.
+\item Repeat step 2 with $b$ in place of $a$.
+\item Assign randomly the $n$ tip labels to the tips.
+\end{enumerate}
+These recursions are used to build the successive splits generating
+sister-clades. This algorithm is thus well-suited to simulate rooted
+trees. One of its side-effects is to produce topologies in unequal
+frequencies. The reason for this is how the integer $a$ is
+drawn. Suppose that $n=4$ (we detailed both the labeled and the
+unlabeled cases above), then during the first iteration $a$ takes the
+value 1, 2, or 3 with equal probabilities ($\frac{1}{3}$). Obviously,
+if $a=2$ a balanced topology will be generated, otherwise the topology
+will be unbalanced. Consequently, the expected frequencies of these
+two are $\frac{1}{3}$ and $\frac{2}{3}$ instead of $\frac{1}{2}$ and
+$\frac{1}{2}$. This also does not agree with the proportions of
+labeled topologies which should be $\frac{1}{5}$ and $\frac{4}{5}$ of
+the unlabeled ones.
+
+For larger values of $n$, these expected frequencies can be calculated
+in a straightforward way thanks to the recursive nature of the
+algorithm. If $n=5$, there are three possible unlabeled topologies:
+
+<<fig=true,height=3>>=
+txt <- c("((,),((,),));", "(((,),(,)),);", "((((,),),),);")
+TR5 <- read.tree(text = txt)
+layout(matrix(1:3, 1))
+for (i in 1:3) plot(TR5[[i]], "c", cex = 1.2, main = LETTERS[i])
+@
+
+\noindent During the first iteration, $a$ takes the value 1, 2, 3, or
+4 with equal probabilities ($\frac{1}{4}$): $a=2$ or 3 leads to
+topology A, so that it will occur in proportion $\frac{1}{2}$. On the
+other hand, if $a=1$ or 4, the above reasoning for $n=4$ can be
+applied so that topology B will appear in expected proportion
+$\frac{1}{2}\times\frac{2}{3}=\frac{1}{3}$, and topology C in proportion
+$\frac{1}{2}\times\frac{1}{3}=\frac{1}{6}$. Since there are 105
+labeled topologies with $n=5$, we skip their detailed analysis.
+
+In \ape~5.4-1, the option \code{equiprob} was introduced to
+\code{rtree} to generate topologies in equal proportions.\footnote{The
+  default of this option is \code{FALSE} because several packages use
+  \code{rtree()} with \code{set.seed()} in their examples.} The
+modification was simple: in step~1 $a$ is drawn uniformly on
+the interval $[1, \lfloor n/2 \rfloor]$. If $n=4$, $a$ now takes the
+value 1 or 2 with equal probabilities ($\frac{1}{2}$), so the two
+unlabeled topologies are generated in equal proportions. However, if
+$n=5$, $a$ takes the same values in the same probabilities leading to
+incorrect proportions: the draw $a=1$ should happen twice more
+frequently than $a=2$ because the former leads to two different
+topologies in the following iteration (because $b=4$) of the algorithm
+whereas the latter always result in topology A. The
+solution is to weigh the probabilities by the
+number of possible topologies for associated to each $(a,b)$ so that those
+resulting in higher number of topologies will be more likely to be
+drawn. For $n=5$, the two possible pairs are $(1,4)$ and $(2,3)$;
+the product of the number of unlabeled topologies gives the correct
+weights:
+
+<<>>=
+howmanytrees(1, labeled = FALSE) * howmanytrees(4, labeled = FALSE)
+@
+<<>>=
+howmanytrees(2, labeled = FALSE) * howmanytrees(3, labeled = FALSE)
+@
+
+\noindent For instance, if $n=803$ it will be necessary to calculate the
+following quantity during the first iteration:
+
+<<>>=
+howmanytrees(400, labeled = FALSE) * howmanytrees(403, labeled = FALSE)
+@
+
+\noindent Section~\ref{sec:beyond} explains how these large numbers
+can be handled. This scheme has been incorporated into \ape~5.5. These
+probabilities are passed to the function \code{sample} and its option
+\code{prob} to generate the values of $a$.
+
+\subsection{The new function \code{rtopology}}
+
+\ape~5.5 introduces \code{rtopology} in order to provide an
+alternative to the above functions. The implemented algorithm is as follows:
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Initialize an unrooted tree with $k=3$ tips. Set the number of
+  branches to 3.
+\item Select randomly one branch of the tree and graft onto it one
+  terminal branch. Increment $k$ by 1 tip and the number of branches
+  by 2.
+\item Repeat step 2 until $k=n$.
+\end{enumerate}
+This algorithm is particularly efficient to generate unrooted trees
+(this is the default of the function). A rooted tree is generated with one additional step:
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item[4.] Select randomly one branch of the tree and add an internal
+  node on it.
+\end{enumerate}
+
+Some calculations are simplified compared to \code{rtree}: it is
+possible to generate all needed random numbers at once since it is
+known in advance that we will need to select among 3, 5, 7, \dots\
+branches in step 2. Additionally, the tip labels are permuted at the
+start of the simulation so they are added in random order during step
+2. However, \code{rtree} is faster than \code{rtopology} because the
+latter requires to reorder the tree edges after the simulation
+algorithm is performed.
+
+What are the expected frequencies of the different topologies under
+this algorithm? Let's consider $n=4$. Step 1 generates a tree
+with three terminal branches, then step 2 adds the last
+terminal branch on any of these three, so that the three possible
+unrooted, labeled topologies are produced with equal probabilities. The final
+unrooted tree has five branches: one internal and four terminal. If
+it is rooted (step 4), then the root node is added randomly on any of
+these branches, therefore resulting in the balanced topology in 20\% of
+the cases, and one of the unbalanced topologies in the remaining 80\%. This conforms
+to the numbers of labelled topologies found above.
+
+\subsection{Tests}
+
+The code below is a simple example of testing the frequencies of
+topologies generated by the above question considering rooted
+trees with $n=4$. We first simulate 1000 trees without branch lengths
+using the three algorithms detailed above:
+
+<<>>=
+TR <- list(rmtopology(1000, 4, TRUE, br = NULL),
+           rmtree(1000, 4, TRUE, br = NULL),
+           rmtree(1000, 4, TRUE, br = NULL, equiprob = TRUE))
+@
+
+\noindent We then build a function to extract the unique topologies
+and compute their frequencies. The returned value is the $\chi^2$-test
+for equal frequencies. An option controls whether to consider the
+toplogies as labeled (the default) or not:
+
+<<>>=
+foo.test <- function(x, labeled = TRUE) {
+    uTR <- unique(x, use.tip.label = labeled)
+    f <- integer(length(uTR))
+    for (j in seq_along(uTR)) {
+        for (i in seq_along(x)) {
+            if (all.equal(x[[i]], uTR[[j]], use.tip.label = labeled))
+                f[j] <- f[j] + 1L
+        }
+    }
+    print(f)
+    chisq.test(f)
+}
+@
+
+\noindent We now apply the function to the list of simulated trees.
+
+<<>>=
+lapply(TR, foo.test)
+@
+<<>>=
+lapply(TR, foo.test, labeled = FALSE)
+@
+
+\noindent The results agree with the above analysis. The same
+simulation study with $n=5$ would require larger sample sizes because
+of the much larger numbers of possible topologies.
+
+\subsection{Summary}
+
+\begin{enumerate}
+  \item \code{rtree} simulates topologies in unequal frequencies. The
+    differences in expected frequencies are important for small values
+    of $n$ (see above for $n=4$ and $n=5$). For larger values of $n$,
+    it is practically impossible to determine these frequencies because
+    of the large number of possible topologies. However, it seems
+    these frequencies are sufficiently low that the above analysis
+    assuming equal probabilities might be a good approximation. For
+    instance, \code{rmtree(1000, 20)} returns 1000 unique unlabeled
+    topologies (not shown here to avoid long computations in this vignette).
+  \item \code{rtree(, equiprob = TRUE)} simulates unlabeled topologies
+    in equal frequencies (from \ape\ 5.5).
+  \item \code{rtopology} simulates labeled topologies with equal
+    probabilities. This is the function now called by \code{multi2di(,
+      equiprob = TRUE)}.
+\end{enumerate}
+
+\section{Enumerating Topologies Beyond Large Values}\label{sec:beyond}
+
+The function \code{howmanytrees}, like most functions in \R, works
+with double precision floating point numbers, so the largest value
+which can be returned is:
+
+<<>>=
+.Machine$double.xmax
+@
+
+\noindent This value is reached with $n=151$ or 792 for labeled or unlabeled topologies, respectively:
+
+<<>>=
+howmanytrees(151)
+@
+<<>>=
+howmanytrees(792, labeled = FALSE)
+@
+
+\noindent This section shows how larger values are handled in \ape~5.5.
+
+\subsection{Labeled Topologies}
+
+It is possible to write equation~\ref{eq:dblfact} using standard factorial
+(this uses the fact that $2n-3$ is always an odd integer):
+
+\begin{displaymath}
+(2n-3)!!=\frac{(2n-3)!}{2^{n-2}(n-2)!}\qquad n\ge 2.
+\end{displaymath}
+A log-transformation of both sides leads to:
+
+\begin{equation}
+\ln[(2n-3)!!]=\ln[(2n-3)!]-(n-2)\ln 2-\ln[(n-2)!].\label{eq:dbfact}
+\end{equation}
+\R\ has the function \code{lfactorial} making possible to calculate
+this expression with large values of $n$.\footnote{\phangorn\ has
+  the function \code{ldfactorial} doing the same calculation based on
+  \code{lgamma}.} Obviously, if we try to compute the exponential of
+the result, we will again obtain \code{Inf}. Instead, we
+can use the fact that an expression such as $a^b$ can be expressed with a power
+of ten:
+
+\begin{displaymath}
+a^b=x\times 10^n,
+\end{displaymath}
+with $x$ a real number and $n$ an integer. We do a
+log$_{10}$-transformation of both sides:
+
+\begin{displaymath}
+b\times\log_{10}a=\log_{10}x+n.
+\end{displaymath}
+This is solved with $n=\lfloor b\times\log_{10}a\rfloor$ and
+$x=10^c$, $c=b\times\log_{10}a-n$. This can be used with
+$a=\mathrm{e}$ ($\approx 2.718$) and $b=\ln[(2n-3)!!]$ calculated with
+equation~\ref{eq:dbfact}.
+
+Let's find how many possible trees there are for the number of
+living species on Earth using an estimate of two million species:\footnote{This returned \code{Inf} prior to \ape~5.5.}
+
+<<>>=
+(N <- howmanytrees(2e6))
+@
+
+\noindent How many digits are needed to print this number?
+
+<<>>=
+N[2] + 1
+@
+
+\noindent How many pages to print it (assuming 3000 characters per page)?
+
+<<>>=
+ceiling((N[2] + 1) / 3000)
+@
+
+\subsection{Unlabeled Topologies}
+
+In the unlabeled case, the formulas to calculate the number of
+topologies are more complicated and do not allow the previous
+approach. However, there is an almost linear relationship between $n$
+and $N_n$ after log-transformation of the latter:
+
+<<>>=
+n <- 1:792
+N <- howmanytrees(792, labeled = FALSE, detail = TRUE)
+lN <- log10(N)
+summary(lm(lN ~ n))
+@
+
+\noindent The linear approximation is good but it is still better for $n>700$:
+
+<<>>=
+s <- n > 700
+summary(lm(lN[s] ~ n[s]))
+@
+
+\noindent The residuals are now almost equal to zero. We may thus write:
+
+\begin{displaymath}
+\log_{10}N_n\approx 0.3941\times n-4.153 \qquad n>792.
+\end{displaymath}
+Let's evaluate the quality of this approximation for a few values:
+
+<<>>=
+n <- 788:792
+log10(sapply(n, howmanytrees, labeled = FALSE))
+0.3941 * n - 4.153
+@
+
+\noindent The approximation is not so good for smaller values of $n$
+and we use it only for $n>792$. This can be used to handle some of the
+calculations detailed in Section~\ref{sec:rtree}. The coefficient
+(0.3941) is actually the difference between successive values of $N_n$
+on the logarithmic scale:
+
+\begin{displaymath}
+\log_{10}N_{n+1}-\log_{10}N_n=0.3941.
+\end{displaymath}
+This is equivalent to a ratio of these successive values equal to
+$N_{n+1}/N_n=10^{0.3941}=2.477993$. We denote this last
+number as $\xi$. This can help to find
+an approximation of the sum of the $N_i$'s for $i=1, \dots, n$, when
+$n$ is large:
+
+\begin{align*}
+\sum_{i=1}^nN_i&=N_1+N_2+N_3+\dots+N_n\\
+  &\approx N_1+\xi N_1+\xi^2 N_1+\dots+\xi^{n-1} N_1\\
+  &=N_1\sum_{i=1}^n\xi^{i-1}.
+\end{align*}
+
+\noindent This is a divergent geometric series ($\xi>1$). Since
+$N_1=1$, this first term can be ignored. The logarithm of this sum may
+be approximated using the fact that $\log(x+\delta)\approx\log(x)$ if
+$x>>>\delta$. More generally, if we have a series of numbers $A$, $B$,
+$C$, \dots, such that:
+
+\begin{displaymath}
+A>B>C>\dots
+\end{displaymath}
+then the logarithm of their sum can be approximated with successive
+calculations (the base of the logarithm is unimportant):
+
+\begin{align*}
+\log(A+B+C+\dots) &\approx\log(A)\\
+  &\approx\log(A+B)\\
+  &\approx\log(A+B+C)\\
+  &\approx\dots
+\end{align*}
+In other words, when calculating the logarithm of a sum, the largest
+terms will contribute the most. It is possible to assess the
+convergence of the successive approximations.
+
+\begin{align*}
+\log_{10}\left(\sum_{i=1}^nN_n\right)&\approx\log_{10}(\xi^{n-1})=(n-1)\log_{10}\xi\\
+  &\approx\log_{10}(\xi^{n-2}+\xi^{n-1})=(n-2)\log_{10}\xi+\log_{10}(1+\xi)\\
+  &\approx\log_{10}(\xi^{n-3}+\xi^{n-2}+\xi^{n-1})=(n-3)\log_{10}\xi+\log_{10}(1+\xi+\xi^2)\\
+  &\approx\dots
+\end{align*}
+The $k$th approximation can be calculated directly with:
+
+\begin{displaymath}
+(n-k)\log_{10}\xi+\log_{10}\left(\sum_{i=0}^{k-1}\xi^i\right)\qquad k>1
+\end{displaymath}
+This converges after a few iterations:
+
+<<>>=
+xi <- 2.477993
+lxi <- log10(xi)
+n <- 1000
+(n - 1) * lxi # k = 1
+for (k in 2:11)
+    print((n - k) * lxi + log10(sum(xi^(0:(k - 1)))))
+@
+
+\bibliographystyle{plain}
+\bibliography{ape}
+%\setlength{\bibsep}{0pt}
+\addcontentsline{toc}{section}{References}
+
+\end{document}

@@ -1,0 +1,15 @@
+KL.dist                 Kullback-Leibler Divergence
+KL.divergence           Kullback-Leibler Divergence
+crossentropy            Cross Entropy
+entropy                 Shannon Entropy
+get.knn                 Search Nearest Neighbors
+knn                     k-Nearest Neighbour Classification
+knn.cv                  k-Nearest Neighbour Classification
+                        Cross-Validation
+knn.dist                k Nearest Neighbor Distances
+knn.index               Search Nearest Neighbors
+knn.reg                 k Nearest Neighbor Regression
+mutinfo                 Mutual Information
+ownn                    Optimal Weighted Nearest Neighbor
+                        Classification
+print.knnReg            Print Method for KNN Regression

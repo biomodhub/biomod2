@@ -1,0 +1,10 @@
+bibentry(bibtype = "Article",
+         title = "ape 5.0: an environment for modern phylogenetics and evolutionary analyses in {R}",
+         author = c(person("Emmanuel", "Paradis"), person("Klaus", "Schliep")),
+         journal = "Bioinformatics",
+         year = "2019",
+         volume = "35",
+         pages = "526-528",
+         doi = "10.1093/bioinformatics/bty633",
+         header = "To cite ape in a publication please use:",
+         footer = "ape is evolving quickly, so you may want to cite its version number (found with 'library(help = ape)' or 'packageVersion(\"ape\")').")

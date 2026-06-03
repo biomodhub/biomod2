@@ -1,0 +1,20 @@
+best_contrast           Find highest contrast color
+check_color_blindness   Visualize color vision deficiency
+clr_alpha               Sets alpha in color
+clr_darken              Make a color more dark
+clr_desaturate          Make a color more desaturated
+clr_extract             Extract Multiple Components
+clr_extract_chroma      Extract HCL components
+clr_extract_hue         Extract HSL components
+clr_extract_red         Extract RGB components
+clr_grayscale           Transform colors to greyscale
+clr_lighten             Make a color more light
+clr_mix                 Mixes a color into
+clr_negate              Negates colors in RGB space
+clr_protan              Simulate color vision deficiency
+clr_rotate              Rotate the colors around the hue wheel
+clr_saturate            Make a color more saturated
+color                   Turn vector to color vector
+contrast_ratio          Contrast Ratio Between Colors
+is_color                Test if the object is a color
+modify_hcl              Modify Individual HCL Axes

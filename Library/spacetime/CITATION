@@ -1,0 +1,30 @@
+citHeader("To cite spacetime in publications use:")
+
+bibentry(bibtype = "Article",
+  title        = "{spacetime}: Spatio-Temporal Data in {R}",
+  author       = "Edzer Pebesma",
+  journal      = "Journal of Statistical Software",
+  year         = "2012",
+  volume       = "51",
+  number       = "7",
+  pages        = "1--30",
+  url          = "https://www.jstatsoft.org/v51/i07/",
+
+  textVersion  =
+  paste("Edzer Pebesma (2012).",
+        "spacetime: Spatio-Temporal Data in R.",
+        "Journal of Statistical Software, 51(7), 1-30.",
+        "URL https://www.jstatsoft.org/v51/i07/.")
+)
+
+bibentry(bibtype="book",
+  author       = "Roger S. Bivand, Edzer Pebesma and Virgilio Gomez-Rubio",
+  title        = "Applied spatial data analysis with {R}, Second edition",
+  year         = "2013",
+  publisher    = "Springer, NY",
+  url          = "https://asdar-book.org/",
+  textVersion =
+  paste("Roger S. Bivand, Edzer Pebesma, Virgilio Gomez-Rubio, 2013.",
+    "Applied spatial data analysis with R, Second edition. Springer, NY.",
+    "https://asdar-book.org/")
+)

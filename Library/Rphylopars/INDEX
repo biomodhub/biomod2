@@ -1,0 +1,20 @@
+Rphylopars-package      Phylogenetic Comparative Tools for Missing Data
+                        and Within-Species Variation
+anc.recon               Ultra-fast maximum likelihood ancestral state
+                        reconstruction
+anova.phylopars.lm      Phylopars regression ANOVA
+fast.SSC                Fast Phylogenetic Signal Using Sum of Squared
+                        Changes (SSC)
+logLik.phylopars        Extract Log_likelihood
+logLik.phylopars.lm     Extract Log_likelihood
+phylopars               Estimation of phylogenetic and phenotypic
+                        covariance parameters
+phylopars.lm            Rphylopars regression
+print.SSC               Print SSC
+print.phylopars         Print phylopars
+print.phylopars.lm      Print phylopars.lm
+simtraits               Simulate traits for phylopars estimation
+summary.phylopars       Phylopars summary
+summary.phylopars.lm    phylopars.lm summary
+write.phylopars         Write data and tree files for Python phylopars
+                        compatability.

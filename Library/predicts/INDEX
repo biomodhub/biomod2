@@ -1,0 +1,22 @@
+MaxEnt                  MaxEnt species distribution model
+RMSE                    Root Mean Square Error
+SDM-class               Class "SDM"
+backgroundSample        Random points
+bcvars                  bioclimatic variables
+cm_evaluate             Model evaluation with a confusion matrix
+envelope                Fit a (climate) envelope model and make
+                        predictions
+folds                   Make folds for k-fold partitioning
+hull_model-class        hull model
+mess                    Multivariate environmental similarity surfaces
+                        (MESS)
+pa_evaluate             Presence/absence Model evaluation
+partialResponse         Get partial response data
+plot,envelope_model,missing-method
+                        Plot predictor values
+predict                 Spatial model predictions
+predicts-package        Spatial prediction
+pwd_sample              Pair-wise distance sampling
+pycnophy                Pycnophylactic interpolation.
+threshold               Find a threshold
+varImportance           Get variable importance

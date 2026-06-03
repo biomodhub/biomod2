@@ -1,0 +1,58 @@
+Anguilla_train          Anguilla australis distribution data
+DistModel-class         Class "DistModel"
+ModelEvaluation-class   Class "ModelEvaluation"
+acaule                  Solanum acaule data
+bioclim                 Bioclim
+biovars                 bioclimatic variables
+boxplot,ModelEvaluation-method
+                        Box plot of model evaluation data
+calc.deviance           Calculate deviance
+circleHull              Circle hull model
+circles                 Circles range
+convHull                Convex hull model
+dcEvaluate              Evaluate by distance class
+density                 density
+dismo-package           Species distribution modeling
+domain                  Domain
+ecocrop                 Ecocrop model
+ecolim                  Ecolim model
+evaluate                Model evaluation
+evaluateROCR            Model testing with the ROCR package
+gbif                    Data from GBIF
+gbm.fixed               gbm fixed
+gbm.holdout             gbm holdout
+gbm.interactions        gbm interactions
+gbm.perspec             gbm perspective plot
+gbm.plot                gbm plot
+gbm.plot.fits           gbm plot fitted values
+gbm.simplify            gbm simplify
+gbm.step                gbm step
+geoDist                 Geographic distance model
+geoIDW                  Inverse-distance weighted model
+geocode                 Georeferencing with Google
+gmap                    Get a Google map
+gridSample              Stratified regular sample on a grid
+kfold                   k-fold partitioning
+mahal                   Mahalanobis model
+maxent                  Maxent
+mess                    Multivariate environmental similarity surfaces
+                        (MESS)
+nicheEquivalency        Niche equivalency
+nicheOverlap            Niche overlap
+nullRandom              Random null model
+pairs                   Pair plots
+plot,Bioclim,missing-method
+                        Plot predictor values
+plot,ModelEvaluation,character-method
+                        Plot model evaluation data
+pointValues             point values
+predict                 Distribution model predictions
+prepareData             Prepare data for model fitting
+pwdSample               Pair-wise distance sampling
+randomPoints            Random points
+rectHull                Rectangular hull model
+response                response plots
+ssb                     Spatial sorting bias
+threshold               Find a threshold
+voronoi                 Voronoi polygons
+voronoiHull             Voronoi hull model

@@ -1,0 +1,269 @@
+---
+title: "Creating alternative phylogenies from a starting tree"
+author: "Silvia Castiglione, Carmela Serio, Giorgia Girardi, Pasquale Raia"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Alternative-trees}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+if (!requireNamespace("rmarkdown", quietly = TRUE) ||
+     !rmarkdown::pandoc_available()) {
+   warning(call. = FALSE, "Pandoc not found, the vignettes is not built")
+   knitr::knit_exit()
+}
+
+if (!requireNamespace("phangorn", quietly = TRUE)) {
+   warning(call. = FALSE, "phangorn not found, the vignettes is not built")
+   knitr::knit_exit()
+}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+require(RRphylo)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+## Index
+1. [swapONE](#swapone)
+   a. [Swapping species positions](#species)
+   b. [Shifting node ages](#nodes)
+   c. [Guided examples](#examples)
+2. [resampleTree](#resampletree)
+
+
+Phylogenetic trees represent hypothesis about the natural history of clades. No phylogeny could be taken as ground truth, since both the age of common ancestors and the actual tree topology may differ substantially from reality, and usually differ across studies. Hence, accounting for phylogenetic uncertainty is much appropriate in comparative studies. 
+
+## swapONE {#swapone}
+The function `swapONE` provides a fast and effective way to produce alternative tree topologies swapping a specified proportion of the tree tips and changing the ages of a specified proportion of common ancestors (nodes). The user, though, may indicate whether and which clades have to be kept monophyletic depending on the recognition of well-supported clades. Tips within the monophyletic clades can still be swapped. The function also returns the Kuhner-Felsenstein (Kuhner & Felsenstein 1994) distance between original and 'swapped' trees (`$Kuhner-Felsenstein distance`). The user may ask to plot the swapped tree, highlighting the species and nodes with changed positions by coloring their branches and labels.
+
+
+### Swapping species positions {#species}
+When species position are swapped, the function selects exchangeable species pairs based on phylogenetic covariance and proximity. In order to be swapped a species pair should share a certain amount of phylogenetic time (which depends on phylogenetic structure) and to be less than 3 nodes apart. Then, a given proportion of these pairs (indicated through the argument `si`) is randomly sampled to switch position. In some cases, also depending on tree topology, the proportion of species actually swapped is less then the imposed `si` value. This happens when the age (meant as the distance from the youngest species in the tree) of one of the species in the pair is older then the age of the ancestors (i.e. nodes) of the other species, which makes it impossible to swap them (see t3 and t1 in the figure below).
+In any case, switching never changes the distance of the species from the tree root.
+```{r echo=3,fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%',fig.align="center"}
+{
+  require(ape)
+  require(phytools)
+  
+  maxN<-function(x, N=2){
+    len <- length(x)
+    if(N>len){
+      warning("N greater than length(x).  Setting N=length(x)")
+      N <- length(x)
+    }
+    sort(x,partial=len-N+1)[len-N+1]
+  }
+  
+  set.seed(14)
+  rtree(10)->tree
+  tree$edge.length[which(tree$edge[,2]==4)]<-tree$edge.length[which(tree$edge[,2]==4)]-0.2
+  apply(vcv(tree),1,function(x) which(x==maxN(x,N=3)))->shifts
+  
+  cophenetic.phylo(tree)->cop
+  if(any(sapply(shifts,length)==0)) {
+    cop[which(sapply(shifts,length)!=0),]->cop
+    shifts[which(sapply(shifts,length)!=0)]->shifts
+  }
+  
+  lapply(1:length(shifts),function(x) {
+    cop[x,which(names(cop[x,])%in%names(shifts[[x]]))]->shift.dist
+    names(shift.dist)<-colnames(cop)[which(names(cop[x,])%in%names(shifts[[x]]))]
+    return(shift.dist)
+  })->patr.dist
+  names(patr.dist)<-names(shifts)
+  sd(sapply(patr.dist,mean))*2->lim
+  
+  for(x in 1:length(patr.dist)){
+    dN<-c()
+    getSis(tree,names(shifts)[x],printZoom = F)->sis
+    suppressWarnings(as.numeric(sis)->nsis)
+    if(any(is.na(nsis))) which(tree$tip.label%in%sis[which(is.na(nsis))])->sis[which(is.na(nsis))]
+    as.numeric(sis)->sis
+    if(length(sis)<2){
+      if(sis<=(Ntip(tree))) c(sis,dN)->dN else {
+        tree$edge[tree$edge[,1]==sis,2]->sis2
+        if(any(sis2<=Ntip(tree))) c(dN,sis2[which(sis2<=Ntip(tree))])->dN
+      }
+      
+    }else{
+      for(y in sis){
+        if(y<=(Ntip(tree))) c(y,dN)->dN else {
+          tree$edge[tree$edge[,1]==y,2]->sis2
+          if(any(sis2<=Ntip(tree))) c(dN,sis2[which(sis2<=Ntip(tree))])->dN
+        }
+      }
+    }
+    
+    getMommy(tree,which(tree$tip.label==names(shifts)[x]))[1]->mom
+    getSis(tree,mom,printZoom = F)->sismom
+    suppressWarnings(as.numeric(sismom)->nsismom)
+    if(any(is.na(nsismom))) c(dN,which(tree$tip.label%in%sismom[which(is.na(nsismom))]))->dN
+    tree$tip.label[dN]->dN
+    
+    shifts[[x]][unique(c(match(dN,names(shifts[[x]]),nomatch=0),which(patr.dist[[x]]<lim)))]->shifts[[x]]
+  }
+  names(shifts)<-names(patr.dist)
+  
+  if(any(sapply(shifts,length)==0)) shifts[which(sapply(shifts,length)!=0)]->shifts
+  
+  shifts[c(1,4:7)]->t.change
+  t.change[[4]][1]->t.change[[4]]
+  lapply(1:length(t.change), function(w) paste(names(t.change)[w],names(t.change[[w]]),sep="."))->names(t.change)
+  
+  diag(vcv(tree))->ages
+  data.frame(tree$edge[,2],tree$edge.length)->DF
+  DF[which(DF[,1]<=Ntip(tree)),]->DF
+  data.frame(tree$tip.label,DF,ages-DF[,2],ages)->DF
+  colnames(DF)<-c("tip","Ntip","leaf","age.node","age")
+  
+  
+  check<-array()
+  for(i in 1:length(t.change)){
+    if(DF[DF[,1]==strsplit(names(t.change),"\\.")[[i]][1],5]<DF[DF[,1]==strsplit(names(t.change),"\\.")[[i]][2],4] | DF[DF[,1]==strsplit(names(t.change),"\\.")[[i]][2],5]<DF[DF[,1]==strsplit(names(t.change),"\\.")[[i]][1],4]) check[i]<-"bar" else check[i]<-"good"
+  }
+  if(length(which(check=="bar"))>0) t.change[-which(check=="bar")]->t.change
+  
+  tree->tree1
+  sw.tips<-c()
+  for(i in 1:length(t.change)){
+    c(sw.tips,c(which(tree1$tip.label==strsplit(names(t.change),split="\\.")[[i]][1]),
+                which(tree1$tip.label==strsplit(names(t.change),split="\\.")[[i]][2])))->sw.tips
+    tree1$tip.label[replace(seq(1:Ntip(tree1)),
+                            c(which(tree1$tip.label==strsplit(names(t.change),split="\\.")[[i]][1]),
+                              which(tree1$tip.label==strsplit(names(t.change),split="\\.")[[i]][2])),
+                            c(which(tree1$tip.label==strsplit(names(t.change),split="\\.")[[i]][2]),
+                              which(tree1$tip.label==strsplit(names(t.change),split="\\.")[[i]][1])))]->tree1$tip.label
+  }
+  
+  data.frame(tree1$edge[,2],tree1$edge.length)->DF1
+  DF1[which(DF1[,1]<=Ntip(tree1)),]->DF1
+  data.frame(tree1$tip.label[DF1[,1]],DF1,diag(vcv(tree1))[DF1[,1]],ages[match(tree1$tip.label[DF1[,1]],names(ages))])->DF1
+  colnames(DF1)<-c("tip","Ntip","leaf","age","age.real")
+  DF1$age-DF1$age.real->DF1$corr
+  DF1$leaf-DF1$corr->DF1$new.leaf
+  
+  tree1$edge.length[match(DF1[,2],tree1$edge[,2])]<-DF1$new.leaf
+}
+
+swapONE(tree,si=0.5,si2=0)->sw
+
+par(mfrow=c(1,2),mar=c(0.1,0.1,1,0.1))
+plot(tree,edge.color = "gray40",edge.width=1.5)
+colo<-rep("gray40",nrow(tree$edge))
+colo[which(tree$edge[,2]%in%unique(sw.tips))]<-"red"
+plot(tree1,edge.color = colo,edge.width=1.5)
+plotinfo <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+points(plotinfo$xx[4]+0.09,plotinfo$yy[4],col="blue",cex=3,lwd=1.5)
+points(plotinfo$xx[2]+0.09,plotinfo$yy[2],col="blue",cex=3,lwd=1.5)
+```
+
+### Shifting node ages {#nodes}
+The argument `si2` specify the proportion of internal nodes whose age should be shifted. Nodes are randomly sampled within the tree, excluding the tree root. For each of them, the new age is derived from a random uniform distribution ranging between the age of the ancestor and the age of the closest descendant.
+
+```{r echo=3,fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%',fig.align="center"}
+{
+  set.seed(14)
+  tree->tree2
+  data.frame(tree$edge,nodeHeights(tree),tree$edge.length)->nodedge
+  sample(nodedge[nodedge[,2]>Ntip(tree)+1,2],Nnode(tree)*0.5)->N
+  
+  for(i in 1:length(N)){
+    runif(1,nodedge[nodedge[,2]==N[i],3],min(nodedge[nodedge[,1]==N[i],4]))->new.pos
+    nodedge[nodedge[,2]==N[i],4]-new.pos->Xcorr
+    nodedge[nodedge[,2]==N[i],4]<-new.pos
+    nodedge[nodedge[,2]==N[i],5]-Xcorr-> nodedge[nodedge[,2]==N[i],5]
+    nodedge[nodedge[,1]==N[i],5]+Xcorr->nodedge[nodedge[,1]==N[i],5]
+    nodedge[nodedge[,1]==N[i],3]-Xcorr->nodedge[nodedge[,1]==N[i],3]
+  }
+  nodedge[,5]->tree2$edge.length
+}
+
+swapONE(tree,si=0,si2=0.5)->sw
+
+par(mfrow=c(1,2),mar=c(1,0.1,1,0.1),mgp=c(3,0.1,0.05))
+plot(tree,edge.color = "gray40",edge.width=1.5)
+nodelabels(node=N,bg="red",frame="circle",text=rep("",length(N)),cex=.5)
+axisPhylo(tck=-0.02,cex.axis=0.8)
+plot(tree2,edge.color = "gray40",edge.width=1.5)
+nodelabels(node=N,bg="red",frame="circle",text=rep("",length(N)),cex=.5)
+axisPhylo(tck=-0.02,cex.axis=0.8)
+```
+
+
+### Guided examples
+```{r message=FALSE, warning=FALSE,eval=FALSE}
+# load the RRphylo example dataset including Felids tree
+data("DataFelids")
+DataFelids$treefel->tree
+
+# perform swapONE by changing both species position and node ages, 
+# and also keeping the genus Panthera monophyletic
+swapONE(tree,si=0.5,si2=0.5,node=131,plot.swap = FALSE)->sw
+
+```
+
+
+## resampleTree {#resampletree}
+The function `resampleTree` allows accounting for phylogenetic and sampling uncertainty at once. It first performs `swapONE` to change  the topology and then removes from the swapped tree a user-specified proportion of species. The probability for a species to be removed can be either random or conditioned by the user by setting the argument `sdata`. It can include a sampling probability (meant as the probability to be removed from the tree) for each species or, in case of stratified random sampling, the strata. In addition, in case species on the tree belong to some kind of category whose integrity should be maintained (i.e. no less than 5 species at least in each of them), the `categories` argument is used to indicate the groups to be preserved.
+
+
+```{r echo=2,fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%',fig.align="center"}
+set.seed(14)
+resampleTree(tree)->treeR
+
+par(mfrow=c(1,2),mar=c(1,0.1,1,0.1),mgp=c(3,0.1,0.05))
+plot(tree,edge.color = "gray40",edge.width=1.5)
+tiplabels(tip = which(!tree$tip.label%in%treeR$tip.label),pch=4,col="red",cex=2,adj=0.6,lwd=2)
+axisPhylo(tck=-0.02,cex.axis=0.8)
+plot(treeR,edge.color = "gray40",edge.width=1.5)
+axisPhylo(tck=-0.02,cex.axis=0.8)
+```
+
+
+### Guided examples
+```{r message=FALSE, warning=FALSE,eval=FALSE}
+DataCetaceans$treecet->tree
+plot(tree,show.tip.label = FALSE,no.margin = TRUE)
+nodelabels(frame="n",col="red")
+
+# Select two clades for stratified random sampling
+clanods=c("crown_Odo"=150,"crown_Mysti"=131)
+sdata1<-do.call(rbind,lapply(1:length(clanods),function(w)
+  data.frame(species=tips(tree,clanods[w]),group=names(clanods)[w])))
+
+# generate a vector of probabilities based on body mass
+prdata<-max(DataCetaceans$masscet)-DataCetaceans$masscet
+
+# select two nodes to be preserved
+nn=c(180,159)
+
+# generate two fictional categorical vectors to be preserved
+cat1<-sample(rep(c("a","b","c"),each=39),Ntip(tree))
+names(cat1)<-tree$tip.label
+cat2<-rep(c("d","e"),each=100)
+names(cat2)<-sample(tree$tip.label,100)
+
+# 1. Random sampling
+resampleTree(tree,s=0.25,swap.si=0.3)->tree1
+
+# 1.1 Random sampling preserving clades
+resampleTree(tree,s=0.25,nodes=nn)->tree2
+
+# 2. Stratified random sampling
+resampleTree(tree,sdata = sdata1,s=0.25)->tree3
+
+# 2.1 Stratified random sampling preserving clades and categories
+resampleTree(tree,sdata = sdata1,s=0.25,nodes=nn,categories = list(cat1,cat2))->tree4
+
+# 3. Sampling conditioned on probability
+resampleTree(tree,sdata = prdata,s=0.25,nsim=5)->tree5
+```
+
+## References
+Kuhner, M. K. & Felsenstein, J. (1994). A simulation comparison of phylogeny algorithms under equal and unequal evolutionary rates, Molecular Biology and Evolution, 11: 459-468.

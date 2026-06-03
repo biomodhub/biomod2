@@ -1,0 +1,5 @@
+%\VignetteIndexEntry{RcppArmadillo-sparseMatrix}
+%\VignetteKeywords{R, C++, Armadillo, linear algebra, sparse matrix}
+%\VignettePackage{RcppArmadillo}
+%\VignetteEncoding{UTF-8}
+%\VignetteEngine{Rcpp::asis}

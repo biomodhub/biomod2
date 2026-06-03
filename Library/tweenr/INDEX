@@ -1,0 +1,24 @@
+display_ease            Display an easing function
+gen_along               Generator for tweening along a variable
+gen_at                  Generator for interpolating between two data
+                        frames
+gen_components          Generator for tweening components separately
+                        from each other
+gen_events              Generator for tweening the appearance of
+                        elements
+gen_keyframe            Generator for keyframe based tweening
+get_frame               Extract a frame from a generator
+tween                   Create simple tweens
+tween_along             Interpolate data along a given dimension
+tween_appear            Tween a data.frame of appearances
+tween_at                Get a specific position between two states
+tween_at_t              Get several specific position between two
+                        states
+tween_components        Interpolate individual component
+tween_elements          Create frames based on individual element
+                        states
+tween_events            Transition in and out of events
+tween_fill              Fill out missing values by interpolation
+tween_state             Compose tweening between states
+tween_states            Tween a list of data.frames representing states
+tweenr-package          tweenr: Interpolate Data for Smooth Animations

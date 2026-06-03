@@ -1,0 +1,36 @@
+Package: fastcluster
+Encoding: UTF-8
+Type: Package
+Version: 1.3.0
+Date: 2025-05-07
+Title: Fast Hierarchical Clustering Routines for R and 'Python'
+Authors@R: c(person("Daniel", "Müllner", email = "daniel@danifold.net", role = c("aut", "cph", "cre")),
+             person("Google Inc.", role="cph"))
+Copyright: Until package version 1.1.23: © 2011 Daniel Müllner
+        <https://danifold.net>. All changes from version 1.1.24 on: ©
+        Google Inc. <https://www.google.com>.
+Enhances: stats, flashClust
+Depends: R (>= 3.0.0)
+Description: This is a two-in-one package which provides interfaces to
+        both R and 'Python'. It implements fast hierarchical, agglomerative
+        clustering routines. Part of the functionality is designed as drop-in
+        replacement for existing routines: linkage() in the 'SciPy' package
+        'scipy.cluster.hierarchy', hclust() in R's 'stats' package, and the
+        'flashClust' package. It provides the same functionality with the
+        benefit of a much faster implementation. Moreover, there are
+        memory-saving routines for clustering of vector data, which go beyond
+        what the existing packages provide. For information on how to install
+        the 'Python' files, see the file INSTALL in the source distribution.
+        Based on the present package, Christoph Dalitz also wrote a pure 'C++'
+        interface to 'fastcluster':
+        <https://lionel.kr.hs-niederrhein.de/~dalitz/data/hclust/>.
+License: FreeBSD | GPL-2 | file LICENSE
+URL: https://danifold.net/fastcluster.html
+NeedsCompilation: yes
+Packaged: 2025-05-07 06:30:40 UTC; muellner
+Author: Daniel Müllner [aut, cph, cre],
+  Google Inc. [cph]
+Maintainer: Daniel Müllner <daniel@danifold.net>
+Repository: CRAN
+Date/Publication: 2025-05-07 07:50:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:27:22 UTC; unix

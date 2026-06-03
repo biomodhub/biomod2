@@ -1,0 +1,103 @@
+---
+title: "Examples for rms Package"
+author: "FE Harrell"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float: 
+      collapsed: false
+    code_folding: hide
+    theme: cerulean
+---
+<!--
+To copy html output of server: cpaws examples.html R/rms/
+-->
+
+# Introduction
+## Markdown
+This is an R Markdown html document using the template that is [here](http://biostat.mc.vanderbilt.edu/KnitrHtmlTemplate). Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+```{r, results='hide'}
+require(rms)
+knitrSet(lang='markdown')
+```
+
+The following (<code>r hidingTOC(buttonLabel="Outline")</code>) uses the Hmisc `hidingTOC` function to define HTML styles related to a floating table of contents that can be minimized or be collapsed to major outline levels.  For more details see [this](http://biostat.mc.vanderbilt.edu/KnitrHtmlTemplate).
+
+`r hidingTOC(buttonLabel="Outline")`
+
+# Data {.tabset}
+## Setup
+```{r t3}
+getHdata(titanic3)  # Get the dataset from the VU DataSets page
+mu <- markupSpecs$html   # markupSpecs is in Hmisc
+subtext <- mu$subtext
+code    <- mu$code
+```
+
+
+## Data Dictionary
+```{r ddict}
+html(contents(titanic3), maxlevels=10, levelType='table')
+```
+
+## Descriptive Statistics`r subtext('for the', code('titanic3'), 'dataset')`
+```{r t3d, height=150}
+# Set graphics type so that Hmisc and rms packages use plotly
+# Chunk header height=150 is in pixels
+# For certain print methods set to use html
+options(grType='plotly', prType='html')
+s <- summaryM(age + pclass ~ sex, data=titanic3)
+html(s)
+plot(s)
+d <- describe(titanic3)
+plot(d)
+```
+
+The following doesn't work because it overlays two different legends
+```{r sub,height=600,eval=FALSE}
+# Try combining two plots into one
+p <- plot(d)
+plotly::subplot(p[[1]], p[[2]],
+                nrows=2, heights=c(.3, .7), which_layout=1)
+```
+
+# Logistic Regression Model
+```{r lrmt,results='asis'}
+dd <- datadist(titanic3); options(datadist='dd')
+f <- lrm(survived ~ rcs(sqrt(age),5) * sex, data=titanic3)
+print(f)
+latex(f)
+a <- anova(f)
+print(a)
+plot(a)
+```
+
+```{r summary}
+s <- summary(f, age=c(2, 21))
+plot(s, log=TRUE)
+print(s, dec=2)
+```
+
+```{r ggp,fig.height=5,fig.width=6}
+ggplot(Predict(f, age, sex), height=500, width=650)  # uses ggplotly()
+plotp(Predict(f, age, sex))                          # uses plotly directly
+plot(nomogram(f, fun=plogis, funlabel='Prob(survive)'))
+```
+
+# Survival Plots for `r mu$code('pbc')` Dataset
+Hover over the curves to see particular probability estimates and numbers at risk.  Click on legend components to show/hide components.
+```{r pbc,fig.height=6,fig.width=7}
+getHdata(pbc)
+pbc <- upData(pbc, 
+              fu.yrs = fu.days / 365.25,
+              units = c(fu.yrs = 'year'))
+f <- npsurv(Surv(fu.yrs, status) ~ spiders, data=pbc)
+survplotp(f, time.inc=1, times=c(5, 10), fun=function(y) 1 - y)
+```
+
+# Computing Environment
+`r mu$session()`

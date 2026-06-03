@@ -1,0 +1,33 @@
+Package: paletteer
+Title: Comprehensive Collection of Color Palettes
+Version: 1.7.0
+Authors@R: c(
+    person("See AUTHORS file.", role = "aut"),
+    person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = c("aut", "cre"))
+  )
+Description: The choices of color palettes in R can be quite overwhelming
+    with palettes spread over many packages with many different API's.
+    This packages aims to collect all color palettes across the R
+    ecosystem under the same package with a streamlined API.
+License: GPL-3
+URL: https://emilhvitfeldt.github.io/paletteer/,
+        https://github.com/EmilHvitfeldt/paletteer
+BugReports: https://github.com/EmilHvitfeldt/paletteer/issues
+Depends: R (>= 4.1)
+Imports: cli, prismatic, rematch2, rlang (>= 1.1.0), rstudioapi
+Suggests: covr, ggplot2 (>= 3.3.0), ggthemes (>= 4.0.0), harrypotter
+        (>= 2.1.0), knitr, oompaBase, palr, pals, rmarkdown, scico,
+        testthat (>= 3.0.0), vdiffr, viridisLite
+Config/testthat/edition: 3
+Copyright: See LICENSE.note file.
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.3
+NeedsCompilation: no
+Packaged: 2026-01-07 19:39:22 UTC; emilhvitfeldt
+Author: See AUTHORS file. [aut],
+  Emil Hvitfeldt [aut, cre]
+Maintainer: Emil Hvitfeldt <emilhhvitfeldt@gmail.com>
+Repository: CRAN
+Date/Publication: 2026-01-08 06:10:30 UTC
+Built: R 4.6.0; ; 2026-05-22 09:17:49 UTC; unix

@@ -1,0 +1,19 @@
+Package: quadprog
+Type: Package
+Title: Functions to Solve Quadratic Programming Problems
+Version: 1.5-8
+Date: 2019-11-20
+Author: S original by Berwin A. Turlach <Berwin.Turlach@gmail.com> 
+        R port by Andreas Weingessel <Andreas.Weingessel@ci.tuwien.ac.at>
+        Fortran contributions from Cleve Moler (dposl/LINPACK and
+        (a modified version of) dpodi/LINPACK) 
+Maintainer: Berwin A. Turlach <Berwin.Turlach@gmail.com>
+Description: This package contains routines and documentation for
+        solving quadratic programming problems.
+Depends: R (>= 3.1.0)
+License: GPL (>= 2)
+NeedsCompilation: yes
+Packaged: 2019-11-20 06:04:34 UTC; berwin
+Repository: CRAN
+Date/Publication: 2019-11-20 08:20:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:27:51 UTC; unix

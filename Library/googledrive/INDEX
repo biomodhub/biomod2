@@ -1,0 +1,51 @@
+as_dribble              Coerce to a 'dribble'
+as_shared_drive         Coerce to shared drive
+dribble                 dribble object
+dribble-checks          Check facts about a dribble
+drive_about             Get info on Drive capabilities
+drive_auth              Authorize googledrive
+drive_auth_configure    Edit and view auth configuration
+drive_browse            Visit Drive file in browser
+drive_cp                Copy a Drive file
+drive_create            Create a new blank Drive file
+drive_deauth            Suspend authorization
+drive_download          Download a Drive file
+drive_empty_trash       Empty Drive Trash
+drive_endpoints         List Drive endpoints
+drive_examples          Example files
+drive_extension         Lookup extension from MIME type
+drive_fields            Request partial resources
+drive_find              Find files on Google Drive
+drive_get               Get Drive files by path or id
+drive_has_token         Is there a token on hand?
+drive_id                'drive_id' class
+drive_link              Retrieve Drive file links
+drive_ls                List contents of a folder or shared drive
+drive_mime_type         Lookup MIME type
+drive_mkdir             Create a Drive folder
+drive_mv                Move a Drive file
+drive_publish           Publish native Google files
+drive_put               PUT new media into a Drive file
+drive_read_string       Read the content of a Drive file
+drive_rename            Rename a Drive file
+drive_reveal            Add a new column of Drive file information
+drive_rm                Delete files from Drive
+drive_scopes            Produce scopes specific to the Drive API
+drive_share             Share Drive files
+drive_token             Produce configured token
+drive_trash             Move Drive files to or from trash
+drive_update            Update an existing Drive file
+drive_upload            Upload into a new Drive file
+drive_user              Get info on current user
+googledrive-configuration
+                        googledrive configuration
+request_generate        Build a request for the Google Drive API
+request_make            Make a request for the Google Drive v3 API
+shared_drive_create     Create a new shared drive
+shared_drive_find       Find shared drives
+shared_drive_get        Get shared drives by name or id
+shared_drive_rm         Delete shared drives
+shared_drive_update     Update a shared drive
+shared_drives           Access shared drives
+shortcut_create         Create a shortcut to a Drive file
+shortcut_resolve        Resolve shortcuts to their targets

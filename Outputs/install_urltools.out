@@ -1,0 +1,33 @@
+* installing *source* package ‘urltools’ ...
+** this is package ‘urltools’ version ‘1.7.3.1’
+** package ‘urltools’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c RcppExports.cpp -o RcppExports.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c compose.cpp -o compose.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c credentials.cpp -o credentials.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c encoding.cpp -o encoding.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c parameter.cpp -o parameter.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c parsing.cpp -o parsing.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c puny.cpp -o puny.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c punycode.c -o punycode.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c suffix.cpp -o suffix.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c utf8.c -o utf8.o
+g++ -std=gnu++20 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o urltools.so RcppExports.o compose.o credentials.o encoding.o parameter.o parsing.o puny.o punycode.o suffix.o utf8.o -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-urltools/00new/urltools/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (urltools)

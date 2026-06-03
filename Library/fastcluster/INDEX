@@ -1,0 +1,6 @@
+fastcluster             Fast hierarchical, agglomerative clustering
+                        routines for R and Python
+hclust                  Fast hierarchical, agglomerative clustering of
+                        dissimilarity data
+hclust.vector           Fast hierarchical, agglomerative clustering of
+                        vector data

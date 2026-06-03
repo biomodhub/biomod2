@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Classes and Methods for Simple Feature Objects that Have a Time
+Column</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Classes and Methods for Simple Feature Objects that Have a Time
+Column
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;sftime&rsquo; version 0.3.2</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS.md">Package NEWS</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="st_sftime.html">$&lt;-.sftime</a></td>
+<td>Construct an 'sftime' object from all its components</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">anti_join.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">arrange.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="bind.html">bind</a></td>
+<td>Bind rows (features) of 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="bind.html">cbind.sftime</a></td>
+<td>Bind rows (features) of 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">distinct.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">drop_na.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">filter.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">full_join.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">gather.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="geos_binary_ops.html">geos_binary_ops</a></td>
+<td>Geometric operations on pairs of simple feature geometry sets (including 'sftime' objects)</td></tr>
+<tr><td style="width: 25%;"><a href="geos_combine.html">geos_combine</a></td>
+<td>Combine or union feature geometries (including 'sftime' objects)</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">group_by.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">inner_join.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">left_join.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">mutate.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">nest.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">pivot_longer.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="plot.sftime.html">plot</a></td>
+<td>Plots an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="plot.sftime.html">plot.sftime</a></td>
+<td>Plots an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="print.sftime.html">print.sftime</a></td>
+<td>Prints an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="bind.html">rbind.sftime</a></td>
+<td>Bind rows (features) of 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">rename.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">right_join.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">rowwise.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">sample_frac.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">sample_n.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">select.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">semi_join.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">separate.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">separate_rows.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">slice.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">spread.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.cubble_df</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.data.frame</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.lpp</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.ppp</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.psp</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.sf</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.sftime</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.sftrack</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.sftraj</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.ST</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.stars</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.Track</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.Tracks</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_as_sftime.html">st_as_sftime.TracksCollection</a></td>
+<td>Convert a foreign object to an 'sftime' object</td></tr>
+<tr><td style="width: 25%;"><a href="st_cast.html">st_cast</a></td>
+<td>Cast geometry to another type: either simplify, or cast explicitly</td></tr>
+<tr><td style="width: 25%;"><a href="st_cast.html">st_cast.sftime</a></td>
+<td>Cast geometry to another type: either simplify, or cast explicitly</td></tr>
+<tr><td style="width: 25%;"><a href="st_crop.sftime.html">st_crop.sftime</a></td>
+<td>Crop an 'sftime' object to a specific rectangle</td></tr>
+<tr><td style="width: 25%;"><a href="geos_binary_ops.html">st_difference.sftime</a></td>
+<td>Geometric operations on pairs of simple feature geometry sets (including 'sftime' objects)</td></tr>
+<tr><td style="width: 25%;"><a href="st_geometry.html">st_drop_geometry.sftime</a></td>
+<td>Drops the geometry column of 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_drop_time</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="st_join.html">st_filter.sftime</a></td>
+<td>Spatial join, spatial filter for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_geometry.html">st_geometry</a></td>
+<td>Drops the geometry column of 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="geos_binary_ops.html">st_intersection.sftime</a></td>
+<td>Geometric operations on pairs of simple feature geometry sets (including 'sftime' objects)</td></tr>
+<tr><td style="width: 25%;"><a href="st_join.html">st_join</a></td>
+<td>Spatial join, spatial filter for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_join.html">st_join.sftime</a></td>
+<td>Spatial join, spatial filter for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_set_time</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="st_sftime.html">st_sftime</a></td>
+<td>Construct an 'sftime' object from all its components</td></tr>
+<tr><td style="width: 25%;"><a href="geos_binary_ops.html">st_sym_difference.sftime</a></td>
+<td>Geometric operations on pairs of simple feature geometry sets (including 'sftime' objects)</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_time</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_time.sftime</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_time&lt;-</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_time&lt;-.sf</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="st_time.html">st_time&lt;-.sftime</a></td>
+<td>Get, set, or replace time information</td></tr>
+<tr><td style="width: 25%;"><a href="geos_combine.html">st_union.sftime</a></td>
+<td>Combine or union feature geometries (including 'sftime' objects)</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">summarise.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">summarize.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">tidyverse</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="transform.sftime.html">transform.sftime</a></td>
+<td>Transform method for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">transmute.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">ungroup.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">unite.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="tidyverse.html">unnest.sftime</a></td>
+<td>'tidyverse' methods for 'sftime' objects</td></tr>
+<tr><td style="width: 25%;"><a href="st_sftime.html">[.sftime</a></td>
+<td>Construct an 'sftime' object from all its components</td></tr>
+<tr><td style="width: 25%;"><a href="st_sftime.html">[[&lt;-.sftime</a></td>
+<td>Construct an 'sftime' object from all its components</td></tr>
+</table>
+</div></body></html>

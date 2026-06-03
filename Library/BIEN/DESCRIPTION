@@ -1,0 +1,20 @@
+Package: BIEN
+Title: Tools for Accessing the Botanical Information and Ecology
+        Network Database
+Version: 1.2.8
+Authors@R: person("Brian", "Maitner", email = "bmaitner@gmail.com", role = c("aut", "cre"))
+Description: Provides Tools for Accessing the Botanical Information and Ecology Network Database.  The BIEN database contains cleaned and standardized botanical data including occurrence, trait, plot and taxonomic data (See <https://bien.nceas.ucsb.edu/bien/> for more Information).  This package provides functions that query the BIEN database by constructing and executing optimized SQL queries.
+Depends: R (>= 4.1.0), RPostgreSQL
+License: MIT + file LICENSE
+Imports: DBI, ape, sf, terra, doParallel, parallel, foreach
+Suggests: knitr, rmarkdown, testthat, curl, maps
+VignetteBuilder: knitr
+RoxygenNote: 7.3.3
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2026-04-28 22:08:14 UTC; bmaitner
+Author: Brian Maitner [aut, cre]
+Maintainer: Brian Maitner <bmaitner@gmail.com>
+Repository: CRAN
+Date/Publication: 2026-04-30 07:40:16 UTC
+Built: R 4.6.0; ; 2026-05-22 09:31:18 UTC; unix

@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Brian Maitner" />
+
+<meta name="date" content="2026-04-28" />
+
+<title>BIEN tutorial</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">BIEN tutorial</h1>
+<h4 class="author">Brian Maitner</h4>
+<h4 class="date">2026-04-28</h4>
+
+
+
+<div id="setup" class="section level1">
+<h1>Setup</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ape) <span class="co">#Package for working with phylogenies in R</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(maps) <span class="co">#Useful for making quick maps of occurrences</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(sf) <span class="co"># A package for spatial data</span></span></code></pre></div>
+</div>
+<div id="an-overview-of-the-package" class="section level1">
+<h1>An overview of the package</h1>
+<p>We try to make this package as easy and intuitive to use as possible,
+but it is still often easiest to start with our vignette. Particularly
+useful are the “Function Names” and “Function Directory” sections.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;BIEN&quot;</span>)</span></code></pre></div>
+<p>The function names follow a consistent naming strategy, and mostly
+consist of 3 parts:</p>
+<ol style="list-style-type: decimal">
+<li>The prefix “BIEN_”</li>
+<li>The type of data being accessed, e.g. “occurrence_”</li>
+<li>How you’ll be querying the data. For example, the suffix “state”
+refers to functions that return data for a specified state.</li>
+</ol>
+<p>As a complete example, the function
+<code>BIEN_occurrence_species</code> returns occurrence records for a
+given species (or set of species).</p>
+</div>
+<div id="function-families" class="section level1">
+<h1>Function Families</h1>
+<p>Currently we have 9 function families in BIEN. These are sets of
+functions that access a given type of data.</p>
+<ol style="list-style-type: decimal">
+<li>occurrence records (<code>BIEN_occurrence_...</code>)</li>
+<li>range maps (<code>BIEN_ranges_...</code>)</li>
+<li>plot data (<code>BIEN_plot_...</code>)</li>
+<li>trait data (<code>BIEN_trait_...</code>)</li>
+<li>taxonomic information (<code>BIEN_taxonomy_...</code>)</li>
+<li>phylogenies (<code>BIEN_phylogeny_...</code>)</li>
+<li>stem data (<code>BIEN_stem_...</code>)</li>
+<li>species lists (<code>BIEN_list_...</code>)</li>
+<li>metadata (<code>BIEN_metadata_...</code>)</li>
+</ol>
+<p>We’ll walk through each of the function families and take a look at
+some the options available within each.</p>
+</div>
+<div id="occurrence-records" class="section level1">
+<h1>Occurrence records</h1>
+<p>These functions begin with the prefix
+<code>BIEN_occurrence_...</code> and allow you to query occurrences by
+either taxonomy or geography. Functions include:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_occurrence_country</code> Returns all occurrence
+records within a given country</p></li>
+<li><p><code>BIEN_occurrence_state</code> Returns all occurrences
+records within a given state/province</p></li>
+<li><p><code>BIEN_occurrence_county</code> Returns all occurrences
+records within a given state/province</p></li>
+<li><p><code>BIEN_occurrence_family</code> Returns all occurrence
+records for a specified family</p></li>
+<li><p><code>BIEN_occurrence_genus</code> Returns all occurrence records
+for a specified genus</p></li>
+<li><p><code>BIEN_occurrence_species</code> Returns all occurrence
+records for a specified species</p></li>
+</ol>
+<p>Each of these functions has a number of different arguments that
+modify your query, either refining your search criteria or returning
+more data for each record. These arguments include:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>cultivated</code> If <code>TRUE</code>, records known to be
+cultivated will be returned.</p></li>
+<li><p><code>new.world</code> If <code>TRUE</code>, records returned are
+limited to those in North and South America, where greater data cleaning
+and validation has been done. IF <code>FALSE</code>, records will be
+limited to the Old World. If <code>NULL</code> (the default), global
+records will be returned.</p></li>
+</ol>
+<ul>
+<li>Note that the arguments cultivated and new.world may change the
+number of records returned.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><p><code>all.taxonomy</code> If <code>TRUE</code>, the query will
+return additional taxonomic data, including the uncorrected taxonomic
+information for those records.</p></li>
+<li><p><code>native.status</code> If <code>TRUE</code>, additional
+information will be returned regarding whether a species is native in a
+given region.</p></li>
+<li><p><code>natives.only</code> If <code>TRUE</code>, the default,
+information for occurrences flagged as introduced will not be
+returned.</p></li>
+<li><p><code>observation.type</code> If <code>TRUE</code>, the query
+will return whether each record is from either a plot or a specimen.
+This may be useful if a user believes one type of information may be
+more accurate.</p></li>
+<li><p><code>political.boundaries</code> If <code>TRUE</code>, the query
+will return information on which country, state, etc. that an occurrence
+is found within.</p></li>
+<li><p><code>collection.info</code> If <code>TRUE</code>, the quest will
+return additional information about the collection and identification of
+that specimen.</p></li>
+</ol>
+<p><strong>Example 1: Occurrence records for a species</strong></p>
+<p>Okay, enough reading. Let’s get some data.</p>
+<p>Let’s say we’re interested in the species <em>Xanthium
+strumarium</em> and we’d like some occurrence data. We’ll use the
+function <code>BIEN_occurrence_species</code> to grab the occurrence
+data.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>Xanthium_strumarium <span class="ot">&lt;-</span> <span class="fu">BIEN_occurrence_species</span>(<span class="at">species =</span> <span class="st">&quot;Xanthium strumarium&quot;</span>)</span></code></pre></div>
+<pre><code>## Getting page 1 of records</code></pre>
+<p>Take a moment and view the dataframe and take a look at the
+structure</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">str</span>(Xanthium_strumarium)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    2344 obs. of  10 variables:
+##  $ scrubbed_species_binomial  : chr  &quot;Xanthium strumarium&quot; &quot;Xanthium strumarium&quot; &quot;Xanthium strumarium&quot; &quot;Xanthium strumarium&quot; ...
+##  $ latitude                   : num  39 32.6 33.7 25.3 15.8 ...
+##  $ longitude                  : num  -77.2 -110.8 -110.6 -105.7 -96 ...
+##  $ date_collected             : Date, format: &quot;1903-08-21&quot; NA ...
+##  $ datasource                 : chr  &quot;GBIF&quot; &quot;ARIZ&quot; &quot;GBIF&quot; &quot;GBIF&quot; ...
+##  $ dataset                    : chr  &quot;US&quot; NA &quot;ASU&quot; &quot;IBUNAM&quot; ...
+##  $ dataowner                  : chr  &quot;US&quot; NA &quot;ASU&quot; &quot;IBUNAM&quot; ...
+##  $ custodial_institution_codes: chr  &quot;US&quot; NA &quot;ASU&quot; &quot;IBUNAM&quot; ...
+##  $ collection_code            : chr  &quot;Botany&quot; NA &quot;Plants&quot; &quot;MEXU&quot; ...
+##  $ datasource_id              : num  4885 341 4193 2859 2859 ...</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">head</span>(Xanthium_strumarium)</span></code></pre></div>
+<pre><code>##   scrubbed_species_binomial latitude  longitude date_collected datasource
+## 1       Xanthium strumarium 38.96940  -77.17670     1903-08-21       GBIF
+## 2       Xanthium strumarium 32.61090 -110.77090           &lt;NA&gt;       ARIZ
+## 3       Xanthium strumarium 33.69000 -110.57000     1968-09-27       GBIF
+## 4       Xanthium strumarium 25.33028 -105.71972     1989-09-10       GBIF
+## 5       Xanthium strumarium 15.83722  -95.97417     1999-03-09       GBIF
+## 6       Xanthium strumarium 38.39890  -76.99140     1945-08-26       GBIF
+##   dataset dataowner custodial_institution_codes collection_code datasource_id
+## 1      US        US                          US          Botany          4885
+## 2    &lt;NA&gt;      &lt;NA&gt;                        &lt;NA&gt;            &lt;NA&gt;           341
+## 3     ASU       ASU                         ASU          Plants          4193
+## 4  IBUNAM    IBUNAM                      IBUNAM            MEXU          2859
+## 5  IBUNAM    IBUNAM                      IBUNAM            MEXU          2859
+## 6      US        US                          US          Botany          4885</code></pre>
+<p>The default data that is returned consists of the latitude, longitude
+and date collected, along with a set of attribution data. The meaning of
+some of these columns is obvious (e.g. latitude, longitude), however
+others may be less clear. The meanings of these columns and the
+information within is explained in more detail in our data dictionary,
+which can be accessed using the function
+<code>BIEN_metadata_data_dictionaries</code>.</p>
+<p>If we want more information on these occurrences, we just need to
+change the arguments:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>Xanthium_strumarium_full <span class="ot">&lt;-</span> <span class="fu">BIEN_occurrence_species</span>(<span class="at">species =</span> <span class="st">&quot;Xanthium strumarium&quot;</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                                                    <span class="at">cultivated =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                                                    <span class="at">all.taxonomy =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>                                                    <span class="at">native.status =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>                                                    <span class="at">observation.type =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>                                                    <span class="at">political.boundaries =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>We now have considerably more information.</p>
+<p>If we want to take a quick look at where those occurrences are we
+could use:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Make a quick map to plot our points on</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">map</span>(<span class="st">&#39;world&#39;</span>, <span class="at">fill =</span> <span class="cn">TRUE</span>, <span class="at">col=</span> <span class="st">&quot;grey&quot;</span>, <span class="at">bg =</span> <span class="st">&quot;light blue&quot;</span>) </span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># Plot the points from the full query in red</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  <span class="fu">points</span>(<span class="fu">cbind</span>(Xanthium_strumarium_full<span class="sc">$</span>longitude,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>               Xanthium_strumarium_full<span class="sc">$</span>latitude),</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>         <span class="at">col =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>         <span class="at">pch =</span> <span class="dv">20</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>         <span class="at">cex =</span> <span class="dv">1</span>) </span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co"># Plot the points from the default query in blue</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>  <span class="fu">points</span>(<span class="fu">cbind</span>(Xanthium_strumarium<span class="sc">$</span>longitude,</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>               Xanthium_strumarium<span class="sc">$</span>latitude),</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>         <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>         <span class="at">pch =</span> <span class="dv">20</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>         <span class="at">cex =</span> <span class="dv">1</span>) </span></code></pre></div>
+<p><strong>Example 2: Occurrence records for a country</strong></p>
+<p>Since we may be interested in a particular geographic area, rather
+than a particular set of species, there are also options to easily
+extract data by political region as well.</p>
+<p>We’ll choose a relatively small region, the Bahamas, for our
+demonstration.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>Bahamas <span class="ot">&lt;-</span> <span class="fu">BIEN_occurrence_country</span>(<span class="at">country =</span>  <span class="st">&quot;Bahamas&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#Let&#39;s see how many species we have</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">unique</span>(Bahamas<span class="sc">$</span>scrubbed_species_binomial))</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="co">#About 400 species with valid occurrence records.</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#Now, let&#39;s take a look at where those occurrences are:</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  </span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="fu">map</span>(<span class="at">regions =</span> <span class="st">&quot;Bahamas&quot;</span> ,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>      <span class="at">fill =</span> <span class="cn">TRUE</span> ,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>      <span class="at">col=</span> <span class="st">&quot;grey&quot;</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>      <span class="at">bg =</span> <span class="st">&quot;light blue&quot;</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  </span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="fu">points</span>(<span class="fu">cbind</span>(Bahamas<span class="sc">$</span>longitude,Bahamas<span class="sc">$</span>latitude),</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>         <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>         <span class="at">pch =</span> <span class="dv">20</span>,</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>         <span class="at">cex =</span> <span class="dv">1</span>) </span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#Looks like some islands are considerably better sampled than others.</span></span></code></pre></div>
+</div>
+<div id="range-maps" class="section level1">
+<h1>Range maps</h1>
+<p>These functions begin with the prefix <code>BIEN_ranges_...</code>
+and return (unsurprisingly) species ranges. Most of these functions work
+by saving the downloaded ranges to a specified directory in shapefile
+format, rather than by loading them into the R environment.</p>
+<p>Functions include:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_ranges_species</code> Downloads range maps for given
+species and save them to a specified directory.</p></li>
+<li><p><code>BIEN_ranges_genus</code> Saves range maps for all species
+within a genus to a specified directory.</p></li>
+<li><p><code>BIEN_ranges_load_species</code> This function returns the
+ranges for a set of species as a sf object.</p></li>
+<li><p><code>BIEN_range_sf</code> This function returns all ranges that
+intersect a user-specified sf object.</p></li>
+</ol>
+<p>The range functions have different arguments than we have seen so
+far, including:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>directory</code> This is where the function will be saving
+the shapefiles you download</p></li>
+<li><p><code>matched</code> If <code>TRUE</code>, the function will
+return a dataframe listing which species ranges were downloaded and
+which weren’t.</p></li>
+<li><p><code>match_names_only</code> If <code>TRUE</code>, the function
+will check whether a map is available for each species without actually
+downloading it</p></li>
+<li><p><code>include.gid</code> If <code>TRUE</code>, the function will
+append a unique gid number to each range map’s filename. This argument
+is designed to allow forward compatibility when BIEN contains multiple
+range maps for each species.</p></li>
+</ol>
+<p><strong>Example 3: Range maps and occurrence points</strong></p>
+<p>If we have a species we’re interested in, and would like to load the
+range map into the environment, we can use the function
+<code>BIEN_ranges_load_species</code>. Let’s try this for <em>Xanthium
+strumarium</em>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>Xanthium_strumarium_range <span class="ot">&lt;-</span> <span class="fu">BIEN_ranges_load_species</span>(<span class="at">species =</span> <span class="st">&quot;Xanthium strumarium&quot;</span>)</span></code></pre></div>
+<pre><code>## Getting page 1 of records</code></pre>
+<p>The range map is now in our global environment as an sf object. Let’s
+plot the map and see what it looks like.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co">#First, let&#39;s add a base map so that our range has some context:</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="fu">map</span>(<span class="st">&#39;world&#39;</span>, <span class="at">fill =</span> <span class="cn">TRUE</span> ,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>      <span class="at">col=</span> <span class="st">&quot;grey&quot;</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>      <span class="at">bg =</span> <span class="st">&quot;light blue&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>      <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>, <span class="sc">-</span><span class="dv">20</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>      <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>, <span class="dv">80</span>))</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#Now, we can add the range map:</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  <span class="fu">plot</span>(Xanthium_strumarium_range[<span class="dv">1</span>],</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>       <span class="at">col =</span> <span class="st">&quot;green&quot;</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>       <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Now, let’s add those occurrence points from earlier to this map:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">map</span>(<span class="st">&#39;world&#39;</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>    <span class="at">fill =</span> <span class="cn">TRUE</span> ,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    <span class="at">bg =</span> <span class="st">&quot;light blue&quot;</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>, <span class="sc">-</span><span class="dv">20</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>, <span class="dv">80</span>))</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="fu">plot</span>(Xanthium_strumarium_range[<span class="dv">1</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">&quot;green&quot;</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">cbind</span>(Xanthium_strumarium<span class="sc">$</span>longitude,Xanthium_strumarium<span class="sc">$</span>latitude),</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>       <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">20</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>       <span class="at">cex =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="plot-data" class="section level1">
+<h1>Plot data</h1>
+<p>These functions begin with the prefix “BIEN_plot_” and return
+ecological plot data. Functions include:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_plot_list_sampling_protocols</code> Returns the
+different plot sampling protocols found in the BIEN database.</p></li>
+<li><p><code>BIEN_plot_list_datasource</code> Returns the different
+datasources that are available in the BIEN database.</p></li>
+</ol>
+<ul>
+<li>These first two functions are useful for identifying plots with
+comparable sampling methods.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><p><code>BIEN_plot_sampling_protocol</code> Downloads data for a
+specified sampling protocol</p></li>
+<li><p><code>BIEN_plot_datasource</code> Downloads data for a specific
+datasource</p></li>
+</ol>
+<ul>
+<li>These next two function are then useful for downloading datasets
+with consistent methodology.</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li><p><code>BIEN_plot_country</code></p></li>
+<li><p><code>BIEN_plot_state</code></p></li>
+<li><p><code>BIEN_plot_dataset</code> Downloads data for a given dataset
+(which is nested within a datasource)</p></li>
+<li><p><code>BIEN_plot_name</code> Downloads data for a specific plot
+name (these are nested within a given dataset)</p></li>
+</ol>
+<p>Again we have some of the same arguments available for these queries
+that we saw for the occurrence functions. We also have the new argument
+<em><code>all.metadata</code></em>, which causes the functions to return
+more metadata for each plot.</p>
+<p><strong>Example 4: Plot data by plot name</strong></p>
+<p>Let’s take a look at the data for an individual plot.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>LUQUILLO <span class="ot">&lt;-</span> <span class="fu">BIEN_plot_name</span>(<span class="at">plot.name =</span> <span class="st">&quot;LUQUILLO&quot;</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">head</span>(LUQUILLO)</span></code></pre></div>
+<p>We can see that this is a 0.1 hectare transect where stems &gt;= 2.5
+cm diameter at breast height were included. If we’d like more detail, we
+can use additional arguments:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>LUQUILLO_full <span class="ot">&lt;-</span> <span class="fu">BIEN_plot_name</span>(<span class="at">plot.name =</span> <span class="st">&quot;LUQUILLO&quot;</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>                                <span class="at">cultivated =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>                                <span class="at">all.taxonomy =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>                                <span class="at">native.status =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>                                <span class="at">political.boundaries =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>                                <span class="at">all.metadata =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The dataframe <code>LUQUILLO_full</code> contains more useful
+information, including metadata on which taxa were included, which
+growth forms were included and information on whether species are known
+to be native or introduced.</p>
+</div>
+<div id="trait-data" class="section level1">
+<h1>Trait data</h1>
+<p>These functions begin with the prefix <code>BIEN_trait_...</code> and
+access the BIEN trait database. Note that the spelling of the trait
+names must be precise, so we recommend using the function
+<code>BIEN_trait_list</code> first. Traits names are standardized to
+follow https:<area>//www<area>.top-thesaurus.org/ where available. Trait
+units have been standardized for each trait.</p>
+<p>Functions include:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_trait_list</code> Start with this. It returns a
+dataframe of the traits available.</p></li>
+<li><p><code>BIEN_trait_family</code> Returns a dataframe of all trait
+data for a given family (or families).</p></li>
+<li><p><code>BIEN_trait_genus</code></p></li>
+<li><p><code>BIEN_trait_species</code></p></li>
+<li><p><code>BIEN_trait_trait</code> Downloads all records of a
+specified trait (or traits).</p></li>
+<li><p><code>BIEN_trait_mean</code> Estimates species mean trait values
+using genus or family level means where species-level data is
+absent.</p></li>
+<li><p><code>BIEN_trait_traitbyfamily</code> Downloads data for a given
+family (or families) and trait(s).</p></li>
+<li><p><code>BIEN_trait_traitbygenus</code></p></li>
+<li><p><code>BIEN_trait_traitbyspecies</code></p></li>
+</ol>
+<p><strong>Example 5: Accessing trait data</strong></p>
+<p>If you’re interested in accessing all traits for a taxon, say the
+genus <em>Salix</em>, just go ahead and use the corresponding
+function:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>Salix_traits <span class="ot">&lt;-</span> <span class="fu">BIEN_trait_genus</span>(<span class="at">genus =</span> <span class="st">&quot;Salix&quot;</span>)</span></code></pre></div>
+<p>If instead we’re interested in a particular trait, the first step is
+to check if that trait is present and verify the spelling using the
+function <code>BIEN_trait_list</code>.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">BIEN_trait_list</span>()</span></code></pre></div>
+<p>If we’re interested in leaf area, we see that this is indeed called
+“leaf area” in the database. Now that we know the proper spelling, we
+can use the function <code>BIEN_trait_trait</code> to download all
+observations of that trait.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>leaf_area <span class="ot">&lt;-</span> <span class="fu">BIEN_trait_trait</span>(<span class="at">trait =</span> <span class="st">&quot;leaf area&quot;</span>)</span></code></pre></div>
+<p>Note that the units have been standardized and that there is a full
+set of attribution data for each trait.</p>
+</div>
+<div id="taxonomy-data" class="section level1">
+<h1>Taxonomy Data</h1>
+<p>While there are existing packages that query taxonomic data
+(e.g. those included in the excellent taxize package), the BIEN taxonomy
+functions access the taxonomic information that underlies the BIEN
+database, ensuring consistency.</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_taxonomy_family</code> Downloads all taxonomic
+information for a given family.</p></li>
+<li><p><code>BIEN_taxonomy_genus</code></p></li>
+<li><p><code>BIEN_taxonomy_species</code></p></li>
+</ol>
+<p><strong>Example 6: Taxonomic data</strong></p>
+<p>Let’s say we’re interested in the genus <em>Asclepias</em>, and we’d
+like to get an idea of how many species there are in this genus and what
+higher taxa it falls within.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>Asclepias_taxonomy <span class="ot">&lt;-</span> <span class="fu">BIEN_taxonomy_genus</span>(<span class="at">genus =</span> <span class="st">&quot;Asclepias&quot;</span>)</span></code></pre></div>
+<pre><code>## Getting page 1 of records</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#We see that the genus Asclepias falls within the family Apocynaceae and the order Gentianales.</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#You&#39;ll also notice that a given species may appear more than once (due to multiple circumscriptions, some of which may be illegitimate).</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#If we&#39;d just like to know all the speciess that aren&#39;t illegitimate:</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>Asclepias_species <span class="ot">&lt;-</span> <span class="fu">unique</span>(Asclepias_taxonomy<span class="sc">$</span>scrubbed_species_binomial[Asclepias_taxonomy<span class="sc">$</span>scrubbed_taxonomic_status <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;accepted&quot;</span>,  <span class="st">&quot;no opinion&quot;</span>)])</span></code></pre></div>
+</div>
+<div id="phylogenies" class="section level1">
+<h1>Phylogenies</h1>
+<p>The BIEN database currently contains 101 phylogenies for new world
+plants. This includes 100 replicated phylogenies that include a large
+fraction of New World plant species (“complete phylogenies”) and 1
+phylogeny containing only those New World plant species for which
+molecular data were available (“conservative phylogeny”). Currently,
+there are only 2 functions available:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_phylogeny_complete</code> This function will return a
+specified number of the replicated “complete” phylogenies. Note that
+each phylogeny is several Mb in size, so downloading many may take a
+while on slow connections.</p></li>
+<li><p><code>BIEN_phylogeny_conservative</code> This function returns
+the conservative phylogeny.</p></li>
+</ol>
+<p>Arguments: The function <code>BIEN_phylogeny_complete</code> has a
+few arguments that are worth explaining:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>n_phylogenies</code> This is the number of replicated
+phylogenies that you want to download (between 1 and 100)</p></li>
+<li><p><code>seed</code> This function sets the seed for the random
+number generator before randomly drawing the phylogenies to be
+downloaded. This is useful for replicating analyses.</p></li>
+<li><p><code>replicates</code> This function allows you to specify WHICH
+of the 100 phylogenies to download, rather than having them selected
+randomly.</p></li>
+</ol>
+<p><strong>Example 7: Phylogenies</strong></p>
+<p>Let’s say we want to download the conservative phylogeny.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>phylo <span class="ot">&lt;-</span> <span class="fu">BIEN_phylogeny_conservative</span>()</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#Let&#39;s make sure it looks alright</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="fu">plot.phylo</span>(<span class="at">x =</span> phylo, <span class="at">show.tip.label =</span>  <span class="cn">FALSE</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#If we just want to see which species are included</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>  phylo_species <span class="ot">&lt;-</span> phylo<span class="sc">$</span>tip.label</span></code></pre></div>
+</div>
+<div id="stem-data" class="section level1">
+<h1>Stem Data</h1>
+<p>The BIEN database contains stem data associated with many of the
+plots. This is typically either diameter at breast height or diameter at
+ground height. At present, there is only one stem function (although
+expect more in the future):</p>
+<ol style="list-style-type: decimal">
+<li><code>BIEN_stem_species</code> This function downloads all of the
+stem data for a given species (or set of species)</li>
+<li><code>BIEN_stem_genus</code></li>
+<li><code>BIEN_stem_family</code></li>
+<li><code>BIEN_stem_datasource</code> This function downloads all of the
+stem data for a given datasource.</li>
+</ol>
+<p>Arguments:</p>
+<p>The arguments for this function are the same that we have seen in the
+occurrence and plot functions.</p>
+<p><strong>Example 8: Stem data</strong></p>
+<p>If we’d like stem data for the species <em>Cupressus
+arizonica</em></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>Cupressus_arizonica_stems <span class="ot">&lt;-</span> <span class="fu">BIEN_stem_species</span>(<span class="st">&quot;Cupressus arizonica&quot;</span>)</span></code></pre></div>
+</div>
+<div id="species-lists" class="section level1">
+<h1>Species lists</h1>
+<p>These functions begin with the prefix <code>BIEN_list_</code> and
+allow you to quickly get a list of all the species in a geographic unit.
+Functions include:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_list_country</code> Returns all species found within a
+country.</p></li>
+<li><p><code>BIEN_list_state</code> Returns all species found within a
+given state/province or other 2nd level political division.</p></li>
+<li><p><code>BIEN_list_county</code> Returns all species found within a
+given county/parish/or other 3rd level political division.</p></li>
+</ol>
+<p>Some of the same arguments we saw in the occurrence functions appear
+here as well, including <code>cultivated</code> and
+<code>new.world</code>.</p>
+<p><strong>Example 9: Species list for a country</strong></p>
+<p>Let’s return to our previous example. What if we just need a list of
+the species in the Bahamas, rather than the specific details of each
+occurrence record? We can instead use the function
+<code>BIEN_list_country</code> to download a list of species, which
+should be much faster than using <code>BIEN_occurrence_country</code> to
+get a species list.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>Bahamas_species_list <span class="ot">&lt;-</span> <span class="fu">BIEN_list_country</span>(<span class="at">country =</span> <span class="st">&quot;Bahamas&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#Notice that we find many more species listed than we found occurrence records for.  What happened?  There are many records coming from the Bahamas that lack coordinates.  These records are used used in the &quot;_list_&quot; functions, but not the occurrence functions.</span></span></code></pre></div>
+<p>If we wanted to retrieve the results for multiple countries at once,
+that is simple as well. We just need to supply a vector of
+countries.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>country_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Haiti&quot;</span>,<span class="st">&quot;Dominican Republic&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>Haiti_DR <span class="ot">&lt;-</span> <span class="fu">BIEN_list_country</span>(<span class="at">country =</span> country_vector)</span></code></pre></div>
+<p>We can also use political division codes (from geonames.org) instead
+of writing out the full country names.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co">#To see all of the political division names, and associated codes, we can use this function:</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>political_names <span class="ot">&lt;-</span> <span class="fu">BIEN_metadata_list_political_names</span>()</span></code></pre></div>
+<pre><code>## Getting page 1 of records</code></pre>
+<pre><code>## Getting page 2 of records</code></pre>
+<pre><code>## Getting page 3 of records</code></pre>
+<pre><code>## Getting page 4 of records</code></pre>
+<pre><code>## Getting page 5 of records</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co">#Let&#39;s take a look at what the dataframe contains:</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="fu">head</span>(political_names)</span></code></pre></div>
+<pre><code>##          country country_iso   state_province state_province_ascii state_code
+## 40001 Kazakhstan          KZ South Kazakhstan     South Kazakhstan         10
+## 40002 Kazakhstan          KZ South Kazakhstan     South Kazakhstan         10
+## 40003 Kazakhstan          KZ South Kazakhstan     South Kazakhstan         10
+## 40004 Kazakhstan          KZ South Kazakhstan     South Kazakhstan         10
+## 40005 Kazakhstan          KZ South Kazakhstan     South Kazakhstan         10
+## 40006 Kazakhstan          KZ South Kazakhstan     South Kazakhstan         10
+##          county_parish county_parish_ascii county_code
+## 40001  Shymkent Qalasy     Shymkent Qalasy     1537272
+## 40002 Türkistan Qalasy    Turkistan Qalasy     1537276
+## 40003  Shardara Aūdany     Shardara Audany     1524885
+## 40004   Töle Bī Aūdany      Tole Bi Audany     1521378
+## 40005  Qazyqurt Aūdany     Qazyqurt Audany     1521354
+## 40006     Sozaq Aūdany        Sozaq Audany     1518678</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co">#In addition to the standardized country, state (state_province_ascii) and county (county_parish_ascii) names, we have the associated codes that can be used in BIEN functions.</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="co">#Note that &#39;state&#39; refers to any primary political division (e.g. province), and &#39;county&#39; refers to any secondary political division (e.g. parish).</span></span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="co">#Looking at the political_names dataframe, we see that the Dominican Republic has country code &quot;DO&quot;, and Haiti has country code &quot;HT&quot;</span></span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>Haiti_DR_from_codes <span class="ot">&lt;-</span> <span class="fu">BIEN_list_country</span>(<span class="at">country.code =</span> <span class="fu">c</span>(<span class="st">&quot;HT&quot;</span>,<span class="st">&quot;DO&quot;</span>))</span></code></pre></div>
+<pre><code>## Getting page 1 of records</code></pre>
+<pre><code>## Getting page 2 of records</code></pre>
+</div>
+<div id="metadata" class="section level1">
+<h1>Metadata</h1>
+<p>The BIEN metadata functions start with the prefix
+<code>BIEN_metadata_...</code> and provide useful metadata for the BIEN
+database.</p>
+<ol style="list-style-type: decimal">
+<li><p><code>BIEN_metadata_database_version</code> Returns the current
+version number of the BIEN database and the release date.</p></li>
+<li><p><code>BIEN_metadata_match_data</code> Rudimentary function to
+check for changed records between old and current queries.</p></li>
+<li><p><code>BIEN_metadata_citation</code> Function to generate bibtex
+citations for use in reference managers.</p></li>
+<li><p><code>BIEN_metadata_list_political_names</code> Returns a
+dataframe containing political division names and associate
+codes.</p></li>
+</ol>
+<p><strong>Example 10: Metadata</strong></p>
+<p>To check what the current version of the BIEN database is (which we
+recommend reporting when using BIEN data):</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">BIEN_metadata_database_version</span>()</span></code></pre></div>
+<pre><code>## Getting page 1 of records</code></pre>
+<pre><code>##   db_version db_release_date
+## 1      4.2.8      2023-06-27</code></pre>
+<p><strong>Example 11: Citations</strong></p>
+<p>One of the more innovative features of the BIEN package is that it
+will generate custom attribution data for you based on what data you
+downloaded through the package.</p>
+<p>Let’s say we’re interested in <em>Selaginella selaginoides</em>, and
+we’d like to download some occurrence data:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>Selaginella_selaginoides_occurrences <span class="ot">&lt;-</span> <span class="fu">BIEN_occurrence_species</span>(<span class="st">&quot;Selaginella selaginoides&quot;</span>, <span class="at">new.world =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p>If we plan on using those data in a publication, we’ll need proper
+attribution. We can use <code>BIEN_metadata_citation</code> to do this
+for us:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>citation_info <span class="ot">&lt;-</span> <span class="fu">BIEN_metadata_citation</span>(<span class="at">dataframe =</span> Selaginella_selaginoides_occurrences)</span></code></pre></div>
+<p>citation_info is a list that contains 3 elements: 1. A bit of general
+information on how to use the list. 2. A set of bibtex formatted
+references. 3. Acknowledgement text.</p>
+<p>To make things even easier on ourselves, we can use some of the
+additional functionality of the <code>BIEN_metadata_citation</code>
+function:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>temp_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;BIEN_temp&quot;</span>) <span class="co">#Set a temporary working directory</span></span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a>citation_info <span class="ot">&lt;-</span> <span class="fu">BIEN_metadata_citation</span>(<span class="at">dataframe =</span> Selaginella_selaginoides_occurrences,</span>
+<span id="cb44-5"><a href="#cb44-5" tabindex="-1"></a>                                     <span class="at">bibtex_file =</span> <span class="fu">file.path</span>(temp_dir,<span class="st">&quot;selaginella_selaginoides.bib&quot;</span>),</span>
+<span id="cb44-6"><a href="#cb44-6" tabindex="-1"></a>                                      <span class="at">acknowledgement_file =</span> <span class="fu">file.path</span>(temp_dir,<span class="st">&quot;selaginella_selaginoides.txt&quot;</span>))</span></code></pre></div>
+<p>Now, we have a bibtex file,
+<code>selaginella_selaginoides.bib</code>, that can be loaded into a
+reference manager (e.g. Endnote, Paperpile, etc.), and a text file,
+<code>selaginella_selaginoides.txt</code>, containing text that can be
+pasted into the acknowledgements section of a publication.</p>
+<p>What if we also have some trait data? No problem there, the code
+handles that as well:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="co">#First, let&#39;s get some trait data:</span></span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>selaginella_selaginoides_traits <span class="ot">&lt;-</span> <span class="fu">BIEN_trait_species</span>(<span class="at">species =</span> <span class="st">&quot;Selaginella selaginoides&quot;</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a><span class="co">#Now, we just need to modify our previous bit of code to include the trait data as well:</span></span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>temp_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;BIEN_temp&quot;</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a>citation_info <span class="ot">&lt;-</span> <span class="fu">BIEN_metadata_citation</span>(<span class="at">dataframe =</span> Selaginella_selaginoides_occurrences,</span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a>                                      <span class="at">trait.dataframe =</span> selaginella_selaginoides_traits,</span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a>                                      <span class="at">bibtex_file =</span> <span class="fu">file.path</span>(temp_dir,<span class="st">&quot;selaginella_selaginoides.bib&quot;</span>),</span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a>                                      <span class="at">acknowledgement_file =</span> <span class="fu">file.path</span>(temp_dir,<span class="st">&quot;selaginella_selaginoides.txt&quot;</span>))</span></code></pre></div>
+<p>The updated citation information will now contain references for both
+trait and occurrence records.</p>
+</div>
+<div id="combining-queries" class="section level1">
+<h1>Combining Queries</h1>
+<p><strong>Example 11: Putting it all together </strong> Coming
+soon!</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

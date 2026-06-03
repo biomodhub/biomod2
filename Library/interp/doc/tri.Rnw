@@ -1,0 +1,422 @@
+%% -*- mode: Rnw; coding: utf-8; -*-
+%\VignetteIndexEntry{Triangulation of irregular spaced data}
+%\VignetteDepends{}
+%\VignetteKeywords{nonparametric}
+%\VignettePackage{interp}
+
+\documentclass[nojss]{jss}
+\usepackage[utf8]{inputenc}
+%\usepackage{Sweave}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{flexisym}
+\usepackage{breqn}
+\usepackage{bm}
+\usepackage{graphicx}
+
+% put floats before next section:
+\usepackage[section]{placeins}
+
+% collect appendices as subsections
+\usepackage[toc,page]{appendix}
+
+% customize verbatim parts
+\usepackage{listings}
+\lstdefinestyle{Sstyle}{
+  basicstyle=\ttfamily\rsize,
+  columns=fixed,
+  breaklines=true, % sets automatic line breaking
+  breakatwhitespace=false,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+  fontadjust=true,
+  basewidth=0.5em,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate={‘}{{'}}1 {’}{{'}}1 % Zeichencodes für Ausgabe von lm() !
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+% switch to above defined style
+\lstset{style=Sstyle}
+
+% nice borders for code blocks
+\usepackage{tcolorbox}
+% enable boxes over several pages:
+\tcbuselibrary{breakable,skins}
+\tcbset{breakable,enhanced}
+
+\definecolor{grey2}{rgb}{0.6,0.6,0.6}
+\definecolor{grey1}{rgb}{0.8,0.8,0.8}
+
+
+
+% some abbreviations:
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\EV}{\mathbb{E}}
+\newcommand{\Vect}[1]{\underline{#1}}
+\newcommand{\Mat}[1]{\boldsymbol{#1}}
+\newcommand{\Var}{\mbox{Var}}
+\newcommand{\Cov}{\mbox{Cov}}
+% lstinline can break code across lines
+\def\cmd{\lstinline[basicstyle=\ttfamily,keywordstyle={},breaklines=true,breakatwhitespace=false]}
+% but lstinline generates ugly sectionnames in PDF TOC, so use \texttt there
+\newcommand{\cmdtxt}[1]{\texttt{#1}}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{
+  Albrecht Gebhardt\\ %Department of Statistics,
+  University Klagenfurt
+\And
+  Roger Bivand\\ %Department of Economics,
+  Norwegian School of Economics}
+
+\title{Triangulation of irregular spaced data using the sweep hull algorithm}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Albrecht Gebhardt, Roger Bivand} %% comma-separated
+\Plaintitle{Triangulation of irregular spaced data using the sweep hull algorithm} %% a short title (if necessary)
+\Shorttitle{Triangulation of irregular spaced data in \proglang{R} Package \pkg{interp}}
+%% an abstract and keywords
+\Abstract{
+This vignette presents the \proglang{R} package \pkg{interp}
+and focuses on triangulation of irregular spaced data.
+
+This is the second of planned three vignettes for this package (not
+yet finished).  } 
+\Keywords{triangulation, Voronoi mosaic, \proglang{R} software} 
+\Plainkeywords{triangulation, Voronoi mosaic, R software} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{XX}
+%% \Issue{X}
+%% \Month{XXXXXXX}
+%% \Year{XXXX}
+%% \Submitdate{XXXX-XX-XX}
+%% \Acceptdate{XXXX-XX-XX}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Albrecht Gebhardt\
+  Institut für Statistik\\
+  Universität Klagenfurt\
+  9020 Klagenfurt, Austria\\
+  E-mail: \email{albrecht.gebhardt@aau.at}\
+  %URL: \url{http://statmath.wu-wien.ac.at/~zeileis/}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% for Sinput to set font size of R input code:
+\newcommand\rsize{%
+   \fontsize{8.5pt}{9.1pt}\selectfont%
+}
+
+\begin{document}
+% undefine Sinput, Soutput, Scode to be able to redefine them as
+% \lstnewenvironment{Sinput}...
+\makeatletter
+\let\Sinput\@undefined
+\let\endSinput\@undefined
+\let\Soutput\@undefined
+\let\endSoutput\@undefined
+\let\Scode\@undefined
+\let\endScode\@undefined
+\makeatother
+
+\hypersetup{pdftitle={Triangulation of irregular spaced data: Introducing the sweep hull algorithm},pdfauthor={Albrecht Gebhardt and Roger Bivand},
+  pdfborder=1 1 1 1 1}
+
+% Sweave stuff:
+% graphics dimension:
+\setkeys{Gin}{width=0.8\textwidth}
+%\setkeys{Gin}{width=1in}
+% all in- and output black:
+\definecolor{Sinput}{rgb}{0,0,0}
+\definecolor{Soutput}{rgb}{0,0,0}
+\definecolor{Scode}{rgb}{0,0,0}
+% redefine Sinput, Soutput, Scode, variant 1 use fancy verbatim
+%
+%\DefineVerbatimEnvironment{Sinput}{Verbatim}
+% gobble=0 !!! otherwise 2 characters of S lines are hidden !!!
+%{formatcom = {\color{Sinput}},fontsize=\rsize,xleftmargin=2em,gobble=0}
+%\DefineVerbatimEnvironment{Soutput}{Verbatim}
+%{formatcom = {\color{Soutput}},fontsize=\rsize,xleftmargin=2em,gobble=0}
+%\DefineVerbatimEnvironment{Scode}{Verbatim}
+%{formatcom = {\color{Scode}},fontsize=\rsize,xleftmargin=2em,gobble=0}
+%\fvset{listparameters={\setlength{\topsep}{0pt}}}
+%\renewenvironment{Schunk}{\vspace{\topsep}}{\vspace{\topsep}}
+%
+% redefine Sinput, Soutput, Scode, variant 2, use color boxes (tcb)
+\lstnewenvironment{Sinput}{\lstset{style=Sstyle}}{}%
+\lstnewenvironment{Soutput}{\lstset{style=Sstyle}}{}%
+\lstnewenvironment{Scode}{\lstset{style=Sstyle}}{}%
+\renewenvironment{Schunk}{\vspace{\topsep}\begin{tcolorbox}[breakable,colback=grey1]}{\end{tcolorbox}\vspace{\topsep}}
+% see http://www.stat.auckland.ac.nz/~ihaka/downloads/Sweave-customisation.pdf
+%
+
+% all in one line!!! setting for direct PDF output !
+\SweaveOpts{keep.source=TRUE,engine=R,eps=FALSE,pdf=TRUE,strip.white=all,prefix=TRUE,prefix.string=fig-,include=TRUE,concordance=FALSE,width=6,height=6.5}
+
+% Sweave initialization:
+% restrict line length of R output, no "+" for continued lines,
+% set plot margins:
+% initialize libraries and RNG if necessary
+<<label=init, echo=FALSE, results=hide>>=
+set.seed(42)
+options(width=80)
+options(continue=" ")
+options(SweaveHooks=list(fig=function()
+    par(mar=c(5.1, 4.1, 1.1, 2.1))))
+library(interp)
+@
+
+
+\section[Note]{Note}
+\label{sec:note}
+Notice: This is a preliminary and not yet complete version of this vignette.
+Finally three vignettes will be available for this package:
+\begin{enumerate}
+\item a first one  related to partial derivatives estimation,
+\item a next one describing interpolation related stuff
+\item and this one dealing with triangulations and Voronoi mosaics.
+\end{enumerate}
+
+
+\section[Introduction]{Introduction}
+\label{sec:intro}
+The functions described here where formerly (and still are) available
+in the \proglang{R} package \pkg{tripack} which is based on algorithms
+described in \citep{renka:96}. This code was also used by Akima in
+\citep{akima:96} for his improved spline interpolator. Both these
+algorithms are under ACM licene and so the need to reimplement all
+related functions under a free license arose.
+
+This package now re-implements the functions from the package
+\pkg{tripack} with a different but free triangulation algorithm
+operating in the background. This algorithm is a sweep hull algorithm
+introduced in \citep{sinclair:16}. 
+
+
+
+\section{Delaunay Triangulation}
+\label{sec:triangulation}
+In the next section we will use the notion of Delaunay triangulations, so
+lets start with this definition. 
+
+\begin{definition}
+  Given a set of points
+  $P=\{p_{i}|p_{i}=(x_{i},y_{i})^{\intercal},x_i\in\R, y_i\in\R, i=1,\ldots,n\}$ the set
+  of all triangles with vertices in $P$ which fulfill the condition
+  that none of the points from $P$ is contained in the interior of the
+  circumcircle of any such triangle is called Delaunay triangulation.
+\label{def:delauney}
+\end{definition}
+
+Algorithms to determine Delaunay triangulations can be split into two steps:
+\begin{enumerate}
+\item An initial step to generate a triangulation which itself is a
+  disjoint partition of the convex hull of $P$ built with non-overlapping triangles out of the given vertices.
+\item In a second step pairs of neighbouring triangles
+  $(p_{1},p_{2},p_{3})$ and $(p_{3}, p_{2}, p_{4})$ which share a common edge
+  $(p_2,p_3)$ and do not fulfill the circumcircle condition in
+  definition \ref{def:delauney} are selected. Now these triangles are
+  swapped, the new triangles beeing $(p_{1},p_{2},p_{4})$ and
+  $(p_4, p_2, p_3)$. They will now fulfil the condition.
+\end{enumerate}
+Step 2 is repeated until no such pair of triangles to swap can be
+found anymore.
+
+Sinclairs sweep hull algorithm \citep{sinclair:16} specifies step 1 as follows:
+
+\begin{enumerate}
+\item Take a random triangle which contains none of the remaining points. This forms a initial triangulation with a known convex hull (the triangle itself).
+\item Sort the remaining points in ascending distance to this triangle (its center).
+\item Repeat until all points are exhausted:
+  \begin{enumerate}
+  \item Take the next nearest point $p_{next}$.
+  \item Determine that part of the convex hull of the current triangulation which is ``visible'' from $p_{next}$.
+  \item Form all non overlapping triangles with $p_{next}$ and the
+    ``visible'' part of the current convex hull.
+  \item Add the new triangles to the current triangulation, correct
+    the convex hull to the new state.
+  \end{enumerate}
+\end{enumerate}
+
+The function \cmd{tri.mesh} is now applied to a simple artificial example data set:
+
+<<label=tri.mesh>>=
+data(tritest)
+tr <- tri.mesh(tritest)
+tr
+@
+In return the triangles and the indices of their neighbour triangles will be printed. With \cmd{interp::triangles()} more detailed information can be accessed:
+ 
+<<label=triangles>>=
+triangles(tr)
+@
+
+The first three columns contain the indices of the triangle vertices, the next three columns carry the indices of the neighbour triangles (0 means it is neigbour to the plane outside the convex hull). The last three columns are filled with indices to the arcs of the triangulation. 
+
+While plotting the triangulation, we also plot the circumcircles
+to check the condition of empty circumcircles:
+
+<<label=plottri>>=
+MASS::eqscplot(tritest)
+plot(tr, do.circumcircles=TRUE, add=TRUE)
+@
+
+
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in'>>=
+<<plottri>>
+@ 
+\caption{Delaunay triangulation with added circumcircles}
+\label{fig:tri}
+\end{figure}
+
+
+\section{Voronoi Mosaics}
+\label{sec:voronoi}
+\begin{definition}
+  Given a set of points
+  $P=\{p_{i}|p_{i}=(x_{i},y_{i})^{\intercal},i=1,\ldots,n\}$ the
+  associated Voronoi mosaic is a disjoint partition of the plane,
+  where each set of this partition (the Thiessen polygon) is created by one of the points
+  $p_{i}$ in a way that this set is the geometric location of all
+  points of $\R^{2}$ which have $p_{i}$ as its nearest neighbour out
+  of the set $P$.
+\label{def:voronoi}
+\end{definition}
+
+
+There is some sort of duality between Delaunay triangulations and
+Voronoi mosaics:
+
+The circumcircle centers of the triangles of the triangulation are the
+vertices of the Voronoi mosaic. The edges of the Voronoi mosaic are
+the perpendicular bisectors of the edges of the triangles of the
+triangulation.
+
+Using this duality it is easy to construct a Voronoi mosaic given a
+Delaunay triangulation. This is done completely in R, no \cmd{Rcpp} is used.
+
+Continuing with the previous data we get the following mosaic:
+
+<<label=vm>>=
+vm <- voronoi.mosaic(tr)
+vm
+@ 
+
+
+Dummy nodes have to be created to build the unbounded Voronoi cells on the border of the mosaic.
+
+Again while plotting it we overlay it with the triangulation to show the
+above mentioned duality:
+
+<<label=plotvm>>=
+MASS::eqscplot(tritest)
+plot(vm, add=TRUE)
+plot(tr, add=TRUE)
+@ 
+
+
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in'>>=
+<<plotvm>>
+@ 
+\caption{Voronoi mosaic with Delaunay triangulation as overlay}
+\label{fig:tri}
+\end{figure}
+
+\section{Implementation details}
+\label{sec:impl}
+This is the call to \cmd{tri.mesh}:
+
+\begin{Schunk}
+\begin{Sinput}
+tri.mesh(x, y = NULL, duplicate = "error", jitter = FALSE)
+\end{Sinput}
+\end{Schunk}
+
+The argument \cmd{duplicate} offers three options to deal with duplicates:
+\begin{itemize}
+\item \cmd{"error"}: Stop with an error, this is the default.
+\item \cmd{"strip"}: Completely remove points with duplicates, or
+\item \cmd{"remove"}: Leave one of the duplicates and remove the remaining.
+\end{itemize}
+
+
+The two vectors \cmd{x} and \cmd{y} of equal length contain the coordinates of the given data points. Omitting \cmd{y} implicates that \cmd{x}
+consist of a two column matrix or dataframe containing $x$ and $y$
+entries.
+
+In case of errors with a specific data set the option \cmd{jitter=TRUE} can be tried. It adds some small random error to the $x$, $y$ location. In some cases (e.g. collinear points) this can help to succeed with the triangulation. Under some circumstances the algorithm internally decides to restart with jitter. In this case a warning is issued.
+
+The return value of  \cmd{interp::tri.mesh()} is of the class
+\cmd{triSht}. This is in contrast to the return value of
+\cmd{tripack::tri.mesh()} which returns an object of class \cmd{tri}.
+
+That means that it is not possible to use objects created by
+\cmd{tripack::tri.mesh()} as arguments to functions in \pkg{interp}
+which operate on triangulations returned by \cmd{interp::tri.mesh()}.
+
+The call to \cmd{voronoi.mosaic()} uses the same arguments:
+
+\begin{Schunk}
+\begin{Sinput}
+voronoi.mosaic(x, y = NULL, duplicate = "error")
+\end{Sinput}
+\end{Schunk}
+
+\cmd{x} and \cmd{y} are treated as in \cmd{tri.mesh()}, but \cmd{x} can also be a triangulation object of class \cmd{triSht} returned by \cmd{tri.mesh()}.
+
+All functions from \pkg{tripack} which generate triangulation or Voronoi mosaic 
+objects are also available in \pkg{interp} with matching calls. The
+only restriction is that restricted triangulations as possible in
+\pkg{tripack} are not implemented in \pkg{interp}.
+
+% \section{Appendix}
+%\label{sec:appendix}
+
+
+\bibliography{lit}
+
+%\addcontentsline{toc}{section}{Tables}
+%\listoftables
+\addcontentsline{toc}{section}{Figures}
+\listoffigures
+
+\end{document}

@@ -1,0 +1,184 @@
+useDynLib(mclust)
+# useDynLib(mclust, .registration = TRUE)
+
+# Export all names
+# exportPattern(".")
+
+# Import all packages listed as Imports or Depends
+import("stats", "utils", "graphics", "grDevices")
+
+# export(.mclust)
+export(mclust.options, emControl)
+
+export(em, emE, emEEE, emEEI, emEEV, emEII, emEVI,
+           emV, emVEI, emVEV, emVII, emVVI, emVVV,
+           emEVV, emVEE, emEVE, emVVE,
+           emX, emXII, emXXI, emXXX)
+export(me, meE, meEEE, meEEI, meEEV, meEII, meEVI,
+           meV, meVEI, meVEV, meVII, meVVI, meVVV,
+           meEVV, meVEE, meEVE, meVVE,
+           meX, meXII, meXXI, meXXX)
+export(sim, simE, simEEE, simEEI, simEEV, simEII, simEVI, 
+            simV, simVEI, simVEV, simVII, simVVI, simVVV,
+            simEVV, simVEE, simEVE, simVVE)
+export(estep, estepE, estepEEE, estepEEI, estepEEV, estepEII, estepEVI, 
+              estepV, estepVEI, estepVEV, estepVII, estepVVI, estepVVV,
+              estepEVV, estepVEE, estepEVE, estepVVE)
+export(mstep, mstepE, mstepEEE, mstepEEI, mstepEEV, mstepEII, mstepEVI, 
+              mstepV, mstepVEI, mstepVEV, mstepVII, mstepVVI, mstepVVV,
+              mstepEVV, mstepVEE, mstepEVE, mstepVVE)
+export(mvn, mvnX, mvnXII, mvnXXI, mvnXXX)
+export(cdens, cdensE, cdensEEE, cdensEEI, cdensEEV, cdensEII, cdensEVI, 
+              cdensV, cdensVEI, cdensVEV, cdensVII, cdensVVI, cdensVVV, 
+              cdensEVV, cdensVEE, cdensEVE, cdensVVE,
+              cdensX, cdensXII, cdensXXI, cdensXXX)
+
+export(bic, pickBIC, mclustBICupdate)
+
+export(mclustLoglik, print.mclustLoglik)
+S3method("print", "mclustLoglik")
+
+export(nVarParams, nMclustParams)
+
+export(map, unmap, partconv, partuniq, errorBars)
+
+export(mclustModel, mclustModelNames, checkModelName, mclustVariance)
+
+export(decomp2sigma, sigma2decomp)
+
+export(imputeData, imputePairs, matchCluster, majorityVote)
+
+export(mapClass, classError, adjustedRandIndex, BrierScore)
+
+export(logsumexp, softmax)
+
+export(mclust1Dplot, mclust2Dplot, mvn2plot, surfacePlot, uncerPlot)
+export(clPairs, clPairsLegend, 
+       coordProj, randProj,
+       randomOrthogonalMatrix)
+
+export(priorControl, defaultPrior, hypvol)
+
+export(hc, print.hc, plot.hc)
+S3method("print", "hc")
+S3method("plot", "hc")
+export(hcE, hcEEE, hcEII, hcV, hcVII, hcVVV)
+export(hclass, hcRandomPairs, randomPairs, dupPartition, as.hclust.hc)
+S3method("as.hclust", "hc")
+
+export(mclustBIC, print.mclustBIC, summary.mclustBIC, 
+       print.summary.Mclust, plot.mclustBIC,
+       summaryMclustBIC, summaryMclustBICn)
+S3method("print", "mclustBIC")
+S3method("summary", "mclustBIC")
+S3method("print", "summary.mclustBIC")
+S3method("plot", "mclustBIC")
+
+export(Mclust, print.Mclust, summary.Mclust, print.summary.Mclust, plot.Mclust,
+       predict.Mclust, logLik.Mclust)
+S3method("print", "Mclust")
+S3method("summary", "Mclust")
+S3method("print", "summary.Mclust")
+S3method("plot", "Mclust")
+S3method("predict", "Mclust")
+S3method("logLik", "Mclust")
+
+export(densityMclust, plot.densityMclust, dens, predict.densityMclust, 
+       cdfMclust, quantileMclust, densityMclust.diagnostic, 
+       plotDensityMclust1, plotDensityMclust2, plotDensityMclustd)
+S3method("plot", "densityMclust")
+S3method("predict", "densityMclust")
+
+export(MclustDA, print.MclustDA, summary.MclustDA, print.summary.MclustDA,
+       plot.MclustDA, predict.MclustDA, cvMclustDA, getParameters.MclustDA,
+       logLik.MclustDA, classPriorProbs)
+S3method("print", "MclustDA")
+S3method("summary", "MclustDA")
+S3method("print", "summary.MclustDA")
+S3method("plot", "MclustDA")
+S3method("predict", "MclustDA")
+S3method("logLik", "MclustDA")
+
+export(MclustSSC, print.MclustSSC, summary.MclustSSC, print.summary.MclustSSC,
+       plot.MclustSSC, predict.MclustSSC)
+S3method("print", "MclustSSC")
+S3method("summary", "MclustSSC")
+S3method("print", "summary.MclustSSC")
+S3method("plot", "MclustSSC")
+S3method("predict", "MclustSSC")
+
+export(MclustDR, print.MclustDR, summary.MclustDR, print.summary.MclustDR,
+       plot.MclustDR, plotEvalues.MclustDR, projpar.MclustDR, 
+       predict.MclustDR, predict2D.MclustDR)
+S3method("print", "MclustDR")
+S3method("summary", "MclustDR")
+S3method("print", "summary.MclustDR")
+S3method("plot", "MclustDR")
+S3method("predict", "MclustDR")
+
+export(MclustDRsubsel, 
+       MclustDRsubsel_cluster, MclustDRsubsel_classif,
+       MclustDRsubsel1cycle, MclustDRrecoverdir,
+       print.MclustDRsubsel, summary.MclustDRsubsel)
+S3method("print", "MclustDRsubsel")
+S3method("summary", "MclustDRsubsel")
+
+export(me.weighted, covw, hdrlevels, dmvnorm, count)
+
+export(icl, mclustICL, print.mclustICL, 
+       summary.mclustICL, print.summary.mclustICL, 
+       plot.mclustICL)
+S3method("icl", "Mclust")
+S3method("icl", "MclustDA")
+S3method("print", "mclustICL")
+S3method("summary", "mclustICL")
+S3method("print", "summary.mclustICL")
+S3method("plot", "mclustICL")
+
+export(mclustBootstrapLRT, print.mclustBootstrapLRT, plot.mclustBootstrapLRT)
+S3method("print", "mclustBootstrapLRT")
+S3method("plot", "mclustBootstrapLRT")
+
+export(MclustBootstrap, print.MclustBootstrap, 
+       summary.MclustBootstrap, print.summary.MclustBootstrap,
+       plot.MclustBootstrap)
+S3method("print", "MclustBootstrap")
+S3method("summary", "MclustBootstrap")
+S3method("print", "summary.MclustBootstrap")
+S3method("plot", "MclustBootstrap")
+
+export(as.Mclust, as.Mclust.default, as.Mclust.densityMclust)
+S3method("as.Mclust", "default")
+S3method("as.Mclust", "densityMclust")
+export(as.densityMclust, as.densityMclust.default, as.densityMclust.Mclust)
+S3method("as.densityMclust", "default")
+S3method("as.densityMclust", "Mclust")
+
+export(clustCombi, print.clustCombi, 
+       summary.clustCombi, print.summary.clustCombi,
+       plot.clustCombi, combiPlot, entPlot, combiTree,
+       combMat, clustCombiOptim)
+S3method("plot", "clustCombi")
+S3method("print", "clustCombi")
+S3method("summary", "clustCombi")
+S3method("print", "summary.clustCombi")
+
+export(gmmhd, print.gmmhd, 
+       summary.gmmhd, print.summary.gmmhd, 
+       plot.gmmhd,
+       gmmhdClusterCores, gmmhdClassify)
+S3method("print", "gmmhd")
+S3method("summary", "gmmhd")
+S3method("print", "summary.gmmhd")
+S3method("plot", "gmmhd")
+
+export(crimcoords, print.crimcoords,
+       summary.crimcoords, print.summary.crimcoords, 
+       plot.crimcoords)
+S3method("print", "crimcoords")
+S3method("summary", "crimcoords")
+S3method("print", "summary.crimcoords")
+S3method("plot", "crimcoords")
+
+# deprecated functions
+export(cv.MclustDA, cv1EMtrain, bicEMtrain)

@@ -1,0 +1,43 @@
+Package: gridtext
+Type: Package
+Title: Improved Text Rendering Support for 'Grid' Graphics
+Version: 0.1.6
+Authors@R: 
+    c(
+      person(
+        given = "Claus O.",
+        family = "Wilke",
+        role = c("aut"),
+        email = "wilke@austin.utexas.edu",
+        comment = c(ORCID = "0000-0002-7470-9261")
+      ),
+      person(
+        given = "Brenton M.",
+        family = "Wiernik",
+        role = c("aut", "cre"),
+        email = "brenton@wiernik.org",
+        comment = c(ORCID = "0000-0001-9560-6336", Twitter = "@bmwiernik")
+      )
+    )
+Description: Provides support for rendering of formatted text using 'grid' graphics. Text can be
+    formatted via a minimal subset of 'Markdown', 'HTML', and inline 'CSS' directives, and it can be
+    rendered both with and without word wrap.
+URL: https://wilkelab.org/gridtext/
+BugReports: https://github.com/wilkelab/gridtext/issues
+License: MIT + file LICENSE
+Depends: R (>= 3.5)
+Imports: curl, grid, grDevices, markdown, rlang, Rcpp, png, jpeg,
+        stringr, xml2
+Suggests: covr, knitr, rmarkdown, testthat, vdiffr
+LinkingTo: Rcpp
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+NeedsCompilation: yes
+Packaged: 2026-02-18 22:56:00 UTC; brentonw
+Author: Claus O. Wilke [aut] (ORCID: <https://orcid.org/0000-0002-7470-9261>),
+  Brenton M. Wiernik [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-9560-6336>, Twitter: @bmwiernik)
+Maintainer: Brenton M. Wiernik <brenton@wiernik.org>
+Repository: CRAN
+Date/Publication: 2026-02-19 06:10:21 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 09:24:54 UTC; unix

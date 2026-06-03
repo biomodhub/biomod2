@@ -1,0 +1,374 @@
+---
+title: "Introduction to sftime"
+author: "Henning Teickner, Benedikt Gräler, Edzer Pebesma"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to sftime}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The package `sftime` extends package `sf` to store and handle spatiotemporal data. To this end, `sftime` introduces a dedicated time column that stores the temporal information alongside the simple features column of an `sf` object. 
+
+The time column can consists of any collection of a class that allows to be sorted - reflecting the native order of time. Besides well-known time classes such as `Date` or `POSIXct`, it also allows for custom class definitions that come with the necessary methods to make sorting work (we will see a example below).
+
+This vignette briefly explains and illustrates the ideas and decisions behind the implementation of `sftime`.
+
+```{r packages}
+# load required packages
+library(sftime)
+library(sf)
+library(stars)
+library(spacetime)
+library(ggplot2)
+library(tidyr)
+```
+
+
+## The `sftime` class
+
+An `sftime` object is an `sf` object with an additional time column that contains the temporal information alongside the simple features column. This allows it to handle irregular and regular temporal information.
+
+For spatiotemporal data with regular temporal data (raster or vector data cubes: data where each geometry is observed at the same set of time instances), package `stars` is developed as a powerful alternative (e.g. time series of remote sensing imagery, regular measurements of entire measurement network). `sftime` fills the gap for data where arbitrary combinations of geometry and time occur, including irregularly collected sensor data or (spatiotemporal) point pattern data.
+
+`sftime` objects can be constructed directly from `sfc` objects by combining them with a vector representing temporal information:
+
+```{r sftime-class-1}
+# example sfc object
+x_sfc <- 
+  sf::st_sfc(
+    sf::st_point(1:2), 
+    sf::st_point(c(1,3)), 
+    sf::st_point(2:3), 
+    sf::st_point(c(2,1))
+  )
+
+# create an sftime object directly from x_sfc
+x_sftime1 <- sftime::st_sftime(a = 1:4, x_sfc, time = Sys.time()- 0:3 * 3600 * 24)
+
+# first create the sf object and from this the sftime object
+x_sf <- sf::st_sf(a = 1:4, x_sfc, time = x_sftime1$time)
+x_sftime2 <- sftime::st_sftime(x_sf)
+
+x_sftime3 <- sftime::st_as_sftime(x_sf) # alernative option
+
+identical(x_sftime1, x_sftime2)
+identical(x_sftime1, x_sftime3)
+
+x_sftime1
+```
+
+Methods for `sftime` objects are:
+
+```{r sftime-class-2}
+methods(class = "sftime")
+```
+
+Methods for `sf` objects which are not listed above work also for `sftime` objects.
+
+
+## Functions to get or set the time column of an `sftime` object
+
+Functions to get or set the time column of an `sftime` object are:
+
+```{r time-column-1}
+# get the values from the time column
+st_time(x_sftime1)
+x_sftime1$time # alternative way
+
+# set the values in the time column
+st_time(x_sftime1) <- Sys.time()
+st_time(x_sftime1)
+
+# drop the time column to convert an sftime object to an sf object
+st_drop_time(x_sftime1)
+x_sftime1
+
+# add a time column to an sf object converts it to an sftime object
+st_time(x_sftime1, time_column_name = "time") <- Sys.time()
+class(x_sftime1)
+
+# These can also be used with pipes
+x_sftime1 <-
+  x_sftime1 |>
+  st_drop_time() |>
+  st_set_time(Sys.time(), time_column_name = "time")
+```
+
+
+## Conversion to class `sftime`
+
+sftime supports coercion to `sftime` objects from the following classes (grouped according to packages):
+
+- sf: sf
+- stars: stars
+- spacetime: STI, STIDF
+- trajectories: Track, Tracks, TracksCollection
+- sftrack: sftrack, sftraj
+- cubble: cubble_df
+
+**Conversion from `sf` objects:**
+
+```{r}
+# define the geometry column
+g <- 
+  st_sfc(
+    st_point(c(1, 2)), 
+    st_point(c(1, 3)), 
+    st_point(c(2, 3)), 
+    st_point(c(2, 1)), 
+    st_point(c(3, 1))
+  )
+
+# crate sf object
+x4_sf <- st_sf(a = 1:5, g, time = Sys.time() + 1:5)
+
+# convert to sftime
+x4_sftime <- st_as_sftime(x4_sf) 
+class(x4_sftime)
+```
+
+**Conversion from `stars` objects:**
+
+```{r}
+# load sample data
+x5_stars <- stars::read_ncdf(system.file("nc/bcsd_obs_1999.nc", package = "stars"), var = c("pr", "tas"))
+
+# convert to sftime
+x5_sftime <- st_as_sftime(x5_stars, time_column_name = "time")
+```
+
+`st_as_sftime.stars` is a wrapper around `st_as_sf.stars`. As a consequence, some dimensions of the `stars` object can be dropped during conversion. Temporal information in `stars` objects are typically stored as dimension of an attribute. Therefore, some argument settings to `st_as_sftime` can drop the dimension with temporal information and therefore throw an error. For example, setting `merge = TRUE` drops dimension `time` and therefore conversion fails. Similarly, setting `long = FALSE` returns the attribute values in a wide format, where each column is a time point:
+
+```{r, error = TRUE}
+# failed conversion to sftime
+x5_sftime <- st_as_sftime(x5_stars, merge = TRUE, time_column_name = "time")
+x5_sftime <- st_as_sftime(x5_stars, long = FALSE, time_column_name = "time")
+```
+
+**Conversion from `spacetime` objects**
+
+```{r}
+# get sample data
+example(STI, package = "spacetime")
+class(stidf)
+
+# conversion to sftime
+x1_sftime <- st_as_sftime(stidf)
+```
+
+**Conversion from `Track`, `Tracks`, `TracksCollections` objects (trajectories package)**
+
+```{r}
+# get a sample TracksCollection
+x2_TracksCollection <- trajectories::rTracksCollection(p = 2, m = 3, n = 40)
+
+# convert to sftime
+x2_TracksCollection_sftime <- st_as_sftime(x2_TracksCollection)
+x2_Tracks_sftime <- st_as_sftime(x2_TracksCollection@tracksCollection[[1]])
+x2_Track_sftime <- st_as_sftime(x2_TracksCollection@tracksCollection[[1]]@tracks[[1]])
+```
+
+**Conversion from `cubble_df` objects**
+
+Both, nested and long-form `cubble_df` can be converted to class `sftime`. If the `cubble_df` object has no simple features column (is not also of class `sf`), the function first converts longitude and latitude to a simple features column using `cubble::add_geometry_column()`.
+
+```{r, eval=TRUE, echo=TRUE}
+# get a sample cubble_df object
+climate_aus <- cubble::climate_aus
+
+# convert to sftime
+climate_aus_sftime <- 
+  st_as_sftime(climate_aus[1:4, ])
+
+climate_aus_sftime <- 
+  st_as_sftime(cubble::face_temporal(climate_aus)[1:4, ])
+```
+
+
+## Subsetting
+
+Different subsetting methods exist for `sftime` objects. Since `sftime` objects are built on top of `sf` objects, all subsetting methods for `sf` objects also work for `sftime` objects.
+
+Above (section [The `sftime` class]), the method to subset the time column was introduced:
+
+```{r}
+st_time(x_sftime1)
+```
+
+Other subsetting functions work as for `sf` objects, e.g. selecting rows by row indices returns the specified rows. A key difference is that the active time column of an `sftime` object is not sticky --- in contrast to the active simple feature column in `sf` objects.  
+Therefore, the active time column of an `sftime` object always has to be selected explicitly. If omitted, the subset will simplify to an `sf` objects without the active time column:
+
+```{r}
+# selecting rows and columns (works just as for sf objects)
+x_sftime1[1, ]
+x_sftime1[, 3]
+
+# beware: the time column is not sticky. If omitted, the subset becomes an sf object
+class(x_sftime1[, 1])
+class(x_sftime1["a"]) # the same
+x_sftime1[, 1]
+
+# to retain the time column and an sftime object, explicitly select the time column during subsetting:
+class(x_sftime1[, c(1, 3)])
+class(x_sftime1[c("a", "time")]) # the same
+```
+
+
+## Plotting
+
+For quick plotting, a plot method exists for `sftime` objects, which plots longitude-latitude coordinates and colors simple features according to values of a specified variable. Different panels are plotted for different time intervals which can be specified. Simple feature geometries might be overlaid several times when multiple observations fall in the same time interval. This is similar to `stplot()` from package spacetime with `mode = "xy"`: 
+
+```{r plotting-plot.sftime-1, fig.width=7}
+coords <- matrix(runif(100), ncol = 2)
+g <- sf::st_sfc(lapply(1:50, function(i) st_point(coords[i, ]) ))
+
+x_sftime4 <- 
+  st_sftime(
+    a = 1:200,
+    b = rnorm(200),
+    id_object = as.factor(rep(1:4,each=50)),
+    geometry = g, 
+    time = as.POSIXct("2020-09-01 00:00:00") + 0:49 * 3600 * 6
+) 
+
+plot(x_sftime4, key.pos = 4)
+```
+
+The plotting method internally uses the `plot` method for `sf` objects. This makes it possible to customize plot appearance using the arguments of `plot.sf()`, for example:
+
+```{r plotting-plot.sftime-2, fig.width=7}
+plot(x_sftime4, number = 10, max.plot = 10, key.pos = 4)
+```
+
+To create customized plots or plots which have different variables on plot axes than longitude and latitude, we recommend using ggplot2. For example, the plot method output can be mimicked by:
+
+```{r plotting-ggplot-1, fig.width=7}
+library(ggplot2)
+
+ggplot() + 
+  geom_sf(data = x_sftime4, aes(color = b)) + 
+  facet_wrap(~ cut_number(time, n = 6)) +
+  theme(
+    panel.spacing.x = unit(4, "mm"), 
+    panel.spacing.y = unit(4, "mm")
+  )
+```
+
+This strategy can also be used to create other plots, for example plotting the id of entities over time (similar to `stplot()` with `mode = "xt"`):
+
+```{r plotting-ggplot-2, fig.width=7}
+ggplot(x_sftime4) + 
+  geom_point(aes(y = id_object, x = time, color = b))
+```
+
+Or for plotting time series of values of all variables with different panels for each entity (location) defined via a categorical variable (similar to `stplot()` with `mode = "tp"`):
+
+```{r plotting-ggplot-3, fig.width=7}
+x_sftime4 |>
+  tidyr::pivot_longer(cols = c("a", "b"), names_to = "variable", values_to = "value") |>
+  ggplot() + 
+  geom_path(aes(y = value, x = time, color = variable)) +
+  facet_wrap(~ id_object)
+```
+
+Or for plotting time series of values of all variables for all entities defined via a categorical variable with different panels for each variable (similar to `stplot()` with `mode = "ts"`):
+
+```{r plotting-ggplot-4, fig.width=7}
+x_sftime4 |>
+  tidyr::pivot_longer(cols = c("a", "b"), names_to = "variable", values_to = "value") |>
+  ggplot() + 
+  geom_path(aes(y = value, x = time, color = id_object)) +
+  facet_wrap(~ variable, scales = "free_y")
+```
+
+
+## User-defined time columns
+
+The time column is a special column of the underlying sf object which defines time information (timestamps and temporal ordering) alongside the simple features column of an sf object. Common time representations in R (e.g. `POSIXct`, `POSIXlt`, `Date`, `yearmon`, `yearqtr`) are allowed, as well as optional user-defined types. Let us look at a simple example where we define a time column based on `POSIXct`
+
+```{r, eval=TRUE}
+(tc <- as.POSIXct("2020-09-01 08:00:00")-0:3*3600*24)
+```
+
+The ordering is not altered upon construction (as in some other representations). If a different order is required, the `order` function and `sort` method can be applied to the time column:
+
+```{r}
+tc
+order(tc)
+sort(tc)
+```
+
+In some applications it might be useful to have more complex temporal information such as intervals of different length. The following example is also meant as template for other user-defined classes which could be used to build the time column of the sftime class.
+
+At first, we will need a few helper functions:
+
+```{r}
+# utility functions
+as.character.interval <- function(x) {
+  paste0("[", x[1], ", ", x[2], "]")
+}
+
+print.interval <- function(x, ...) {
+  cat("Interval:", as.character(x), "\n")
+}
+
+#'[.intervals' <- function(x, i) {
+#  sx <- unclass(x)[i]
+#  class(sx) <- "intervals"
+#  sx
+#}
+```
+
+Now, we can define the different intervals used to represent our temporal information:
+
+```{r}
+# time interval definition
+i1 <- c(5.3,12)
+class(i1) <- "interval"
+i2 <- c(3.1,6)
+class(i2) <- "interval"
+i3 <- c(1.4,6.9)
+class(i3) <- "interval"
+i4 <- c(1,21)
+class(i4) <- "interval"
+
+intrvls <- structure(list(i1, i2, i3, i4), class = "Intervals")
+# provide dedicated generic to xtfrm for class intervals
+```
+
+The advantage is to be able to define different sorting approaches:
+
+```{r}
+xtfrm.Intervals <- function(x) sapply(x, mean)
+# - sort by centre
+(tc <- intrvls)
+order(tc)
+sort(tc)[1]
+```
+
+```{r}
+# - sort by end
+xtfrm.Intervals <- function(x) sapply(x, max)
+(tc <- intrvls)
+order(tc)
+sort(tc)[1]
+```
+
+```{r}
+# - sort by start
+xtfrm.Intervals <- function(x) sapply(x, min)
+tc <- intrvls
+order(tc)
+sort(tc)[1]
+```
+
+Based on the sorting procedure (begin, centre or end of the interval), the smallest element (each last line) and the order of the time column changes.

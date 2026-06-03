@@ -1,0 +1,4053 @@
+commit a5cc964100da45072289f62551bba2b139d886da
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 22 14:38:32 2017 +0200
+
+    cleanup; address change of pkg ISOcodes
+
+commit 5337df0e4bb0da2572238994468648de57810db4
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jun 1 11:15:37 2017 +0200
+
+    correct examples; address #28
+
+commit 3b4ac745b1f79d974801e92973d0763069b39a6b
+Merge: 86ce5f1 6e87bc9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Jan 20 20:00:48 2017 +0100
+
+    Merge pull request #23 from BenGraeler/master
+    
+    adds support for rbind of single timestamps; improves on rbind of STSDFs
+
+commit 6e87bc9e8c0eb7692ff97a9b84647c203a126ff6
+Merge: 04ab6e3 86ce5f1
+Author: Benedikt Graeler <benedikt.graeler@ruhr-uni-bochum.de>
+Date:   Fri Jan 20 08:38:04 2017 +0100
+
+    Merge branch 'master' of https://github.com/edzer/spacetime
+
+commit 04ab6e3ddbc7639575714ef2a362dcca2f8cdce2
+Author: Benedikt Graeler <benedikt.graeler@ruhr-uni-bochum.de>
+Date:   Fri Jan 20 08:37:52 2017 +0100
+
+    typo in comment
+
+commit 86ce5f111474d1890a0a015ce2b5413c29f41336
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Dec 22 10:20:38 2016 +0100
+
+    http://cran -> https://cran
+
+commit b63a09fdff80cbc02db1c0b5cb52d98b2da7b0f5
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Dec 2 09:26:46 2016 +0100
+
+    fix raster methods for mnf
+
+commit 50ef40473abcdc1596042fd2e123351178f73728
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Nov 29 16:53:17 2016 +0100
+
+    allow user-specified Sigma.Noise in mnf() methods
+
+commit 0853c3eba6cdcebd27c194ba77548c31a58c0475
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 7 11:04:33 2016 +0200
+
+    new travis, using trusty
+
+commit 8f111ae864b0a8101a8babc75540f8b2e092a282
+Author: Benedikt Graeler <graeler@hydrology.ruhr-uni-bochum.de>
+Date:   Fri Sep 16 14:27:55 2016 +0200
+
+    adds support for rbind of single timestamps; improves on rbind of STSDFs
+
+commit 6a4e72abe7aef6dce83bcb434e909cd5fdd82591
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Sep 3 11:50:11 2016 +0200
+
+    match new googleVis package version
+
+commit 440813b8927e52f78a715179a4cc6bff2103e051
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jul 21 17:28:59 2016 +0200
+
+    typo
+
+commit 94f6ae3ec3eaebea5588de9c3d9a03a80b7905eb
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jul 21 17:06:56 2016 +0200
+
+    add ... to stInteraction
+
+commit 0a42444acb27430bae8eeea077126182a8788c95
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jun 9 08:46:17 2016 +0200
+
+    remove oldrel
+
+commit a02251da04f2e2e72aed84ceb7f44fd5d7146ef5
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon May 2 13:50:43 2016 +0200
+
+    add old-rel
+
+commit a0970ad14e385f7f5159c7d8f904db7f34ef98cc
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon May 2 13:17:10 2016 +0200
+
+    update to gdal 2.1.0
+
+commit 0144a33a530ecbfed3b6c9d0a1c54fd0d12d542d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Mar 29 22:20:18 2016 +0200
+
+    remove default value for FUN in aggregate methods
+
+commit 9babc52071ef1bbba89722cc51e7b2eacbc40632
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 17:39:01 2016 +0100
+
+    try old
+
+commit 64feb34bd8a3e0c255cd555c263d3cc587641dcb
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 17:07:40 2016 +0100
+
+    try new4
+
+commit 33507fb2096a7bc2a2173de4f6955906714f4cf6
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 17:06:14 2016 +0100
+
+    try new3
+
+commit c1bad9bf5f48fd21f5262785d218d0fb5bac406e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 17:04:41 2016 +0100
+
+    try new2
+
+commit ce78e00b86cc8643a0f6897d1cc476f8e3af4666
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 16:47:09 2016 +0100
+
+    try new
+
+commit c78a4885c6972d45cf836c6c1059682dc9dd6528
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 16:08:07 2016 +0100
+
+    set back old travis
+
+commit e99c84836f85cd265ce0c5f84798f6845f6a8a4d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 16:06:14 2016 +0100
+
+    test
+
+commit 62db423cb305fd2ee74d4a59ceca297d09e674f2
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 19 15:55:00 2016 +0100
+
+    sync docs and code again
+
+commit f59b83a1d28af68251ac0d2a19a77799c50b2b00
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 12 16:32:57 2016 +0100
+
+    try new travis config
+
+commit 828bfa949a6202a79a94b735924d96d18a3e9d31
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Mar 12 14:46:47 2016 +0100
+
+    update mnf; try new travis
+
+commit 55ed0518508239a9d017e3e187c2c1c9a0c1e2a2
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Mar 9 19:54:16 2016 +0100
+
+    mnf for STxDF; update examples, set names
+
+commit dbf3ffc231b9403110b7bd3d6b61c9afe9916c3a
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Mar 9 09:34:02 2016 +0100
+
+    change scaling of \Sigma_\Delta
+
+commit c1d46acea324d942d0909b972d4e82171b2de1e8
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Mar 8 21:55:47 2016 +0100
+
+    add mnf methods
+
+commit f8c7ff3237d568df3cb7b7750e451606a100c1dd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 28 11:00:29 2016 +0100
+
+    remove date field
+
+commit 3aae5b6a240e6346c2e0b17a8d56112f9ef5b058
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 28 10:59:55 2016 +0100
+
+    add type check
+
+commit 169545a68fca76d6e8003b5bb7c581db6ff1ba16
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Feb 2 11:21:49 2016 +0100
+
+    tidy
+
+commit 3f69f8e9646c68184a2f0e1703afab7e110314e7
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Feb 2 09:40:35 2016 +0100
+
+    drop oldrel in travis
+
+commit 57166d49c7fbb916397b69a35297c5b7ea84de2d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Feb 1 18:59:48 2016 +0100
+
+    update 3 version travis
+
+commit f1d11a2bf14f05c9e8560115aa0b7caaa1a0b0a1
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Dec 21 17:22:23 2015 +0100
+
+    cosmetic
+
+commit bb2c27519bdd0546091dc350fe15bf9cf6679b02
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Dec 12 15:14:07 2015 +0100
+
+    drop S4 aggregate definition
+
+commit 49987bfcb6f2aa6c03fa8f240f61b66714a37a2f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Nov 15 21:36:41 2015 +0100
+
+    tidy eof; update test output for unique SpatialPoints row.names
+
+commit d93aef4fcb6b6a28aad8e7f30b710ff84b194d9f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Nov 11 13:02:05 2015 +0100
+
+    STSDF->STIDF: avoid duplicate row.names if sp is SpatialPoints
+
+commit 83ec4f8eb534e7ed6886c3a0bfa49697f06a137f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Nov 5 21:55:02 2015 +0100
+
+    put old .travis.yml back, for rgdal
+
+commit b7102e11026943a5033497405e637ec4f39dce98
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Nov 5 21:39:22 2015 +0100
+
+    update, add STFDF -> RasterBrick coerce
+
+commit ab24be70a5d3d34a3ec91c32e9a4a789a6e9ba99
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 27 16:48:15 2015 +0100
+
+    bug fixes, reported by Simon Moulds
+
+commit 236a3b3cae361c4ca07d61927ce2b1d15a69959d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 27 15:30:09 2015 +0100
+
+    updated write.tgrass, after change in raster
+
+commit b6bb80cdb3dce1b1047446060bca5d7e19a2335c
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 30 19:41:25 2015 +0200
+
+    bug fix reported by Simon Moulds
+
+commit 8c9ea402ebd0df2ffb46aea6d604923e860215a6
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 25 20:06:21 2015 +0200
+
+    add vignette with eval=TRUE
+
+commit 13762465e74ad3be851953ae8785ea299ff57197
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 25 18:33:14 2015 +0200
+
+    set eval back to FALSE
+
+commit 2e35e87b47ebb20e2873351f982ee704d2ff85bd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 25 18:01:49 2015 +0200
+
+    update vignette
+
+commit 8aeea8f59f136dbf7dc2695f52b5d4714379f565
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Sep 19 12:30:45 2015 +0200
+
+    update date
+
+commit c9744e2205ba8bb578decd8c997ba8a49146dd8d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 11 10:21:31 2015 +0200
+
+    correct proj_def.dat retrieval
+
+commit 3da7e0c61ccff9b9cb92366c998f1c0b121ea58d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 11 09:58:06 2015 +0200
+
+    manually copy the proj_def.dat into the proj.4 distribution
+
+commit a17ea98758c9a123ca7a29110f229a7d51513ccb
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 11 08:08:58 2015 +0200
+
+    tidy
+
+commit ed39676be5981b51ccb987db4764c1d3e33cebc9
+Merge: 37c24c2 7dd31cf
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 11 07:57:49 2015 +0200
+
+    Merge pull request #22 from BenGraeler/master
+    
+    - correct handling of first place matrix indices for STI
+
+commit 7dd31cf0da014672c611f5edd993add0e519250e
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Sep 10 22:20:05 2015 +0000
+
+    - correct handling of first place matrix indices for STI
+
+commit 37c24c2e33cf5c45c8df594ab5d1f3078650fb1c
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Sep 10 08:17:35 2015 +0200
+
+    update, tidy
+
+commit d4ba363ad50047d6927431890a7c6b7311cc3160
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Aug 15 17:20:24 2015 +0200
+
+    add pictograms
+
+commit 7ece9b1fc98720642cf80c7795ebcf8b21fbbe9d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Aug 15 15:42:24 2015 +0200
+
+    add pictograms
+
+commit de4dd5c4f87f75914252943741ad4878c45ea84b
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Aug 11 14:32:00 2015 +0200
+
+    tidy
+
+commit 6d8ccc79aa7ce4cde1ce7798f007e432e3f09994
+Merge: 7c9d5ad 4c35d54
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Aug 10 20:44:58 2015 +0200
+
+    Merge branch 'master' of github.com:edzer/spacetime
+
+commit 7c9d5ad093ff355054161551048d07576c8483ee
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Aug 10 20:44:08 2015 +0200
+
+    drop match.ID match, to allow char row.names with integers
+
+commit 4c35d540968116bdf8d79749229f2fb470dd3a4a
+Merge: 58f588d 4ae2524
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jul 23 17:17:33 2015 +0200
+
+    Merge pull request #21 from BenGraeler/master
+    
+    enforce increasing ordering of indecies for subsetting STIs and STIDFs
+
+commit 4ae2524f3fdab11ffb33beef7b76b9b2dfbdd013
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Jul 23 14:26:02 2015 +0200
+
+    - enforce increasing order of numeric indecies (space and time) for subsetting STI and STIDF
+
+commit 7ec7abfa2c1311e6d75e31c53888a64964297138
+Merge: 7927950 58f588d
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Jul 23 13:13:55 2015 +0200
+
+    Merge branch 'master' of https://github.com/edzer/spacetime
+    
+    Conflicts:
+    	DESCRIPTION
+
+commit 792795090e6f9d4f4a831a05a75c7a959f5c4b59
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Jul 23 13:13:01 2015 +0200
+
+    - resolve conflict
+
+commit 58f588dbe585f30ee92f18a53879e9d6d8b622bd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jul 7 12:04:32 2015 +0200
+
+    add :: to raster function
+
+commit 90541c340bc892d82aa66ce2dda65c816a7df555
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jul 2 12:59:45 2015 +0200
+
+    add all imports from base packages
+
+commit a4ff7c8a0372ff190b2df40942807d7e2ff08c73
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 20:10:19 2015 +0200
+
+    address warning and notes
+
+commit 8b8c47a725308b3154a07dbe2e176ccb5bf8abe4
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 18:20:53 2015 +0200
+
+    try travis-ci
+
+commit 0f20130caecb5a348a6d00a8c3005d03dc6c2b24
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 18:05:40 2015 +0200
+
+    cd issue
+
+commit 6b3b60423606cec7c1d719e3af24a8b46de10375
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 17:40:08 2015 +0200
+
+    try cd's
+
+commit 3a1b660cfe20af4fd95ec469f7e39ad3d3eb3b87
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 16:56:11 2015 +0200
+
+    clean up
+
+commit 825e50bec6d382ee1a7491867ec3659e0f122841
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 16:20:45 2015 +0200
+
+    tidy proj.4
+
+commit 90a34d90cf0f4b97e64659d26daa99f35d35a9b7
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 15:42:33 2015 +0200
+
+    add proj.4
+
+commit 8296a3010c278839d154e310562dca681139f01c
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 14:28:07 2015 +0200
+
+    cd
+
+commit 006349d473b14bf303feb66b37041e2385c0d425
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 14:00:59 2015 +0200
+
+    gdal from source
+
+commit 27e3c724f5ba1136814ceb48e856662e22e13875
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 13:09:43 2015 +0200
+
+    try
+
+commit 9ee9a7a55d447cc29e3eb5c7700678255d25e7cd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 12:38:04 2015 +0200
+
+    try
+
+commit fa5564de1f55f23bc68901a3be659351e97a3826
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 12:15:56 2015 +0200
+
+    ...
+
+commit 4ca0d5bc55500cab4a224bf74a7e82d6c238e9c0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 12:08:52 2015 +0200
+
+    try apt_packages
+
+commit 683a01af95b6b5f95b8becb9a02876b292a58379
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 09:57:46 2015 +0200
+
+    try without unstable
+
+commit 84401d1ffffef43d42322e4e615f7b789a6742f7
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 09:46:43 2015 +0200
+
+    try gdal
+
+commit 7dfc9008c4192b4c277dc2326367335f2ff864b7
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 09:18:15 2015 +0200
+
+    try
+
+commit d6a3fa9ef13dd046b60d72439c6d456df9ecb7a8
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 09:09:10 2015 +0200
+
+    chk
+
+commit 33df118c2426e6417dc8d7a54089405b95285c74
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 08:26:44 2015 +0200
+
+    -y
+
+commit 6af320a5fbea08b2201e0cb0a7e8557817e27f43
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 08:17:28 2015 +0200
+
+    try aptitude
+
+commit 150c1bc5a38d9e4b8a368e091cc3f53de43871cc
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 08:07:20 2015 +0200
+
+    tidy
+
+commit 46445767262122df116fce281d47b97a9c6dc7b2
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 08:00:34 2015 +0200
+
+    typo
+
+commit b4f8136b7c3c9cc809d4f0fbd36a299d6662c265
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:54:47 2015 +0200
+
+    gdal
+
+commit 25cd3fd2d96c1e66f6546f9f9e4e6bb9374a74d0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:39:32 2015 +0200
+
+    try without unstable
+
+commit 28671516af06ede5f752f36b8e196f1aa0310d76
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:34:55 2015 +0200
+
+    gdal once more
+
+commit f4dc88de12afa87adfcd404fb21cbda9e79eb262
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:30:46 2015 +0200
+
+    gdal
+
+commit ca134cf5502426b9b995a7fc519efe8246bb3546
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:22:25 2015 +0200
+
+    gdal travis
+
+commit dde49d5cfa8ba4a895827d2e20a40649f758bf18
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:16:02 2015 +0200
+
+    hdf
+
+commit 5254088b3dcfba856fb6be1525f46b83b313c40f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:07:36 2015 +0200
+
+    update hdf
+
+commit b2500c5f384e6d423498d47b051291a60716031d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 07:02:35 2015 +0200
+
+    lib update
+
+commit 192a43f97bbd0d2fe0cfa39218abef467b453a6b
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 06:53:19 2015 +0200
+
+    resolve conflicts
+
+commit d8a4bbacfa50ee31bb8e4fcc69d55cda88e1a50d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 00:11:12 2015 +0200
+
+    add libs
+
+commit 95bb76e52659550336ae826aeb334e025891ba32
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 23 00:05:00 2015 +0200
+
+    add lib
+
+commit 3bf8749bef9cc890c754daad5079743042a17803
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 23:58:27 2015 +0200
+
+    add lib
+
+commit 6b4324f6fb892a095aa6757f2eb6e1d347750d76
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 23:44:51 2015 +0200
+
+    add lib
+
+commit 4773abbe673c8a73d60c94f6e4df18d908a03fba
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 23:36:32 2015 +0200
+
+    add libgdal-dev
+
+commit b960e2ddaedb7d0a67c5a8cde531d2406d234fac
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 23:29:50 2015 +0200
+
+    try gdal1-dev
+
+commit d870f97f1271ebe88a0533047c28328e4b1afab0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 18:39:42 2015 +0200
+
+    trigger travis 2
+
+commit fe5d035fabf6a55e5d78ec5f2d7e35ea65ab66f4
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 18:30:48 2015 +0200
+
+    trigger travis
+
+commit ddeb0223f69905f5d92b63e6f9e0b0c345b54255
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 18:10:25 2015 +0200
+
+    trigger build
+
+commit 8366c1bba29068d0701e5376003305679a2b2368
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 17:34:16 2015 +0200
+
+    update
+
+commit 3dabbeff34a3af1804ded11ef1054b2161525182
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 17:24:35 2015 +0200
+
+    add libgdal-dev
+
+commit 4ab929e6b09ac5586b8858e5edaf0fbeaf32301e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 17:02:44 2015 +0200
+
+    tidy
+
+commit e91753922986c51560bcfe47b2ff0940e7778ce9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 16:54:46 2015 +0200
+
+    add link to travis-ci
+
+commit fd0dbb458bf8794b55ee7e78870c76e711aa5a76
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 22 16:50:00 2015 +0200
+
+    add .travis.yml
+
+commit 9dbe177b2a22ed1d287513707791945819feb5be
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jun 16 17:42:24 2015 +0200
+
+    create `rural' in dataset air from base components
+
+commit e4f896e3842c9ff0c324056b186cd593776c4f3b
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jun 8 19:54:27 2015 +0100
+
+    adapt to upstream xts.
+
+commit d466b3e3ecfb6a033f73b5364e29116f62f4fed5
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue May 26 19:08:21 2015 +0200
+
+    add BugReports: field
+
+commit 028a5155eb6708f6351c78db7219fa467a3a0e48
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue May 5 17:37:34 2015 +0200
+
+    bump version
+
+commit 074be2a138defe72b6bf3e8c68d513e9dffe5ddc
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue May 5 15:55:03 2015 +0200
+
+    pass at argument to levelplot
+
+commit 3083307fc8ebf938673028cf7ffc3ccff6a4cac6
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Apr 24 13:56:40 2015 +0200
+
+    upgrade to match sp 1.1-0
+
+commit 5e7950336984a567c0f07abb019930dbaf068abb
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Mar 17 14:21:20 2015 +0100
+
+    docs for expand.range
+
+commit 58d8db3d8863eee96aeea1cf458fbee2e42b32db
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Mar 17 14:18:44 2015 +0100
+
+    range of at was too small; report by Roland Harhoff
+
+commit af552c7e902b69979f309bcf1f795bc7cf782f11
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Mar 17 13:56:53 2015 +0100
+
+    add drop=FALSE to data.frame selector
+
+commit 8ac495755ea13ef90b9e378ec26b963ea316174b
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Mar 13 16:20:47 2015 +0100
+
+    adding +ellps= to CRS arguments, for PROJ 4.9.1
+
+commit 393bb24344b7b3648086ecadf5bf287bdea4fcde
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Mar 5 00:12:50 2015 +0100
+
+    replace unstack with reshape; clean check
+
+commit 45bf1588eef7e2ddbf07f843333d72f0a99d0e4f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Mar 4 20:27:51 2015 +0100
+
+    stplot mode = "xt" for factor: plots as number but no longer crashes
+
+commit b7e51d1720dace123a73669ee04b77255a0b9c09
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Mar 4 19:07:27 2015 +0100
+
+    stplot factor variables when mode = "xy"
+
+commit 24671c67b17293749937d7c955a80ce8e12ac619
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Feb 11 10:51:18 2015 +0100
+
+    make stsdf[1,1] do sth more sensible
+
+commit e7d26c403722f6dfe08f27bbbe82644e2f48976e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 28 12:13:49 2015 +0100
+
+    improve error message
+
+commit f37ad515f35e21f9351c290437f2948f34b5f894
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 28 10:25:09 2015 +0100
+
+    enable check on duplicate attributes for STSDF
+
+commit 995dd6d742143bf9fcc4d43c19c358f9a4bc626c
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jan 27 23:34:52 2015 +0100
+
+    adopt new behaviour for STFDF too
+
+commit 08fcfb9f1555e283c82107256c055a5bead0b265
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Jan 27 23:18:42 2015 +0100
+
+    add timeIndex to xts output on single pt subset; report from Jon Skoien;
+
+commit 68d9420d6a9bad79f3b84c656cbfc9f670fe5a28
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Jan 24 10:19:17 2015 +0100
+
+    remove rgeos dependency in sto.Rnw, add DE to air.rda
+
+commit 097d3a0fbc63f2ef7773825c07d35eafa3ab3cba
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 21 23:20:34 2015 +0100
+
+    make rgeos requirement conditional
+
+commit cddc6c9ac45dfc7664c7e5b3adbcc65b0f499961
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 21 09:08:18 2015 +0100
+
+    bump version
+
+commit 2a9f2619a13772e4e39cf33bee83ddf2bd082177
+Merge: 0a788ed 218a99f
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Mon Jan 19 15:01:24 2015 +0100
+
+    Merge remote-tracking branch 'edzer/master'
+
+commit 218a99f5b7b475353f8b37246c945c47f881f6aa
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jan 19 14:55:57 2015 +0100
+
+    correct timeIndex order for as.data.frame.STS, reported by Jon Skoien
+
+commit 0a788ed6c8c3a831997d5fcdb897a37075296610
+Merge: cf65594 6502ebf
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Mon Jan 19 14:40:38 2015 +0100
+
+    Merge branch 'master' of https://github.com/edzer/spacetime
+
+commit 6502ebfd51b6704669c46d26c8dd2b7304c630ef
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Jan 17 23:05:15 2015 +0100
+
+    conditional require(rgeos) in example
+
+commit 3f4f8a5c3e6048393ad14fd4444ec03773207dc9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jan 15 13:05:22 2015 +0100
+
+    more spTransform
+
+commit a29c98f3c80a784967bc319b5c63a9a725b631cd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jan 15 13:03:49 2015 +0100
+
+    title case; address rgdal requirement for spTransform
+
+commit e6073767b1e303dcb20c99cfe635d762bdd36eda
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Jan 15 11:51:11 2015 +0100
+
+    update test output
+
+commit 5b36a6916bc8af4cd696bb7742b0e0f03abe5b25
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 14 17:33:25 2015 +0100
+
+    typo...
+
+commit f74c045284b795bc0e4ad1e167608dfa74a21674
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 14 16:59:45 2015 +0100
+
+    update test output
+
+commit 0604dd381b7e2e10f97bbc3d5b26c8119c744a8f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Jan 14 16:41:54 2015 +0100
+
+    prevent @sp attributes getting dropped (lost)
+
+commit a144894fbb8590a701cec4f99ae1f6f09d896916
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Dec 14 13:18:17 2014 +0100
+
+    correct aggregate with args STIDF, STF; add time chk
+
+commit cf65594d333d27587b177c8a8afdba553028757a
+Merge: 628210d 4c8cd4f
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Dec 2 15:29:38 2014 +0100
+
+    Merge branch 'master' of https://github.com/edzer/spacetime
+
+commit 4c8cd4f1d6220dc43634e4333e18393a7d8d87e9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Nov 22 12:26:03 2014 +0100
+
+    correct bug in stConstruct() when STIDF has non-chronological records
+
+commit 1969b0c7ba6197d96d4541a15a71a84a19291803
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Nov 20 11:26:02 2014 +0100
+
+    vignette pdf
+
+commit 850c3068348815205937350d9dad048ec3e18cfd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Nov 20 11:22:36 2014 +0100
+
+    update date
+
+commit 2076a4e3b24c5f2aa8e029eca1a28f9d05f39d52
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Nov 20 11:20:35 2014 +0100
+
+    aggregate() for STI and STF with polygons did not work
+
+commit d903c16d831c43ab777a552b7c31687e5046396f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Oct 30 10:55:32 2014 +0100
+
+    move rgeos to Suggests; improve wind plots in vignette
+
+commit da80be7b754e3b613107845166687b02deeb96dc
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Oct 27 19:26:35 2014 +0100
+
+    update the time plots
+
+commit c1f9a7480241deeb177e345332e4045236e9c02e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Oct 27 19:17:24 2014 +0100
+
+    change argument to returnEOFs
+
+commit 1783943b6aa395ee0296bed53e88126b51909fd3
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Oct 27 19:02:58 2014 +0100
+
+    add function eof, deprecate EOF
+
+commit 480f74eb8a74adb4a2508f17d470434c2deabf42
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Oct 16 11:00:32 2014 +0200
+
+    added ... to apply() calls
+
+commit c98b5c3ae85414e1eaf53ea0bf72373d371d0dca
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Oct 16 09:40:00 2014 +0200
+
+    doc omission, found by Roland Harhoff
+
+commit 9c82ea3f06c105323282e486ebae84fc6fcfbaca
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 14 09:25:09 2014 +0200
+
+    name too long: only use first name
+
+commit 0ed91ac92db69dc64cecaa9ecf08efbb2308db45
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 26 21:44:00 2014 +0200
+
+    add parens
+
+commit be2182be7cfafadd2d5ebde3256c7eea902c5e2f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Sep 23 21:59:55 2014 +0200
+
+    add call to match.fun(), add STT method to stplot
+
+commit faab956a4f570502961e2f570b5452a346f540ba
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Sep 11 23:29:30 2014 +0200
+
+    add stplot method for STT
+
+commit d83a3607c80317ace36009534c8a2cf0c276c570
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Sep 7 23:34:13 2014 +0200
+
+    add subset methods with ST objects
+
+commit c974e676d494be7cbab83798763115783704dfee
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Sep 7 23:02:44 2014 +0200
+
+    add selection based on match with STF object
+
+commit 8ad1aa01bcbdc4f12e40f8ffe59a77de8157ff77
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Sep 7 23:02:29 2014 +0200
+
+    tidy tabstop
+
+commit 0db898784310fd8b209a9f586f7da47e2fd83c3b
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Sep 7 22:18:52 2014 +0200
+
+    tidy (revert back to tabstop = 4 spaces)
+
+commit 5a476b1fe7580118aeee8af2cbbb5129716c7dac
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Aug 28 12:36:55 2014 +0200
+
+    tzone attribute is now passed on by rbind.STIDF
+
+commit 628210d281e46dc5cff55ec7fe21f4f2c1ea582b
+Merge: 3ad31b8 ac8c4d8
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Mon Aug 25 10:04:43 2014 +0200
+
+    Merge branch 'master' of https://github.com/edzer/spacetime
+    
+    Conflicts:
+    	tests/subsetting.R
+
+commit ac8c4d8bfe3e11ca8f14ade6107b917d7c49bdaa
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Aug 24 14:09:14 2014 +0200
+
+    removed ISO codes from air; version bump; tidy stgvis
+
+commit 901738891468730db87e48490c2fa48fad3cd1ef
+Merge: 3b0096f 010b921
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Aug 24 14:05:07 2014 +0200
+
+    Merge pull request #20 from mages/patch-2
+    
+    Update stgvis.Rmd
+
+commit 010b921d910fbee90bcc144a0349d7cc20bf88d0
+Author: Markus Gesmann <markus.gesmann@gmail.com>
+Date:   Sun Aug 24 11:00:48 2014 +0100
+
+    Update stgvis.Rmd
+    
+    Changed the order in which the data is loaded, as otherwise the mapping of German state names apears to be overwritten by data in air.
+
+commit 3b0096f5fb43ef2af9a1ad61344c8f7032056cee
+Merge: 709d30a c44ea66
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Aug 24 10:35:38 2014 +0200
+
+    Merge pull request #19 from mages/patch-1
+    
+    Update stgvis.Rmd
+
+commit c44ea6605becfc38a4c54511a53daf4906b81aa7
+Author: Markus Gesmann <markus.gesmann@gmail.com>
+Date:   Sat Aug 23 21:05:23 2014 +0100
+
+    Update stgvis.Rmd
+    
+    I changed the gvisGeoMap statement to gvisGeoChart, as they don't require Flash. Further the Google geo charts understand that Berlin is not part of Brandenburg. Unfortunately, geo charts don't recognise Brandenburg as a province either, hence the codes become handy again.
+    The German state name mapping are available via a CRAN package, thus you don't have to download them from Wikipedia. Finally, I added some number formatting to the option setting.
+
+commit 709d30a7751823aafc6fc77dd9196220edf9ecea
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Aug 22 18:57:22 2014 +0200
+
+    hopefully pass check with r-devel; set TZ in subsetting.R
+
+commit 6226cea3e7f0a758763bb7208f211a032da0221f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Aug 22 15:44:37 2014 +0200
+
+    add pointer to ISO_3166_2_DE in air.rda
+
+commit 2bd0272437f47090ac5fa5ae4616e226bea5158e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Aug 22 15:41:17 2014 +0200
+
+    remove call to wikipedia, add ISO table to air
+    add help to stpg to find out whether rgdal misses PostgreSQL driver
+
+commit 7887e760c10ba9a6501ecba1c43410558d12963c
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Aug 22 09:36:48 2014 +0200
+
+    add Irish station means geo chart
+
+commit 11e5da9c96fe9f9dae8d3d93e1b54059af7adbe9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Aug 22 08:20:57 2014 +0200
+
+    add time line graphs
+
+commit ccee6c0164714a022edf6441f41bdc863798c836
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Aug 21 13:48:55 2014 +0200
+
+    update
+
+commit 55709a1d166aaa23834fab036d3af2e08d066fdb
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Aug 21 11:17:20 2014 +0200
+
+    add googleVis example vignette, typo in stsubs
+
+commit f5838cbc73c77ed072a251a4c3b6c1ec56bd5fc0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Aug 14 13:45:17 2014 +0200
+
+    add library(sp)
+
+commit 542026cafb10400a6bab77d35e2c583783abb2b8
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Jul 13 17:51:32 2014 +0200
+
+    write.tgrass now writes init.txt
+
+commit 3ad31b816784e04dda21378599fb887b99a7b9a1
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Wed Apr 23 15:10:35 2014 +0200
+
+    additional subsetting test cases
+
+commit 59fc45e87113dd5c609b4654f26402bba18b1e8d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Apr 9 15:42:22 2014 +0200
+
+    update date
+
+commit 7c0ebc61027fea62bcd59898594ea90fdece14f1
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Apr 1 16:08:37 2014 +0200
+
+    include git commit logs in ChangeLog
+
+commit b7f0e46a24e2a0ee81b022709aca83806674a1b0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Apr 1 16:04:13 2014 +0200
+
+    depend on R 3.0.0, mv old ChangeLog
+
+commit f8d07fd645fbe53f03d77a12113f186f7acd4e99
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Mar 27 20:30:44 2014 +0100
+
+    tidy indentation and obsolete braces
+
+commit 89827b7864688b94cd8edd87312bc8d0b9004e9e
+Merge: 9023c72 2eca08d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Mar 25 11:35:11 2014 +0100
+
+    Merge pull request #18 from BenGraeler/master
+    
+    special case of one row matrices for subsetting
+
+commit 2eca08d29e11a5b01fb489104779bbfb679a23c6
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Mar 25 11:30:10 2014 +0100
+
+    - handeled the special case of one row matrices for subsetting
+
+commit 9023c7262bd12901afa4a6af3941114756726a4a
+Merge: d361d74 12b506f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Mar 14 10:41:06 2014 +0100
+
+    Merge pull request #17 from BenGraeler/master
+    
+    Unified subsetting of ST* objects
+
+commit 12b506fdc67f98c96fcb837728a39b1dcb6542a0
+Merge: b0c4e1e c1bf9cf
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Feb 27 14:13:46 2014 +0100
+
+    - some textual changes
+    
+    Merge branch 'master' of https://github.com/BenGraeler/spacetime
+    
+    Conflicts:
+    	vignettes/stsubs.Rnw
+    	vignettes/stsubs.pdf
+
+commit b0c4e1ef23e1c8bb0dc155bb145f45f627159142
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Feb 27 11:52:57 2014 +0100
+
+    - some textual changes in stsubs.Rnw
+    - updated test files for subsetting
+
+commit c1bf9cf851f321c674ab5b1f8283d7143287582a
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Feb 27 11:52:57 2014 +0100
+
+    - some textual changes in stsubs.Rnw
+
+commit 9add4fb1220bff4cf5af7c292cc0314619be3bf7
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Wed Feb 26 16:52:22 2014 +0100
+
+    - added vignette on subsetting of spacetime classes
+    - some corrections of the subsetting methods along the way of the vignette
+
+commit cdf6e5655c09843db5026301ffde4f1d79c229b8
+Merge: 0acbe05 d361d74
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Wed Feb 26 14:13:54 2014 +0100
+
+    Merge remote-tracking branch 'edzerRepo/master'
+
+commit d361d74a72065ee1579d1e16cee65954b126047b
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Feb 26 12:20:28 2014 +0100
+
+    move trajectories code into a separate package
+
+commit 0acbe05cf884775d2fa40eab2846d4af70856414
+Merge: 8ef17f0 8283e44
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Feb 25 16:21:23 2014 +0100
+
+    Merge remote-tracking branch 'edzerRepo/master'
+
+commit 8ef17f0a5f733c6eab7027b15db2055a3e6ba85a
+Merge: 2fd98e6 47d350d
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Feb 25 16:18:44 2014 +0100
+
+    Merge remote-tracking branch 'edzerRepo/master'
+
+commit 2fd98e68c2c369421179aa8d16fd27accb8b7b55
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Feb 25 16:02:29 2014 +0100
+
+    - STI.. allows now for multiple selection
+
+commit 559e662ce45567fd8e34f8a5a370f777c60df4a9
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Feb 25 15:36:50 2014 +0100
+
+    - STF.. now allows for a matrix index, but returns STS..
+
+commit 9c18d8ba936e0aebc6215a45c789ebcea6d86d6f
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Tue Feb 25 13:50:12 2014 +0100
+
+    - allow for multiple selection in STS..
+    - respect ordered subsetting from STS..
+
+commit 8283e44958909bb35d398b6d535bc0eb41180e04
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Feb 18 19:00:08 2014 +0100
+
+    add url of geolife
+
+commit fd1005cd70ad57e9583d4e3bbd2623711133c79a
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Feb 18 18:48:10 2014 +0100
+
+    add geolife reading demo (without geolife data)
+
+commit 259cbef2526120cac4bc8f7a9bf9fc1284e6d3a5
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Feb 17 08:59:04 2014 +0100
+
+    clean, tidy
+
+commit 7cb6f6a7eae301e2154b116d4b3bbeecea4adfd9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 16 22:59:49 2014 +0100
+
+    avoid rgl plot from vignette
+
+commit 8b680daebbdccdd3cf5ddf6fdac44c8f35c3dfbf
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 16 21:50:06 2014 +0100
+
+    add subsetting output
+
+commit 1a6cebfc8c0115e5efe2f58098fb5aa607ee9fa3
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 16 21:49:40 2014 +0100
+
+    clean up tests
+
+commit a8c7cda2b16218beeb4090c03d6c0c9cdb2ec8bd
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 16 18:48:44 2014 +0100
+
+    add A3 example, add subsetting test
+
+commit 785a40cad6e5f16fd0d8223ebe03d06af21b66f0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 16 17:29:56 2014 +0100
+
+    clean tracks vignette dependencies
+
+commit 47d350d50204d6c8c0ec1cf1b701846a79ef6603
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Feb 14 17:00:14 2014 +0100
+
+    remove more dependencies
+
+commit 850c3b522b7856d8bf505b80747763a40b82dded
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Feb 14 16:52:36 2014 +0100
+
+    remove dependencies in tracks.Rmd
+
+commit 14d91e6b3e7490cb715a75d1c6322775cbbcfe83
+Merge: 09f8268 67d2dfb
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Feb 14 15:44:50 2014 +0100
+
+    Merge branch 'master' of github.com:edzer/spacetime
+
+commit 09f82681a343f44b8bdcc46532077c56271bb569
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Feb 14 15:44:03 2014 +0100
+
+    make tracks vignette work without https, add A3
+
+commit 67d2dfbfac10f521f65cb3265a8f995a19928b9a
+Merge: 196edcd a7e997f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Feb 9 10:09:49 2014 +0100
+
+    Merge pull request #16 from BenGraeler/master
+    
+    matrix like subsetting for STS and STSDF
+
+commit a7e997fe73ce166f04cd700a9937a36352b9c673
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Thu Feb 6 13:08:56 2014 +0100
+
+    - ignore issues
+
+commit 196edcd5476f2d76fc5642dbe787158d4adfb782
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Jan 25 20:30:35 2014 +0100
+
+    optimize coercion from STIDF to STSDF
+
+commit 85cf72d367fe61f2e5c755cc52b337a3eac5d250
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Jan 20 08:25:39 2014 +0100
+
+    update output
+
+commit 8b580e1fa6d3ea4ba050d9b6d73f599b7918de7a
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Jan 19 23:17:30 2014 +0100
+
+    merge pull request; simplify vignette requirements
+
+commit 678e7a71494724849eb7e6e9100354f0abcb08bb
+Merge: fe81b0d 9ed6d1c
+Author: Bene Luks <benedikt.klus@mail.de>
+Date:   Sun Jan 19 22:31:10 2014 +0100
+
+    Merge remote-tracking branch 'upstream/master'
+
+commit fe81b0d58e459e2b350a465d5fdb83a9f4c715d1
+Author: Bene Luks <benedikt.klus@mail.de>
+Date:   Sun Jan 19 22:30:42 2014 +0100
+
+    Make R CMD build happy on Windows systems.
+
+commit 18280f3ce920c93d9e3cacda2b6e7c1671e9139b
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Wed Jan 8 17:57:49 2014 +0100
+
+    - supports matrix index for sub-setting
+
+commit 1b8588bb24f9437fd724bebc026d80f1f8ce38ea
+Merge: 3335b43 9ed6d1c
+Author: Benedikt Gräler <ben.graeler@uni-muenster.de>
+Date:   Tue Jan 7 23:34:15 2014 -0800
+
+    Merge pull request #2 from edzer/master
+    
+    update to edzer/spacetime
+
+commit 9ed6d1c12a462d1021eb9fc9751f731e04f53369
+Merge: f2306e2 84da479
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Dec 19 06:01:28 2013 -0800
+
+    Merge pull request #14 from k2sk8s/master
+    
+    Added vignette to summarise recent trajectory work
+
+commit 84da479fb6d42e8edf0c58d676777b485561a05c
+Author: Bene Luks <benedikt.klus@mail.de>
+Date:   Thu Dec 19 10:42:47 2013 +0100
+
+    Added vignette to summarise recent trajectory work.
+
+commit 8ed3561be1e245f06ae47d87d15ad2fb50edde85
+Author: Bene Luks <benedikt.klus@mail.de>
+Date:   Thu Dec 19 10:41:14 2013 +0100
+
+    Fill missing attribute data with NA instead of dropping the whole column.
+
+commit f2306e215c3d3539f3b4d1dda6413288ba7b735b
+Merge: afcf4db 6bd22a6
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Nov 27 14:42:29 2013 +0100
+
+    Merge branch 'master' of github.com:edzer/spacetime
+
+commit afcf4db3c0c52e453028551ffddaec428a3c2c7e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Nov 27 14:41:30 2013 +0100
+
+    normalize function for cyclic time (hour, weekday)
+
+commit 6bd22a6d57f6703b6b0bf2aa0ddb7b6cb8b12226
+Merge: e534d16 dc56ad4
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Nov 26 13:15:36 2013 -0800
+
+    Merge pull request #13 from k2sk8s/master
+    
+    Fix: Make aspect ratio work for non lat/lon data
+
+commit dc56ad43a969624154626c415d829f0c777065f8
+Merge: fa19c87 e534d16
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Nov 26 22:11:00 2013 +0100
+
+    Merge remote-tracking branch 'upstream/master'
+
+commit fa19c87665450a438700823148de103e4980c9b1
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Nov 26 22:10:24 2013 +0100
+
+    Fix: Make aspect ratio work for non lat/lon data.
+
+commit e534d16280e2314ff15cedf98a86096b6e1a446d
+Merge: e05dfa5 29ed800
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Nov 26 08:20:30 2013 -0800
+
+    Merge pull request #12 from k2sk8s/master
+    
+    Updated stcube methods to use a sensible aspect ratio and normalized tim...
+
+commit 29ed800be8a45275418d56709c4bf52d08b3c962
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Nov 26 16:19:55 2013 +0100
+
+    Updated stcube methods to use a sensible aspect ratio and normalized time values.
+
+commit e05dfa5ca8452575ca7588dc4c6a0b2c3415ff55
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Nov 23 00:25:07 2013 +0100
+
+    add stcube demo, merge Benedikt Klus' stcube work
+    
+    moved rgl and OpenStreetMap to Suggests:
+
+commit 326c165fddbfe149d47feb2543615cc1fba4ff0d
+Merge: 33dd041 481a575
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Nov 23 00:24:26 2013 +0100
+
+    Merge branch 'master' of https://github.com/k2sk8s/spacetime
+    
+    Conflicts:
+    	DESCRIPTION
+
+commit 33dd0414067c56e6d04c29fc3688c8114a0a9cd9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Nov 22 23:59:27 2013 +0100
+
+    update Suggests: list
+
+commit 481a5753cccc4f2ed5fa290125b0b69f2d26948e
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Fri Nov 22 22:04:44 2013 +0100
+
+    Added stcube methods.
+
+commit 3335b43065e878107063160da93082e35b830c95
+Merge: 5a1e1c4 8deb983
+Author: Benedikt Gräler <ben.graeler@uni-muenster.de>
+Date:   Tue Nov 19 01:32:11 2013 -0800
+
+    Merge pull request #1 from edzer/master
+    
+    pull from Edzer
+
+commit 8deb98368d305ebe606d2cc0b341ed834d77152f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Nov 18 11:42:51 2013 +0100
+
+    update date
+
+commit 9bb8904ee6619c5c6ae1a500d719b6d5ebe68b75
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Nov 15 15:05:35 2013 +0100
+
+    add example, refresh example test output
+
+commit cca40266a461bcb5a5afd9d3ed3d65142d334f53
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Fri Nov 15 00:50:10 2013 +0100
+
+    Updated selection methods.
+
+commit 46819c20bd76991689abc65b2038f09366891c21
+Merge: f3ef5c6 5d69399
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Thu Nov 14 22:48:24 2013 +0100
+
+    Merge remote-tracking branch 'upstream/master'
+
+commit f3ef5c693dd8c145823c181501e779059733eaca
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Thu Nov 14 22:48:05 2013 +0100
+
+    Added [[, [[<-, $ and $<- methods.
+
+commit 5d69399de5e334d9eb64578e14bd8a875bc6cfb9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Nov 14 13:17:01 2013 +0100
+
+    improve NA time warning
+
+commit 09142041049dccdacc773f76d20b6f28995a4c54
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Nov 13 16:36:09 2013 +0100
+
+    Simplified code.
+
+commit 92e5eff84aa0663961665d0e6b3a7350d7a06ee5
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Nov 13 16:26:04 2013 +0100
+
+    generalize() now correctly checks the number of passed arguments. Added documentation. Fixed indentation.
+
+commit 5f31c3f72610a891a4c068ee34d52bc851950199
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sat Nov 9 20:59:47 2013 +0100
+
+    update author list; tidy generalize
+
+commit 5a1e1c46fa5bf458f4bb831cc189c0cf16fdaebb
+Author: Benedikt Gräler <ben.graeler@gmail.com>
+Date:   Fri Nov 8 09:24:39 2013 +0100
+
+    - STSDF is now plotted with plot.STSDF
+    - added coercion to STIDF for the call of stplot with STSDF
+
+commit 7ffeecb36ff614a0e55ba71f501ce139f8e3aefc
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Nov 8 00:18:59 2013 +0100
+
+    simplify generalize, pass ... to FUN, update man
+
+commit 4ca559402f47c87bea7fda340b399df4c2800010
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Nov 6 20:30:08 2013 +0100
+
+    added coerce to Spatial, changed dim names
+
+commit 2157dab93e358fed7ecd43c5909beee4d91016c4
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Nov 5 22:36:37 2013 +0100
+
+    Updated generalize method to consider all segments for aggregation.
+
+commit afe4626fe82797957a10bf8a062b9e6d04d57bc7
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 29 00:26:04 2013 +0100
+
+    Added 'toPoints' argument.
+
+commit 7452d39fc447035b08ebfa40515d5120759298ef
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 28 23:25:51 2013 +0100
+
+    Updated 'generalize' methods to allow for simplifying the given geometry.
+
+commit 2666d7a3a9237b314cfe334c65da18ba0c8e074c
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 28 21:35:10 2013 +0100
+
+    Updated signature of 'generalize' methods to improve code maintainability. Added further regression tests.
+
+commit 3dc5dd2c333400067e1987422021777eab92b774
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 28 20:18:58 2013 +0100
+
+    Updated 'generalize' methods to allow for generalizations over a predefined segment length.
+
+commit 454f7c9df13bb0ba656edf28dff928cc1dfdc7f4
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 28 19:53:38 2013 +0100
+
+    Updated 'generalize' methods to allow for generalizations over distance.
+
+commit 7e4b418e8974b160fd03236ff2718bfb83e61f96
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 28 12:54:54 2013 +0100
+
+    Added more 'generalize' methods. Added documentation to make 'R CMD check' run clean. Added regression tests.
+
+commit c28edf0d697eb66487960672445846e529687571
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Sun Oct 27 21:39:59 2013 +0100
+
+    Added generalize method.
+
+commit 3cc6f9bcbb53f5f70462571c9b6bb5e4d1e33189
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Oct 27 00:14:35 2013 +0200
+
+    add stbox method, set back bbox, correct aggregate
+    
+    stbox methods now give the space and time ranges as a
+    data.frame; bbox gives the sp-compatible spatial range matrix.
+    
+    aggregate with only a Spatial argument can do aggregation
+    over all time, or spatial aggregation by time. STF and STF
+    do it default per time slice (as in the sto vignette), other
+    classes will group all, within a spatial feature, over time.
+
+commit 8e647893f255b5619ab27062abe0f84182f21265
+Merge: 01955e2 8676eb6
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 17:50:47 2013 +0200
+
+    Merge branch 'master' of github.com:edzer/spacetime
+
+commit 01955e29715196ed3d27466f2d0a8821ce732f1e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 17:48:02 2013 +0200
+
+    aggregation ST by Spatial now aggregates over time
+    
+    aggregation used to be by time slice too, making it only
+    useful for STFDF objects, and actually doing an aggregate(ST,ST)
+    where the second has identical time resolution as the first.
+    
+    The old behaviour is retained by
+    aggregate(STFDF, Spatial, keepTime = TRUE)
+    which is NOT the default, now (so I need to adapt sto.Rnw too).
+
+commit 8676eb60a7a3a375d36ce34ab35a651c14a6ade9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 15:12:12 2013 +0200
+
+    Update contribute.md
+
+commit 4377bf807ea214cb11a57321fd64efcf49134b90
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 15:11:15 2013 +0200
+
+    Update contribute.md
+
+commit 83e143f9e5ee00f5f832b67c95636682592eb8e0
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 15:10:11 2013 +0200
+
+    Update contribute.md
+
+commit 4ab6932b640a3105f571cef5adf7f7be97301063
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 14:47:44 2013 +0200
+
+    Update contribute.md
+
+commit e8d806ce929736b49677b2d07ce5bf3e8570f380
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 14:43:19 2013 +0200
+
+    Update contribute.md
+
+commit 5d884324b54a633e6c828a8138dd1bc2ab4b7f91
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 14:24:24 2013 +0200
+
+    add contribute file, and .Rbuildignore
+
+commit 3519ba44ed62877d90e73565b7773c444ad66c2f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 25 13:47:39 2013 +0200
+
+    coerce SpatialGrid into SpatialPixels in aggregate
+
+commit bb06885306275037bb1b7af9b9e8296c1e4afb9f
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Oct 23 00:28:57 2013 +0200
+
+    update date and role
+
+commit 6a14c1f2073c674873a08125ad5a4568dec13e16
+Merge: b81353c 423c6aa
+Author: edzer <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 22 08:01:02 2013 -0700
+
+    Merge pull request #5 from k2sk8s/master
+    
+    Added aggregate and coordinates methods
+    
+    Note that when coercing to SpatialPointsDataFrame, aggregate methods will not know how to deal with time (temporal aggregation, or spatio-temporal aggregation).
+
+commit 423c6aa18caf55f2470ab7d31f42a2e2d7c85d42
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 22 14:43:58 2013 +0200
+
+    Added coordinates methods.
+
+commit 2bfa55bccce4aa28ec455c3a37e01e0d265bedaf
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 22 12:38:49 2013 +0200
+
+    Added aggregate methods.
+
+commit b81353ce09536de61d7406ea7be4efa53cb6f327
+Merge: 0a09988 bdfa19c
+Author: edzer <edzer.pebesma@uni-muenster.de>
+Date:   Mon Oct 21 06:08:27 2013 -0700
+
+    Merge pull request #4 from k2sk8s/master
+    
+    Added summary methods.
+
+commit bdfa19c34d61cae88af7981dc3d5ebc9c18bb035
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 21 14:40:53 2013 +0200
+
+    Added summary methods.
+
+commit 0a09988dde5d695eb0b465c3414181aae7d7a6da
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Oct 17 07:56:10 2013 +0200
+
+    fix random seed to obtain constant output from test
+
+commit 2448f15bac06db0f0c08840c5eb4b7b4244e30b4
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Oct 16 23:58:22 2013 +0200
+
+    add tracks test output
+    
+    copied from spacetime.Rcheck/tests, this file contains the
+    reference test output (and should, after checking, be replaced
+    again when the tests are changed or extended)
+
+commit 2f880211cbc00eaec98ea027577b54d247b3a204
+Merge: 37905ec cd2011e
+Author: edzer <edzer.pebesma@uni-muenster.de>
+Date:   Wed Oct 16 14:38:31 2013 -0700
+
+    Merge pull request #3 from k2sk8s/master
+    
+    Added first regression tests, among others
+
+commit cd2011e9d78acf6d3e59bfbe79c6f02ec200c068
+Merge: dedfce8 37905ec
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Oct 16 22:14:07 2013 +0200
+
+    Merged upstream. Resolved merge conflicts.
+
+commit dedfce84ccf66b03a8576c8e85223abc0708b9d1
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Oct 16 21:10:58 2013 +0200
+
+    Added first regression tests. More to come.
+
+commit 3d4deec02ab61e0e7dadf27c9b66767384a0a7d6
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Oct 16 21:01:16 2013 +0200
+
+    Fixed selection bug. Added comments.
+
+commit 4065f03a809006734214597d306cbe93f4d367d3
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Oct 16 16:18:19 2013 +0200
+
+    Wrapped comments at 80 characters.
+
+commit 8e1628d4358eb718872021e1af85119bd806418c
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Oct 16 16:08:57 2013 +0200
+
+    Removed redundant coercion method. Wrapped comments at 80 characters.
+
+commit 37905ecf63c55ec46607b2c9c3ccbd4ce3550a7a
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 15 19:00:07 2013 +0200
+
+    add rbind for STIDF, sp dependency on rev 1478
+    
+    created dependency on sp revision 1478 (r-forge)
+    that cleans up the CRS checking in validity functions of
+    Tracks and TracksCollection. Removed the ::: dependencies.
+    added an alias to over.Rd, to make R CMD check clean.
+
+commit a249142559134940ce878e2bf98cb79afbc21d80
+Merge: 0b35b47 0ef1509
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 15 16:01:37 2013 +0200
+
+    Merge branch 'master' of https://github.com/k2sk8s/spacetime
+
+commit d7b13507d9e5f98d10d3d32f746c230f1919bd08
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 15:43:11 2013 +0200
+
+    Removed redundant coercion method.
+
+commit 4b1c8ec6b87c57e6e10e51fd9fb6a859f69bdd0d
+Merge: 0ef1509 0b35b47
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 14:18:49 2013 +0200
+
+    Merge remote-tracking branch 'upstream/master'
+
+commit 0ef1509941d09ae2a4d88d47b19ceadac9d8322e
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 14:00:15 2013 +0200
+
+    Added coercion methods to allow for converting trajectories to SpatialPointsDataFrame.
+
+commit 2e27ba0b23d19db0ccc837f8e58ed3673fc3f05b
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 13:40:25 2013 +0200
+
+    Added coercion methods to allow for converting trajectories to spatio-temporal points.
+
+commit bccfa1d231ac2239d534e28639229d7e3f2cee7a
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 12:49:20 2013 +0200
+
+    Added coercion methods to allow for converting trajectories to time series. Code cleanups.
+
+commit 38e5d8c263d809819044eb6ec9fe0ff9ef2996df
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 11:09:19 2013 +0200
+
+    Added over method for Track objects. Fixed coercion method.
+
+commit 74112f86fec196f294e7f57a637acbf0cf88592e
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Tue Oct 15 10:45:42 2013 +0200
+
+    Added rgeos as a required dependency to make any over methods for trajectory classes work flawlessly.
+
+commit 0b35b472cc0d9bb09cdcca31b5119f9bf7ab18ae
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 15 09:46:55 2013 +0200
+
+    update minor version, date, URL, contributor
+
+commit a32e458c4891247a2c711a729f53b662ae843da2
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Mon Oct 14 16:39:33 2013 +0200
+
+    Fixed selection method to correctly address selections such as Tr[list(integer(0), 2)]. Code cleanups.
+
+commit 5f1a147b355593a1e3eb36231c1e46d852e1579e
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Oct 13 18:56:15 2013 +0200
+
+    clean up for R CMD check
+
+commit c41946be5ec4687700929ce5a94569db4edd212a
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Sun Oct 13 18:27:11 2013 +0200
+
+    added c, stack and unstack methods, and example code
+
+commit ef16d17c182c911f9e8e5be2ac0b2723fe09d840
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 11 23:02:49 2013 +0200
+
+    R CMD check is clean again
+
+commit aa097ed255fb4b238f323cfd2d33cbcf4f8ad6fc
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 11 17:18:22 2013 +0200
+
+    added proj4string and coerce to SpatialLines* methods
+
+commit fbb085878bf68cffcba0dbe7166b70028aae0040
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Oct 10 12:06:38 2013 +0200
+
+    tested list selection; updated over signatures.
+
+commit e2c4b284f17de55dd4ebfd74ab0ea3360458f483
+Author: Bene Luks <b.luks@gmx.de>
+Date:   Wed Oct 9 20:29:32 2013 +0200
+
+    Added coercion methods. Arbitrary selection of ID/Track combinations are now possible.
+
+commit 3e145a0e9d93e7a70a539a46b439df572a114e30
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Oct 4 14:42:43 2013 +0200
+
+    corrected plot x/ylim values, added default names
+
+commit 1be33fdbed6560773c79f376cdbb37e72fab3620
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Oct 2 16:45:04 2013 +0200
+
+    added Track IDs; corrected direction calculations
+
+commit 7988d6db57a42a0970668e4a9c95ccc4a5aa7d22
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Tue Oct 1 19:57:57 2013 +0200
+
+    added sp.layout to spplot for TracksCollection
+
+commit 109b44134f74dddcd19814b57ac92cb6ea8404c5
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Mon Sep 30 23:35:09 2013 +0200
+
+    added segments class; added simple [ selection methods
+
+commit 4f142a943853cf29792cc3c0c9b8730e3d616b02
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 27 18:00:32 2013 +0200
+
+    added dim methods, improved stplot.
+
+commit 7c490847192267ab1d87c4b1c5358361efc2b8b9
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Fri Sep 27 16:49:23 2013 +0200
+
+    plotting trajectories, both stplot and plot; example in doc.
+
+commit 20a55bb3d49442e1d623cc74906a28617a4b79ad
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Sep 26 23:16:46 2013 +0200
+
+    more stplot work for TracksCollection objects, xx2seg conversions
+
+commit 2b8b7346691799c8ca7fe10d2233719cce1762d1
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Sep 26 17:34:53 2013 +0200
+
+    more on trajectories; some plotting fn
+
+commit 3bbfc938653b676a2c965addc3de1ec769034932
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Thu Sep 26 16:11:07 2013 +0200
+
+    trajectory work
+
+commit b4ebdaeb9b351a5dd974f482a35d06660d782607
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 20:58:26 2013 +0200
+
+    work on Tracks
+
+commit 1e1c9260af2f508d5fe15f1732ad84b5b928faaf
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 18:03:12 2013 +0200
+
+    removed svn;  added Tracks files
+
+commit bb3fc2124386914751e3bf84ab570948cc9ba889
+Author: edzer <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 17:20:51 2013 +0200
+
+    added urls
+
+commit b642fddf8c720b51784d2b6c1d16fc156f634696
+Merge: 7d8ee87 95e1e2a
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 17:11:43 2013 +0200
+
+    Merge github.com:edzer/spacetime
+
+commit 7d8ee87af202e98a80665798df930188fb187bf1
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 16:04:57 2013 +0200
+
+    initial commit
+
+commit eba0f2d720ce7053d97a728fe1b7844a8f25874d
+Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 16:03:17 2013 +0200
+
+    first commit
+
+commit 95e1e2aa46c55d7dfead687f93877b1d62d939bb
+Author: edzer <edzer.pebesma@uni-muenster.de>
+Date:   Wed Sep 25 07:02:03 2013 -0700
+
+    Initial commit
+2013-09-20 15:47  ben_graeler
+
+	* spacetime/R/STSDF-methods.R: - fixed minor issue for single
+	  points in space and time in coordinates method
+
+2013-09-20 12:34  edzer
+
+	* spacetime/R/STFDF-methods.R, spacetime/R/STIDF-methods.R,
+	  spacetime/R/STSDF-methods.R: added [ methods for STF, STS, STI;
+	  needs some testing
+
+2013-09-19 09:33  jinlong
+
+	* trajectories/R/aggregate.R, trajectories/R/crop.R,
+	  trajectories/data/geolife_sample.RData,
+	  trajectories/inst/geolife_reader.R,
+	  trajectories/man/geolife_sample.Rd,
+	  trajectories/vignettes/demo.Rmd: - Revised crop();
+	  - Revised aggregate();
+	  - Updated geolife_sample.RData
+	  - Added demo.Rmd
+
+2013-09-18 06:53  jinlong
+
+	* trajectories/R/summary.R, trajectories/data/geolife_sample.RData,
+	  trajectories/inst/geolife_reader.R,
+	  trajectories/man/geolife_sample.Rd,
+	  trajectories/tests/crop_and_plot_demo.R,
+	  trajectories/tests/crop_demo.Rout.save: - summary() function
+	  updated
+	  - geolife_reader.R updated with the computation of trajectory
+	  stats
+	  - geolife_sample dataset updated
+
+2013-09-16 07:50  edzer
+
+	* trajectories/R/crop.R,
+	  trajectories/tests/aggregate_demo.Rout.save: take right
+	  coordinates
+
+2013-09-16 07:46  edzer
+
+	* trajectories/R/crop.R: right coordinates
+
+2013-09-16 07:40  edzer
+
+	* trajectories/tests/STItoSTTDFdemo2.Rout.save: test output
+
+2013-09-16 06:59  jinlong
+
+	* trajectories/tests/crop_and_plot_demo.R: - updated the data for
+	  demo
+
+2013-09-16 05:41  jinlong
+
+	* trajectories/data/geolife_sample.RData,
+	  trajectories/inst/geolife_reader.R,
+	  trajectories/man/geolife_sample.Rd,
+	  trajectories/tests/crop_and_plot_demo.R,
+	  trajectories/tests/crop_and_plot_demo.Rout.save,
+	  trajectories/tests/geolife_reader.R, trajectories/vignettes,
+	  trajectories/vignettes/sttdf.png,
+	  trajectories/vignettes/sttdf_cropped_w_pol.png,
+	  trajectories/vignettes/sttdf_w_pol.png: - geolife sample dataset
+	  added.
+
+2013-09-16 05:07  jinlong
+
+	* trajectories/NAMESPACE, trajectories/R/STItoSTTDF.R,
+	  trajectories/R/crop.R, trajectories/notes,
+	  trajectories/tests/STItoSTTDFdemo.R,
+	  trajectories/tests/STItoSTTDFdemo2.R,
+	  trajectories/tests/STItoSTTDFdemo2.Rout.save,
+	  trajectories/tests/STTDF_selection.R,
+	  trajectories/tests/aggregate_demo.R,
+	  trajectories/tests/aggregate_demo.Rout.save,
+	  trajectories/tests/crop_and_plot_demo.R,
+	  trajectories/tests/crop_and_plot_demo.Rout.save,
+	  trajectories/tests/crop_demo.R,
+	  trajectories/tests/crop_demo.Rout.save,
+	  trajectories/tests/cut.STTDF.SpatialPolygons.R,
+	  trajectories/tests/geolife_reader.R,
+	  trajectories/tests/over.STTDF.SpatialPolygons.R,
+	  trajectories/tests/read.R,
+	  trajectories/tests/summary_and_plot_demo.R,
+	  trajectories/tests/traj_sample.R,
+	  trajectories/tests/traj_stats.R: - output files added
+	  - tests files corrected
+	  - bug fixed in crop
+	  - geolife_reader.R revised
+	  - directory cleaned
+
+2013-09-11 10:58  edzer
+
+	* spacetime/DESCRIPTION: version bump
+
+2013-09-10 13:55  edzer
+
+	* spacetime/NAMESPACE, spacetime/R/ST-methods.R,
+	  spacetime/R/coerce.R: setMethod geometry
+	  export geometry and aggregate
+	  corrected coerce STIDF->STTDF
+
+2013-09-09 08:37  edzer
+
+	* spacetime/vignettes/stpg.Rnw: back to 2.14.x compatibility
+
+2013-09-06 07:41  edzer
+
+	* trajectories/NAMESPACE: exportMethod plot
+
+2013-09-06 07:27  edzer
+
+	* trajectories/tests/STItoSTTDFdemo.Rout.save: redid test output
+
+2013-09-06 07:24  edzer
+
+	* trajectories/tests/STItoSTTDFdemo.R: fixed random number
+	  generator seed
+
+2013-09-06 07:22  edzer
+
+	* spacetime/DESCRIPTION,
+	  trajectories/tests/STItoSTTDFdemo.Rout.save: added test output
+
+2013-09-06 07:17  edzer
+
+	* trajectories/tests/STItoSTTDFdemo.R,
+	  trajectories/tests/crop_demo.R: added libraries
+
+2013-09-06 07:12  edzer
+
+	* trajectories/test, trajectories/tests: directory name change
+
+2013-09-06 06:59  edzer
+
+	* trajectories/man/summary.Rd: addressed the NOTE by R CMD check
+
+2013-09-06 06:49  jinlong
+
+	* trajectories/R/aggregate.R,
+	  trajectories/test/merge_not_working.R,
+	  trajectories/test/sample_not_working.R: - Fix bug in aggregate.R
+
+2013-09-05 09:28  edzer
+
+	* spacetime/DESCRIPTION, spacetime/R/Class-ST.R,
+	  spacetime/R/Class-STFDF.R, spacetime/R/Class-STIDF.R,
+	  spacetime/R/Class-STSDF.R, spacetime/R/Class-STTDF.R: removed
+	  slots = c(...) notation, to keep R 2.14 compatibility.
+
+2013-09-03 09:50  edzer
+
+	* spacetime/DESCRIPTION: version downgrade
+
+2013-09-03 09:44  edzer
+
+	* spacetime/DESCRIPTION, spacetime/man/eof.Rd,
+	  spacetime/man/stinteraction.Rd,
+	  spacetime/tests/Examples/spacetime-Ex.Rout.save: issues caused by
+	  gstat 1.0-17
+
+2013-09-03 07:19  jinlong
+
+	* trajectories/NAMESPACE, trajectories/R/aggregate.R,
+	  trajectories/R/crop.R,
+	  trajectories/R/cut.STTDF.SpatialPolygons.R,
+	  trajectories/man/aggregate.Rd,
+	  trajectories/man/cut.STTDF.SpatialPolygons.Rd,
+	  trajectories/test/aggregate_demo.R,
+	  trajectories/test/crop_demo.R,
+	  trajectories/test/summary_and_plot_demo.R: - Add aggregate()
+	  function;
+	  - Rewrite crop() function;
+	  - Delete cut.STTDF.SpatialPolygons() function;
+	  - Modify the demo for aggregate(), summary(), plot(), and crop()
+
+2013-09-02 13:06  edzer
+
+	* spacetime/.Rbuildignore, spacetime/DESCRIPTION,
+	  spacetime/NAMESPACE, spacetime/R/aggregate.R,
+	  spacetime/man/ST-class.Rd, spacetime/man/STFDF-class.Rd,
+	  spacetime/man/STSDF-class.Rd, spacetime/man/STTDF-class.Rd,
+	  spacetime/man/fires.Rd, spacetime/man/na.Rd,
+	  spacetime/man/over.Rd, spacetime/man/unstack.Rd,
+	  spacetime/tests/Examples/spacetime-Ex.Rout.save,
+	  spacetime/tests/basic.R, spacetime/tests/basic.Rout.save,
+	  spacetime/tests/over.R, spacetime/tests/over.Rout.save,
+	  spacetime/tests/rw.R, spacetime/tests/stconstruct.R,
+	  spacetime/tests/stconstruct.Rout.save,
+	  spacetime/tests/traj.Rout.save, spacetime/tests/wind.R,
+	  spacetime/tests/wind.Rout.save, spacetime/vignettes/jss816.Rnw,
+	  spacetime/vignettes/sto.Rnw: sp is now imported, not loaded;
+	  adjusted all examples and demos.
+
+2013-08-30 19:46  edzer
+
+	* spacetime/DESCRIPTION: addressed CRAN NOTE: removed duplicates
+	  between Suggests: and Imports:
+
+2013-08-13 06:07  jinlong
+
+	* trajectories/NAMESPACE, trajectories/R/crop.R,
+	  trajectories/R/over.STTDF.STTDF.R,
+	  trajectories/R/over.STTDF.SpatialPolygons.R,
+	  trajectories/R/plot.R, trajectories/R/summary.R,
+	  trajectories/man/crop.Rd, trajectories/man/over.STTDF.STTDF.Rd,
+	  trajectories/man/over.STTDF.SpatialPolygons.Rd,
+	  trajectories/notes, trajectories/test/crop_demo.R,
+	  trajectories/test/read.R,
+	  trajectories/test/summary_and_plot_demo.R: - crop() added
+	  - summary() fixed with invalid data attributes
+
+2013-08-05 07:40  jinlong
+
+	* trajectories/demo/00Index, trajectories/demo/STItoSTTDFdemo.R,
+	  trajectories/demo/STItoSTTDFdemo2.R,
+	  trajectories/demo/STTDF_selection.R,
+	  trajectories/demo/cut.STTDF.SpatialPolygons.R,
+	  trajectories/demo/geolife_reader.R,
+	  trajectories/demo/over.STTDF.SpatialPolygons.R,
+	  trajectories/demo/read.R, trajectories/demo/traj_sample.R,
+	  trajectories/demo/traj_stats.R, trajectories/notes,
+	  trajectories/test, trajectories/test/STItoSTTDFdemo.R,
+	  trajectories/test/STItoSTTDFdemo2.R,
+	  trajectories/test/STTDF_selection.R,
+	  trajectories/test/cut.STTDF.SpatialPolygons.R,
+	  trajectories/test/geolife_reader.R,
+	  trajectories/test/over.STTDF.SpatialPolygons.R,
+	  trajectories/test/read.R, trajectories/test/traj_sample.R,
+	  trajectories/test/traj_stats.R: - Move all files in demo folder
+	  into test folder;
+	  - Update the note;
+
+2013-08-05 07:11  jinlong
+
+	* trajectories/R/STItoSpatialLines.R, trajectories/R/plot.R,
+	  trajectories/R/summary.R, trajectories/man/STItoSpatialLines.Rd,
+	  trajectories/man/plot.Rd, trajectories/man/summary.Rd: - Missing
+	  files added
+
+2013-08-05 07:11  jinlong
+
+	* trajectories/NAMESPACE,
+	  trajectories/R/cut.STTDF.SpatialPolygons.R, trajectories/notes: -
+	  Added plot.R, summary.R, STItoSpatialLines.R
+	  - Modified cut.STTDF.SpatialPolygons.R and STI to SpatialLines.R
+
+2013-07-23 13:10  edzer
+
+	* trajectories/man/traj_sample.Rd: alias
+
+2013-07-23 12:55  jinlong
+
+	* trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/R/STItoSTTDF.R,
+	  trajectories/R/STTDFtoSpatialLines.R,
+	  trajectories/R/cut.STTDF.SpatialPolygons.R,
+	  trajectories/R/over.STTDF.SpatialPolygons.R,
+	  trajectories/demo/00Index, trajectories/demo/STItoSTTDFdemo2.R,
+	  trajectories/demo/cut.STTDF.SpatialPolygons.R,
+	  trajectories/demo/traj_sample.R,
+	  trajectories/man/STTDFtoSpatialLines.Rd,
+	  trajectories/man/cut.STTDF.SpatialPolygons.Rd,
+	  trajectories/man/over.STTDF.SpatialPolygons.Rd: -
+	  cut.STTDF.SpatialPolygons.R added
+	  - STTDFtoSpatialLines.R added
+
+2013-07-21 16:22  jinlong
+
+	* trajectories/NAMESPACE,
+	  trajectories/R/over.STTDF.SpatialPolygons.R, trajectories/data,
+	  trajectories/data/traj_sample.RData, trajectories/demo/00Index,
+	  trajectories/demo/over.STTDF.SpatialPolygons.R,
+	  trajectories/demo/traj_sample.R,
+	  trajectories/man/over.STTDF.STTDF.Rd,
+	  trajectories/man/over.STTDF.SpatialPolygons.Rd,
+	  trajectories/man/traj_sample.Rd, trajectories/notes: - New
+	  dataset
+	  - over.STTDF.SpatialPolygons
+
+2013-07-16 06:54  jinlong
+
+	* trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/R/STItoSTTDF.R, trajectories/R/over.STTDF.STTDF.R,
+	  trajectories/demo/STItoSTTDFdemo.R,
+	  trajectories/demo/geolife_reader.R, trajectories/inst,
+	  trajectories/man/over.STTDF.STTDF.Rd, trajectories/notes: -
+	  over.STTDF.STTDF.R added
+
+2013-07-14 07:26  jinlong
+
+	* trajectories/NAMESPACE, trajectories/demo/STTDF_selection.R: -
+	  Clean package check with one warning message
+
+2013-07-13 11:54  edzer
+
+	* spacetime/vignettes/stpg.Rnw: set eval=FALSE again; updated the
+	  off-cran eval=TRUE document
+
+2013-07-13 09:18  edzer
+
+	* spacetime/vignettes/stpg.Rnw: updated vignette
+
+2013-07-13 07:58  jinlong
+
+	* trajectories/demo/00Index, trajectories/demo/STItoSTTDFdemo.R,
+	  trajectories/demo/sttdf_computation.R,
+	  trajectories/man/STItoSTTDF.Rd: - Updated the description in
+	  demo/00Index
+	  - Added comments in STItoSTTDFdemo.R
+
+2013-07-12 09:19  edzer
+
+	* trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/demo/00Index, trajectories/man/STItoSTTDF.Rd: tidy
+	  to make check clean; import rgdal to support project().
+
+2013-07-12 07:56  jinlong
+
+	* trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/R/STItoSTTDF.R, trajectories/man/STItoSTTDF.Rd: -
+	  Updated STItoSTTDF.Rd
+
+2013-07-12 07:23  jinlong
+
+	* trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/R/STItoSTTDF.R, trajectories/man/STItoSTTDF.Rd: -
+	  Fixed multiple bugs that preventing building the package
+
+2013-07-11 06:23  jinlong
+
+	* trajectories/NAMESPACE, trajectories/demo/STTDF_selection.R: -
+	  NAMESPACE updated
+	  - STTDF_selection.R temporarily disabled
+
+2013-07-11 06:00  jinlong
+
+	* trajectories/NAMESPACE, trajectories/R/STItoSTTDF.R,
+	  trajectories/demo/STItoSTTDF.R,
+	  trajectories/demo/STItoSTTDFdemo.R,
+	  trajectories/demo/geolife_reader.R,
+	  trajectories/man/STItoSTTDF.Rd, trajectories/notes: - notes
+	  updates
+	  - STItoSTTDF.R moved to R/
+	  - geolife.R updated
+	  - NAMESPACE updated
+
+2013-07-09 15:27  edzer
+
+	* spacetime/DESCRIPTION, spacetime/R/Class-ST.R,
+	  spacetime/R/Class-STFDF.R, spacetime/R/Class-STIDF.R,
+	  spacetime/R/Class-STSDF.R, spacetime/R/Class-STTDF.R,
+	  spacetime/R/Class-xts.R, spacetime/R/coerce.R: changed
+	  "representation" into "contains" and "slots", as for R 3.0.0
+	  recommendations;
+	  changed import order of xts and zoo.;
+	  changed setClass to setOldClass for S3 class registration.
+
+2013-07-09 08:01  jinlong
+
+	* trajectories/demo/STItoSTTDF.R,
+	  trajectories/demo/geolife_reader.R,
+	  trajectories/man/STItoSTTDF.Rd, trajectories/notes: - notes
+	  updated
+	  - multiple updated for the R scripts in demo directory
+
+2013-07-09 06:44  jinlong
+
+	* trajectories/demo/STItoSTTDF.R, trajectories/man/STItoSTTDF.Rd,
+	  trajectories/notes: - Updated on notes
+	  - Added STItoSTTDF.Rd
+
+2013-07-08 07:41  jinlong
+
+	* trajectories/demo/STItoSTTDF.R,
+	  trajectories/demo/geolife_reader.R,
+	  trajectories/demo/sttdf_computation.R, trajectories/notes: -
+	  STItoSTTDF.R added
+	  - geolife_reader.R added
+	  - STTDF_computation.R modified
+	  - notes updated
+
+2013-07-04 07:52  jinlong
+
+	* trajectories/notes: - Updated tasks for Week 3
+
+2013-07-04 07:00  jinlong
+
+	* trajectories/demo/sttdf_computation.R: - Turning angle updated
+	  for STTDF_computation.R
+
+2013-07-03 18:55  jinlong
+
+	* trajectories/demo/sttdf_computation.R: - Test on turning angle
+	  computation
+
+2013-07-03 05:16  jinlong
+
+	* trajectories/demo/sttdf_computation.R: - Update on
+	  STTDF_computation.R
+
+2013-07-02 00:24  jinlong
+
+	* trajectories/notes: - update on STTDF_selection.R
+	  - update on note
+
+2013-07-01 07:28  edzer
+
+	* spacetime/inst/CITATION: name fix
+
+2013-07-01 07:18  edzer
+
+	* spacetime/inst/CITATION: added ASDAR 2nd ed to CITATION
+
+2013-07-01 06:49  jinlong
+
+	* trajectories/notes: - note updated
+
+2013-07-01 06:44  jinlong
+
+	* trajectories/demo/STTDF_selection.R,
+	  trajectories/demo/sttdf_computation.R, trajectories/notes: - Note
+	  updated
+	  - STTDF_selection.R and STTDF_Computation.R added
+
+2013-07-01 01:02  jinlong
+
+	* trajectories/demo/sttdf_computation.R, trajectories/notes: -
+	  updated notes
+	  - added sttdf_computation.R
+
+2013-06-30 15:46  edzer
+
+	* spacetime/DESCRIPTION, spacetime/inst/doc, spacetime/vignettes,
+	  spacetime/vignettes/cls.fig, spacetime/vignettes/cls.pdf,
+	  spacetime/vignettes/hov.pdf,
+	  spacetime/vignettes/ifgi-logo_int.pdf,
+	  spacetime/vignettes/jss816.Rnw, spacetime/vignettes/jss816.bib,
+	  spacetime/vignettes/jsslogo.jpg, spacetime/vignettes/logo52n.pdf,
+	  spacetime/vignettes/move.fig, spacetime/vignettes/move.pdf,
+	  spacetime/vignettes/produc.jpg, spacetime/vignettes/sto.Rnw,
+	  spacetime/vignettes/stpg.Rnw, spacetime/vignettes/ti.fig,
+	  spacetime/vignettes/ti.pdf, spacetime/vignettes/tp.pdf,
+	  spacetime/vignettes/ts.pdf, spacetime/vignettes/wind.pdf,
+	  spacetime/vignettes/windts.pdf: moved vignettes to vignettes
+	  directory.
+
+2013-06-27 02:59  jinlong
+
+	* trajectories/demo/read.R, trajectories/notes: - Notes updated
+	  - First take on read.R
+
+2013-06-25 15:08  edzer
+
+	* trajectories/demo/read.R: read.R reads GeoLife trajectories into
+	  STI object
+
+2013-06-24 07:13  jinlong
+
+	* trajectories/notes: Fixed typos in Weekly Report 1
+
+2013-06-24 06:50  jinlong
+
+	* trajectories/notes: Update on Weekly Report 1
+
+2013-06-24 06:09  jinlong
+
+	* trajectories/notes: Jinlong's commit test
+
+2013-06-17 15:21  edzer
+
+	* trajectories/notes: next meeting
+
+2013-06-17 15:13  edzer
+
+	* trajectories/notes: final notes
+
+2013-06-17 15:04  edzer
+
+	* trajectories/notes: notes of the Jun 17 telco of Edzer and
+	  Jinlong
+
+2013-06-17 08:43  edzer
+
+	* spacetime/R/STIDF-methods.R, spacetime/R/stplot.R,
+	  spacetime/man/stconstruct.Rd, spacetime/man/stplot.Rd,
+	  spacetime/tests/stconstruct.R,
+	  spacetime/tests/stconstruct.Rout.save: modified subs.STIDF to
+	  take care of duplicate selection;
+	  modified STIDF stplot method to use spplot;
+	  modified stconstruct examples which then no longer ran well;
+
+2013-06-08 21:11  edzer
+
+	* spacetime/DESCRIPTION, spacetime/NAMESPACE,
+	  spacetime/R/Class-xts.R, spacetime/R/STFDF-methods.R,
+	  spacetime/R/aggregate.R, spacetime/R/stplot.R,
+	  spacetime/man/ST-class.Rd, spacetime/man/STFDF-class.Rd,
+	  spacetime/man/stplot.Rd: added as.array() method
+	  improved stplot for STIDF
+	  improved as.zoo.STFDF
+	  added options "time" and "space" for by argument in
+	  aggregate.STFDF
+	  added S4 class zoo
+
+2013-05-31 21:46  edzer
+
+	* spacetime/R/coerce.R, spacetime/R/plot.R,
+	  spacetime/man/STFDF-class.Rd, spacetime/man/STSDF-class.Rd,
+	  spacetime/man/stinteraction.Rd: added plot method for ST[FS]DF,
+	  indicating missing value pattern;
+	  added STI <--> stpp coercion (using as.POSIXct, with origing
+	  1970-01-01 GMT)
+
+2013-05-17 15:09  edzer
+
+	* trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/man/traj_stats.Rd: initial check.
+
+2013-05-17 14:56  edzer
+
+	* trajectories, trajectories/DESCRIPTION, trajectories/NAMESPACE,
+	  trajectories/R, trajectories/R/traj_stats.R, trajectories/demo,
+	  trajectories/demo/traj_stats.R, trajectories/man,
+	  trajectories/man/traj_stats.Rd: initial upload of Jinlong's
+	  Geolife trajectory reader
+
+2013-05-17 10:53  edzer
+
+	* ChangeLogOld, DESCRIPTION, NAMESPACE, R, data, demo, inst, man,
+	  spacetime, spacetime/ChangeLogOld, spacetime/DESCRIPTION,
+	  spacetime/NAMESPACE, spacetime/R, spacetime/data, spacetime/demo,
+	  spacetime/inst, spacetime/man, spacetime/svn2cl.xsl,
+	  spacetime/tests, svn2cl.xsl, tests: made room for additional
+	  packages, next to spacetime
+
+2013-05-16 20:09  edzer
+
+	* man/stconstruct.Rd: line break
+
+2013-05-14 16:55  edzer
+
+	* DESCRIPTION, NAMESPACE, R/stinteraction.R, man/stinteraction.Rd:
+	  added stInteraction(), an idea from agile workshop
+
+2013-05-08 08:00  edzer
+
+	* inst/doc/jss816.Rnw: updated cshapes example to deal with missing
+	  date (-1) in cshapes 0.4-2
+
+2013-04-29 18:24  edzer
+
+	* DESCRIPTION, R/ST-methods.R,
+	  tests/Examples/spacetime-Ex.Rout.save, tests/basic.Rout.save,
+	  tests/raster.Rout.save, tests/stconstruct.Rout.save,
+	  tests/traj.Rout.save, tests/wind.Rout.save: updated spTransform;
+	  clean R CMD check for R 3.0.0.
+
+2013-04-19 13:32  edzer
+
+	* R/ST-methods.R: added require(rgdal) before the spTransform()
+	  call on Spatial objects.
+
+2013-04-15 07:30  edzer
+
+	* DESCRIPTION: updated DESCRIPTION
+
+2013-04-10 22:47  edzer
+
+	* R/Class-STSDF.R, R/ST-methods.R, R/timematch.R: added some more
+	  useful error messages, after r-sig-geo email from Saman
+
+2013-03-02 11:25  edzer
+
+	* NAMESPACE, R/ST-methods.R, R/STFDF-methods.R, R/STTDF-methods.R,
+	  R/coerce.R, R/stplot.R, R/timematch.R, demo/CressieWikle.R,
+	  inst/doc/jss816.Rnw, inst/doc/sto.Rnw, man/STTDF-class.Rd,
+	  tests/Examples/spacetime-Ex.Rout.save, tests/rw.R: added manual
+	  entries;
+	  updated (completed) [ for STT and STTDF
+	  added length methods for STT
+	  removed warnings from sto.Rnw
+	  added/improved coerces from/to STT
+	  added require(zoo) to CressieWikle demo
+	  added documentation and vignette text on [.STT; examples
+
+2013-03-01 00:22  edzer
+
+	* DESCRIPTION, NAMESPACE, R/Class-ST.R, R/aggregate.R, R/coerce.R,
+	  R/over.R, R/stconstruct.R, R/timematch.R, demo/CressieWikle.R:
+	  added zoo back to Suggests: and loaded it in demo/CressieWikle.R
+	  cleaned up timeIsInterval stuff
+
+2013-02-19 20:48  edzer
+
+	* DESCRIPTION: starting 1.0-5
+
+2013-02-19 20:48  edzer
+
+	* DESCRIPTION, R/ST-methods.R, inst/doc/stpg.Rnw,
+	  tests/Examples/spacetime-Ex.Rout.save, tests/raster.Rout.save,
+	  tests/wind.Rout.save: 1.0-4 release to CRAN.
+
+2013-02-15 21:58  edzer
+
+	* R/raster.R: use timeBased()
+
+2013-02-15 21:50  edzer
+
+	* NAMESPACE, R/ST-methods.R, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STSDF-methods.R: use xts::timeBased() when time is not xts upon
+	  construction;
+	  drop tzone in xts() call when index is Date (to suppress warning)
+
+2013-02-14 13:04  edzer
+
+	* DESCRIPTION: dependency on gstat 1.0-16.
+
+2013-02-13 21:29  ben_graeler
+
+	* inst/doc/jss816.Rnw: - adapted to changes in gstat (i.e. using
+	  vgmST)
+
+2013-02-09 19:10  edzer
+
+	* DESCRIPTION: tidy
+
+2013-02-09 19:04  edzer
+
+	* DESCRIPTION: date update
+
+2013-02-09 19:02  edzer
+
+	* R/stplot.R: update, to accomodate plotting legend handling for
+	  points
+
+2013-02-04 14:53  edzer
+
+	* DESCRIPTION: date update
+
+2013-01-29 20:56  edzer
+
+	* DESCRIPTION: triggering rebuild on r-forge.
+
+2013-01-25 12:45  edzer
+
+	* DESCRIPTION, NAMESPACE, R/STTDF-methods.R, inst/doc/jss816.Rnw,
+	  man/STTDF-class.Rd: added [ method to STTDF; minor update on
+	  vignette
+
+2013-01-25 10:08  ben_graeler
+
+	* ., inst/doc/jss816.Rnw: - updated the jss816.Rnw to the new
+	  spatio-temporal variogram definition from gstat
+
+2013-01-08 12:47  edzer
+
+	* inst/doc/jss816.Rnw: tidy vignette
+
+2012-12-27 19:08  edzer
+
+	* inst/doc/sto.Rnw: added trick to avoid build break on r-forge.
+
+2012-12-25 15:01  edzer
+
+	* DESCRIPTION: version update after CRAN release of 1.0-3
+
+2012-12-25 14:01  edzer
+
+	* DESCRIPTION, R/STFDF-methods.R, data/air.rda: updated air.rda to
+	  pass new rgdal check
+
+2012-12-17 12:11  edzer
+
+	* NAMESPACE, R/STFDF-methods.R, R/tgrass.R, man/nbmult.Rd: added
+	  nbMult, for space-time neighbours in STF* objects;
+	  reverted changes to tgrass back (using setwd() etc)
+
+2012-12-17 09:08  edzer
+
+	* DESCRIPTION: put zoo and xts versions one down, to match (?)
+	  those on r-forge
+
+2012-12-15 17:19  edzer
+
+	* R/tgrass.R: removed setwd() in tgrass.R to check if this blocked
+	  building on r-forge...
+
+2012-12-14 14:00  edzer
+
+	* ChangeLog, ChangeLogOld, DESCRIPTION: moved 52N svn repo
+	  ChangeLog to ChangeLogOld; added makefile
+
+2012-12-14 13:56  edzer
+
+	* ChangeLog, DESCRIPTION, NAMESPACE, R, R/Class-ST.R,
+	  R/Class-STFDF.R, R/Class-STIDF.R, R/Class-STSDF.R,
+	  R/Class-STTDF.R, R/Class-xts.R, R/ST-methods.R,
+	  R/STFDF-methods.R, R/STIDF-methods.R, R/STSDF-methods.R,
+	  R/STTDF-methods.R, R/aggregate.R, R/apply.R, R/bind.R,
+	  R/coerce.R, R/endtime.R, R/eof.R, R/interval.R, R/na.R, R/over.R,
+	  R/plot.R, R/raster.R, R/stconstruct.R, R/stplot.R, R/tgrass.R,
+	  R/timematch.R, data, data/air.rda, data/fires.rda, demo,
+	  demo/00Index, demo/CW.R, demo/CressieWikle.R, demo/edc.R,
+	  demo/gvis.R, demo/sos4R.R, demo/trip.R, inst, inst/CITATION,
+	  inst/doc, inst/doc/cls.fig, inst/doc/cls.pdf, inst/doc/hov.pdf,
+	  inst/doc/ifgi-logo_int.pdf, inst/doc/jss816.Rnw,
+	  inst/doc/jss816.bib, inst/doc/jsslogo.jpg, inst/doc/logo52n.pdf,
+	  inst/doc/move.fig, inst/doc/move.pdf, inst/doc/produc.jpg,
+	  inst/doc/sto.Rnw, inst/doc/stpg.Rnw, inst/doc/ti.fig,
+	  inst/doc/ti.pdf, inst/doc/tp.pdf, inst/doc/ts.pdf,
+	  inst/doc/wind.pdf, inst/doc/windts.pdf, man, man/ST-class.Rd,
+	  man/STFDF-class.Rd, man/STIDF-class.Rd, man/STSDF-class.Rd,
+	  man/STTDF-class.Rd, man/air.Rd, man/delta.Rd, man/eof.Rd,
+	  man/fires.Rd, man/interval.Rd, man/na.Rd, man/over.Rd,
+	  man/stconstruct.Rd, man/stplot.Rd, man/tgrass.Rd,
+	  man/timematch.Rd, man/unstack.Rd, svn2cl.xsl, tests,
+	  tests/Examples, tests/Examples/spacetime-Ex.Rout.save,
+	  tests/basic.R, tests/basic.Rout.save, tests/over.R,
+	  tests/over.Rout.save, tests/raster.R, tests/raster.Rout.save,
+	  tests/stconstruct.R, tests/stconstruct.Rout.save, tests/traj.R,
+	  tests/traj.Rout.save, tests/wind.R, tests/wind.Rout.save: initial
+	  commit to r-forge
+
+2011-09-15 15:26  stefan7th
+
+	* .: small themeroot fix
+
+2012-12-14 13:39  EdzerPebesma
+
+	* inst/doc/jss816.Rnw, inst/doc/sto.Rnw, inst/doc/stpg.Rnw: updates
+
+2012-11-27 16:57  EdzerPebesma
+
+	* inst/doc/52n_logocl.pdf, inst/doc/jss816.Rnw,
+	  inst/doc/logo52n.pdf: logo name change
+
+2012-11-27 16:33  EdzerPebesma
+
+	* R/STFDF-methods.R, R/coerce.R, inst/doc/52n_logocl.pdf,
+	  inst/doc/jss816.Rnw, man/STFDF-class.Rd, man/na.Rd,
+	  tests/Examples/spacetime-Ex.Rout.save, tests/basic.R,
+	  tests/basic.Rout.save: as(stfdf, "xts") now exports more than one
+	  variable;
+	  added na.* docs
+	  added 52N logo to vignette
+
+2012-11-24 19:03  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-xts.R, R/aggregate.R, R/na.R,
+	  R/stplot.R, demo/gvis.R, inst/doc/sto.Rnw, man/stplot.Rd,
+	  man/timematch.Rd, tests/Examples/spacetime-Ex.Rout.save: added
+	  na.locf, na.approx and na.spline functions (na.R, na.Rd);
+	  added require(zoo) to aggregate method that needs aggregate.zoo,
+	  so that NAMESPACE is now clean; added zoo to Suggests:
+	  corrected key.space argument in stplot (mode = 'ts');
+
+2012-11-17 15:54  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/ST-methods.R, R/aggregate.R,
+	  R/interval.R, R/over.R, R/stplot.R, R/timematch.R,
+	  inst/doc/sto.Rnw, man/timematch.Rd,
+	  tests/Examples/spacetime-Ex.Rout.save, tests/over.R,
+	  tests/over.Rout.save: timeMatch now is an S4 generic;
+	  NAMESPACE imports only what is needed, and some repairs for zoo;
+	  sto.Rnw restored;
+	  over now always uses interval:interval_overlaps for overlapping
+	  intervals;
+	  updated test outputs;
+	  DESCRIPTION now mentions package intervals
+
+2012-11-13 11:20  EdzerPebesma
+
+	* NAMESPACE: import MATCH.default, to accomodate zoo at CRAN
+
+2012-11-12 18:34  EdzerPebesma
+
+	* NAMESPACE, R/aggregate.R: updates;
+
+2012-11-12 18:18  EdzerPebesma
+
+	* NAMESPACE, R/aggregate.R, R/timematch.R, inst/doc/sto.Rnw,
+	  man/timematch.Rd, tests/Examples,
+	  tests/Examples/spacetime-Ex.Rout.save, tests/basic.Rout.save,
+	  tests/stconstruct.Rout.save: found the MATCH error: zoo needs to
+	  have S3method("MATCH", "default") in
+	  its NAMESPACE, along with MATCH import and export in spacetime
+	  NAMESPACE;
+	  else (e.g. with zoo 1.7-9 on CRAN) sto.Rnw (aggregate using
+	  aggregate.zoo)
+	  will not work without attaching zoo first; so, we now depend on
+	  zoo's
+	  development version...
+
+2012-11-12 08:27  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, R/aggregate.R, R/timematch.R,
+	  inst/doc/sto.Rnw, tests/basic.Rout.save, tests/over.R,
+	  tests/over.Rout.save, tests/stconstruct.Rout.save, tests/wind.R,
+	  tests/wind.Rout.save: further NAMESPACE import limitation;
+	  but aggregate still needs zoo to be attached.
+
+2012-11-11 15:03  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/aggregate.R, data/air.rda,
+	  inst/doc/jss816.Rnw, inst/doc/sto.Rnw, man/STSDF-class.Rd,
+	  man/unstack.Rd, tests/basic.R, tests/basic.Rout.save,
+	  tests/over.R, tests/over.Rout.save, tests/raster.R,
+	  tests/raster.Rout.save, tests/stconstruct.R,
+	  tests/stconstruct.Rout.save, tests/traj.Rout.save, tests/wind.R,
+	  tests/wind.Rout.save: reorganized zoo and xts to be in Imports:
+	  rather than Depends:
+	  (one issue still hangs with zoo needing to be attached before
+	  sto.Rnw
+	  can run aggregate.zoo)
+	  doc files: removed xts() calls when only time steps were passed.
+
+2012-11-10 22:57  EdzerPebesma
+
+	* DESCRIPTION, R/Class-ST.R, R/ST-methods.R, R/STFDF-methods.R,
+	  R/STIDF-methods.R, R/STSDF-methods.R, R/coerce.R,
+	  R/stconstruct.R, R/timematch.R: syncronized tzone of endTime with
+	  that of time; version bump.
+
+2012-11-10 16:12  EdzerPebesma
+
+	* DESCRIPTION, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STSDF-methods.R, data/air.rda, inst/doc/jss816.Rnw,
+	  man/STLDF-class.Rd, tests/raster.Rout.save, tests/wind.Rout.save:
+	  added time zone to rural air data;
+	  time zones in various ST methods (as.xts, selection) got lost,
+	  now retained;
+	  updated tests outputs;
+	  version bump
+
+2012-11-05 13:22  EdzerPebesma
+
+	* man/eof.Rd: limited time steps for example, to reduce run time
+
+2012-11-05 11:43  EdzerPebesma
+
+	* DESCRIPTION, demo/00Index, demo/trip.R, inst/CITATION,
+	  inst/doc/jss816.Rnw, inst/doc/jss816.bib, man/ST-class.Rd,
+	  man/STFDF-class.Rd, man/STIDF-class.Rd, man/STLDF-class.Rd,
+	  man/STSDF-class.Rd, man/STTDF-class.Rd, man/delta.Rd,
+	  man/over.Rd, man/stconstruct.Rd, man/stplot.Rd, man/timematch.Rd,
+	  tests/traj.R, tests/traj.Rout.save: update references to JSS
+	  paper; its publication corresponds to releasing 1.0-0;
+	  removed trip from Suggests:.
+
+2012-10-29 13:13  BenediktGraeler
+
+	* DESCRIPTION:
+
+2012-10-28 20:10  EdzerPebesma
+
+	* inst/doc/sto.Rnw: updated information on endTime and intervals.
+
+2012-10-28 18:42  EdzerPebesma
+
+	* R/raster.R, R/timematch.R: reverted back setClass();
+	  alternative way to keep tzone in augment.with.one()
+
+2012-10-27 20:22  EdzerPebesma
+
+	* R/STFDF-methods.R, R/STSDF-methods.R, R/raster.R, R/timematch.R,
+	  tests/basic.Rout.save, tests/traj.Rout.save: raster: restore
+	  setClass for RasterStackBrick, if not loaded before;
+	  ST?DF-methods: missing , in as.data.frame method
+	  timematch.R: augment.with.one dropped tzone;
+	  tests: updated for tzone; coerce
+	  STFDF->STSDF->STIDF->STSDF->STFDF no longer
+	  identical, as endTime doesn't get set back (further check
+	  needed?)
+
+2012-10-26 18:46  EdzerPebesma
+
+	* R/STFDF-methods.R, R/STSDF-methods.R, R/timematch.R: two bugs
+	  caught by Ben Graeler; cosmetic changes to timematch.
+
+2012-10-25 19:41  EdzerPebesma
+
+	* demo/00Index: added gvis to index
+
+2012-10-24 06:50  EdzerPebesma
+
+	* demo/gvis.R: added googleVis demos
+
+2012-10-23 05:59  EdzerPebesma
+
+	* R/raster.R: removed setClass.
+
+2012-10-21 20:33  EdzerPebesma
+
+	* inst/doc/sto.Rnw: updated references
+
+2012-10-21 09:24  EdzerPebesma
+
+	* R/ST-methods.R, R/STIDF-methods.R, R/STSDF-methods.R,
+	  R/aggregate.R, R/eof.R, R/plot.R, R/stconstruct.R, R/stplot.R:
+	  EOF: use prcomp.formula so that na.action gets passed;
+	  default xts slot gets named index column;
+
+2012-10-18 13:15  EdzerPebesma
+
+	* R/stplot.R, man/stplot.Rd: argument mismatch (scales =
+	  list(draw=FALSE))
+
+2012-10-14 10:53  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, R/coerce.R: dim methods for STT, STx
+	  cercion.
+
+2012-10-03 14:56  EdzerPebesma
+
+	* R/endtime.R, R/stplot.R, inst/doc/jss816.Rnw: added endTime;
+	  update to vignette; scales handling in stplot.
+
+2012-09-28 20:48  EdzerPebesma
+
+	* DESCRIPTION, R/stplot.R, man/stplot.Rd: stplot: correct scales
+	  argument if unprojected;
+	  DESCRIPTION: dropped removed file.
+
+2012-09-25 21:34  EdzerPebesma
+
+	* DESCRIPTION, R/Class-STLDF.R, R/STLDF-methods.R,
+	  inst/doc/jss816.Rnw, tests/basic.R, tests/over.R,
+	  tests/over.Rout.save, tests/traj.R, tests/traj.Rout.save: removed
+	  STLDF sources; version bump; tried to make tests clean wrt TZ
+	  differences
+
+2012-09-25 08:20  EdzerPebesma
+
+	* R/STTDF-methods.R: needed for CRAN submission
+
+2012-09-24 19:42  EdzerPebesma
+
+	* R/tgrass.R: dealt with endTime in writing tgrass files
+
+2012-09-23 18:48  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-ST.R, R/Class-STLDF.R,
+	  R/ST-methods.R, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STLDF-methods.R, R/STSDF-methods.R, R/STTDF-methods.R,
+	  R/coerce.R, R/eof.R, R/interval.R, R/over.R, R/plot.R,
+	  R/raster.R, R/stconstruct.R, R/timematch.R, data/air.rda,
+	  inst/doc/cls.fig, inst/doc/cls.pdf, inst/doc/jss816.Rnw,
+	  inst/doc/move.fig, inst/doc/move.pdf, man/ST-class.Rd,
+	  man/STFDF-class.Rd, man/STIDF-class.Rd, man/STLDF-class.Rd,
+	  man/STSDF-class.Rd, man/delta.Rd, man/interval.Rd,
+	  man/stconstruct.Rd, man/timematch.Rd, tests/basic.Rout.save,
+	  tests/over.R, tests/over.Rout.save, tests/raster.Rout.save,
+	  tests/stconstruct.Rout.save, tests/traj.Rout.save, tests/wind.R,
+	  tests/wind.Rout.save: removed STL and STLDF class, added endTime
+	  as slot to ST, and
+	  tried to deal with all the consequences of having an endTime for
+	  each observation. Started integrating the more efficient
+	  intervals
+	  matching from package "intervals". Updated vignette and docs.
+
+2012-09-12 18:23  EdzerPebesma
+
+	* DESCRIPTION, R/raster.R, R/tgrass.R: moved tgrass stuff to new
+	  file
+
+2012-09-12 15:25  EdzerPebesma
+
+	* R/ST-methods.R, R/raster.R, man/tgrass.Rd: minor mods to pass
+	  check again.
+
+2012-09-12 15:01  EdzerPebesma
+
+	* man/tgrass.Rd: {read,write}.tgrass doc
+
+2012-09-12 14:28  EdzerPebesma
+
+	* R/raster.R: removed the "x" before .tif
+
+2012-09-12 14:12  EdzerPebesma
+
+	* NAMESPACE, R/raster.R: updated {read,write}.tgrass functions
+
+2012-09-11 17:07  EdzerPebesma
+
+	* R/raster.R: typo
+
+2012-09-07 09:22  EdzerPebesma
+
+	* DESCRIPTION, R/Class-ST.R, R/Class-STFDF.R, R/Class-STIDF.R,
+	  R/Class-STLDF.R, R/Class-STSDF.R, R/Class-STTDF.R,
+	  R/ST-methods.R, R/STLDF-methods.R, R/raster.R, tests/basic.R,
+	  tests/basic.Rout.save: class validity now checks that attribute
+	  names in attributes, space or time are not duplicated.
+
+2012-08-29 06:26  EdzerPebesma
+
+	* R/stconstruct.R: patch from Ben Graeler, dealing with univariate
+	  time-wide data
+
+2012-08-27 07:10  EdzerPebesma
+
+	* DESCRIPTION, R/aggregate.R, R/over.R, R/timematch.R,
+	  man/interval.Rd, man/over.Rd, man/timematch.Rd,
+	  tests/traj.Rout.save: split over.R; added links to manual pages;
+	  updated Suggests: packages.
+
+2012-08-26 21:07  EdzerPebesma
+
+	* R/over.R, man/interval.Rd, man/timematch.Rd, tests/over.R,
+	  tests/over.Rout.save: added timeMatch for STL objects - irregular
+	  time intervals
+
+2012-08-13 15:53  EdzerPebesma
+
+	* R/over.R: simplified (hopefully) the time over function
+
+2012-08-10 11:41  EdzerPebesma
+
+	* DESCRIPTION, R/raster.R, man/stplot.Rd, tests/raster.R,
+	  tests/raster.Rout.save, tests/traj.Rout.save: added raster
+	  conversion functions
+
+2012-07-25 13:40  EdzerPebesma
+
+	* inst/doc/jss816.Rnw, inst/doc/jss816.bib, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.bib: name change of vignette.
+
+2012-07-04 16:37  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, tests/traj.R, tests/traj.Rout.save,
+	  tests/wind.Rout.save: submission of 0.7-1 to CRAN
+
+2012-07-02 07:58  EdzerPebesma
+
+	* NAMESPACE, R/plot.R, R/stplot.R, inst/doc/move.fig,
+	  inst/doc/move.pdf, inst/doc/spacetime.Rnw: new submission to JSS
+
+2012-07-01 22:40  EdzerPebesma
+
+	* man/STLDF-class.Rd: man page for STLDF
+
+2012-07-01 22:40  EdzerPebesma
+
+	* inst/doc/move.fig, inst/doc/move.pdf, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.bib, man/STFDF-class.Rd, man/STIDF-class.Rd,
+	  man/STSDF-class.Rd, man/STTDF-class.Rd, man/stplot.Rd: class
+	  work; comments from second JSS review
+
+2012-06-19 07:49  EdzerPebesma
+
+	* R/Class-STLDF.R, R/STLDF-methods.R, R/plot.R, inst/doc/cls.fig,
+	  inst/doc/cls.pdf, inst/doc/spacetime.Rnw, man/STIDF-class.Rd:
+	  more edits to class diagram
+
+2012-06-19 07:08  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-STLDF.R, R/ST-methods.R,
+	  R/STLDF-methods.R, R/STTDF-methods.R, R/plot.R, R/stplot.R,
+	  inst/doc/cls.fig, inst/doc/cls.pdf, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.bib, man/stplot.Rd, tests/traj.R: added
+	  STL/STLDF class, and methods; added plot methods
+
+2012-05-31 13:33  EdzerPebesma
+
+	* man/stplot.Rd, tests/traj.Rout.save: dependent package versions
+	  in test; do.repeat argument in docs
+
+2012-05-31 12:56  EdzerPebesma
+
+	* R/over.R, R/stplot.R: added do.repeat argument to stplot.R
+
+2012-05-29 12:28  EdzerPebesma
+
+	* DESCRIPTION: updated URL field
+
+2012-05-29 10:27  EdzerPebesma
+
+	* DESCRIPTION: version / date increase
+
+2012-05-29 10:24  EdzerPebesma
+
+	* R/stplot.R: cuts argument was not passed to spplot if animate > 0
+
+2012-05-25 13:27  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw: two minor modifications in section 8.
+
+2012-05-25 08:46  EdzerPebesma
+
+	* inst/doc/produc.jpg, inst/doc/produc.png: size reduction of
+	  bitmap, needed by CRAN
+
+2012-05-24 16:18  EdzerPebesma
+
+	* R/over.R, inst/doc/sto.Rnw: simplifications to timeMatch; better
+	  explanation of interval-interval match in vignette
+
+2012-05-24 07:17  EdzerPebesma
+
+	* R/interval.R, R/over.R, inst/doc/move.fig, inst/doc/move.pdf,
+	  inst/doc/spacetime.Rnw, inst/doc/wind.pdf, inst/doc/windts.pdf,
+	  man/over.Rd, man/timematch.Rd, tests/over.R,
+	  tests/over.Rout.save: more work getting time intervals work
+	  properly, and document this.
+
+2012-05-14 21:31  EdzerPebesma
+
+	* NAMESPACE, R/Class-ST.R, R/Class-STTDF.R, R/ST-methods.R,
+	  R/STFDF-methods.R, R/STIDF-methods.R, R/STSDF-methods.R,
+	  R/interval.R, inst/doc/cls.fig, inst/doc/cls.pdf,
+	  inst/doc/spacetime.Rnw, man/ST-class.Rd, man/canmove.Rd,
+	  man/interval.Rd, tests/basic.Rout.save: got rid of canMove slot,
+	  and methods.
+
+2012-05-14 19:31  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-ST.R, R/STFDF-methods.R,
+	  R/STIDF-methods.R, R/STSDF-methods.R, R/interval.R, data/air.rda,
+	  inst/doc/cls.fig, inst/doc/cls.pdf, inst/doc/move.fig,
+	  inst/doc/move.pdf, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.bib, man/ST-class.Rd, man/canmove.Rd,
+	  man/stplot.Rd, tests/basic.Rout.save, tests/over.Rout.save,
+	  tests/stconstruct.Rout.save, tests/traj.Rout.save, tests/wind.R,
+	  tests/wind.Rout.save: added canMove slot to ST; updated class
+	  figure;
+	  increased version; re-saved air data;
+	  added figure and timeIsInterval/canMove to vignette;
+
+2012-05-13 20:49  EdzerPebesma
+
+	* DESCRIPTION, R/Class-ST.R, R/ST-methods.R, R/STFDF-methods.R,
+	  R/STIDF-methods.R, R/STSDF-methods.R, R/STTDF-methods.R,
+	  R/coerce.R, R/stplot.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.bib: further review from JSS; improved support
+	  for timeIsInterval.
+
+2012-05-03 15:10  EdzerPebesma
+
+	* DESCRIPTION: updated date
+
+2012-04-23 13:44  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-ST.R, R/ST-methods.R,
+	  R/STFDF-methods.R, R/STIDF-methods.R, R/STSDF-methods.R,
+	  R/coerce.R, R/interval.R, R/stconstruct.R, man/ST-class.Rd,
+	  man/interval.Rd, man/stconstruct.Rd: added timeIsInterval()
+	  generic (retrieve, set), which indicates whether time is Interval
+	  (TRUE) or Instant (FALSE).
+
+2012-04-21 20:47  EdzerPebesma
+
+	* R/over.R: got rid of some double loops.
+
+2012-04-09 17:22  EdzerPebesma
+
+	* DESCRIPTION: version update
+
+2012-04-03 15:53  EdzerPebesma
+
+	* DESCRIPTION, R/STTDF-methods.R, R/coerce.R,
+	  inst/doc/spacetime.Rnw: moved some ST? coercion functions;
+	  updated version number; diveMove example change in vignette.
+
+2012-03-30 12:30  EdzerPebesma
+
+	* DESCRIPTION, R/STTDF-methods.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.bib, tests/traj.R, tests/traj.Rout.save:
+	  updated imcompatibility with diveMove; small edits to vignette;
+	  version update
+
+2012-03-27 07:01  EdzerPebesma
+
+	* inst/doc/spacetime.bib: updated bibliography
+
+2012-03-23 19:19  EdzerPebesma
+
+	* R/over.R, inst/doc/sto.Rnw: comments in over.R; clarified
+	  vignette.
+
+2012-03-19 11:40  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/spacetime.Rnw: second submission of
+	  vignette to JSS.
+
+2012-03-19 10:44  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw: update
+
+2012-03-15 10:09  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/tp.pdf, inst/doc/ts.pdf: further
+	  updates; DN's comments
+
+2012-03-13 19:10  EdzerPebesma
+
+	* DESCRIPTION: version increase
+
+2012-03-13 18:51  EdzerPebesma
+
+	* DESCRIPTION, R/Class-STTDF.R, R/STTDF-methods.R, R/bind.R,
+	  R/traj.R, inst/doc/cls.fig, inst/doc/cls.pdf,
+	  inst/doc/spacetime.Rnw, man/STTDF-class.Rd: trajectory class
+	  files rename; added rbind; added coercion STIDF->STTDF.
+
+2012-03-13 15:33  EdzerPebesma
+
+	* inst/doc/stpg.Rnw, tests/traj.R, tests/traj.Rout.save: new submit
+	  to CRAN; eval=FALSE for stpg vignette
+
+2012-03-13 08:12  EdzerPebesma
+
+	* DESCRIPTION, R/over.R, inst/doc/jss.bst, inst/doc/jss.cls,
+	  man/STTDF-class.Rd, tests/basic.Rout.save, tests/over.Rout.save,
+	  tests/stconstruct.Rout.save, tests/traj.Rout.save,
+	  tests/wind.Rout.save: tests; version; over() improvements; docs
+	  completion.
+
+2012-03-12 21:58  EdzerPebesma
+
+	* R/over.R, R/traj.R, man/STIDFtraj-class.Rd, man/STTDF-class.Rd,
+	  man/timematch.Rd: further additions; pass check; rename of
+	  trajectory class.
+
+2012-03-12 15:29  EdzerPebesma
+
+	* NAMESPACE, man/timematch.Rd: now exports timeMatch() function
+	  with docs.
+
+2012-03-12 15:08  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.bib, inst/doc/ti.fig,
+	  inst/doc/ti.pdf: further improvements to vignette.
+
+2012-03-12 12:01  EdzerPebesma
+
+	* inst/doc/spacetime.aux: removed index
+
+2012-03-12 11:58  EdzerPebesma
+
+	* R/over.R, inst/doc/hov.pdf, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.aux, inst/doc/ti.fig, inst/doc/ti.pdf,
+	  inst/doc/wind.pdf, inst/doc/windts.pdf: further update on time
+	  match, and timeInterval argument to over() methods;
+	  explanation of time match in vignettte;
+	  pdf's of figures.
+
+2012-03-11 20:24  EdzerPebesma
+
+	* R/over.R, inst/doc/spacetime.Rnw, inst/doc/spacetime.aux,
+	  inst/doc/sto.Rnw: updates to .timeMatch(), and to vignettes.
+
+2012-03-07 12:51  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/stplot.R, R/traj.R, inst/doc/cls.fig,
+	  inst/doc/cls.pdf, inst/doc/spacetime.Rnw, inst/doc/spacetime.aux:
+	  version update; rewrite of trajectory class (STT, STTDF); update
+	  of vignette.
+
+2012-03-06 18:05  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.aux: update
+
+2012-03-06 17:57  EdzerPebesma
+
+	* R/traj.R, inst/doc/cls.fig, inst/doc/cls.pdf,
+	  inst/doc/spacetime.Rnw, inst/doc/spacetime.aux,
+	  man/stconstruct.Rd: first attempt for STT.
+
+2012-03-06 14:00  EdzerPebesma
+
+	* inst/doc/cls.fig, inst/doc/cls.pdf, inst/doc/produc.png,
+	  inst/doc/spacetime.Rnw, inst/doc/spacetime.aux,
+	  inst/doc/spacetime.bib, inst/doc/stpg.Rnw: update; added figures.
+
+2012-01-03 13:52  EdzerPebesma
+
+	* demo/CW.R: cressie wikle demo script
+
+2011-12-22 08:10  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.bib: bibtex item
+
+2011-12-05 15:18  DanielNuest
+
+	* .: added Eclipse metadata files to svn:ignore
+
+2011-11-16 16:36  EdzerPebesma
+
+	* demo/00Index, demo/CW.R: updated kriging example, difference
+	  between kriging of Z, and "kriging" of Y
+
+2011-11-16 14:50  EdzerPebesma
+
+	* demo/CW.R: added examples connected to the Cressie & Wikle
+	  volume.
+
+2011-11-15 07:31  EdzerPebesma
+
+	* DESCRIPTION, tests/wind.R, tests/wind.Rout.save: removed
+	  dependency on gstat in examples / tests; version update
+
+2011-11-06 17:53  EdzerPebesma
+
+	* NAMESPACE, inst/doc/spacetime.Rnw, inst/doc/spacetime.aux,
+	  man/eof.Rd, man/stconstruct.Rd: changed library(gstat) into
+	  if(require(gstat)){ ... } to avoid gstat dependecy
+	  removed unnecessary imports in NAMESPACE (those in
+	  DESCRIPTION::DEPENDS: )
+	  further changes for JSS submission
+
+2011-10-21 12:28  EdzerPebesma
+
+	* ChangeLog, DESCRIPTION, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.aux, inst/doc/spacetime.bib: further work for
+	  jss submission.
+
+2011-10-05 19:55  EdzerPebesma
+
+	* ChangeLog, inst/doc/spacetime.Rnw, inst/doc/spacetime.aux,
+	  inst/doc/spacetime.bib, man/over.Rd, svn2cl.xsl: paper version
+	  that was submitted to JSS
+
+2011-10-05 16:08  EdzerPebesma
+
+	* inst/doc/jss.bst, inst/doc/jss.cls, inst/doc/jsslogo.jpg,
+	  inst/doc/spacetime.Rnw, inst/doc/spacetime.aux,
+	  inst/doc/spacetime.bib: rearranged vignette to JSS style; added
+	  bibtex file
+
+2011-09-23 14:38  EdzerPebesma
+
+	* svn2cl.xsl, tests/over.R, tests/over.Rout.save,
+	  tests/stconstruct.Rout.save: (apparently forgotten to add these
+	  files)
+
+2011-09-21 19:19  EdzerPebesma
+
+	* R/stplot.R: reversed changes back
+
+2011-09-21 18:25  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw: explained new tp and ts stplot types.
+
+2011-09-21 16:26  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, R/bind.R, R/over.R, R/stplot.R,
+	  man/stplot.Rd: made aggregate into S4 generic; extended "ts"
+	  options for multiple attributes,
+	  using panels; addes stack method, that returns long-form
+	  data.frame.
+
+2011-09-19 18:22  EdzerPebesma
+
+	* R/over.R: retain attributes of by argument (spatial, temporal,
+	  spatio-temporal).
+
+2011-09-18 18:10  EdzerPebesma
+
+	* ChangeLog: changelog update
+
+2011-09-18 16:48  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/ST-methods.R: added proj4string
+	  methods; updated sp dependency to (so far unreleased) sp_0.9-89
+
+2011-09-16 08:10  EdzerPebesma
+
+	* DESCRIPTION: version update
+
+2011-09-15 09:42  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, R/STSDF-methods.R, inst/doc/stpg.Rnw,
+	  man/ST-class.Rd, tests/traj.Rout.save, tests/wind.Rout.save:
+	  version update;
+	  updated test results;
+	  dealt with proj4string<- S4/S3 issue (?) from sp;
+	  uncommented RPostgreSQL evals in stpg vignette.
+
+2011-09-14 12:53  EdzerPebesma
+
+	* ChangeLog: update.
+
+2011-09-14 12:51  EdzerPebesma
+
+	* ChangeLog: added changelog.
+
+2011-09-12 17:35  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/STIDF-methods.R, R/bind.R,
+	  R/stconstruct.R, man/ST-class.Rd, man/STFDF-class.Rd,
+	  man/STIDF-class.Rd, man/STSDF-class.Rd: version increase;
+	  added cbind and rbind methods
+
+2011-09-11 17:06  EdzerPebesma
+
+	* R/coerce.R, man/STFDF-class.Rd: version; as(xx, "Spatial")
+	  methods.
+
+2011-09-07 09:34  EdzerPebesma
+
+	* R/ST-methods.R, R/coerce.R, inst/doc/spacetime.Rnw,
+	  man/stplot.Rd: added as(x, "Spatial") methods, added examples to
+	  vignette;
+	  improved STIDF->STSDF coercion;
+	  completed stplot documentation for STIDF (now accepts sp.layout)
+
+2011-09-05 11:34  EdzerPebesma
+
+	* man/over.Rd: typo
+
+2011-09-02 15:05  EdzerPebesma
+
+	* DESCRIPTION: version increase
+
+2011-08-28 12:35  EdzerPebesma
+
+	* R/stplot.R, data/fires.rda, man/fires.Rd: added fires data set
+	  from ptproc; sp.layout for stplot'ing STIDF's
+
+2011-08-27 21:23  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/stpg.Rnw, tests/basic.Rout.save,
+	  tests/traj.Rout.save, tests/wind.Rout.save: updated clean check
+	  results
+
+2011-08-26 13:40  EdzerPebesma
+
+	* DESCRIPTION: modified Authors@R field
+
+2011-08-25 21:20  EdzerPebesma
+
+	* R/coerce.R: coercing STIDF to STSDF did not work when data were
+	  completely irregular
+	  on a ST layout.
+
+2011-08-25 19:36  EdzerPebesma
+
+	* data, data/air.rda: added air.rda air quality data set
+
+2011-08-25 11:11  EdzerPebesma
+
+	* DESCRIPTION: updated Authors@R in DESCRIPTION
+
+2011-08-04 13:35  EdzerPebesma
+
+	* R/STFDF-methods.R, R/stplot.R, inst/doc/spacetime.Rnw,
+	  inst/doc/stpg.Rnw: selection for STFDF did reorder, e.g. x[2:1,]
+	  would yield x[1:2,].
+	  Added Hovmoeller-like plot to spacetime vignette.
+	  stplot now deals with scales argument passed as ...
+
+2011-07-28 11:14  EdzerPebesma
+
+	* R/coerce.R, R/stplot.R, demo/CressieWikle.R: still work to do to
+	  allow sp.layout in stplot.STIDF;
+	  coerce work with help from Tom Gottfried
+
+2011-07-25 18:02  EdzerPebesma
+
+	* R/STSDF-methods.R: ST() around sp and time in STSDF constructor
+
+2011-07-23 21:43  EdzerPebesma
+
+	* man/unstack.Rd: s3 method doc style
+
+2011-07-23 15:33  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, man/unstack.Rd: s3 method doc warning
+
+2011-07-21 21:38  EdzerPebesma
+
+	* man/over.Rd: update;
+
+2011-07-19 22:20  EdzerPebesma
+
+	* R/stplot.R: added data.frame() around unstack()
+
+2011-07-19 09:30  EdzerPebesma
+
+	* demo/CressieWikle.R: now use file.exist()
+
+2011-07-16 12:06  EdzerPebesma
+
+	* DESCRIPTION: version increase; improved description
+
+2011-07-15 09:13  EdzerPebesma
+
+	* DESCRIPTION: date update
+
+2011-07-15 09:12  EdzerPebesma
+
+	* inst/doc/stpg.Rnw: eval=FALSE for all database access
+
+2011-07-15 08:43  EdzerPebesma
+
+	* R/STIDF-methods.R: subs [ method bug fix.
+
+2011-07-14 22:41  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw: added reference to time / date classes
+
+2011-07-14 20:43  EdzerPebesma
+
+	* R/STSDF-methods.R, inst/doc/stpg.Rnw: repaired bug when selecting
+	  STSDF with feature; vignette improvement.
+
+2011-07-14 20:08  EdzerPebesma
+
+	* inst/doc/stpg.Rnw: added spatial selection example.
+
+2011-07-12 12:39  EdzerPebesma
+
+	* inst/doc/stpg.Rnw: update
+
+2011-07-12 12:08  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/stpg.Rnw, man/stconstruct.Rd: version;
+	  PostgreSQL vignette added.
+
+2011-07-06 15:00  EdzerPebesma
+
+	* DESCRIPTION, demo/CressieWikle.R, inst/doc/sto.Rnw,
+	  man/ST-class.Rd, man/air.Rd: version update; manual and vignettes
+	  updates
+
+2011-07-04 16:57  EdzerPebesma
+
+	* demo/CressieWikle.R: gridded(sp.x)=T was missing
+
+2011-07-01 06:50  EdzerPebesma
+
+	* DESCRIPTION, R/stplot.R: version update; warning from R CMD
+	  check.
+
+2011-07-01 06:45  EdzerPebesma
+
+	* R/STFDF-methods.R, R/apply.R, R/over.R, R/stplot.R,
+	  tests/basic.Rout.save: several bug fixes; row.names(), ... in
+	  findInterval().
+
+2011-06-28 08:23  EdzerPebesma
+
+	* R/over.R, inst/doc/spacetime.Rnw, inst/doc/sto.Rnw, man/over.Rd:
+	  implemented correct over.xts method; improved vignettes with some
+	  reference to eachother.
+
+2011-06-23 20:10  EdzerPebesma
+
+	* demo/CressieWikle.R: added aggregation example for sst data
+
+2011-06-21 16:06  EdzerPebesma
+
+	* inst/doc/sto.Rnw: vignette cosmetics
+
+2011-06-21 14:21  EdzerPebesma
+
+	* DESCRIPTION: version update.
+
+2011-06-21 13:02  EdzerPebesma
+
+	* DESCRIPTION, R/STFDF-methods.R, R/over.R, man/air.Rd,
+	  man/over.Rd, man/stplot.Rd: submission to CRAN.
+
+2011-06-21 10:16  EdzerPebesma
+
+	* R/STFDF-methods.R, R/over.R, R/stplot.R, inst/doc/sto.Rnw: more
+	  work on vignette("sto")
+
+2011-06-20 21:32  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/sto.Rnw: added over/aggregate
+	  vignette (draft); reference in spacetime vignette missed.
+
+2011-06-20 20:40  EdzerPebesma
+
+	* R/STIDF-methods.R, R/STSDF-methods.R, R/over.R: further
+	  corrections to aggregate.ST
+
+2011-06-20 13:45  EdzerPebesma
+
+	* R/STFDF-methods.R, R/over.R: improved aggregate
+
+2011-06-14 20:39  EdzerPebesma
+
+	* R/over.R, R/stplot.R, man/over.Rd, man/stplot.Rd: aggregate
+	  (still not working); new stplot (time series, panel time series)
+
+2011-06-14 03:49  EdzerPebesma
+
+	* R/STSDF-methods.R, R/over.R, inst/doc/spacetime.Rnw: (testing)
+	  more general aggregate.ST calls
+
+2011-06-06 15:57  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/spacetime.Rnw: version update, no change to
+	  vignette
+
+2011-06-06 14:28  EdzerPebesma
+
+	* R/STFDF-methods.R, R/STIDF-methods.R, R/STSDF-methods.R,
+	  tests/basic.R, tests/basic.Rout.save: allow row.names of @sp slot
+	  as spatial selection items;
+	  drop unselected @sp and @time items for STSDF on [ method;
+	  made object names consistent with class in basic.R
+
+2011-06-06 06:12  EdzerPebesma
+
+	* DESCRIPTION: version bump.
+
+2011-06-06 06:01  EdzerPebesma
+
+	* R/STSDF-methods.R, R/coerce.R: corrected [ method for STSDF,
+	  thanks to Ben Graeler
+
+2011-05-31 15:31  EdzerPebesma
+
+	* DESCRIPTION, R/Class-STSDF.R, R/over.R: version bump; inequality
+	  constraints on index for STS[DF]; removed
+	  dependens on sp:::.index2list.
+
+2011-05-30 20:32  EdzerPebesma
+
+	* R/over.R: removed unreleased sp dependency
+
+2011-05-30 19:03  EdzerPebesma
+
+	* R/over.R, man/over.Rd: more on over.
+
+2011-05-30 16:49  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STSDF-methods.R, R/over.R, man/over.Rd: docs; length and
+	  geometry methods;
+
+2011-05-30 13:38  EdzerPebesma
+
+	* NAMESPACE, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STSDF-methods.R, R/over.R: length() method; further over stuff.
+
+2011-05-30 13:13  EdzerPebesma
+
+	* R/STFDF-methods.R, R/STIDF-methods.R, R/STSDF-methods.R,
+	  R/over.R, man/stplot.Rd: added further over methods; fixed docs
+	  of stplot.
+
+2011-05-30 07:20  EdzerPebesma
+
+	* R/over.R: methods over.STI.STI and over.ST.STF added
+
+2011-05-29 15:37  EdzerPebesma
+
+	* DESCRIPTION, R/over.R: over.STI.STI might now be right.
+
+2011-05-29 15:10  EdzerPebesma
+
+	* R/ST-methods.R, R/STFDF-methods.R, R/over.R, R/stplot.R,
+	  demo/CressieWikle.R: over methods (still broken); further Cressie
+	  & Wikle plots added to demo
+
+2011-05-26 15:31  EdzerPebesma
+
+	* DESCRIPTION, R/stplot.R: spplot didn't deal with missing values;
+	  version bump
+
+2011-05-25 16:14  EdzerPebesma
+
+	* DESCRIPTION, R/eof.R, man/eof.Rd: version update; added option to
+	  output prcomp object to EOF().
+
+2011-05-25 10:10  EdzerPebesma
+
+	* tests/wind.Rout.save: test output
+
+2011-05-25 10:07  EdzerPebesma
+
+	* man/eof.Rd, tests/wind.R: docs for EOF.
+
+2011-05-25 10:05  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, tests/basic.Rout.save, tests/wind.R:
+	  updated checks
+
+2011-05-25 09:47  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STSDF-methods.R, R/eof.R, R/stplot.R, demo/CressieWikle.R,
+	  inst/doc/spacetime.Rnw, man/stplot.Rd: further work on
+	  CressieWikle examples; two more stplot methods
+	  (space-time plot; animation). Added EOF, both spatial and
+	  temporal.
+
+2011-05-23 11:23  EdzerPebesma
+
+	* demo/CressieWikle.R: added spdep
+
+2011-05-23 10:40  EdzerPebesma
+
+	* R/over.R: (still non-working) over methods
+
+2011-05-23 10:20  EdzerPebesma
+
+	* demo/CressieWikle.R: updated routines
+
+2011-05-22 20:23  EdzerPebesma
+
+	* DESCRIPTION, R/STFDF-methods.R, R/STIDF-methods.R,
+	  R/STSDF-methods.R, demo/00Index, demo/CressieWikle.R: allow
+	  logical selector index; added Cressie & Wikle 2011 import / plot
+	  demo
+
+2011-05-05 13:51  EdzerPebesma
+
+	* DESCRIPTION, man/stconstruct.Rd: version; conditional rgdal
+	  section
+
+2011-05-05 13:45  EdzerPebesma
+
+	* DESCRIPTION, R/coerce.R, inst/doc/spacetime.R, tests/wind.R: pass
+	  checks; version
+
+2011-04-12 22:08  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/ST-methods.R, R/STFDF-methods.R,
+	  R/STIDF-methods.R, R/STSDF-methods.R, R/apply.R, R/stconstruct.R,
+	  inst/doc/spacetime.Rnw, man/ST-class.Rd, man/STFDF-class.Rd,
+	  man/STIDF-class.Rd, man/STPDF-class.Rd, man/STSDF-class.Rd,
+	  man/stconstruct.Rd, tests/basic.Rout.save, tests/stconstruct.R,
+	  tests/traj.R, tests/traj.Rout.save, tests/wind.Rout.save: added
+	  stConstruct function;
+	  allow time vectors in addition to xts objects as time object;
+	  version update;
+	  improved documentation, thanks to Tom Gottfried
+
+2011-04-04 00:17  EdzerPebesma
+
+	* tests/stconstruct.R: added tests for stConstruct
+
+2011-04-04 00:07  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/ST-methods.R, R/STFDF-methods.R,
+	  R/STIDF-methods.R, R/STSDF-methods.R, R/coerce.R,
+	  R/stconstruct.R, man/ST-class.Rd, man/STFDF-class.Rd: allow
+	  attributes in space and time upon construction; will keep
+	  these and only replicate these when coercing to data.frame.
+	  
+	  added stConstruct, for "easy" (in any case more robust)
+	  construction
+	  from time-wide, space-wide and long tables (space-wide t.b.d.)
+
+2011-03-25 12:19  DanielNuest
+
+	* inst/doc: added pdfs to svn:ignore
+
+2011-03-20 14:31  EdzerPebesma
+
+	* DESCRIPTION: added suggested: foreign
+
+2011-03-20 11:24  EdzerPebesma
+
+	* R/STFDF-methods.R: negative indices improved
+
+2011-03-20 10:16  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/STFDF-methods.R, man/STFDF-class.Rd:
+	  added na.omit.STFDF; negative selection (testing) for STFDF
+
+2011-03-18 10:04  EdzerPebesma
+
+	* demo/sos4R.R: fix
+
+2011-03-18 07:38  EdzerPebesma
+
+	* demo/sos4R.R: added exercises
+
+2011-03-18 07:16  EdzerPebesma
+
+	* demo/sos4R.R: added worldHires data backdrop
+
+2011-03-17 20:44  EdzerPebesma
+
+	* demo/sos4R.R: swapped coordinates of no2.spdf
+
+2011-03-17 19:48  EdzerPebesma
+
+	* DESCRIPTION, R/STSDF-methods.R: patch from Tom Gottfried, see
+	  https://stat.ethz.ch/pipermail/r-sig-geo/2011-March/011231.html
+
+2011-03-16 17:51  EdzerPebesma
+
+	* demo/00Index, demo/sos4R.R: added demo
+
+2011-03-16 16:23  EdzerPebesma
+
+	* demo/00Index: added Index
+
+2011-03-16 16:00  EdzerPebesma
+
+	* demo, demo/edc.R: added edc demo
+
+2011-03-16 11:35  EdzerPebesma
+
+	* DESCRIPTION, R/ST-methods.R, R/STSDF-methods.R, R/stplot.R,
+	  inst/doc/spacetime.R, inst/doc/spacetime.Rnw, man/stplot.Rd,
+	  tests/basic.R, tests/basic.Rout.save: type = 'p' in stplot
+	  default; selection correction; spTransform generic;
+	  digits in tests
+
+2011-03-01 08:18  EdzerPebesma
+
+	* tests/traj.R, tests/traj.Rout.save: update coercion function
+	  trajectories
+
+2011-02-23 17:47  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw: several updates; sids reference
+
+2011-02-16 23:27  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/spacetime.Rnw: data update
+
+2011-02-16 23:18  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-STPDF.R, R/Class-STSDF.R,
+	  R/ST-methods.R, R/STPDF-methods.R, R/STSDF-methods.R, R/coerce.R,
+	  R/stplot.R, inst/doc/spacetime.Rnw, man/STIDF-class.Rd,
+	  man/STIDFtraj-class.Rd, man/STPDF-class.Rd, man/STSDF-class.Rd,
+	  man/STSDFtraj-class.Rd, man/stplot.Rd, tests/basic.R,
+	  tests/basic.Rout.save, tests/traj.R, tests/traj.Rout.save: class
+	  name changes; STS->STI; STP->STS
+
+2011-02-16 22:59  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-STIDF.R, R/Class-STSDF.R,
+	  R/ST-methods.R, R/STIDF-methods.R, R/STSDF-methods.R, R/coerce.R,
+	  R/stplot.R, R/traj.R, inst/doc/spacetime.Rnw: change from STS* ->
+	  STI* class names; file renames
+
+2011-02-16 11:53  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/spacetime.Rnw: version update; tz = GMT in
+	  examples
+
+2010-12-12 21:46  EdzerPebesma
+
+	* DESCRIPTION: version bump
+
+2010-12-12 21:45  EdzerPebesma
+
+	* R/STFDF-methods.R: added over() for spatial selection
+
+2010-12-06 20:35  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/stplot.R, R/traj.R,
+	  inst/doc/spacetime.Rnw, man/stplot.Rd, tests/wind.Rout.save:
+	  version update; corrected trajectory plotting with stplot;
+	  corrected cshapes
+	  example; added plm to vignette.
+
+2010-12-01 01:16  EdzerPebesma
+
+	* NAMESPACE, R/STSDF-methods.R, tests/basic.Rout.save,
+	  tests/wind.Rout.save: selection for STSDF; updated tests; passes
+	  check; as.xts.STSDF
+
+2010-11-30 22:24  EdzerPebesma
+
+	* DESCRIPTION, R/STSDF-methods.R, R/traj.R, inst/doc/spacetime.Rnw,
+	  tests/wind.R: improvement of selection and plot methods; cshapes
+	  example; dependency;
+
+2010-11-22 12:01  EdzerPebesma
+
+	* R/ST-methods.R, R/STFDF-methods.R, R/STPDF-methods.R,
+	  R/STSDF-methods.R: removed SpatialDataFrame; replaced with
+	  addAttrToGeom in sp.
+
+2010-11-22 11:51  EdzerPebesma
+
+	* DESCRIPTION, R/stplot.R, inst/doc/spacetime.Rnw: update; version;
+	  typo
+
+2010-11-21 21:18  EdzerPebesma
+
+	* DESCRIPTION, R/ST-methods.R, R/STFDF-methods.R,
+	  R/STSDF-methods.R, inst/doc/spacetime.Rnw: improved caption text;
+	  selection with [
+
+2010-11-01 20:51  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/spacetime.Rnw: suggests: plm; update
+
+2010-11-01 20:44  EdzerPebesma
+
+	* tests/basic.Rout.save: corrected test
+
+2010-11-01 20:42  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: removed (large)
+	  pdf; merged sections
+
+2010-11-01 20:33  EdzerPebesma
+
+	* R/coerce.R, R/stplot.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf, man/stplot.Rd: added panel / plm example,
+	  and long/wide section
+
+2010-10-19 22:11  EdzerPebesma
+
+	* DESCRIPTION, man/STSDFtraj-class.Rd, tests/basic.Rout.save:
+	  passes check; traj docs
+
+2010-10-19 21:29  EdzerPebesma
+
+	* DESCRIPTION, R/traj.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf, tests/wind.Rout.save: move trip related
+	  things; version update
+
+2010-10-18 22:26  EdzerPebesma
+
+	* NAMESPACE, R/traj.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf: validity checks
+
+2010-10-16 23:00  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/traj.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf: added STSDFtraj class, removed the
+	  ltraj/trip class split.
+
+2010-10-15 20:28  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: interactions with
+	  gstat and sp
+
+2010-10-11 13:24  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf: added summary method for ST objects
+
+2010-10-11 09:12  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf: ...
+
+2010-10-11 07:12  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: vignette updates
+
+2010-10-10 21:01  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: wind example
+	  exploits separable covariance matrix
+
+2010-10-01 20:55  EdzerPebesma
+
+	* inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: more on ISO time
+
+2010-10-01 16:02  EdzerPebesma
+
+	* R/stplot.R, inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: added
+	  nc sid polygons example.
+
+2010-10-01 06:13  EdzerPebesma
+
+	* R/STPDF-methods.R, R/STSDF-methods.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf, tests, tests/basic.R,
+	  tests/basic.Rout.save, tests/traj.R, tests/traj.Rout.save,
+	  tests/wind.R, tests/wind.Rout.save: added tests; corrected
+	  as.data.frame(), spell corrections of vignette
+
+2010-09-30 16:52  EdzerPebesma
+
+	* R/STFDF-methods.R, R/STPDF-methods.R, R/STSDF-methods.R,
+	  inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf: as.data.frame
+	  updates
+
+2010-09-30 11:56  EdzerPebesma
+
+	* DESCRIPTION, R/ST-methods.R, R/STFDF-methods.R,
+	  R/STPDF-methods.R, R/STSDF-methods.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf, man/STPDF-class.Rd, man/STSDF-class.Rd:
+	  removed initTime, improved trip example.
+
+2010-09-29 20:12  EdzerPebesma
+
+	* DESCRIPTION, R/STSDF-methods.R, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf, man/STSDF-class.Rd: version update;
+	  changed [ for STSDF; vignette mods
+
+2010-09-28 15:52  EdzerPebesma
+
+	* R/ST-methods.R, inst/doc/spacetime.Rnw, inst/doc/spacetime.pdf:
+	  traj stuff; still broken!
+
+2010-09-27 11:10  EdzerPebesma
+
+	* inst/doc/Rplots.pdf, inst/doc/spacetime.Rnw,
+	  inst/doc/spacetime.pdf, inst/doc/sptime.Rnw, inst/doc/sptime.pdf:
+	  rename
+
+2010-09-23 19:20  EdzerPebesma
+
+	* DESCRIPTION, inst/doc/sptime.Rnw, inst/doc/sptime.pdf: cleanup
+
+2010-09-23 13:14  EdzerPebesma
+
+	* man/STPDF-class.Rd, man/STSDF-class.Rd, man/stplot.Rd: udpated to
+	  pass check
+
+2010-09-21 20:30  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R: dim methods
+
+2010-09-20 23:00  EdzerPebesma
+
+	* man/ST-class.Rd, man/unstack.Rd: krige0 modification to accept ST
+	  objects; spacetime pass check mods
+
+2010-09-19 20:39  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-STPDF.R, R/stplot.R,
+	  inst/doc/sptime.Rnw, inst/doc/sptime.pdf: added stplot
+
+2010-09-19 19:52  EdzerPebesma
+
+	* NAMESPACE, R/ST-methods.R, R/STFDF-methods.R, R/STPDF-methods.R,
+	  R/STSDF-methods.R, inst/doc/sptime.Rnw, inst/doc/sptime.pdf:
+	  first run through Iris wind data interpolation; many fixes
+
+2010-09-18 18:50  EdzerPebesma
+
+	* R/ST-methods.R, R/STFDF-methods.R, R/STPDF-methods.R,
+	  R/STSDF-methods.R, R/coerce.R, inst/doc/sptime.Rnw,
+	  inst/doc/sptime.pdf, man/STFDF-class.Rd: add docs; make package
+	  pass R CMD check
+
+2010-09-18 10:19  EdzerPebesma
+
+	* DESCRIPTION, NAMESPACE, R/Class-ST.R, R/Class-STFDF.R,
+	  R/Class-STPDF.R, R/Class-STSDF.R, R/STFDF-methods.R,
+	  R/STPDF-methods.R, R/STSDF-methods.R, inst/doc/Rplots.pdf,
+	  inst/doc/sptime.Rnw, inst/doc/sptime.pdf, man/STFDF-class.Rd,
+	  man/unstack.Rd: added new layer of classes without data.frame
+
+2010-09-17 06:48  EdzerPebesma
+
+	* inst/doc/sptime.Rnw, inst/doc/sptime.pdf: update
+
+2010-09-16 08:44  EdzerPebesma
+
+	* R/STFDF-methods.R, R/STPDF-methods.R, R/STSDF-methods.R,
+	  R/coerce.R, inst/doc/sptime.Rnw, inst/doc/sptime.pdf: updates;
+	  initial examples in vignette taken from demo(wind) in gstat.
+
+2010-09-14 12:38  EdzerPebesma
+
+	* R/Class-STFDF.R, R/Class-STPDF.R, R/Class-STSDF.R,
+	  R/STFDF-methods.R, R/STPDF-methods.R, R/STSDF-methods.R,
+	  R/coerce.R, inst/doc/Rplots.pdf, inst/doc/sptime.Rnw,
+	  inst/doc/sptime.pdf: implemented coerce methods, mainly
+
+2010-09-09 15:35  EdzerPebesma
+
+	* inst/doc/sptime-001.eps, inst/doc/sptime-001.pdf,
+	  inst/doc/sptime-002.eps, inst/doc/sptime-002.pdf,
+	  inst/doc/sptime-003.eps, inst/doc/sptime-003.pdf,
+	  inst/doc/sptime.pdf: obsolet files
+
+2010-09-09 15:34  EdzerPebesma
+
+	* ., DESCRIPTION, NAMESPACE, R, R/Class-ST.R, R/Class-STFDF.R,
+	  R/Class-STPDF.R, R/Class-STSDF.R, R/Class-xts.R, R/ST-methods.R,
+	  R/STFDF-methods.R, R/STPDF-methods.R, R/STSDF-methods.R,
+	  R/coerce.R, inst, inst/doc, inst/doc/Rplots.pdf,
+	  inst/doc/ifgi-logo_int.pdf, inst/doc/sptime-001.eps,
+	  inst/doc/sptime-001.pdf, inst/doc/sptime-002.eps,
+	  inst/doc/sptime-002.pdf, inst/doc/sptime-003.eps,
+	  inst/doc/sptime-003.pdf, inst/doc/sptime.Rnw,
+	  inst/doc/sptime.pdf, man, man/ST-class.Rd, man/STFDF-class.Rd,
+	  man/unstack.Rd: initial uploade spacetime package
+

@@ -1,0 +1,7 @@
+importFrom("stats", 
+     "dnorm", "pnorm", "qnorm", "rnorm",
+     "dt",  "pt", "pchisq", "rchisq",  
+     "runif",
+     "complete.cases", "var", "cov2cor")
+exportPattern(".")
+

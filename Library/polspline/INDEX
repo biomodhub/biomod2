@@ -1,0 +1,52 @@
+beta.polyclass          Polyclass: polychotomous regression and
+                        multiple classification
+clspec                  Lspec: logspline estimation of a spectral
+                        distribution
+cpolyclass              Polyclass: polychotomous regression and
+                        multiple classification
+design.polymars         Polymars: multivariate adaptive polynomial
+                        spline regression
+dhare                   Hare: hazard regression
+dheft                   Heft: hazard estimation with flexible tails
+dlogspline              Logspline Density Estimation
+doldlogspline           Logspline Density Estimation - 1992 version
+hare                    Hare: hazard regression
+heft                    Heft: hazard estimation with flexible tails
+logspline               Logspline Density Estimation
+lspec                   Lspec: logspline estimation of a spectral
+                        distribution
+oldlogspline            Logspline Density Estimation - 1992 version
+oldlogspline.to.logspline
+                        Logspline Density Estimation - 1992 to 1997
+                        version
+persp.polymars          Polymars: multivariate adaptive polynomial
+                        spline regression
+plot.hare               Hare: hazard regression
+plot.heft               Heft: hazard estimation with flexible tails
+plot.logspline          Logspline Density Estimation
+plot.lspec              Lspec: logspline estimation of a spectral
+                        distribution
+plot.oldlogspline       Logspline Density Estimation - 1992 version
+plot.polyclass          Polyclass: polychotomous regression and
+                        multiple classification
+plot.polymars           Polymars: multivariate adaptive polynomial
+                        spline regression
+polyclass               Polyclass: polychotomous regression and
+                        multiple classification
+polymars                Polymars: multivariate adaptive polynomial
+                        spline regression
+predict.polymars        Polymars: multivariate adaptive polynomial
+                        spline regression
+summary.hare            Hare: hazard regression
+summary.heft            Heft: hazard estimation with flexible tails
+summary.logspline       Logspline Density Estimation
+summary.lspec           Lspec: logspline estimation of a spectral
+                        distribution
+summary.oldlogspline    Logspline Density Estimation - 1992 version
+summary.polyclass       Polyclass: polychotomous regression and
+                        multiple classification
+summary.polymars        Polymars: multivariate adaptive polynomial
+                        spline regression
+testhare                Fake survival data for Hare and Heft
+unstrip                 Reformat data as vector or matrix
+xhare                   Hare: hazard regression

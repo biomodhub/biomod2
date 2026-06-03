@@ -1,0 +1,16 @@
+ggplot2-scales-binned   Binned scales to use for ggplot2
+ggplot2-scales-continuous
+                        Continuous scales to use for ggplot2
+paletteer_c             Get continuous palette by package and name
+paletteer_d             Get discrete palette by package and name
+paletteer_dynamic       Get dynamic palette by package and name
+paletteer_packages      Names and version information for all included
+                        packages
+palettes_c_names        Data Frame of all continuous palettes
+palettes_d              Complete list of fixed discrete palettes
+palettes_d_names        Data Frame of all fixed discrete palettes
+palettes_dynamic        Complete list of dynamic palettes
+palettes_dynamic_names
+                        Data Frame of all fixed discrete palettes
+scale_colour_paletteer_d
+                        Discrete scales to use for ggplot2

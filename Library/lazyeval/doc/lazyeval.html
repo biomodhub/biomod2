@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Hadley Wickham" />
+
+<meta name="date" content="2026-04-03" />
+
+<title>Non-standard evaluation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Non-standard evaluation</h1>
+<h4 class="author">Hadley Wickham</h4>
+<h4 class="date">2026-04-03</h4>
+
+
+
+<p>This document describes lazyeval, a package that provides principled
+tools to perform non-standard evaluation (NSE) in R. You should read
+this vignette if you want to program with packages like dplyr and
+ggplot2<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>,
+or you want a principled way of working with delayed expressions in your
+own package. As the name suggests, non-standard evaluation breaks away
+from the standard evaluation (SE) rules in order to do something
+special. There are three common uses of NSE:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Labelling</strong> enhances plots and tables by using the
+expressions supplied to a function, rather than their values. For
+example, note the axis labels in this plot:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.5</span>, <span class="fl">4.5</span>, <span class="dv">1</span>, <span class="fl">0.5</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> pi, <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">plot</span>(grid, <span class="fu">sin</span>(grid), <span class="at">type =</span> <span class="st">&quot;l&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p></li>
+<li><p><strong>Non-standard scoping</strong> looks for objects in places
+other than the current environment. For example, base R has
+<code>with()</code>, <code>subset()</code>, and <code>transform()</code>
+that look for objects in a data frame (or list) before the current
+environment:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">with</span>(df, <span class="fu">mean</span>(x))</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">subset</span>(df, x <span class="sc">==</span> y)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; 5 3 3</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">transform</span>(df, <span class="at">z =</span> x <span class="sc">+</span> y)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;   x y z</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; 1 1 2 3</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; 2 5 1 6</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; 3 4 5 9</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; 4 2 4 6</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 5 3 3 6</span></span></code></pre></div></li>
+<li><p><strong>Metaprogramming</strong> is a catch-all term that covers
+all other uses of NSE (such as in <code>bquote()</code> and
+<code>library()</code>). Metaprogramming is so called because it
+involves computing on the unevaluated code in some way.</p></li>
+</ol>
+<p>This document is broadly organised according to the three types of
+non-standard evaluation described above. The main difference is that
+after <a href="#labelling">labelling</a>, we’ll take a detour to learn
+more about <a href="#formulas">formulas</a>. You’re probably familiar
+with formulas from linear models
+(e.g. <code>lm(mpg ~ displ, data = mtcars)</code>) but formulas are more
+than just a tool for modelling: they are a general way of capturing an
+unevaluated expression.</p>
+<p>The approaches recommended here are quite different to my previous
+generation of recommendations. I am fairly confident these new
+approaches are correct, and will not have to change substantially again.
+The current tools make it easy to solve a number of practical problems
+that were previously challenging and are rooted in long-standing
+theory.</p>
+<div id="labelling" class="section level2">
+<h2>Labelling</h2>
+<p>In base R, the classic way to turn an argument into a label is to use
+<code>deparse(substitute(x))</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>my_label <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">deparse</span>(<span class="fu">substitute</span>(x))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">my_label</span>(x <span class="sc">+</span> y)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;x + y&quot;</span></span></code></pre></div>
+<p>There are two potential problems with this approach:</p>
+<ol style="list-style-type: decimal">
+<li><p>For long some expressions, <code>deparse()</code> generates a
+character vector with length &gt; 1:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">my_label</span>({</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  a <span class="sc">+</span> b</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  c <span class="sc">+</span> d</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>})</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;         &quot;    a + b&quot; &quot;    c + d&quot; &quot;}&quot;</span></span></code></pre></div></li>
+<li><p><code>substitute()</code> only looks one level up, so you lose
+the original label if the function isn’t called directly:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>my_label2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">my_label</span>(x)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">my_label2</span>(a <span class="sc">+</span> b)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;x&quot;</span></span></code></pre></div></li>
+</ol>
+<p>Both of these problems are resolved by
+<code>lazyeval::expr_text()</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>my_label <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">expr_text</span>(x)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>my_label2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">my_label</span>(x)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>   </span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="fu">my_label</span>({</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  a <span class="sc">+</span> b</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  c <span class="sc">+</span> d</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>})</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{\n    a + b\n    c + d\n}&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="fu">my_label2</span>(a <span class="sc">+</span> b)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;a + b&quot;</span></span></code></pre></div>
+<p>There are two variations on the theme of
+<code>expr_text()</code>:</p>
+<ul>
+<li><p><code>expr_find()</code> find the underlying expression. It works
+similarly to <code>substitute()</code> but will follow a chain of
+promises back up to the original expression. This is often useful for <a href="#metaprogramming">metaprogramming</a>.</p></li>
+<li><p><code>expr_label()</code> is a customised version of
+<code>expr_text()</code> that produces labels designed to be used in
+messages to the user:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">expr_label</span>(x)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;`x`&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">expr_label</span>(a <span class="sc">+</span> b <span class="sc">+</span> c)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;`a + b + c`&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="fu">expr_label</span>(<span class="fu">foo</span>({</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  x <span class="sc">+</span> y</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>}))</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;`foo(...)`&quot;</span></span></code></pre></div></li>
+</ul>
+<div id="exercises" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li><p><code>plot()</code> uses <code>deparse(substitute(x))</code> to
+generate labels for the x and y axes. Can you generate input that causes
+it to display bad labels? Write your own wrapper around
+<code>plot()</code> that uses <code>expr_label()</code> to compute
+<code>xlim</code> and <code>ylim</code>.</p></li>
+<li><p>Create a simple implementation of <code>mean()</code> that stops
+with an informative error message if the argument is not numeric:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">my_mean</span>(x)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; Error: `x` is a not a numeric vector.</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">my_mean</span>(x <span class="sc">==</span> <span class="st">&quot;a&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; Error: `x == &quot;a&quot;` is not a numeric vector.</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">my_mean</span>(<span class="st">&quot;a&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; Error: &quot;a&quot; is not a numeric vector.</span></span></code></pre></div></li>
+<li><p>Read the source code for <code>expr_text()</code>. How does it
+work? What additional arguments to <code>deparse()</code> does it
+use?</p></li>
+</ol>
+</div>
+</div>
+<div id="formulas" class="section level2">
+<h2>Formulas</h2>
+<p>Non-standard scoping is probably the most useful NSE tool, but before
+we can talk about a solid approach, we need to take a detour to talk
+about formulas. Formulas are a familiar tool from linear models, but
+their utility is not limited to models. In fact, formulas are a
+powerful, general purpose tool, because a formula captures two
+things:</p>
+<ol style="list-style-type: decimal">
+<li>An unevaluated expression.</li>
+<li>The context (environment) in which the expression was created.</li>
+</ol>
+<p><code>~</code> is a single character that allows you to say: “I want
+to capture the meaning of this code, without evaluating it right away”.
+For that reason, the formula can be thought of as a “quoting”
+operator.</p>
+<div id="definition-of-a-formula" class="section level3">
+<h3>Definition of a formula</h3>
+<p>Technically, a formula is a “language” object (i.e. an unevaluated
+expression) with a class of “formula” and an attribute that stores the
+environment:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> x <span class="sc">+</span> y <span class="sc">+</span> z</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">typeof</span>(f)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;language&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="fu">attributes</span>(f)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; $class</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;formula&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; $.Environment</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; &lt;environment: R_GlobalEnv&gt;</span></span></code></pre></div>
+<p>The structure of the underlying object is slightly different
+depending on whether you have a one-sided or two-sided formula:</p>
+<ul>
+<li><p>One-sided formulas have length two:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">length</span>(f)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co"># The 1st element is always ~</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>f[[<span class="dv">1</span>]]</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; `~`</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># The 2nd element is the RHS</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>f[[<span class="dv">2</span>]]</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; x + y + z</span></span></code></pre></div></li>
+<li><p>Two-sided formulas have length three:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">length</span>(g)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># The 1st element is still ~</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>g[[<span class="dv">1</span>]]</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; `~`</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co"># But now the 2nd element is the LHS</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>g[[<span class="dv">2</span>]]</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt; y</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co"># And the 3rd element is the RHS</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>g[[<span class="dv">3</span>]]</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt; x + z</span></span></code></pre></div></li>
+</ul>
+<p>To abstract away these differences, lazyeval provides
+<code>f_rhs()</code> and <code>f_lhs()</code> to access either side of
+the formula, and <code>f_env()</code> to access its environment:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">f_rhs</span>(f)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; x + y + z</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">f_lhs</span>(f)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">f_env</span>(f)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; &lt;environment: R_GlobalEnv&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="fu">f_rhs</span>(g)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; x + z</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="fu">f_lhs</span>(g)</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; y</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="fu">f_env</span>(g)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt; &lt;environment: R_GlobalEnv&gt;</span></span></code></pre></div>
+</div>
+<div id="evaluating-a-formula" class="section level3">
+<h3>Evaluating a formula</h3>
+<p>A formula captures delays the evaluation of an expression so you can
+later evaluate it with <code>f_eval()</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>f</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; ~1 + 2 + 3</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">f_eval</span>(f)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+<p>This allows you to use a formula as a robust way of delaying
+evaluation, cleanly separating the creation of the formula from its
+evaluation. Because formulas capture the code and context, you get the
+correct result even when a formula is created and evaluated in different
+places. In the following example, note that the value of <code>x</code>
+inside <code>add_1000()</code> is used:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>add_1000 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="sc">~</span> <span class="dv">1000</span> <span class="sc">+</span> x</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>}</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="fu">add_1000</span>(<span class="dv">3</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; ~1000 + x</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x8b0e70a50&gt;</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="fu">add_1000</span>(<span class="dv">3</span>))</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; [1] 1003</span></span></code></pre></div>
+<p>It can be hard to see what’s going on when looking at a formula
+because important values are stored in the environment, which is largely
+opaque. You can use <code>f_unwrap()</code> to replace names with their
+corresponding values:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">f_unwrap</span>(<span class="fu">add_1000</span>(<span class="dv">3</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; ~1000 + 3</span></span></code></pre></div>
+</div>
+<div id="non-standard-scoping" class="section level3">
+<h3>Non-standard scoping</h3>
+<p><code>f_eval()</code> has an optional second argument: a named list
+(or data frame) that overrides values found in the formula’s
+environment.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> y)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> y, <span class="at">data =</span> <span class="fu">list</span>(<span class="at">y =</span> <span class="dv">10</span>))</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># Can mix variables in environment and data argument</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> x <span class="sc">+</span> y, <span class="at">data =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">10</span>))</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; [1] 110</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># Can even supply functions</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> <span class="fu">f</span>(y), <span class="at">data =</span> <span class="fu">list</span>(<span class="at">f =</span> <span class="cf">function</span>(x) x <span class="sc">*</span> <span class="dv">3</span>))</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; [1] 300</span></span></code></pre></div>
+<p>This makes it very easy to implement non-standard scoping:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> <span class="fu">mean</span>(cyl), <span class="at">data =</span> mtcars)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; [1] 6.1875</span></span></code></pre></div>
+<p>One challenge with non-standard scoping is that we’ve introduced some
+ambiguity. For example, in the code below does <code>x</code> come from
+<code>mydata</code> or the environment?</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> x, <span class="at">data =</span> mydata)</span></code></pre></div>
+<p>You can’t tell without knowing whether or not <code>mydata</code> has
+a variable called <code>x</code>. To overcome this problem,
+<code>f_eval()</code> provides two pronouns:</p>
+<ul>
+<li><code>.data</code> is bound to the data frame.</li>
+<li><code>.env</code> is bound to the formula environment.</li>
+</ul>
+<p>They both start with <code>.</code> to minimise the chances of
+clashing with existing variables.</p>
+<p>With these pronouns we can rewrite the previous formula to remove the
+ambiguity:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">100</span>, <span class="at">y =</span> <span class="dv">1</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> .env<span class="sc">$</span>x, <span class="at">data =</span> mydata)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> .data<span class="sc">$</span>x, <span class="at">data =</span> mydata)</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span></code></pre></div>
+<p>If the variable or object doesn’t exist, you’ll get an informative
+error:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> .env<span class="sc">$</span>z, <span class="at">data =</span> mydata)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co">#&gt; ! Object &#39;z&#39; not found in environment</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> .data<span class="sc">$</span>z, <span class="at">data =</span> mydata)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#&gt; ! Variable &#39;z&#39; not found in data</span></span></code></pre></div>
+</div>
+<div id="unquoting" class="section level3">
+<h3>Unquoting</h3>
+<p><code>f_eval()</code> has one more useful trick up its sleeve:
+unquoting. Unquoting allows you to write functions where the user
+supplies part of the formula. For example, the following function allows
+you to compute the mean of any column (or any function of a column):</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>df_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(df, variable) {</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  <span class="fu">f_eval</span>(<span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">uq</span>(variable)), <span class="at">data =</span> df)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>}</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="fu">df_mean</span>(mtcars, <span class="sc">~</span> cyl)</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt; [1] 6.1875</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="fu">df_mean</span>(mtcars, <span class="sc">~</span> disp <span class="sc">*</span> <span class="fl">0.01638</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt; [1] 3.779224</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="fu">df_mean</span>(mtcars, <span class="sc">~</span> <span class="fu">sqrt</span>(mpg))</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt; [1] 4.43477</span></span></code></pre></div>
+<p>To see how this works, we can use <code>f_interp()</code> which
+<code>f_eval()</code> calls internally (you shouldn’t call it in your
+own code, but it’s useful for debugging). The key is <code>uq()</code>:
+<code>uq()</code> evaluates its first (and only) argument and inserts
+the value into the formula:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>variable <span class="ot">&lt;-</span> <span class="er">~</span>cyl</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">f_interp</span>(<span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">uq</span>(variable)))</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt; ~mean(cyl)</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>variable <span class="ot">&lt;-</span> <span class="er">~</span> disp <span class="sc">*</span> <span class="fl">0.01638</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="fu">f_interp</span>(<span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">uq</span>(variable)))</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co">#&gt; ~mean(disp * 0.01638)</span></span></code></pre></div>
+<p>Unquoting allows you to create code “templates”, where you write most
+of the expression, while still allowing the user to control important
+components. You can even use <code>uq()</code> to change the function
+being called:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> mean</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="fu">f_interp</span>(<span class="sc">~</span> <span class="fu">uq</span>(f)(<span class="fu">uq</span>(variable)))</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; ~mean(disp * 0.01638)</span></span></code></pre></div>
+<p>Note that <code>uq()</code> only takes the RHS of a formula, which
+makes it difficult to insert literal formulas into a call:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> x</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">f_interp</span>(<span class="sc">~</span> <span class="fu">lm</span>(<span class="fu">uq</span>(formula), <span class="at">data =</span> df))</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#&gt; ~lm(x, data = df)</span></span></code></pre></div>
+<p>You can instead use <code>uqf()</code> which uses the whole formula,
+not just the RHS:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">f_interp</span>(<span class="sc">~</span> <span class="fu">lm</span>(<span class="fu">uqf</span>(formula), <span class="at">data =</span> df))</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="co">#&gt; ~lm(y ~ x, data = df)</span></span></code></pre></div>
+<p>Unquoting is powerful, but it only allows you to modify a single
+argument: it doesn’t allow you to add an arbitrary number of arguments.
+To do that, you’ll need “unquote-splice”, or <code>uqs()</code>. The
+first (and only) argument to <code>uqs()</code> should be a list of
+arguments to be spliced into the call:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>variable <span class="ot">&lt;-</span> <span class="er">~</span> x</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>extra_args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">trim =</span> <span class="fl">0.9</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="fu">f_interp</span>(<span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">uq</span>(variable), <span class="fu">uqs</span>(extra_args)))</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co">#&gt; ~mean(x, na.rm = TRUE, trim = 0.9)</span></span></code></pre></div>
+</div>
+<div id="exercises-1" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li><p>Create a wrapper around <code>lm()</code> that allows the user to
+supply the response and predictors as two separate formulas.</p></li>
+<li><p>Compare and contrast <code>f_eval()</code> with
+<code>with()</code>.</p></li>
+<li><p>Why does this code work even though <code>f</code> is defined in
+two places? (And one of them is not a function).</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="fu">f_eval</span>(<span class="sc">~</span> <span class="fu">f</span>(<span class="dv">10</span>), <span class="fu">list</span>(<span class="at">f =</span> <span class="st">&quot;a&quot;</span>))</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span></code></pre></div></li>
+</ol>
+</div>
+</div>
+<div id="non-standard-scoping-1" class="section level2">
+<h2>Non-standard scoping</h2>
+<p>Non-standard scoping (NSS) is an important part of R because it makes
+it easy to write functions tailored for interactive data exploration.
+These functions require less typing, at the cost of some ambiguity and
+“magic”. This is a good trade-off for interactive data exploration
+because you want to get ideas out of your head and into the computer as
+quickly as possible. If a function does make a bad guess, you’ll spot it
+quickly because you’re working interactively.</p>
+<p>There are three challenges to implementing non-standard scoping:</p>
+<ol style="list-style-type: decimal">
+<li><p>You must correctly delay the evaluation of a function argument,
+capturing both the computation (the expression), and the context (the
+environment). I recommend making this explicit by requiring the user to
+“quote” any NSS arguments with <code>~</code>, and then evaluating
+explicit with <code>f_eval()</code>.</p></li>
+<li><p>When writing functions that use NSS-functions, you need some way
+to avoid the automatic lookup and be explicit about where objects should
+be found. <code>f_eval()</code> solves this problem with the
+<code>.data.</code> and <code>.env</code> pronouns.</p></li>
+<li><p>You need some way to allow the user to supply parts of a formula.
+<code>f_eval()</code> solves this with unquoting.</p></li>
+</ol>
+<p>To illustrate these challenges, I will implement a
+<code>sieve()</code> function that works similarly to
+<code>base::subset()</code> or <code>dplyr::filter()</code>. The goal of
+<code>sieve()</code> is to make it easy to select observations that
+match criteria defined by a logical expression. <code>sieve()</code> has
+three advantages over <code>[</code>:</p>
+<ol style="list-style-type: decimal">
+<li><p>It is much more compact when the condition uses many variables,
+because you don’t need to repeat the name of the data frame many
+times.</p></li>
+<li><p>It drops rows where the condition evaluates to <code>NA</code>,
+rather than filling them with <code>NA</code>s.</p></li>
+<li><p>It always returns a data frame.</p></li>
+</ol>
+<p>The implementation of <code>sieve()</code> is straightforward. First
+we use <code>f_eval()</code> to perform NSS. Then we then check that we
+have a logical vector, replace <code>NA</code>s with <code>FALSE</code>,
+and subset with <code>[</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>sieve <span class="ot">&lt;-</span> <span class="cf">function</span>(df, condition) {</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> <span class="fu">f_eval</span>(condition, df)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.logical</span>(rows)) {</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;`condition` must be logical.&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>  }</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>  </span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>  rows[<span class="fu">is.na</span>(rows)] <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>  df[rows, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>}</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">y =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="fu">sieve</span>(df, <span class="sc">~</span> x <span class="sc">&lt;=</span> <span class="dv">2</span>)</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a><span class="co">#&gt; 1 1 5</span></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a><span class="co">#&gt; 2 2 4</span></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a><span class="fu">sieve</span>(df, <span class="sc">~</span> x <span class="sc">==</span> y)</span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a><span class="co">#&gt; 3 3 3</span></span></code></pre></div>
+<div id="programming-with-sieve" class="section level3">
+<h3>Programming with <code>sieve()</code></h3>
+<p>Imagine that you’ve written some code that looks like this:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">sieve</span>(march, <span class="sc">~</span> x <span class="sc">&gt;</span> <span class="dv">100</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="fu">sieve</span>(april, <span class="sc">~</span> x <span class="sc">&gt;</span> <span class="dv">50</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="fu">sieve</span>(june, <span class="sc">~</span> x <span class="sc">&gt;</span> <span class="dv">45</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="fu">sieve</span>(july, <span class="sc">~</span> x <span class="sc">&gt;</span> <span class="dv">17</span>)</span></code></pre></div>
+<p>(This is a contrived example, but it illustrates all of the important
+issues you’ll need to consider when writing more useful functions.)</p>
+<p>Instead of continuing to copy-and-paste your code, you decide to wrap
+up the common behaviour in a function:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>threshold_x <span class="ot">&lt;-</span> <span class="cf">function</span>(df, threshold) {</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="fu">sieve</span>(df, <span class="sc">~</span> x <span class="sc">&gt;</span> threshold)</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>}</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a><span class="fu">threshold_x</span>(df, <span class="dv">3</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="co">#&gt; 4 4 2</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a><span class="co">#&gt; 5 5 1</span></span></code></pre></div>
+<p>There are two ways that this function might fail:</p>
+<ol style="list-style-type: decimal">
+<li><p>The data frame might not have a variable called <code>x</code>.
+This will fail unless there’s a variable called <code>x</code> hanging
+around in the global environment:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">rm</span>(x)</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co"># Throws an error</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="fu">threshold_x</span>(df2, <span class="dv">3</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a><span class="co">#&gt; ! object &#39;x&#39; not found</span></span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="co"># Silently gives the incorrect result!</span></span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="fu">threshold_x</span>(df2, <span class="dv">3</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="co">#&gt;   y</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="co">#&gt; 1 5</span></span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a><span class="co">#&gt; 2 4</span></span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a><span class="co">#&gt; 3 3</span></span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a><span class="co">#&gt; 4 2</span></span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a><span class="co">#&gt; 5 1</span></span></code></pre></div></li>
+<li><p>The data frame might have a variable called
+<code>threshold</code>:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">y =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">threshold =</span> <span class="dv">4</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">threshold_x</span>(df3, <span class="dv">3</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co">#&gt;   x y threshold</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co">#&gt; 5 5 1         4</span></span></code></pre></div></li>
+</ol>
+<p>These failures are partiuclarly pernicious because instead of
+throwing an error they silently produce the wrong answer. Both failures
+arise because <code>f_eval()</code> introduces ambiguity by looking in
+two places for each name: the supplied data and formula environment.</p>
+<p>To make <code>threshold_x()</code> more reliable, we need to be more
+explicit by using the <code>.data</code> and <code>.env</code>
+pronouns:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>threshold_x <span class="ot">&lt;-</span> <span class="cf">function</span>(df, threshold) {</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">sieve</span>(df, <span class="sc">~</span> .data<span class="sc">$</span>x <span class="sc">&gt;</span> .env<span class="sc">$</span>threshold)</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>}</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a><span class="fu">threshold_x</span>(df2, <span class="dv">3</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a><span class="co">#&gt; ! Variable &#39;x&#39; not found in data</span></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a><span class="fu">threshold_x</span>(df3, <span class="dv">3</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a><span class="co">#&gt;   x y threshold</span></span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a><span class="co">#&gt; 4 4 2         4</span></span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a><span class="co">#&gt; 5 5 1         4</span></span></code></pre></div>
+<p>Here <code>.env</code> is bound to the environment where
+<code>~</code> is evaluated, namely the inside of
+<code>threshold_x()</code>.</p>
+</div>
+<div id="adding-arguments" class="section level3">
+<h3>Adding arguments</h3>
+<p>The <code>threshold_x()</code> function is not very useful because
+it’s bound to a specific variable. It would be more powerful if we could
+vary both the threshold and the variable it applies to. We can do that
+by taking an additional argument to specify which variable to use.</p>
+<p>One simple approach is to use a string and <code>[[</code>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> <span class="cf">function</span>(df, variable, threshold) {</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">is.character</span>(variable), <span class="fu">length</span>(variable) <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  </span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>  <span class="fu">sieve</span>(df, <span class="sc">~</span> .data[[.env<span class="sc">$</span>variable]] <span class="sc">&gt;</span> .env<span class="sc">$</span>threshold)</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>}</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a><span class="fu">threshold</span>(df, <span class="st">&quot;x&quot;</span>, <span class="dv">4</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a><span class="co">#&gt; 5 5 1</span></span></code></pre></div>
+<p>This is a simple and robust solution, but only allows us to use an
+existing variable, not an arbitrary expression like
+<code>sqrt(x)</code>.</p>
+<p>A more general solution is to allow the user to supply a formula, and
+use unquoting:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>threshold <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">variable =</span> <span class="sc">~</span>x, <span class="at">threshold =</span> <span class="dv">0</span>) {</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>  <span class="fu">sieve</span>(df, <span class="sc">~</span> <span class="fu">uq</span>(variable) <span class="sc">&gt;</span> .env<span class="sc">$</span>threshold)</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>}</span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a><span class="fu">threshold</span>(df, <span class="sc">~</span> x, <span class="dv">4</span>)</span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a><span class="co">#&gt; 5 5 1</span></span>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="fu">threshold</span>(df, <span class="sc">~</span> <span class="fu">abs</span>(x <span class="sc">-</span> y), <span class="dv">2</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a><span class="co">#&gt; 1 1 5</span></span>
+<span id="cb35-11"><a href="#cb35-11" tabindex="-1"></a><span class="co">#&gt; 5 5 1</span></span></code></pre></div>
+<p>In this case, it’s the responsibility of the user to ensure the
+<code>variable</code> is specified unambiguously. <code>f_eval()</code>
+is designed so that <code>.data</code> and <code>.env</code> work even
+when evaluated inside of <code>uq()</code>:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">threshold</span>(df, <span class="sc">~</span> .data<span class="sc">$</span>x <span class="sc">-</span> .env<span class="sc">$</span>x, <span class="dv">0</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="co">#&gt; 4 4 2</span></span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a><span class="co">#&gt; 5 5 1</span></span></code></pre></div>
+</div>
+<div id="dot-dot-dot" class="section level3">
+<h3>Dot-dot-dot</h3>
+<p>There is one more tool that you might find useful for functions that
+take <code>...</code>. For example, the code below implements a function
+similar to <code>dplyr::mutate()</code> or
+<code>base::transform()</code>.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>mogrify <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="st">`</span><span class="at">_df</span><span class="st">`</span>, ...) {</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>  args <span class="ot">&lt;-</span> <span class="fu">list</span>(...)</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>  </span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a>  <span class="cf">for</span> (nm <span class="cf">in</span> <span class="fu">names</span>(args)) {</span>
+<span id="cb37-5"><a href="#cb37-5" tabindex="-1"></a>    <span class="st">`</span><span class="at">_df</span><span class="st">`</span>[[nm]] <span class="ot">&lt;-</span> <span class="fu">f_eval</span>(args[[nm]], <span class="st">`</span><span class="at">_df</span><span class="st">`</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" tabindex="-1"></a>  }</span>
+<span id="cb37-7"><a href="#cb37-7" tabindex="-1"></a>  </span>
+<span id="cb37-8"><a href="#cb37-8" tabindex="-1"></a>  <span class="st">`</span><span class="at">_df</span><span class="st">`</span></span>
+<span id="cb37-9"><a href="#cb37-9" tabindex="-1"></a>}</span></code></pre></div>
+<p>(NB: the first argument is a non-syntactic name (i.e. it requires
+quoting with <code>`</code>) so it doesn’t accidentally match one of the
+names of the new variables.)</p>
+<p><code>transmogrifty()</code> makes it easy to add new variables to a
+data frame:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">y =</span> <span class="fu">sample</span>(<span class="dv">5</span>))</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="fu">mogrify</span>(df, <span class="at">z =</span> <span class="sc">~</span> x <span class="sc">+</span> y, <span class="at">z2 =</span> <span class="sc">~</span> z <span class="sc">*</span> <span class="dv">2</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a><span class="co">#&gt;   x y z z2</span></span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a><span class="co">#&gt; 1 1 3 4  8</span></span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a><span class="co">#&gt; 2 2 5 7 14</span></span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a><span class="co">#&gt; 3 3 1 4  8</span></span>
+<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a><span class="co">#&gt; 4 4 4 8 16</span></span>
+<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a><span class="co">#&gt; 5 5 2 7 14</span></span></code></pre></div>
+<p>One problem with this implementation is that it’s hard to specify the
+names of the generated variables. Imagine you want a function where the
+name and expression are in separate variables. This is awkward because
+the variable name is supplied as an argument name to
+<code>mogrify()</code>:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a>add_variable <span class="ot">&lt;-</span> <span class="cf">function</span>(df, name, expr) {</span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a>  <span class="fu">do.call</span>(<span class="st">&quot;mogrify&quot;</span>, <span class="fu">c</span>(<span class="fu">list</span>(df), <span class="fu">setNames</span>(<span class="fu">list</span>(expr), name)))</span>
+<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a>}</span>
+<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a><span class="fu">add_variable</span>(df, <span class="st">&quot;z&quot;</span>, <span class="sc">~</span> x <span class="sc">+</span> y)</span>
+<span id="cb39-5"><a href="#cb39-5" tabindex="-1"></a><span class="co">#&gt;   x y z</span></span>
+<span id="cb39-6"><a href="#cb39-6" tabindex="-1"></a><span class="co">#&gt; 1 1 3 4</span></span>
+<span id="cb39-7"><a href="#cb39-7" tabindex="-1"></a><span class="co">#&gt; 2 2 5 7</span></span>
+<span id="cb39-8"><a href="#cb39-8" tabindex="-1"></a><span class="co">#&gt; 3 3 1 4</span></span>
+<span id="cb39-9"><a href="#cb39-9" tabindex="-1"></a><span class="co">#&gt; 4 4 4 8</span></span>
+<span id="cb39-10"><a href="#cb39-10" tabindex="-1"></a><span class="co">#&gt; 5 5 2 7</span></span></code></pre></div>
+<p>Lazyeval provides the <code>f_list()</code> function to make writing
+this sort of function a little easier. It takes a list of formulas and
+evaluates the LHS of each formula (if present) to rename the
+elements:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">f_list</span>(<span class="st">&quot;x&quot;</span> <span class="sc">~</span> y, <span class="at">z =</span> <span class="sc">~</span>z)</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a><span class="co">#&gt; $x</span></span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a><span class="co">#&gt; ~y</span></span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a><span class="co">#&gt; $z</span></span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a><span class="co">#&gt; ~z</span></span></code></pre></div>
+<p>If we tweak <code>mogrify()</code> to use <code>f_list()</code>
+instead of <code>list()</code>:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>mogrify <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="st">`</span><span class="at">_df</span><span class="st">`</span>, ...) {</span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>  args <span class="ot">&lt;-</span> <span class="fu">f_list</span>(...)</span>
+<span id="cb41-3"><a href="#cb41-3" tabindex="-1"></a>  </span>
+<span id="cb41-4"><a href="#cb41-4" tabindex="-1"></a>  <span class="cf">for</span> (nm <span class="cf">in</span> <span class="fu">names</span>(args)) {</span>
+<span id="cb41-5"><a href="#cb41-5" tabindex="-1"></a>    <span class="st">`</span><span class="at">_df</span><span class="st">`</span>[[nm]] <span class="ot">&lt;-</span> <span class="fu">f_eval</span>(args[[nm]], <span class="st">`</span><span class="at">_df</span><span class="st">`</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" tabindex="-1"></a>  }</span>
+<span id="cb41-7"><a href="#cb41-7" tabindex="-1"></a>  </span>
+<span id="cb41-8"><a href="#cb41-8" tabindex="-1"></a>  <span class="st">`</span><span class="at">_df</span><span class="st">`</span></span>
+<span id="cb41-9"><a href="#cb41-9" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>add_new()</code> becomes much simpler:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>add_variable <span class="ot">&lt;-</span> <span class="cf">function</span>(df, name, expr) {</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>  <span class="fu">mogrify</span>(df, name <span class="sc">~</span> <span class="fu">uq</span>(expr))</span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>}</span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a><span class="fu">add_variable</span>(df, <span class="st">&quot;z&quot;</span>, <span class="sc">~</span> x <span class="sc">+</span> y)</span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a><span class="co">#&gt;   x y z</span></span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a><span class="co">#&gt; 1 1 3 4</span></span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a><span class="co">#&gt; 2 2 5 7</span></span>
+<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a><span class="co">#&gt; 3 3 1 4</span></span>
+<span id="cb42-9"><a href="#cb42-9" tabindex="-1"></a><span class="co">#&gt; 4 4 4 8</span></span>
+<span id="cb42-10"><a href="#cb42-10" tabindex="-1"></a><span class="co">#&gt; 5 5 2 7</span></span></code></pre></div>
+</div>
+<div id="exercises-2" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li><p>Write a function that selects all rows of <code>df</code> where
+<code>variable</code> is greater than its mean. Make the function more
+general by allowing the user to specify a function to use instead of
+<code>mean()</code> (e.g. <code>median()</code>).</p></li>
+<li><p>Create a version of <code>mogrify()</code> where the first
+argument is <code>x</code>? What happens if you try to create a new
+variable called <code>x</code>?</p></li>
+</ol>
+</div>
+</div>
+<div id="non-standard-evaluation" class="section level2">
+<h2>Non-standard evaluation</h2>
+<p>In some situations you might want to eliminate the formula
+altogether, and allow the user to type expressions directly. I was once
+much enamoured with this approach (witness ggplot2, dplyr, …). However,
+I now think that it should be used sparingly because explict quoting
+with <code>~</code> leads to simpler code, and makes it more clear to
+the user that something special is going on.</p>
+<p>That said, lazyeval does allow you to eliminate the <code>~</code> if
+you really want to. In this case, I recommend having both a NSE and SE
+version of the function. The SE version, which takes formuals, should
+have suffix <code>_</code>:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>sieve_ <span class="ot">&lt;-</span> <span class="cf">function</span>(df, condition) {</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> <span class="fu">f_eval</span>(condition, df)</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.logical</span>(rows)) {</span>
+<span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;`condition` must be logical.&quot;</span>, <span class="at">call. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a>  }</span>
+<span id="cb43-6"><a href="#cb43-6" tabindex="-1"></a>  </span>
+<span id="cb43-7"><a href="#cb43-7" tabindex="-1"></a>  rows[<span class="fu">is.na</span>(rows)] <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb43-8"><a href="#cb43-8" tabindex="-1"></a>  df[rows, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb43-9"><a href="#cb43-9" tabindex="-1"></a>}</span></code></pre></div>
+<p>Then create the NSE version which doesn’t need the explicit formula.
+The key is the use of <code>f_capture()</code> which takes an
+unevaluated argument (a promise) and captures it as a formula:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>sieve <span class="ot">&lt;-</span> <span class="cf">function</span>(df, expr) {</span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a>  <span class="fu">sieve_</span>(df, <span class="fu">f_capture</span>(expr))</span>
+<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a>}</span>
+<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a><span class="fu">sieve</span>(df, x <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb44-6"><a href="#cb44-6" tabindex="-1"></a><span class="co">#&gt; 1 1 3</span></span></code></pre></div>
+<p>If you’re familiar with <code>substitute()</code> you might expect
+the same drawbacks to apply. However, <code>f_capture()</code> is smart
+enough to follow a chain of promises back to the original value, so, for
+example, this code works fine:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>scramble <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>  df[<span class="fu">sample</span>(<span class="fu">nrow</span>(df)), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>}</span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>subscramble <span class="ot">&lt;-</span> <span class="cf">function</span>(df, expr) {</span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>  <span class="fu">scramble</span>(<span class="fu">sieve</span>(df, expr))</span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>}</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a><span class="fu">subscramble</span>(df, x <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a><span class="co">#&gt; 2 2 5</span></span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a><span class="co">#&gt; 1 1 3</span></span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a><span class="co">#&gt; 3 3 1</span></span></code></pre></div>
+<div id="dot-dot-dot-1" class="section level3">
+<h3>Dot-dot-dot</h3>
+<p>If you want a <code>...</code> function that doesn’t require
+formulas, I recommend that the SE version take a list of arguments, and
+the NSE version uses <code>dots_capture()</code> to capture multiple
+arguments as a list of formulas.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a>mogrify_ <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="st">`</span><span class="at">_df</span><span class="st">`</span>, args) {</span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>  args <span class="ot">&lt;-</span> <span class="fu">as_f_list</span>(args)</span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>  </span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>  <span class="cf">for</span> (nm <span class="cf">in</span> <span class="fu">names</span>(args)) {</span>
+<span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a>    <span class="st">`</span><span class="at">_df</span><span class="st">`</span>[[nm]] <span class="ot">&lt;-</span> <span class="fu">f_eval</span>(args[[nm]], <span class="st">`</span><span class="at">_df</span><span class="st">`</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" tabindex="-1"></a>  }</span>
+<span id="cb46-7"><a href="#cb46-7" tabindex="-1"></a>  </span>
+<span id="cb46-8"><a href="#cb46-8" tabindex="-1"></a>  <span class="st">`</span><span class="at">_df</span><span class="st">`</span></span>
+<span id="cb46-9"><a href="#cb46-9" tabindex="-1"></a>}</span>
+<span id="cb46-10"><a href="#cb46-10" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" tabindex="-1"></a>mogrify <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="st">`</span><span class="at">_df</span><span class="st">`</span>, ...) {</span>
+<span id="cb46-12"><a href="#cb46-12" tabindex="-1"></a>  <span class="fu">mogrify_</span>(<span class="st">`</span><span class="at">_df</span><span class="st">`</span>, <span class="fu">dots_capture</span>(...))</span>
+<span id="cb46-13"><a href="#cb46-13" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="exercises-3" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li>Recreate <code>subscramble()</code> using
+<code>base::subset()</code> instead of <code>sieve()</code>. Why does it
+fail?</li>
+</ol>
+</div>
+</div>
+<div id="metaprogramming" class="section level2">
+<h2>Metaprogramming</h2>
+<p>The final use of non-standard evaluation is to do metaprogramming.
+This is a catch-all term that encompasses any function that does
+computation on an unevaluated expression. You can learn about
+metaprogrgramming in <a href="http://adv-r.had.co.nz/Expressions.html" class="uri">http://adv-r.had.co.nz/Expressions.html</a>, particularly <a href="http://adv-r.had.co.nz/Expressions.html#ast-funs" class="uri">http://adv-r.had.co.nz/Expressions.html#ast-funs</a>. Over
+time, the goal is to move all useful metaprogramming helper functions
+into this package, and discuss metaprogramming more here.</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Currently neither ggplot2 nor dplyr actually use these
+tools since I’ve only just figured it out. But I’ll be working hard to
+make sure all my packages are consistent in the near future.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

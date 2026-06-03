@@ -1,0 +1,64 @@
+---
+title: "Dissimilarity Cheat Sheet"
+author: "Sarah Goslee"
+date: "2017-07-12"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dissimilarity Cheat Sheet}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+**Things to do with dissimilarity matrices**
+
+_(ecodist functions are marked in **bold**)_
+
+_(untested ideas marked with ?)_
+
+
+Description | Notation | Name | R function
+------------|----------|------|-----------
+Relationship between two matrices | D1 ~ D2 | Mantel test | **mantel**(D1 ~ D2)
+Relationship between two matrices given more | D1 ~ D2 &#124; D3 ... Dn | Partial Mantel test | **mantel**(D1 ~ D2 + D3 + ...)
+|||
+Spatial structure in one matrix relative to all distance classes | D1 x S | Mantel correlogram | **mgram**(D1, S)
+Spatial structure in one matrix given more relative to all distance classes | D1 &#124; D2 ... Dn x S | Partial Mantel correlogram | **?mgram**(residuals(lm(D1 ~ D2 + ...)), space)
+Spatial structuce in one matrix by distance class | D1 x S | Piecewise multivariate correlogram | **pmgram**(D1, S)
+Spatial structure in one matrix by distance class given more | D1 &#124; D2 ... Dn x S | Piecewise partial multivariate correlogram | **pmgram**(D1, S, D2)
+|||
+Spatial structure in the relationship between two matrices | D1 ~ D2 x S | Piecewise Mantel cross-correlogram | **pmgram**(cbind(lower(D1), lower(D2)), S)
+Spatial structure in the relationship between two matrices given more | D1 ~ D2 &#124; D3 ... Dn x S | Piecewise partial Mantel cross-correlogram | **pmgram**(cbind(lower(D1), lower(D2)), S, D3)
+|||
+Ordination of one matrix | | (N)MDS | **nmds**(y) or **pco**(y)
+Ordination of one matrix given more | | (Partial (N)MDS | **?nmds**(residuals(lm(y ~ z1 + ...)))
+|||
+Grouping of items based on one matrix | | Cluster analysis | eg hclust(y)
+Grouping of items based on one matrix given more | | Partial cluster analysis | ?hclust(residuals(lm(y ~ z1 + ...)))
+Grouping of items given space | | Spatially-constrained cluster analysis | NA
+|||
+Multiple regression | D1 ~ D2 &#124; D3 ... Dn | Multiple regression on distance matrices | **MRM**(D1 ~ D2 + D3 + ...)
+
+
+**Ways to calculate dissimilarity matrices**
+
+Description | Result | R function
+------------|--------|-----------
+From a site by sample matrix | Symmetric matrix with zero diagonals | dist(x) or **bcdist**(x) or **distance**(x)
+
+-----------------------------
+
+**Things to do with cross-dissimilarity matrices**
+
+Description | Notation | Name | R function
+------------|----------|------|-----------
+Relationship between two cross-dissimilarity matrices | D12 ~ D34 | Cross-Mantel test | **xmantel**(D12 ~ D34)
+Relationship between two cross-dissimilarity matrices given more | D12 ~ D34 &#124; D56 ... Dn | Partial cross-Mantel test | **xmantel**(D12 ~ D34 + D56 + ...)
+|||
+Spatial structure in one cross-dissimilarity matrix | D12 x S | Cross-Mantel correlogram | **xmgram**(D12, spaceX)
+Spatial structure in one cross-dissimilarity matrix given more | D12 &#124; D34 ... Dn x S | Partial cross-Mantel correlogram | **?xmgram**(residuals(lm(D12 ~ D34 + ...)), spaceX)
+
+
+**Ways to calculate cross-dissimilarity matrices**
+
+Source | Result | R function
+-------|--------|-----------
+From 2 site by sample matrixes for the same sites and samples (e.g. different years) | nonsymmetric matrix with nonzero diagonals | **xdistance**(x, y)

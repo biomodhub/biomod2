@@ -1,0 +1,27 @@
+#NEXUS
+
+BEGIN TAXA;
+  TITLE Taxa;
+  Dimensions Ntax = 5;
+  TaxLabels
+    taxon_a taxon_b taxon_c taxon_d taxon_e
+  ;
+END;
+
+BEGIN DATA;
+  DIMENSIONS NTAX=5 NCHAR = 7;
+	MATRIX
+	'taxon_a'  0000000
+	'taxon_b'  0000000
+	'taxon_c'  1111?00
+	'taxon_d'  111??11
+	'taxon_e'  1111?11
+	;
+ENDBLOCK;
+
+BEGIN NOTES;
+  TEXT    TAXON = 1 CHARACTER = 3  TEXT = "Tax1-Char3";
+  TEXT    TAXON=2 CHARACTER=2  TEXT="Taxon 2, char 2";
+  text taxon=3 text = "Taxon Three";
+  text Character = 3 text = 'Three''s a crowd.';
+END;

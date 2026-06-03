@@ -1,0 +1,32 @@
+aoo                     Area of Occupancy (AOO).
+countries               Countries of occurrence.
+elevation               Elevation limits.
+eoo                     Extent of Occurrence (EOO).
+kml                     Output kml files.
+map.draw                Map creation.
+map.easy                Species distributions made easy (multiple
+                        species).
+map.habitat             Map species distribution of habitat specialist.
+map.points              Map recorded distribution of species.
+map.sdm                 Predict species distributions.
+move                    Move records to closest non-NA cell.
+outliers                Visual detection of outliers.
+raster.clean            Uniformize raster layers.
+raster.distance         Create distance layer.
+raster.east             Create eastness layer.
+raster.lat              Create latitude layer.
+raster.long             Create longitude layer.
+raster.north            Create northness layer.
+raster.read             Read and buffer raster layers.
+raster.reduce           Reduce dimensionality of raster layers.
+records                 Download taxon records from GBIF.
+red.examples            Example data packaged with *red*
+red.getDir              Read GIS directory.
+red.setDir              Setup GIS directory.
+red.setup               Download and setup GIS files.
+rli                     Red List Index.
+rli.map                 Mapping the Red List Index.
+rli.multi               Red List Index for multiple groups.
+rli.predict             Prediction of Red List Index.
+rli.sampled             Sampled Red List Index.
+thin                    Spatial thinning of occurrence records.

@@ -1,0 +1,52 @@
+%orifnull%              Specify a Default Value
+RelevantNA              Missing Value, Zero-length Vector, or Zero
+                        Value of the Appropriate Type
+articlebeforenumber     Indefinite Article Preceding A Number
+capitalise              Make Each Word Start with a Capital Letter
+cat.factor              Combine Several Factors
+check.1.integer         Check Argument Type and Length
+check.anyvector         Check For Vector or Factor With Correct Length
+check.named.vector      Check Whether Object Has Required Components
+check.nmatrix           Check for Numeric Matrix with Correct
+                        Dimensions
+check.nvector           Check For Numeric Vector With Correct Length
+check.range             Utilities for Ranges of Values
+commasep                List of Items Separated By Commas
+difflong                Lagged Differences for a Long Vector
+do.call.matched         Call a Function, Passing Only Recognised
+                        Arguments
+do.call.without         Call a Function, Omitting Certain Arguments
+evenly.spaced           Determine Whether a Vector is Evenly Spaced and
+                        Increasing
+exactCutBreaks          Determine Breakpoints for Cut
+expand.polynom          Expand Symbolic Polynomials in a Formula
+fastFindInterval        Find Intervals Containing Given Data
+geomseq                 Geometric Sequence
+harmonicmean            Harmonic Mean
+ifelseAB                Conditional Selection
+is.power                Recognise a Square, Cube, or Power of an
+                        Integer
+methods.xypolygon       Calculations for Polygons in the Plane
+optimizeWithTrace       One Dimensional Optimization with Tracing
+orderstats              Compute Order Statistics
+ordinal                 Ordinal Numbers
+paren                   Add or Remove Parentheses
+percentage              Convert Fraction to Percentage
+primefactors            Primes, Prime Factorization, Common Divisor
+queueSpatstatLocator    Add Coordinates to a Queue for Use by Locator
+                        Function
+resolve.defaults        Determine Values of Variables Using Several
+                        Default Rules
+revcumsum               Reverse Cumulative Sum
+simplenumber            Simple Rational Number
+spatstat.utils-deprecated
+                        Deprecated Functions of spatstat.utils Package
+spatstat.utils-package
+                        The spatstat.utils Package
+spatstatLocator         Graphical Input
+splat                   Print Text Within Margins
+taperoff                Taper Functions
+tapplysum               Sum By Factor Level
+termsinformula          Manipulate Formulae
+verbalogic              Verbal Logic
+which.min.fair          Where is the Minimum or Maximum

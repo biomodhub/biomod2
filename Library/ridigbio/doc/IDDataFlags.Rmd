@@ -1,0 +1,112 @@
+---
+title: Identification of Data Flags
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Identification of Data Flags}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Code here written by [Erica Krimmel](https://orcid.org/0000-0003-3192-0080).
+
+## General Overview
+
+In this use case for the [iDigBio API](https://github.com/iDigBio/idigbio-search-api/wiki) we look at how to search for specimen records that have a specific data quality flag. See [here](https://github.com/iDigBio/idigbio-search-api/wiki/Data-Quality-Flags) for more information about iDigBio's data quality flags.
+
+In this demo we will cover how to:
+
+1.  Write a query to search for specimens using `idig_search_records`
+2.  Explore data quality flags
+
+## Load Packages
+
+```{r message=FALSE}
+# Load core libraries; install these packages if you have not already
+library(ridigbio)
+library(tidyverse)
+
+# Load library for making nice HTML output
+library(kableExtra)
+```
+
+```{r echo = FALSE}
+
+verify_records <- FALSE
+
+#Test that examples will run
+tryCatch({
+    # Your code that might throw an error
+    verify_records <- idig_search_records(rq = list(flags = "rev_geocode_flip",
+                                              institutioncode = "fmnh"),
+        limit = 10)
+}, error = function(e) {
+    # Code to run if an error occurs
+    cat("An error occurred during the idig_search_records call: ", e$message, "\n")
+    cat("Vignettes will not be fully generated. Please try again after resolving the issue.")
+    # Optionally, you can return NULL or an empty dataframe
+    verify_records <- FALSE
+})
+```
+
+## Write a query to search for specimen records
+
+First, let's find all the specimen records for the data quality flag we are interested in. Do this using the `idig_search_records` function from the `ridigbio` package. You can learn more about this function from the [iDigBio API documentation](https://github.com/iDigBio/idigbio-search-api/wiki) and [ridigbio documentation](https://cran.r-project.org/package=ridigbio/ridigbio.pdf).
+
+In this example, we want to start by searching for specimens flagged with "rev_geocode_flip" which means that iDigBio has swapped the values of the latitude and longitude fields in order to place the coordinate point in the country stated by the record. For example, iDigBio ingests a record with the coordinates "-87.646166, 41.89542" that says it was collected in the United States, but the verbatim coordinates actually plot to Antarctica. If the latitude and longitude are flipped, then the coordinates plot to the United States, so iDigBio assumes that this is what the data provider meant.
+
+```{r eval=verify_records}
+# Edit the fields (e.g. `flags` or `institutioncode`) and values (e.g. 
+# "rev_geocode_flip" or "fmnh") in `list()` to adjust your query and the fields
+# (e.g. `uuid`) in `fields` to adjust the columns returned in your results
+records <- idig_search_records(rq = list(flags = "rev_geocode_flip",
+                                              institutioncode = "fmnh"),
+                    fields = c("uuid",
+                               "institutioncode",
+                               "collectioncode",
+                               "country",
+                               "data.dwc:country",
+                               "stateprovince",
+                               "county",
+                               "locality",
+                               "geopoint",
+                               "data.dwc:decimalLongitude",
+                               "data.dwc:decimalLatitude"),
+                    limit = 100000) %>% 
+  # Rename fields to more easily reflect their provenance (either from the
+  # data provider directly or modified by the data aggregator)
+  rename(provider_lon = `data.dwc:decimalLongitude`,
+         provider_lat = `data.dwc:decimalLatitude`,
+         provider_country = `data.dwc:country`,
+         aggregator_lon = `geopoint.lon`,
+         aggregator_lat = `geopoint.lat`,
+         aggregator_country = country,
+         aggregator_stateprovince = stateprovince,
+         aggregator_county = county,
+         aggregator_locality = locality) %>% 
+  # Reorder columns for easier viewing
+  select(uuid, institutioncode, collectioncode, provider_lat, aggregator_lat,
+         provider_lon, aggregator_lon, provider_country, aggregator_country,
+         aggregator_stateprovince, aggregator_county, aggregator_locality)
+```
+
+Here is what our query result data looks like:
+
+```{r eval=verify_records, echo = FALSE}
+# Subset `records` to show example
+records[1:50,] %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                font_size = 12,
+                fixed_thead = T) %>% 
+  scroll_box(width = "100%", height = "400px")
+```
+
+If a data provider wants to fix these records in a local collection management system, it might be useful to have them in a CSV format rather than only in R. Here is how we can save our results as a CSV:
+
+```{r eval=verify_records, eval=FALSE, include=TRUE}
+# Save `records` as a CSV for reintegration into a local collection management
+# system
+write_csv(records, "records.csv")
+```
+
+It is important for you as a data provider or data user to review the results of the data quality flags and confirm that iDigBio's interpretation matches your expectations. For example, coordinates representing marine localities and localities in or near Antarctica are prone to misinterpretation.

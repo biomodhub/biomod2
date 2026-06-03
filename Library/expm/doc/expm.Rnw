@@ -1,0 +1,150 @@
+\documentclass{article}
+  \usepackage{amsmath,url}
+  \usepackage[round]{natbib}
+  \usepackage[T1]{fontenc}
+  \usepackage[english]{babel}
+  %\usepackage{lucidabr}
+  \usepackage[noae]{Sweave}
+
+  %\VignetteIndexEntry{Using expm in packages}
+  %\VignettePackage{expm}
+
+  \title{Using \pkg{expm} in packages}
+  \author{Christophe Dutang \\ ENSIMAG, Grenoble INP \\[3ex]
+    Vincent Goulet \\ \'Ecole d'actuariat, Universit\'e Laval}
+  \date{Jan. 2008 \ {\footnotesize (added note in June 2010)}}
+
+  \newcommand{\code}[1]{\texttt{#1}}
+  \newcommand{\proglang}[1]{\textsf{#1}}
+  \newcommand{\pkg}[1]{\textbf{#1}}
+  \newcommand{\mat}[1]{\mathbf{#1}}
+
+  \bibliographystyle{plainnat}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The \pkg{expm} package provides an \proglang{R} function \code{expm}
+to compute the matrix exponential of a real, square matrix. The matrix
+exponential of a matrix $\mat{A}$ is defined as
+\begin{align*}
+  e^{\mat{A}}
+  &= \mat{I} + \mat{A} + \frac{\mat{A}^2}{2!} + \dots \\
+  &= \sum_{k = 0}^\infty \frac{\mat{A}^k}{k!}.
+\end{align*}
+
+The actual computations are done in \proglang{C} by a function
+of the same name that is callable by other packages. Therefore,
+package authors can use these functions and avoid duplication of
+efforts.
+
+\section{Description of the functions}
+
+The \proglang{R} function \texttt{expm} takes as argument a real,
+square matrix and returns its exponential. Dimension names are
+preserved:
+<<echo=TRUE>>=
+library(expm)
+m <- matrix(c(4, 1, 1, 2, 4, 1, 0, 1, 4), 3, 3)
+expm(m)
+dimnames(m) <- list(letters[1:3], LETTERS[1:3])
+m
+expm(m)
+@
+
+\bigskip
+
+%% manual centerig of "overlapping" box
+\hspace*{-.12\textwidth}% .08 = .16 / 2
+\fbox{\begin{minipage}{1.16\textwidth}%% wider than the text!
+  Note that the remainder of this text \textbf{mainly} relates to
+  \code{expm(., method = "Ward77")}, i.e., the method of \cite{Ward:77} which
+  is no longer the default method, as e.g., \code{method = "Higham08"} has
+  found to be (``uniformly'') superior, see \cite{Higham:2008}.
+\end{minipage}}
+
+\bigskip
+
+The actual computational work is done in \proglang{C} by a routine
+defined as
+\begin{verbatim}
+void expm(double *x, int n, double *z)
+\end{verbatim}
+where \code{x} is the vector underlying the \proglang{R} matrix and
+\code{n} is the number of lines (or columns) of the matrix. The matrix
+exponential is returned in \code{z}. The routine uses the algorithm of
+\cite{Ward:77} based on diagonal Pad\'e table approximations in
+conjunction with three step preconditioning. The Pad\'e approximation to
+$e^{\mat{A}}$ is
+\begin{displaymath}
+  e^{\mat{A}} \approx R(\mat{A}),
+\end{displaymath}
+with
+\begin{align*}
+  R_{pq} (\mat{A})
+  &= (D_{pq}(\mat{A}))^{-1} N_{pq}(\mat{A}) \\
+  \intertext{where}
+  D_{pq}(\mat{A})
+  &= \sum_{j=1}^p \frac{(p+q-j)! p!}{ (p+q)!j!(p-j)!}\, \mat{A}^j \\
+  \intertext{and}
+  N_{pq}(\mat{A})
+  &= \sum_{j=1}^q \frac{(p+q-j)! q!}{ (p+q)!j!(q-j)!}\, \mat{A}^j.
+\end{align*}
+See \cite{MolerVanLoan:78} for an exhaustive treatment of the subject.
+
+The \proglang{C} routine is based on a translation made by
+\cite{Matrix} of the implementation of the corresponding Octave
+function \citep{octave}.
+
+
+\section{Calling the functions from other packages}
+
+Package authors can use facilities from \pkg{expm} in two (possibly
+simultaneous) ways:
+\begin{enumerate}
+\item call the \proglang{R} level function \code{expm} in
+  \proglang{R} code;
+\item if matrix exponential calculations are needed in \proglang{C},
+  call the routine \code{expm}.
+\end{enumerate}
+
+Using \proglang{R} level function \code{expm} in a package simply
+requires the following two import directives:
+\begin{verbatim}
+Imports: expm
+\end{verbatim}
+in file \code{DESCRIPTION} and
+\begin{verbatim}
+import(expm)
+\end{verbatim}
+in file \code{NAMESPACE}.
+
+Accessing the \proglang{C} level routine further requires to prototype
+\code{expm} and to retrieve its pointer in the package initialization
+function \code{R\_init\_\textit{pkg}}, where \code{\textit{pkg}} is
+the name of the package:
+\begin{verbatim}
+void (*expm)(double *x, int n, double *z);
+
+void R_init_pkg(DllInfo *dll)
+{
+    expm = (void (*) (double, int, double))  \
+            R_GetCCallable("expm", "expm");
+}
+\end{verbatim}
+
+The definitive reference for these matters remains the \emph{Writing R
+Extensions} manual.
+
+\bibliography{expm}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% coding: utf-8
+%%% End:

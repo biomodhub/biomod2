@@ -1,0 +1,54 @@
+CDF                     Cumulative Distribution Function From Kernel
+                        Density Estimate
+bw.abram                Abramson's Adaptive Bandwidths
+bw.abram.default        Abramson's Adaptive Bandwidths For Numeric Data
+bw.pow                  Variable Bandwidths Proportional to a Power of
+                        the Data Value
+bw.taylor               Bandwidth Selection for Kernel Density
+                        Estimation by Non-Random Bootstrap
+densityAdaptiveKernel   Adaptive Kernel Estimation of Density or
+                        Intensity
+densityAdaptiveKernel.default
+                        Adaptive Kernel Estimation of Probability
+                        Density
+densityBC               Kernel Density Estimation with Optional
+                        Boundary Correction
+dkernel                 Kernel distributions and random generation
+dkernelBC               Boundary-corrected Kernel Density Function
+dsocs                   Distribution of a Linear Combination of
+                        Chi-Squared Variables
+ewcdf                   Weighted Empirical Cumulative Distribution
+                        Function
+farebro                 Distribution of a Weighted Sum of Noncentral
+                        Chi-Squared Variables
+firstdigit              Digits in Decimal Representation
+hotrod                  Heat Kernel for a One-Dimensional Rod
+indefinteg              Indefinite Integral
+integral                Integral of a Function or Spatial Object
+integral.density        Compute Integral of One-Dimensional Kernel
+                        Density Estimate.
+kaplan.meier            Kaplan-Meier Estimator using Histogram Data
+kernel.factor           Scale factor for density kernel
+kernel.moment           Incomplete Moment of Smoothing Kernel
+kernel.squint           Integral of Squared Kernel
+km.rs                   Kaplan-Meier and Reduced Sample Estimator using
+                        Histograms
+knots.ewcdf             Jump Points of an Empirical Weighted Cumulative
+                        Distribution Function
+mean.ewcdf              Mean of Empirical Cumulative Distribution
+                        Function
+quantile.density        Quantiles of a Density Estimate
+quantile.ewcdf          Quantiles of Weighted Empirical Cumulative
+                        Distribution Function
+quantilefun             Quantile Function
+reduced.sample          Reduced Sample Estimator using Histogram Data
+rounding                Detect Numerical Rounding
+spatstat.univar-package
+                        The spatstat.univar Package
+stieltjes               Compute Integral of Function Against Cumulative
+                        Distribution
+transformquantiles      Transform the Quantiles
+uniquemap.default       Map Duplicate Entries to Unique Entries
+unnormdensity           Weighted kernel smoother
+weighted.median         Weighted Median, Quantiles or Variance
+whist                   Weighted Histogram

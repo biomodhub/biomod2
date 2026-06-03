@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Gavin L. Simpson" />
+
+<meta name="date" content="2026-02-06" />
+
+<title>Restricted permutations; using the permute package</title>
+
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Restricted permutations; using the permute package</h1>
+<h4 class="author">Gavin L. Simpson</h4>
+<h4 class="date">2026-02-06</h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In classical frequentist statistics, the significance of a relationship or model is determined by reference to a null distribution for the test statistic. This distribution is derived mathematically and the probability of achieving a test statistic as large or larger than the observed statistic <em>if</em> the null hypothesis were true is looked-up from this null distribution. In deriving this probability, some assumptions about the data or the errors are made. If these assumptions are violated, then the validity of the derived <span class="math inline">\(p\)</span>-value may be questioned.</p>
+<p>An alternative to deriving the null distribution from theory is to generate a null distribution of the test statistic by randomly shuffling the data in some manner, refitting the model and deriving values for the test statistic for the permuted data. The level of significance of the test can be computed as the proportion of values of the test statistic from the null distribution that are equal to or larger than the observed value.</p>
+<p>In many data sets, simply shuffling the data at random is inappropriate; under the null hypothesis, the data may not be freely exchangeable, for example if there is temporal or spatial correlation, or the samples are clustered in some way, such as multiple samples collected from each of a number of fields. The <em>permute</em> package was designed to provide facilities for generating these restricted permutations for use in randomisation tests. <em>permute</em> takes as its motivation the permutation schemes originally available in <em>Canoco</em> version 3.1 <span class="citation">(Braak 1990)</span>, which employed the cyclic- or toroidal-shifts suggested by <span class="citation">Besag and Clifford (1989)</span>.</p>
+</div>
+<div id="sec:simple" class="section level1">
+<h1>Simple randomisation</h1>
+<p>As an illustration of both randomisation and simple usage of the <em>permute</em> package we consider a small data set of mandible length measurements on specimens of the golden jackal (<em>Canis aureus</em>) from the British Museum of Natural History, London, UK. These data were collected as part of a study comparing prehistoric and modern canids <span class="citation">(Higham et al. 1980)</span>, and were analysed by <span class="citation">Manly (2007)</span>. There are ten measurements of mandible length on both male and female specimens. The data are available in the <code>jackal</code> data frame supplied with <em>permute</em>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;permute&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">data</span>(jackal)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>jackal</span></code></pre></div>
+<pre><code>##    Length    Sex
+## 1     120   Male
+## 2     107   Male
+## 3     110   Male
+## 4     116   Male
+## 5     114   Male
+## 6     111   Male
+## 7     113   Male
+## 8     117   Male
+## 9     114   Male
+## 10    112   Male
+## 11    110 Female
+## 12    111 Female
+## 13    107 Female
+## 14    108 Female
+## 15    110 Female
+## 16    105 Female
+## 17    107 Female
+## 18    106 Female
+## 19    111 Female
+## 20    111 Female</code></pre>
+<p>The interest is whether there is a difference in the mean mandible length between male and female golden jackals. The null hypothesis is that there is zero difference in mandible length between the two sexes or that females have larger mandibles. The alternative hypothesis is that males have larger mandibles. The usual statistical test of this hypothesis is a one-sided <span class="math inline">\(t\)</span> test, which can be applied using <code>t.test()</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>jack.t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(Length <span class="sc">~</span> Sex, <span class="at">data =</span> jackal, <span class="at">var.equal =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                 <span class="at">alternative =</span> <span class="st">&quot;greater&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>jack.t</span></code></pre></div>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  Length by Sex
+## t = 3.4843, df = 18, p-value = 0.001324
+## alternative hypothesis: true difference in means between group Male and group Female is greater than 0
+## 95 percent confidence interval:
+##  2.411156      Inf
+## sample estimates:
+##   mean in group Male mean in group Female 
+##                113.4                108.6</code></pre>
+<p>The observed <span class="math inline">\(t\)</span> is 3.484 with 18 df. The probability of observing a value this large or larger if the null hypothesis were true is 0.0013. Several assumptions have been made in deriving this <span class="math inline">\(p\)</span>-value, namely</p>
+<ul>
+<li>random sampling of individuals from the populations of interest,</li>
+<li>equal population standard deviations for males and females, and</li>
+<li>that the mandible lengths are normally distributed within the sexes.</li>
+</ul>
+<p>Assumption 1 is unlikely to be valid for museum specimens such as these, that have been collected in some unknown manner. Assumption 2 may be valid, Fisher’s <span class="math inline">\(F\)</span>-test and a Fligner-Killeen test both suggest that the standard deviations of the two populations do not differ significantly</p>
+<pre class="rftest_jackal"><code>var.test(Length ~ Sex, data = jackal)
+fligner.test(Length ~ Sex, data = jackal)</code></pre>
+<p>This assumption may be relaxed using <code>var.equal = FALSE</code> (the default) in the call to <code>t.test()</code>, to employ Welch’s modification for unequal variances. Assumption 3 may be valid, but with such a small sample we are unable to reliably test this.</p>
+<p>A randomisation test of the same hypothesis can be performed by randomly allocating ten of the mandible lengths to the male group and the remaining lengths to the female group. This randomisation is justified under the null hypothesis because the observed difference in mean mandible length between the two sexes is just a typical value for the difference in a sample if there were no difference in the population. An appropriate test statistic needs to be selected. We could use the <span class="math inline">\(t\)</span> statistic as derived in the <span class="math inline">\(t\)</span>-test. Alternatively, we could base our randomisation test on the difference of means <span class="math inline">\(D_i\)</span> (male - female).</p>
+<p>The main function in <em>permute</em> for providing random permutations is <code>shuffle()</code>. We can write our own randomisation test for the <code>jackal</code> data by first creating a function to compute the difference of means for two groups</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>meanDif <span class="ot">&lt;-</span> <span class="cf">function</span>(x, grp) {</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">mean</span>(x[grp <span class="sc">==</span> <span class="st">&quot;Male&quot;</span>]) <span class="sc">-</span> <span class="fu">mean</span>(x[grp <span class="sc">==</span> <span class="st">&quot;Female&quot;</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>}</span></code></pre></div>
+<p>which can be used in a simple <code>for()</code> loop to generate the null distribution for the difference of means. First, we allocate some storage to hold the null difference of means; here we use 4999 random permutations so allocate a vector of length 5000. Then we iterate, randomly generating an ordering of the <code>Sex</code> vector and computing the difference of means for that permutation.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>Djackal <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="at">length =</span> <span class="dv">5000</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(jackal)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(Djackal) <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    perm <span class="ot">&lt;-</span> <span class="fu">shuffle</span>(N)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    Djackal[i] <span class="ot">&lt;-</span> <span class="fu">with</span>(jackal, <span class="fu">meanDif</span>(Length, Sex[perm]))</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>}</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>Djackal[<span class="dv">5000</span>] <span class="ot">&lt;-</span> <span class="fu">with</span>(jackal, <span class="fu">meanDif</span>(Length, Sex))</span></code></pre></div>
+<p>The observed difference of means was added to the null distribution, because under the null hypothesis the observed allocation of mandible lengths to male and female jackals is just one of the possible random allocations.</p>
+<p>The null distribution of <span class="math inline">\(D_i\)</span> can be visualised using a histogram, as shown in Figure~@ref{draw_hist_jackal}. The observed difference of means (4.8) is indicated by the red tick mark.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">hist</span>(Djackal, <span class="at">main =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">expression</span>(<span class="st">&quot;Mean difference (Male - Female) in mm&quot;</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">rug</span>(Djackal[<span class="dv">5000</span>], <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>The number of values in the randomisation distribution equal to or larger than the observed difference is</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>(Dbig <span class="ot">&lt;-</span> <span class="fu">sum</span>(Djackal <span class="sc">&gt;=</span> Djackal[<span class="dv">5000</span>]))</span></code></pre></div>
+<pre><code>## [1] 12</code></pre>
+<p>giving a permutational <span class="math inline">\(p\)</span>-value of</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>Dbig <span class="sc">/</span> <span class="fu">length</span>(Djackal)</span></code></pre></div>
+<pre><code>## [1] 0.0024</code></pre>
+<p>which is comparable with that determined from the frequentist <span class="math inline">\(t\)</span>-test, and indicates strong evidence against the null hypothesis of no difference.</p>
+<div class="figure">
+<img role="img" aria-label="Distribution of the difference of mean mandible length in random allocations, ten to each sex." src="data:image/png;base64,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" alt="Distribution of the difference of mean mandible length in random allocations, ten to each sex." />
+<p class="caption">
+(#fig:draw_hist_jackal)Distribution of the difference of mean mandible length in random allocations, ten to each sex.
+</p>
+</div>
+<p>In total there <span class="math inline">\(^{20}C_{10} = 184,756\)</span> possible allocations of the 20 observations to two groups of ten</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">choose</span>(<span class="dv">20</span>, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## [1] 184756</code></pre>
+<p>so we have only evaluated a small proportion of these in the randomisation test.</p>
+<p>The main workhorse function we used above was <code>shuffle()</code>. In this example, we could have used the base R function <code>sample()</code> to generate the randomised indices <code>perm</code> that were used to permute the <code>Sex</code> factor. Where <code>shuffle()</code> comes into it’s own is for generating permutation indices from restricted permutation designs.</p>
+</div>
+<div id="the-shuffle-and-shuffleset-functions" class="section level1">
+<h1>The <code>shuffle()</code> and <code>shuffleSet()</code> functions</h1>
+<p>In the previous section I introduced the <code>shuffle()</code> function to generate permutation indices for use in a randomisation test. Now we will take a closer look at <code>shuffle()</code> and explore the various restricted permutation designs from which it can generate permutation indices.</p>
+<p><code>shuffle()</code> has two arguments:</p>
+<ol style="list-style-type: lower-roman">
+<li><code>n</code>, the number of observations in the data set to be permuted, and</li>
+<li><code>control</code>, a list that defines the permutation design describing how the samples should be permuted.</li>
+</ol>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">args</span>(shuffle)</span></code></pre></div>
+<pre><code>## function (n, control = how()) 
+## NULL</code></pre>
+<p>A series of convenience functions are provided that allow the user to set-up even quite complex permutation designs with little effort. The user only needs to specify the aspects of the design they require and the convenience functions ensure all configuration choices are set and passed on to <code>shuffle()</code>. The main convenience function is <code>how()</code>, which returns a list specifying all the options available for controlling the sorts of permutations returned by <code>shuffle()</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">how</span>())</span></code></pre></div>
+<pre><code>## List of 12
+##  $ within     :List of 6
+##   ..$ type    : chr &quot;free&quot;
+##   ..$ constant: logi FALSE
+##   ..$ mirror  : logi FALSE
+##   ..$ ncol    : NULL
+##   ..$ nrow    : NULL
+##   ..$ call    : language Within()
+##   ..- attr(*, &quot;class&quot;)= chr &quot;Within&quot;
+##  $ plots      :List of 7
+##   ..$ strata    : NULL
+##   ..$ type      : chr &quot;none&quot;
+##   ..$ mirror    : logi FALSE
+##   ..$ ncol      : NULL
+##   ..$ nrow      : NULL
+##   ..$ plots.name: chr &quot;NULL&quot;
+##   ..$ call      : language Plots()
+##   ..- attr(*, &quot;class&quot;)= chr &quot;Plots&quot;
+##  $ blocks     : NULL
+##  $ nperm      : num 199
+##  $ complete   : logi FALSE
+##  $ maxperm    : num 9999
+##  $ minperm    : num 5040
+##  $ all.perms  : NULL
+##  $ make       : logi TRUE
+##  $ observed   : logi FALSE
+##  $ blocks.name: chr &quot;NULL&quot;
+##  $ call       : language how()
+##  - attr(*, &quot;class&quot;)= chr &quot;how&quot;</code></pre>
+<p>The defaults describe a random permutation design where all objects are freely exchangeable. Using these defaults, <code>shuffle(10)</code> amounts to <code>sample(1:10, 10, replace = FALSE)</code>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>(r1 <span class="ot">&lt;-</span> <span class="fu">shuffle</span>(<span class="dv">10</span>))</span></code></pre></div>
+<pre><code>##  [1]  5  6  9  1 10  7  4  8  3  2</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>(r2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">10</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
+<pre><code>##  [1]  5  6  9  1 10  7  4  8  3  2</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">all.equal</span>(r1, r2)</span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<div id="generating-restricted-permutations" class="section level2">
+<h2>Generating restricted permutations</h2>
+<p>Several types of permutation are available in <em>permute</em>:</p>
+<ul>
+<li>Free permutation of objects</li>
+<li>Time series or line transect designs, where the temporal or spatial ordering is preserved.</li>
+<li>Spatial grid designs, where the spatial ordering is preserved in both coordinate directions</li>
+<li>Permutation of plots or groups of samples.</li>
+<li>Blocking factors which restrict permutations to within blocks. The preceding designs can be nested within blocks.</li>
+</ul>
+<p>The first three of these can be nested within the levels of a factor or to the levels of that factor, or to both. Such flexibility allows the analysis of split-plot designs using permutation tests, especially when combined with blocks.</p>
+<p><code>how()</code> is used to set up the design from which <code>shuffle()</code> will draw a permutation. <code>how()</code> has two main arguments that specify how samples are permuted <em>within</em> plots of samples or at the plot level itself. These are <code>within</code> and <code>plots</code>. Two convenience functions, <code>Within()</code> and <code>Plots()</code> can be used to set the various options for permutation. Blocks operate at the uppermost level of this hierarchy; blocks define groups of plots, each of which may contain groups of samples.</p>
+<p>For example, to permute the observations <code>1:10</code> assuming a time series design for the entire set of observations, the following control object would be used</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>CTRL <span class="ot">&lt;-</span> <span class="fu">how</span>(<span class="at">within =</span> <span class="fu">Within</span>(<span class="at">type =</span> <span class="st">&quot;series&quot;</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>perm <span class="ot">&lt;-</span> <span class="fu">shuffle</span>(<span class="dv">10</span>, <span class="at">control =</span> CTRL)</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>perm</span></code></pre></div>
+<pre><code>##  [1]  9 10  1  2  3  4  5  6  7  8</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>x[perm] <span class="do">## equivalent</span></span></code></pre></div>
+<pre><code>##  [1]  9 10  1  2  3  4  5  6  7  8</code></pre>
+<p>It is assumed that the observations are in temporal or transect order. We only specified the type of permutation within plots, the remaining options were set to their defaults via <code>Within()</code>.</p>
+<p>A more complex design, with three plots, and a 3 by 3 spatial grid arrangement within each plot can be created as follows</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>plt <span class="ot">&lt;-</span> <span class="fu">gl</span>(<span class="dv">3</span>, <span class="dv">9</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>CTRL <span class="ot">&lt;-</span> <span class="fu">how</span>(<span class="at">within =</span> <span class="fu">Within</span>(<span class="at">type =</span> <span class="st">&quot;grid&quot;</span>, <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">3</span>),</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>            <span class="at">plots =</span> <span class="fu">Plots</span>(<span class="at">strata =</span> plt))</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>perm <span class="ot">&lt;-</span> <span class="fu">shuffle</span>(<span class="fu">length</span>(plt), <span class="at">control =</span> CTRL)</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>perm</span></code></pre></div>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 25 26 27 19 20 21 22
+## [26] 23 24</code></pre>
+<p>Visualising the permutation as the 3 matrices may help illustrate how the data have been shuffled</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="do">## Original</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">split</span>(<span class="fu">seq_along</span>(plt), plt), matrix, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## $`1`
+##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9
+## 
+## $`2`
+##      [,1] [,2] [,3]
+## [1,]   10   13   16
+## [2,]   11   14   17
+## [3,]   12   15   18
+## 
+## $`3`
+##      [,1] [,2] [,3]
+## [1,]   19   22   25
+## [2,]   20   23   26
+## [3,]   21   24   27</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="do">## Shuffled</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">split</span>(perm, plt), matrix, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## $`1`
+##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9
+## 
+## $`2`
+##      [,1] [,2] [,3]
+## [1,]   10   13   16
+## [2,]   11   14   17
+## [3,]   12   15   18
+## 
+## $`3`
+##      [,1] [,2] [,3]
+## [1,]   25   19   22
+## [2,]   26   20   23
+## [3,]   27   21   24</code></pre>
+<p>In the first grid, the lower-left corner of the grid was set to row 2 and column 2 of the original, to row 1 and column 2 in the second grid, and to row 3 column 2 in the third grid.</p>
+<p>To have the same permutation within each level of <code>plt</code>, use the <code>constant</code> argument of the <code>Within()</code> function, setting it to <code>TRUE</code></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>CTRL <span class="ot">&lt;-</span> <span class="fu">how</span>(<span class="at">within =</span> <span class="fu">Within</span>(<span class="at">type =</span> <span class="st">&quot;grid&quot;</span>, <span class="at">ncol =</span> <span class="dv">3</span>, <span class="at">nrow =</span> <span class="dv">3</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>                            <span class="at">constant =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>            <span class="at">plots =</span> <span class="fu">Plots</span>(<span class="at">strata =</span> plt))</span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>perm2 <span class="ot">&lt;-</span> <span class="fu">shuffle</span>(<span class="fu">length</span>(plt), <span class="at">control =</span> CTRL)</span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">split</span>(perm2, plt), matrix, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## $`1`
+##      [,1] [,2] [,3]
+## [1,]    1    4    7
+## [2,]    2    5    8
+## [3,]    3    6    9
+## 
+## $`2`
+##      [,1] [,2] [,3]
+## [1,]   10   13   16
+## [2,]   11   14   17
+## [3,]   12   15   18
+## 
+## $`3`
+##      [,1] [,2] [,3]
+## [1,]   19   22   25
+## [2,]   20   23   26
+## [3,]   21   24   27</code></pre>
+</div>
+<div id="generating-sets-of-permutations-with-shuffleset" class="section level2">
+<h2>Generating sets of permutations with shuffleSet()</h2>
+<p>There are several reasons why one might wish to generate a set of <span class="math inline">\(n\)</span> permutations instead of repeatedly generating permutations one at a time. Interpreting the permutation design happens each time <code>shuffle()</code> is called. This is an unnecessary computational burden, especially if you want to perform tests with large numbers of permutations. Furthermore, having the set of permutations available allows for expedited use with other functions, they can be iterated over using <code>for</code> loops or the <code>apply</code> family of functions, and the set of permutations can be exported for use outside of R.</p>
+<p>The <code>shuffleSet()</code> function allows the generation of sets of permutations from any of the designs available in <em>permute</em>. <code>shuffleSet()</code> takes an additional argument to that of <code>shuffle()</code>, <code>nset</code>, which is the number of permutations required for the set. <code>nset</code> can be missing, in which case the number of permutations in the set is looked for in the object passed to <code>control</code>; using this, the desired number of permutations can be set at the time the design is created via the <code>nperm</code> argument of <code>how()</code>. For example,</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">how</span>(<span class="at">nperm =</span> <span class="dv">10</span>, <span class="at">within =</span> <span class="fu">Within</span>(<span class="at">type =</span> <span class="st">&quot;series&quot;</span>))</span></code></pre></div>
+<p>Internally, <code>shuffle()</code> and <code>shuffleSet()</code> are very similar, with the major difference being that <code>shuffleSet()</code> arranges repeated calls to the workhorse permutation-generating functions, only incurring the overhead associated with interpreting the permutation design once. <code>shuffleSet()</code> returns a matrix where the rows represent different permutations in the set.</p>
+<p>As an illustration, consider again the simple time series example from earlier. Here I generate a set of 5 permutations from the design, with the results returned as a matrix</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>CTRL <span class="ot">&lt;-</span> <span class="fu">how</span>(<span class="at">within =</span> <span class="fu">Within</span>(<span class="at">type =</span> <span class="st">&quot;series&quot;</span>))</span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a>pset <span class="ot">&lt;-</span> <span class="fu">shuffleSet</span>(<span class="dv">10</span>, <span class="at">nset =</span> <span class="dv">5</span>, <span class="at">control =</span> CTRL)</span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a>pset</span></code></pre></div>
+<pre><code>## No. of Permutations: 5
+## No. of Samples: 10 (Sequence)
+## 
+##     1  2  3 4 5  6  7 8 9 10
+## p1  9 10  1 2 3  4  5 6 7  8
+## p2  4  5  6 7 8  9 10 1 2  3
+## p3 10  1  2 3 4  5  6 7 8  9
+## p4  8  9 10 1 2  3  4 5 6  7
+## p5  5  6  7 8 9 10  1 2 3  4</code></pre>
+<p>It is worth taking a moment to explain what has happened here, behind the scenes. There are only 10 unique orderings (including the observed) in the set of permutations for this design. Such a small set of permutations triggers<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> the generation of the entire set of permutations. From this set, <code>shuffleSet()</code> samples at random <code>nset</code> permutations. Hence the same number of random values has been generated via the pseudo-random number generator in <em>R</em> but we ensure a set of unique permutations is drawn, rather than randomly sample from a small set.</p>
+</div>
+</div>
+<div id="defining-permutation-designs" class="section level1">
+<h1>Defining permutation designs</h1>
+<p>In this section I give examples how various permutation designs can be specified using <code>how()</code>. It is not the intention to provide exhaustive coverage of all possible designs that can be produced; such a list would be tedious to both write <em>and</em> read. Instead, the main features and options will be described through a series of examples. The reader should then be able to put together the various options to create the exact structure required.</p>
+<div id="set-the-number-of-permutations" class="section level2">
+<h2>Set the number of permutations</h2>
+<p>It may be useful to specify the number of permutations required in a permutation test alongside the permutation design. This is done via the <code>nperm</code> argument, as seen earlier. If nothing else is specified</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">how</span>(<span class="at">nperm =</span> <span class="dv">999</span>)</span></code></pre></div>
+<p>would indicate 999 random permutations where the samples are all freely exchangeable.</p>
+<p>One advantage of using <code>nperm</code> is that <code>shuffleSet()</code> will use this if the <code>nset</code> argument is not specified. Additionally, <code>shuffleSet()</code> will check to see if the desired number of permutations is possible given the data and the requested design. This is done via the function <code>check()</code>, which is discussed later.</p>
+</div>
+<div id="the-levels-of-the-permutation-hierarchy" class="section level2">
+<h2>The levels of the permutation hierarchy</h2>
+<p>There are three levels at which permutations can be controlled in <em>permute</em>. The highest level of the hierarchy is the <em>block</em> level. Blocks are defined by a factor variable. Blocks restrict permutation of samples to within the levels of this factor; samples are never swapped between blocks.</p>
+<p>The <em>plot</em> level sits below blocks. Plots are defined by a factor and group samples in the same way as blocks. As such, some permutation designs can be initiated using a factor at the plot level or the same factor at the block level. The major difference between blocks and plots is that plots can also be permuted, whereas blocks are never permuted.</p>
+<p>The lowest level of a permutation design in the <em>permute</em> hierarchy is known as <em>within</em>, and refers to samples nested <em>within</em> plots. If there are no plots or blocks, how samples are permuted at the <em>within</em> level applies to the entire data set.</p>
+<div id="permuting-samples-at-the-lowest-level" class="section level3">
+<h3>Permuting samples at the lowest level</h3>
+<p>How samples at the <em>within</em> level are permuted is configured using the <code>Within()</code> function. It takes the following arguments</p>
+<pre><code>## function (type = c(&quot;free&quot;, &quot;series&quot;, &quot;grid&quot;, &quot;none&quot;), constant = FALSE, 
+##     mirror = FALSE, ncol = NULL, nrow = NULL) 
+## NULL</code></pre>
+<dl>
+<dt><code>type</code></dt>
+<dd>
+controls how the samples at the lowest level are permuted. The default is to form unrestricted permutations via option <code>&quot;type&quot;</code>. Options <code>&quot;series&quot;</code> and <code>&quot;grid&quot;</code> form restricted permutations via cyclic or toroidal shifts, respectively. The former is useful for samples that are a time series or line-transect, whilst the latter is used for samples on a regular spatial grid. The final option, <code>&quot;none&quot;</code>, will result in the samples at the lowest level not being permuted at all. This option is only of practical use when there are plots within the permutation/experimental design[^As blocks are never permuted, using <code>type = &quot;none&quot;</code> at the <em>within</em> level is also of no practical use.].
+</dd>
+<dt><code>constant</code></dt>
+<dd>
+this argument only has an effect when there are plots in the design[^Owing to the current implementation, whilst this option could also be useful when blocks to define groups of samples, it will not have any influence over how permutations are generated. As such, only use blocks for simple blocking structures and use plots if you require greater control of the permutations at the group (i.e. plot) level.]. <code>constant = TRUE</code> stipulates that each plot should have the same <em>within-plot</em> permutation. This is useful for example when you have time series of observations from several plots. If all plots were sampled at the same time points, it can be argued that at the plot level, the samples experienced the same <em>time</em> and hence the same permutation should be used within each plot.
+</dd>
+<dt><code>mirror</code></dt>
+<dd>
+when <code>type</code> is <code>&quot;series&quot;</code> or <code>&quot;grid&quot;</code>, argument <code>&quot;mirror&quot;</code> controls whether permutations are taken from the mirror image of the observed ordering in space or time. Consider the sequence <code>1, 2, 3, 4</code>. The relationship between observations is also preserved if we reverse the original ordering to <code>4, 3, 2, 1</code> and generate permutations from both these orderings. This is what happens when <code>mirror = TRUE</code>. For time series, the reversed ordering <code>4, 3, 2, 1</code> would imply an influence of observation 4 on observation 3, which is implausible. For spatial grids or line transects, however, this is a sensible option, and can significantly increase the number of possible permutations[^Setting <code>mirror = TRUE</code> will double or quadruple the set of permutations for <code>&quot;series&quot;</code> or <code>&quot;grid&quot;</code> permutations, respectively, as long as there are more than two time points or columns in the grid.].
+</dd>
+<dt><code>ncol</code>, <code>nrow</code></dt>
+<dd>
+define the dimensions of the spatial grid.
+</dd>
+</dl>
+<p>How <code>Within()</code> is used has already been encountered in earlier sections of this vignette; the function is used to supply a value to the <code>within</code> argument of <code>how()</code>. You may have noticed that all the arguments of <code>Within()</code> have default values? This means that the user need only supply a modified value for the arguments they wish to change. Also, arguments that are not relevant for the type of permutation stated are simply ignored; <code>nrow</code> and <code>ncol</code>, for example, could be set to any value without affecting the permutation design if <code>type != &quot;grid&quot;</code>[^No warnings are currently given if incompatible arguments are specified; they are ignored, but may show up in the printed output. This infelicity will be removed prior to <em>permute</em> version 1.0-0 being released.].</p>
+</div>
+<div id="permuting-samples-at-the-plot-level" class="section level3">
+<h3>Permuting samples at the Plot level</h3>
+<p>Permutation of samples at the <em>plot</em> level is configured via the <code>Plots()</code> function. As with <code>Within()</code>, <code>Plots()</code> is supplied to the <code>plots</code> argument of <code>how()</code>. <code>Plots()</code> takes many of the same arguments as <code>Within()</code>, the two differences being <code>strata</code>, a factor variable that describes the grouping of samples at the <em>plot</em> level, and the absence of a <code>constant</code> argument. As the majority of arguments are similar between <code>Within()</code> and <code>Plots()</code>, I will not repeat the details again, and only describe the <code>strata</code> argument</p>
+<dl>
+<dt><code>strata</code></dt>
+<dd>
+a factor variable. <code>strata</code> describes the grouping of samples at the <em>plot</em> level, where samples from the same <em>plot</em> are take the same <em>level</em> of the factor.
+</dd>
+</dl>
+<p>When a <em>plot</em>-level design is specified, samples are never permuted between <em>plots</em>, only within plots if they are permuted at all. Hence, the type of permutation <em>within</em> the <em>plots</em> is controlled by <code>Within()</code>. Note also that with <code>Plots()</code>, the way the individual <em>plots</em> are permuted can be from any one of the four basic permutation types; <code>&quot;none&quot;</code>, <code>&quot;free&quot;</code>, <code>&quot;series&quot;</code>, and <code>&quot;grid&quot;</code>, as described above. To permute the <em>plots</em> only (i.e. retain the ordering of the samples <em>within</em> plots), you also need to specify <code>Within(type = &quot;none&quot;, ...)</code> as the default in <code>Within()</code> is <code>type = &quot;free&quot;</code>. The ability to permute the plots whilst preserving the within-plot ordering is an important feature in testing explanatory factors at the whole-plot level in split-plot designs and in multifactorial analysis of variance <span class="citation">(Braak and Šmilauer 2012)</span>.</p>
+</div>
+<div id="specifying-blocks-the-top-of-the-permute-hierarchy" class="section level3">
+<h3>Specifying blocks; the top of the <em>permute</em> hierarchy</h3>
+<p>In contrast to the <em>within</em> and <em>plots</em> levels, the <em>blocks</em> level is simple to specify; all that is required is an indicator variable the same length as the data. Usually this is a factor, but <code>how()</code> will take anything that can be coerced to a factor via <code>as.factor()</code>.</p>
+<p>It is worth repeating what the role of the block-level structure is; blocks simply restrict permutation to <em>within</em>, and never between, blocks, and blocks are never permuted. This is reflected in the implementation; the <em>split</em>-<em>apply</em>-<code>combine</code> paradigm is used to split on the blocking factor, the plot- and within-level permutation design is applied separately to each block, and finally the sets of permutations for each block are recombined.</p>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>To do.</p>
+</div>
+</div>
+<div id="using-permute-in-r-functions" class="section level1">
+<h1>Using <em>permute</em> in <em>R</em> functions</h1>
+<p><em>permute</em> originally started life as a set of functions contained within the <em>vegan</em> package <span class="citation">(Oksanen et al. 2013)</span> designed to provide a replacement for the <code>permuted.index()</code> function. From these humble origins, I realised other users and package authors might want to make use of the code I was writing and so Jari Oksanen, the maintainer of <em>vegan</em>, and I decided to spin off the code into the <em>permute</em> package. Hence from the very beginning, <em>permute</em> was intended for use both by users, to defining permutation designs, and by package authors, with which to implement permutation tests within their packages.</p>
+<p>In the previous sections, I described the various user-facing functions that are employed to set up permutation designs and generate permutations from these. Here I will outline how package authors can use functionality in the <em>permute</em> package to implement permutation tests.</p>
+<p>In Section~@ref{sec:simple} I showed how a permutation test function could be written using the <code>shuffle()</code> function and allowing the user to pass into the test function an object created with <code>how()</code>. As mentioned earlier, it is more efficient to generate a set of permutations via a call to <code>shuffleSet()</code> than to repeatedly call <code>shuffle()</code> and large number of times. Another advantage of using <code>shuffleSet()</code> is that once the set of permutations has been created, parallel processing can be used to break the set of permutations down into smaller chunks, each of which can be worked on simultaneously. As a result, package authors are encouraged to use <code>shuffleSet()</code> instead of the simpler <code>shuffle()</code>.</p>
+<p>To illustrate how to use <em>permute</em> in <em>R</em> functions, I’ll rework the permutation test I used for the <code>jackal</code> data earlier in Section~@ref{sec:simple}.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>pt.test <span class="ot">&lt;-</span> <span class="cf">function</span>(x, group, <span class="at">nperm =</span> <span class="dv">199</span>) {</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>    <span class="do">## mean difference function</span></span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>    meanDif <span class="ot">&lt;-</span> <span class="cf">function</span>(i, x, grp) {</span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a>        grp <span class="ot">&lt;-</span> grp[i]</span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a>        <span class="fu">mean</span>(x[grp <span class="sc">==</span> <span class="st">&quot;Male&quot;</span>]) <span class="sc">-</span> <span class="fu">mean</span>(x[grp <span class="sc">==</span> <span class="st">&quot;Female&quot;</span>])</span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a>    }</span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>    <span class="do">## check x and group are of same length</span></span>
+<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">all.equal</span>(<span class="fu">length</span>(x), <span class="fu">length</span>(group)))</span>
+<span id="cb42-9"><a href="#cb42-9" tabindex="-1"></a>    <span class="do">## number of observations</span></span>
+<span id="cb42-10"><a href="#cb42-10" tabindex="-1"></a>    N <span class="ot">&lt;-</span> <span class="fu">nobs</span>(x)</span>
+<span id="cb42-11"><a href="#cb42-11" tabindex="-1"></a>    <span class="do">## generate the required set of permutations</span></span>
+<span id="cb42-12"><a href="#cb42-12" tabindex="-1"></a>    pset <span class="ot">&lt;-</span> <span class="fu">shuffleSet</span>(N, <span class="at">nset =</span> nperm)</span>
+<span id="cb42-13"><a href="#cb42-13" tabindex="-1"></a>    <span class="do">## iterate over the set of permutations applying meanDif</span></span>
+<span id="cb42-14"><a href="#cb42-14" tabindex="-1"></a>    D <span class="ot">&lt;-</span> <span class="fu">apply</span>(pset, <span class="dv">1</span>, meanDif, <span class="at">x =</span> x, <span class="at">grp =</span> group)</span>
+<span id="cb42-15"><a href="#cb42-15" tabindex="-1"></a>    <span class="do">## add on the observed mean difference</span></span>
+<span id="cb42-16"><a href="#cb42-16" tabindex="-1"></a>    D <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">meanDif</span>(<span class="fu">seq_len</span>(N), x, group), D)</span>
+<span id="cb42-17"><a href="#cb42-17" tabindex="-1"></a>    <span class="do">## compute &amp; return the p-value</span></span>
+<span id="cb42-18"><a href="#cb42-18" tabindex="-1"></a>    Ds <span class="ot">&lt;-</span> <span class="fu">sum</span>(D <span class="sc">&gt;=</span> D[<span class="dv">1</span>]) <span class="co"># how many &gt;= to the observed diff?</span></span>
+<span id="cb42-19"><a href="#cb42-19" tabindex="-1"></a>    Ds <span class="sc">/</span> (nperm <span class="sc">+</span> <span class="dv">1</span>)     <span class="co"># what proportion of perms is this (the pval)?</span></span>
+<span id="cb42-20"><a href="#cb42-20" tabindex="-1"></a>}</span></code></pre></div>
+<p>The commented function should be reasonably self explanatory. I’ve altered the in-line version of the <code>meanDif()</code> function to take a vector of permutation indices <code>i</code> as the first argument, and internally the <code>grp</code> vector is permuted according to <code>i</code>. The other major change is that <code>shuffleSet()</code> is used to generate a set of permutations, which are then iterated over using <code>apply()</code>.</p>
+<p>In use we see</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="do">## same seed as earlier</span></span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>pval <span class="ot">&lt;-</span> <span class="fu">with</span>(jackal, <span class="fu">pt.test</span>(Length, Sex, <span class="at">nperm =</span> <span class="dv">4999</span>))</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>pval</span></code></pre></div>
+<pre><code>## [1] 0.0024</code></pre>
+<p>which nicely agrees with the test we did earlier by hand.</p>
+<p>Iterating over a set of permutation indices also means that adding parallel processing of the permutations requires only trivial changes to the main function code. As an illustration, below I show a parallel version of <code>pt.test()</code></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>ppt.test <span class="ot">&lt;-</span> <span class="cf">function</span>(x, group, <span class="at">nperm =</span> <span class="dv">199</span>, <span class="at">cores =</span> <span class="dv">2</span>) {</span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>    <span class="do">## mean difference function</span></span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>    meanDif <span class="ot">&lt;-</span> <span class="cf">function</span>(i, .x, .grp) {</span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>        .grp <span class="ot">&lt;-</span> .grp[i]</span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>        <span class="fu">mean</span>(.x[.grp <span class="sc">==</span> <span class="st">&quot;Male&quot;</span>]) <span class="sc">-</span> <span class="fu">mean</span>(.x[.grp <span class="sc">==</span> <span class="st">&quot;Female&quot;</span>])</span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>    }</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a>    <span class="do">## check x and group are of same length</span></span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a>    <span class="fu">stopifnot</span>(<span class="fu">all.equal</span>(<span class="fu">length</span>(x), <span class="fu">length</span>(group)))</span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a>    <span class="do">## number of observations</span></span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a>    N <span class="ot">&lt;-</span> <span class="fu">nobs</span>(x)</span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a>    <span class="do">## generate the required set of permutations</span></span>
+<span id="cb45-12"><a href="#cb45-12" tabindex="-1"></a>    pset <span class="ot">&lt;-</span> <span class="fu">shuffleSet</span>(N, <span class="at">nset =</span> nperm)</span>
+<span id="cb45-13"><a href="#cb45-13" tabindex="-1"></a>    <span class="cf">if</span> (cores <span class="sc">&gt;</span> <span class="dv">1</span>) {</span>
+<span id="cb45-14"><a href="#cb45-14" tabindex="-1"></a>        <span class="do">## initiate a cluster</span></span>
+<span id="cb45-15"><a href="#cb45-15" tabindex="-1"></a>        cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(cores)</span>
+<span id="cb45-16"><a href="#cb45-16" tabindex="-1"></a>        <span class="fu">on.exit</span>(<span class="fu">stopCluster</span>(<span class="at">cl =</span> cl))</span>
+<span id="cb45-17"><a href="#cb45-17" tabindex="-1"></a>        <span class="do">## iterate over the set of permutations applying meanDif</span></span>
+<span id="cb45-18"><a href="#cb45-18" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <span class="fu">parRapply</span>(cl, pset, meanDif, <span class="at">.x =</span> x, <span class="at">.grp =</span> group)</span>
+<span id="cb45-19"><a href="#cb45-19" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb45-20"><a href="#cb45-20" tabindex="-1"></a>        D <span class="ot">&lt;-</span> <span class="fu">apply</span>(pset, <span class="dv">1</span>, meanDif, <span class="at">.x =</span> x, <span class="at">.grp =</span> group)</span>
+<span id="cb45-21"><a href="#cb45-21" tabindex="-1"></a>    }</span>
+<span id="cb45-22"><a href="#cb45-22" tabindex="-1"></a>    <span class="do">## add on the observed mean difference</span></span>
+<span id="cb45-23"><a href="#cb45-23" tabindex="-1"></a>    D <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">meanDif</span>(<span class="fu">seq_len</span>(N), x, group), D)</span>
+<span id="cb45-24"><a href="#cb45-24" tabindex="-1"></a>    <span class="do">## compute &amp; return the p-value</span></span>
+<span id="cb45-25"><a href="#cb45-25" tabindex="-1"></a>    Ds <span class="ot">&lt;-</span> <span class="fu">sum</span>(D <span class="sc">&gt;=</span> D[<span class="dv">1</span>]) <span class="co"># how many &gt;= to the observed diff?</span></span>
+<span id="cb45-26"><a href="#cb45-26" tabindex="-1"></a>    Ds <span class="sc">/</span> (nperm <span class="sc">+</span> <span class="dv">1</span>)     <span class="co"># what proportion of perms is this (the pval)?</span></span>
+<span id="cb45-27"><a href="#cb45-27" tabindex="-1"></a>}</span></code></pre></div>
+<p>In use we observe</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="fu">require</span>(<span class="st">&quot;parallel&quot;</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a><span class="fu">system.time</span>(ppval <span class="ot">&lt;-</span> <span class="fu">ppt.test</span>(jackal<span class="sc">$</span>Length, jackal<span class="sc">$</span>Sex, <span class="at">nperm =</span> <span class="dv">9999</span>,</span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>                              <span class="at">cores =</span> <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.048   0.005   0.259</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>ppval</span></code></pre></div>
+<pre><code>## [1] 0.0018</code></pre>
+<p>In this case there is little to be gained by splitting the computations over two CPU cores</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a><span class="fu">system.time</span>(ppval2 <span class="ot">&lt;-</span> <span class="fu">ppt.test</span>(jackal<span class="sc">$</span>Length, jackal<span class="sc">$</span>Sex, <span class="at">nperm =</span> <span class="dv">9999</span>,</span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a>                               <span class="at">cores =</span> <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.162   0.001   0.163</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a>ppval2</span></code></pre></div>
+<pre><code>## [1] 0.0018</code></pre>
+<p>The cost of setting up and managing the parallel processes, and recombining the separate sets of results almost negates the gain in running the permutations in parallel. Here, the computations involved in <code>meanDif()</code> are trivial and we would expect greater efficiencies from running the permutations in parallel for more complex analyses.</p>
+<div id="accessing-and-changing-permutation-designs" class="section level2">
+<h2>Accessing and changing permutation designs</h2>
+<p>The object created by <code>how()</code> is a relatively simple list containing the settings for the specified permutation design. As such one could use the standard subsetting and replacement functions in base <em>R</em> to alter components of the list. This is not recommended, however, as the internal structure of the list returned by <code>how()</code> may change in a later version of <em>permute</em>. Furthermore, to facilitate the use of <code>update()</code> at the user-level to alter the permutation design in a user-friendly way, the matched <code>how()</code> call is stored within the list along with the matched calls for any <code>Within()</code> or <code>Plots()</code> components. These matched calls need to be updated too if the list describing the permutation design is altered. To allow function writers to access and alter permutation designs, <em>permute</em> provides a series of extractor and replacement functions that have the forms <code>getFoo()</code> and <code>setFoo&lt;-()</code>, respectively,where <code>Foo</code> is replaced by a particular component to be extracted or replaced.</p>
+<p>The <code>getFoo()</code> functions provided by <em>permute</em> are</p>
+<dl>
+<dt><code>getWithin()</code>, <code>getPlots()</code>, <code>getBlocks()</code></dt>
+<dd>
+these extract the details of the <em>within</em>-, <em>plots</em>-, and <em>blocks</em>-level components of the design. Given the current design (as of <em>permute</em> version 0.8-0), the first two of these return lists with classes <code>&quot;Within&quot;</code> and <code>&quot;Plots&quot;</code>, respectively, whilst <code>getBlocks()</code> returns the block-level factor.
+</dd>
+<dt><code>getStrata()</code></dt>
+<dd>
+returns the factor describing the grouping of samples at the <em>plots</em> or <em>blocks</em> levels, as determined by the value of argument <code>which</code>.
+</dd>
+<dt><code>getType()</code></dt>
+<dd>
+returns the type of permutation of samples at the <em>within</em> or <em>plots</em> levels, as determined by the value of argument <code>which</code>.
+</dd>
+<dt><code>getMirror()</code></dt>
+<dd>
+returns a logical, indicating whether permutations are drawn from the mirror image of the observed ordering at the <em>within</em> or <em>plots</em> levels, as determined by the value of argument <code>which</code>.
+</dd>
+<dt><code>getConstant()</code></dt>
+<dd>
+returns a logical, indicating whether the same permutation of samples, or a different permutation, is used within each of the plots.
+</dd>
+<dt><code>getRow()</code>, <code>getCol()</code>, <code>getDim()</code></dt>
+<dd>
+return dimensions of the spatial grid of samples at the <em>plots</em> or <em>blocks</em> levels, as determined by the value of argument <code>which</code>.
+</dd>
+<dt><code>getNperm()</code>, <code>getMaxperm()</code>, <code>getMinperm()</code></dt>
+<dd>
+return numerics for the stored number of permutations requested plus two triggers used when checking permutation designs via <code>check()</code>.
+</dd>
+<dt><code>getComplete()</code></dt>
+<dd>
+returns a logical, indicating whether complete enumeration of the set of permutations was requested.
+</dd>
+<dt><code>getMake()</code></dt>
+<dd>
+returns a logical, indicating whether the entire set of permutations should be produced or not.
+</dd>
+<dt><code>getObserved()</code></dt>
+<dd>
+returns a logical, which indicates whether the observed permutation (ordering of samples) is included in the entire set of permutation generated by <code>allPerms()</code>.
+</dd>
+<dt><code>getAllperms()</code></dt>
+<dd>
+extracts the complete set of permutations if present. Returns <code>NULL</code> if the set has not been generated.
+</dd>
+</dl>
+<p>The available <code>setFoo()&lt;-</code> functions are</p>
+<dl>
+<dt><code>setPlots&lt;-()</code>, <code>setWithin&lt;-()</code></dt>
+<dd>
+replaces the details of the <em>within</em>-, and <em>plots</em>-, components of the design. The replacement object must be of class <code>&quot;Plots&quot;</code> or <code>&quot;Within&quot;</code>, respectively, and hence is most usefully used in combination with the <code>Plots()</code> or <code>Within()</code> constructor functions.
+</dd>
+<dt><code>setBlocks&lt;-()</code></dt>
+<dd>
+replaces the factor that partitions the observations into blocks. <code>value</code> can be any <em>R</em> object that can be coerced to a factor vector via <code>as.factor()</code>.
+</dd>
+<dt><code>setStrata&lt;-()</code></dt>
+<dd>
+replaces either the <code>blocks</code> or <code>strata</code> components of the design, depending on what class of object <code>setStrata&lt;-()</code> is applied to. When used on an object of class <code>&quot;how&quot;</code>, <code>setStrata&lt;-()</code> replaces the <code>blocks</code> component of that object. When used on an object of class <code>&quot;Plots&quot;</code>, <code>setStrata&lt;-()</code> replaces the <code>strata</code> component of that object. In both cases a factor variable is required and the replacement object will be coerced to a factor via <code>as.factor()</code> if possible.
+</dd>
+<dt><code>setType&lt;-()</code></dt>
+<dd>
+replaces the <code>type</code> component of an object of class <code>&quot;Plots&quot;</code> or <code>&quot;Within&quot;</code> with a character vector of length one. Must be one of the available types: <code>&quot;none&quot;</code>, <code>&quot;free&quot;</code>, <code>&quot;series&quot;</code>, or <code>&quot;grid&quot;</code>.
+</dd>
+<dt><code>setMirror&lt;-()</code></dt>
+<dd>
+replaces the <code>mirror</code> component of an object of class <code>&quot;Plots&quot;</code> or <code>&quot;Within&quot;</code> with a logical vector of length one.
+</dd>
+<dt><code>setConstant&lt;-()</code></dt>
+<dd>
+replaces the <code>constant</code> component of an object of class <code>&quot;Within&quot;</code> with a logical vector of length one.
+</dd>
+<dt><code>setRow&lt;-()</code>, <code>setCol&lt;-()</code>, <code>setDim&lt;-()</code></dt>
+<dd>
+replace one or both of the spatial grid dimensions of an object of class <code>&quot;Plots&quot;</code> or <code>&quot;Within&quot;</code> with am integer vector of length one, or, in the case of <code>setDim&lt;-()</code>, of length 2.
+</dd>
+<dt><code>setNperm&lt;-()</code>, <code>setMinperm&lt;-()</code>, <code>setMaxperm&lt;-()</code></dt>
+<dd>
+update the stored values for the requested number of permutations and the minimum and maximum permutation thresholds that control whether the entire set of permutations is generated instead of <code>nperm</code> permutations.
+</dd>
+<dt><code>setAllperms&lt;-()</code></dt>
+<dd>
+assigns a matrix of permutation indices to the <code>all.perms</code> component of the design list object.
+</dd>
+<dt><code>setComplete&lt;-()</code></dt>
+<dd>
+updates the status of the <code>complete</code> setting. Takes a logical vector of length 1 or any object coercible to such.
+</dd>
+<dt><code>setMake&lt;-()</code></dt>
+<dd>
+sets the indicator controlling whether the entire set of permutations is generated during checking of the design via <code>check()</code>. Takes a logical vector of length 1 or any object coercible to such.
+</dd>
+<dt><code>setObserved&lt;-()</code></dt>
+<dd>
+updates the indicator of whether the observed ordering is included in the set of all permutations should they be generated. Takes a logical vector of length 1 or any object coercible to such.
+</dd>
+</dl>
+<p><em>Examples</em></p>
+<p>I illustrate the behaviour of the <code>getFoo()</code> and <code>setFoo&lt;-()</code> functions through a couple of simple examples. Firstly, generate a design object</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>hh <span class="ot">&lt;-</span> <span class="fu">how</span>()</span></code></pre></div>
+<p>This design is one of complete randomization, so all of the settings in the object take their default values. The default number of permutations is currently 199, and can be extracted using <code>getNperm()</code></p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">getNperm</span>(hh)</span></code></pre></div>
+<pre><code>## [1] 199</code></pre>
+<p>The corresponding replacement function can be use to alter the number of permutations after the design has been generated. To illustrate a finer point of the behaviour of these replacement functions, compare the matched call stored in <code>hh</code> before and after the number of permutations is changed</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">getCall</span>(hh)</span></code></pre></div>
+<pre><code>## how()</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="fu">setNperm</span>(hh) <span class="ot">&lt;-</span> <span class="dv">999</span></span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">getNperm</span>(hh)</span></code></pre></div>
+<pre><code>## [1] 999</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="fu">getCall</span>(hh)</span></code></pre></div>
+<pre><code>## how(nperm = 999)</code></pre>
+<p>Note how the <code>call</code> component has been altered to include the argument pair <code>nperm = 999</code>, hence if this call were evaluated, the resulting object would be a copy of <code>hh</code>.</p>
+<p>As a more complex example, consider the following design consisting of 5 blocks, each containing 2 plots of 5 samples each. Hence there are a total of 10 plots. Both the plots and within-plot sample are time series. This design can be created using</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>hh <span class="ot">&lt;-</span> <span class="fu">how</span>(<span class="at">within =</span> <span class="fu">Within</span>(<span class="at">type =</span> <span class="st">&quot;series&quot;</span>),</span>
+<span id="cb63-2"><a href="#cb63-2" tabindex="-1"></a>          <span class="at">plots =</span> <span class="fu">Plots</span>(<span class="at">type =</span> <span class="st">&quot;series&quot;</span>, <span class="at">strata =</span> <span class="fu">gl</span>(<span class="dv">10</span>, <span class="dv">5</span>)),</span>
+<span id="cb63-3"><a href="#cb63-3" tabindex="-1"></a>          <span class="at">blocks =</span> <span class="fu">gl</span>(<span class="dv">5</span>, <span class="dv">10</span>))</span></code></pre></div>
+<p>To alter the design at the plot or within-plot levels, it is convenient to extract the relevant component using <code>getPlots()</code> or <code>getWithin()</code>, update the extracted object, and finally use the updated object to update <code>hh</code>. This process is illustrated below in order to change the plot-level permutation type to <code>&quot;free&quot;</code></p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a>pl <span class="ot">&lt;-</span> <span class="fu">getPlots</span>(hh)</span>
+<span id="cb64-2"><a href="#cb64-2" tabindex="-1"></a><span class="fu">setType</span>(pl) <span class="ot">&lt;-</span> <span class="st">&quot;free&quot;</span></span>
+<span id="cb64-3"><a href="#cb64-3" tabindex="-1"></a><span class="fu">setPlots</span>(hh) <span class="ot">&lt;-</span> pl</span></code></pre></div>
+<p>We can confirm this has been changed by extracting the permutation type for the plot level</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="fu">getType</span>(hh, <span class="at">which =</span> <span class="st">&quot;plots&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;free&quot;</code></pre>
+<p>Notice too how the call has been expanded from <code>gl(10, 5)</code> to an integer vector. This expansion is to avoid the obvious problem of locating the objects referred to in the call should the call be re-evaluated later.</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a><span class="fu">getCall</span>(<span class="fu">getPlots</span>(hh))</span></code></pre></div>
+<pre><code>## Plots(strata = c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 3L, 
+## 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 5L, 5L, 5L, 6L, 6L, 
+## 6L, 6L, 6L, 7L, 7L, 7L, 7L, 7L, 8L, 8L, 8L, 8L, 8L, 9L, 9L, 9L, 
+## 9L, 9L, 10L, 10L, 10L, 10L, 10L), type = &quot;free&quot;)</code></pre>
+<p>At the top level, a user can update the design using <code>update()</code>. Hence the equivalent of the above update is (this time resetting the original type; <code>type = &quot;series&quot;</code>)</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a>hh <span class="ot">&lt;-</span> <span class="fu">update</span>(hh, <span class="at">plots =</span> <span class="fu">update</span>(<span class="fu">getPlots</span>(hh), <span class="at">type =</span> <span class="st">&quot;series&quot;</span>))</span>
+<span id="cb69-2"><a href="#cb69-2" tabindex="-1"></a><span class="fu">getType</span>(hh, <span class="at">which =</span> <span class="st">&quot;plots&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;series&quot;</code></pre>
+<p>However, this approach is not assured of working within a function because we do not guarantee that components of the call used to create <code>hh</code> can be found from the execution frame where <code>update()</code> is called. To be safe, always use the <code>setFoo&lt;-()</code> replacement functions to update design objects from within your functions.</p>
+</div>
+</div>
+<div id="computational-details" class="section level1">
+<h1>Computational details</h1>
+<p>This vignette was built within the following environment:</p>
+<pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
+##  setting  value
+##  version  R version 4.5.2 (2025-10-31)
+##  os       macOS Tahoe 26.2
+##  system   aarch64, darwin20
+##  ui       X11
+##  language (EN)
+##  collate  C
+##  ctype    C.UTF-8
+##  tz       Europe/Copenhagen
+##  date     2026-02-06
+##  pandoc   3.8.3 @ /opt/homebrew/bin/ (via rmarkdown)
+##  quarto   1.8.27 @ /Applications/quarto/bin/quarto
+## 
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version date (UTC) lib source
+##  bookdown      0.46    2025-12-05 [3] CRAN (R 4.5.2)
+##  bslib         0.10.0  2026-01-26 [3] CRAN (R 4.5.2)
+##  cachem        1.1.0   2024-05-16 [3] CRAN (R 4.5.0)
+##  cli           3.6.5   2025-04-23 [3] CRAN (R 4.5.0)
+##  digest        0.6.39  2025-11-19 [3] CRAN (R 4.5.2)
+##  evaluate      1.0.5   2025-08-27 [3] CRAN (R 4.5.0)
+##  fastmap       1.2.0   2024-05-15 [3] CRAN (R 4.5.0)
+##  htmltools     0.5.9   2025-12-04 [3] CRAN (R 4.5.2)
+##  jquerylib     0.1.4   2021-04-26 [3] CRAN (R 4.5.0)
+##  jsonlite      2.0.0   2025-03-27 [3] CRAN (R 4.5.0)
+##  knitr         1.51    2025-12-20 [3] CRAN (R 4.5.2)
+##  lifecycle     1.0.5   2026-01-08 [3] CRAN (R 4.5.2)
+##  otel          0.2.0   2025-08-29 [3] CRAN (R 4.5.0)
+##  permute     * 0.9-10  2026-02-06 [1] local
+##  R6            2.6.1   2025-02-15 [3] CRAN (R 4.5.0)
+##  rlang         1.1.7   2026-01-09 [3] CRAN (R 4.5.2)
+##  rmarkdown     2.30    2025-09-28 [3] CRAN (R 4.5.0)
+##  sass          0.4.10  2025-04-11 [3] CRAN (R 4.5.0)
+##  sessioninfo   1.2.3   2025-02-05 [3] CRAN (R 4.5.0)
+##  xfun          0.56    2026-01-18 [3] CRAN (R 4.5.2)
+##  yaml          2.3.12  2025-12-10 [3] CRAN (R 4.5.2)
+## 
+##  [1] /private/var/folders/yq/gqj7yv7j3n17w__256r9vxn40000gn/T/Rtmpd1PJQo/Rinst169f271685a90
+##  [2] /private/var/folders/yq/gqj7yv7j3n17w__256r9vxn40000gn/T/RtmpB8TV5I/temp_libpathde151d5a144b
+##  [3] /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library
+##  * ── Packages attached to the search path.
+## 
+## ──────────────────────────────────────────────────────────────────────────────</code></pre>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-besagclifford" class="csl-entry">
+Besag, J., and P. Clifford. 1989. <span>“Generalized Monte Carlo Significance Tests.”</span> <em>Biometrika</em> 76 (4): 633–42.
+</div>
+<div id="ref-canoco31" class="csl-entry">
+Braak, C. J. F. ter. 1990. <em>Update Notes: CANOCO Version 3.1</em>. Wageningen: Agricultural Mathematics Group.
+</div>
+<div id="ref-canoco5manual" class="csl-entry">
+Braak, C. J. F. ter, and P. Šmilauer. 2012. <em>Canoco Reference Manual and User’s Guide: Software for Ordination (Version 5.0)</em>. Microcomputer Power.
+</div>
+<div id="ref-higham80" class="csl-entry">
+Higham, C. F. W, A. Kijngam, and B. F. J. Manly. 1980. <span>“An Analysis of Prehistoric Canid Remains from <span>T</span>hailand.”</span> <em>Journal of Archaeological Science</em> 7: 149–65.
+</div>
+<div id="ref-manly07" class="csl-entry">
+Manly, B. F. J. 2007. <em>Randomization, Bootstrap and Monte Carlo Methods in Biology</em>. 3rd ed. Chapman &amp; Hall/CRC.
+</div>
+<div id="ref-vegan" class="csl-entry">
+Oksanen, Jari, F. Guillaume Blanchet, Roeland Kindt, et al. 2013. <em>Vegan: Community Ecology Package</em>. <a href="http://vegan.r-forge.r-project.org/">http://vegan.r-forge.r-project.org/</a>.
+</div>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>The trigger is via the utility function <code>check()</code>, which calls another utility function, <code>allPerms()</code>, to generate the set of permutations for the stated design. The trigger for complete enumeration is set via <code>how()</code> using argument <code>minperm</code>; below this value, by default <code>check()</code> will generate the entire set of permutations.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7518 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Identification of Modified Data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Identification of Modified Data</h1>
+
+
+
+<p>Code here written by <a href="https://orcid.org/0000-0003-3192-0080">Erica Krimmel</a>.</p>
+<p>Here, we explore a situation where data from the provider were
+modified by iDigBio during ingestion as part of its data quality
+processing. Understanding how data were modified can help collections
+staff identify updates that need to be made on their specimen records as
+well as issues that the aggregator may need to remedy in their data
+quality processing.</p>
+<div id="general-overview" class="section level2">
+<h2>General Overview</h2>
+<p>In this demo we will cover how to:</p>
+<ol style="list-style-type: decimal">
+<li>Write a query to search for specimens using
+<code>idig_search_records</code></li>
+<li>Compare the difference between the data providers and aggregators
+data<br />
+</li>
+<li>Identify specimen records that need to be reviewed</li>
+</ol>
+</div>
+<div id="load-packages" class="section level2">
+<h2>Load Packages</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Load core libraries; install these packages if you have not already</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(ridigbio)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># Load library for making nice HTML output</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code></pre></div>
+</div>
+<div id="write-a-query-to-search-for-specimen-records" class="section level2">
+<h2>Write a query to search for specimen records</h2>
+<p>First, let’s find all the specimen records from a given recordset,
+e.g. all of the records published by a single collection. Do this using
+the <code>idig_search_records</code> function from the
+<code>ridigbio</code> package. You can learn more about this function
+from the <a href="https://github.com/iDigBio/idigbio-search-api/wiki">iDigBio API
+documentation</a> and <a href="https://cran.r-project.org/package=ridigbio/ridigbio.pdf">ridigbio
+documentation</a>. In this example, we want to start by searching for
+specimens from the <a href="https://www.idigbio.org/portal/recordsets/5082e6c8-8f5b-4bf6-a930-e3e6de7bf6fb">Invertebrate
+Paleontology collection</a> at the Natural History Museum of Los
+Angeles.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Edit the value after `recordset` to search for data from a different collection</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># and the fields (e.g. `uuid`) in `fields` to adjust the columns returned in</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># your results</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>df_names <span class="ot">&lt;-</span> <span class="fu">idig_search_records</span>(<span class="at">rq =</span> <span class="fu">list</span>(<span class="at">recordset =</span> <span class="st">&quot;5082e6c8-8f5b-4bf6-a930-e3e6de7bf6fb&quot;</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>                    <span class="at">fields =</span> <span class="fu">c</span>(<span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:occurrenceID&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:catalogNumber&quot;</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>                               <span class="st">&quot;family&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:family&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>                               <span class="st">&quot;genus&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:genus&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>                               <span class="st">&quot;specificepithet&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:specificEpithet&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>                               <span class="st">&quot;infraspecificepithet&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:infraspecificEpithet&quot;</span>,                             </span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>                               <span class="st">&quot;data.dwc:scientificName&quot;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>                               <span class="st">&quot;flags&quot;</span>),</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>                    <span class="co"># Set the limit for how many records are returned by the</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>                    <span class="co"># search to a low number for the purposes of this demo</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>                    <span class="at">limit =</span> <span class="dv">1000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>  <span class="co"># Rename fields to more easily reflect their provenance (either from the</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>  <span class="co"># data provider directly or modified by the data aggregator)</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">occurrenceID =</span> <span class="st">`</span><span class="at">data.dwc:occurrenceID</span><span class="st">`</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>         <span class="at">catalogNumber =</span> <span class="st">`</span><span class="at">data.dwc:catalogNumber</span><span class="st">`</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>         <span class="at">provider_family =</span> <span class="st">`</span><span class="at">data.dwc:family</span><span class="st">`</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>         <span class="at">provider_genus =</span> <span class="st">`</span><span class="at">data.dwc:genus</span><span class="st">`</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>         <span class="at">provider_species =</span> <span class="st">`</span><span class="at">data.dwc:specificEpithet</span><span class="st">`</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>         <span class="at">provider_subspecies =</span> <span class="st">`</span><span class="at">data.dwc:infraspecificEpithet</span><span class="st">`</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>         <span class="at">provider_scientificName =</span> <span class="st">`</span><span class="at">data.dwc:scientificName</span><span class="st">`</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>         <span class="at">aggregator_family =</span> <span class="st">`</span><span class="at">family</span><span class="st">`</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>         <span class="at">aggregator_genus =</span> <span class="st">`</span><span class="at">genus</span><span class="st">`</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>         <span class="at">aggregator_species =</span> <span class="st">`</span><span class="at">specificepithet</span><span class="st">`</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>         <span class="at">aggregator_subspecies =</span> <span class="st">`</span><span class="at">infraspecificepithet</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>  <span class="co"># Reorder columns for easier viewing</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>  <span class="fu">select</span>(uuid, occurrenceID, catalogNumber, aggregator_family, provider_family,</span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>         aggregator_genus, aggregator_species, aggregator_subspecies, </span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a>         provider_genus, provider_species, provider_subspecies,</span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>         provider_scientificName, flags)</span></code></pre></div>
+<p>Here is what our query result data looks like, with the data from the
+aggregator’s processing highlighted in red text:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+uuid
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+occurrenceID
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+catalogNumber
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_family
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_family
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_scientificName
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+000153f6-4861-4219-ac9e-f0d0f62fe60b
+</td>
+<td style="text-align:left;">
+0b6e2924-4b1a-4a18-a532-6c2d95962e95
+</td>
+<td style="text-align:left;">
+LACMIP 42500.14
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Clypeasteroida indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000249c8-5c27-4292-94a7-1802f4d1ca4b
+</td>
+<td style="text-align:left;">
+37ae5d77-073e-4713-aa54-92d7e0616fcf
+</td>
+<td style="text-align:left;">
+LACMIP 16817.200
+</td>
+<td style="text-align:left;color: red !important;">
+borsoniidae
+</td>
+<td style="text-align:left;">
+Borsoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+ophiodermella
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Ophiodermella
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Ophiodermella sp.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00028446-c91d-47f2-b036-2134f011e282
+</td>
+<td style="text-align:left;">
+2933a74c-faeb-4519-9117-6000c9f43926
+</td>
+<td style="text-align:left;">
+LACMIP 2657.24
+</td>
+<td style="text-align:left;color: red !important;">
+mactridae
+</td>
+<td style="text-align:left;">
+Mactridae
+</td>
+<td style="text-align:left;color: red !important;">
+tresus
+</td>
+<td style="text-align:left;color: red !important;">
+nuttallii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Tresus
+</td>
+<td style="text-align:left;">
+nuttallii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Tresus nuttallii (Conrad, 1837)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00034f81-997b-499f-a176-ac2949facbb9
+</td>
+<td style="text-align:left;">
+aecc92f1-1994-41bf-988c-e095ce1ce030
+</td>
+<td style="text-align:left;">
+LACMIP 1195.4
+</td>
+<td style="text-align:left;color: red !important;">
+fissurellidae
+</td>
+<td style="text-align:left;">
+Fissurellidae
+</td>
+<td style="text-align:left;color: red !important;">
+puncturella
+</td>
+<td style="text-align:left;color: red !important;">
+cooperi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Puncturella
+</td>
+<td style="text-align:left;">
+cooperi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Puncturella cooperi Carpenter, 1864
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00038886-e0ca-4893-b454-e90d75f1eaa7
+</td>
+<td style="text-align:left;">
+07cfa54b-1f25-4ea2-a0f2-a812f4e0523c
+</td>
+<td style="text-align:left;">
+LACMIP 16408.1
+</td>
+<td style="text-align:left;color: red !important;">
+cirolanidae
+</td>
+<td style="text-align:left;">
+Cirolanidae
+</td>
+<td style="text-align:left;color: red !important;">
+palaega
+</td>
+<td style="text-align:left;color: red !important;">
+goedertorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Palaega
+</td>
+<td style="text-align:left;">
+goedertorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Palaega goedertorum Wieder &amp; Feldmann, 2016
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0003949f-4780-4283-bab1-8e8fb7a71841
+</td>
+<td style="text-align:left;">
+be239c5f-fbdc-4062-b0d5-1a7f6074665e
+</td>
+<td style="text-align:left;">
+LACMIP 351.105
+</td>
+<td style="text-align:left;color: red !important;">
+ceratopogonidae
+</td>
+<td style="text-align:left;">
+Ceratopogonidae
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Ceratopogonidae indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0004af95-d2bf-4247-9522-440662c2788f
+</td>
+<td style="text-align:left;">
+d29d432a-d390-4479-8bf7-552399a5eb0c
+</td>
+<td style="text-align:left;">
+LACMIP 20651.58
+</td>
+<td style="text-align:left;color: red !important;">
+epitoniidae
+</td>
+<td style="text-align:left;">
+Epitoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+hirtoscala
+</td>
+<td style="text-align:left;color: red !important;">
+tinctum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+tinctum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala tinctum (Carpenter, 1864)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000587e5-d012-4f50-bc04-52f44e0182d3
+</td>
+<td style="text-align:left;">
+b5dc4eb7-6f1a-44b5-a4aa-2d8dd7608293
+</td>
+<td style="text-align:left;">
+LACMIP 10099.9
+</td>
+<td style="text-align:left;color: red !important;">
+turritellidae
+</td>
+<td style="text-align:left;">
+Turritellidae
+</td>
+<td style="text-align:left;color: red !important;">
+turritella
+</td>
+<td style="text-align:left;color: red !important;">
+hearni
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Turritella
+</td>
+<td style="text-align:left;">
+hearni
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Turritella hearni Merriam, 1941
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00058f4c-855d-423b-a9b5-aaec1b1bd25f
+</td>
+<td style="text-align:left;">
+727c3b93-52e8-403c-9e73-2232ac01a37e
+</td>
+<td style="text-align:left;">
+LACMIP 22382.118
+</td>
+<td style="text-align:left;color: red !important;">
+calyptraeidae
+</td>
+<td style="text-align:left;">
+Calyptraeidae
+</td>
+<td style="text-align:left;color: red !important;">
+crepidula
+</td>
+<td style="text-align:left;color: red !important;">
+onyx
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Crepidula
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Crepidula sp.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0006606e-53aa-4264-8af3-d55ff9951759
+</td>
+<td style="text-align:left;">
+240d0a7f-b29e-45ea-8394-c115ee56e8fd
+</td>
+<td style="text-align:left;">
+LACMIP 5060.45
+</td>
+<td style="text-align:left;color: red !important;">
+pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+leptopecten
+</td>
+<td style="text-align:left;color: red !important;">
+latiauratus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Leptopecten
+</td>
+<td style="text-align:left;">
+latiauratus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Leptopecten latiauratus (Conrad, 1837)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00067a2d-5d0f-47d7-9072-4b9b7b89bd88
+</td>
+<td style="text-align:left;">
+e5e3733b-c1d8-4e8c-a435-9a8ac0bbcde4
+</td>
+<td style="text-align:left;">
+LACMIP 7290.22
+</td>
+<td style="text-align:left;color: red !important;">
+potamididae
+</td>
+<td style="text-align:left;">
+Potamididae
+</td>
+<td style="text-align:left;color: red !important;">
+cerithidea
+</td>
+<td style="text-align:left;color: red !important;">
+californica
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis
+</td>
+<td style="text-align:left;">
+californica
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis californica (Haldeman, 1840)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00077744-a544-453a-b1bf-ad634d94eacf
+</td>
+<td style="text-align:left;">
+6ab4f80d-0d1a-4ae2-aabf-acc155320a1d
+</td>
+<td style="text-align:left;">
+LACMIP 31257.62
+</td>
+<td style="text-align:left;color: red !important;">
+nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+hima
+</td>
+<td style="text-align:left;color: red !important;">
+mendica
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hima
+</td>
+<td style="text-align:left;">
+mendica
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hima mendica (Gould, 1849)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0007cf26-5306-4f2f-a585-94a319069820
+</td>
+<td style="text-align:left;">
+2fe4c7be-6ca2-4b06-846a-d6869a032b82
+</td>
+<td style="text-align:left;">
+LACMIP 42484.30
+</td>
+<td style="text-align:left;color: red !important;">
+olividae
+</td>
+<td style="text-align:left;">
+Olividae
+</td>
+<td style="text-align:left;color: red !important;">
+callianax
+</td>
+<td style="text-align:left;color: red !important;">
+alectona
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Callianax
+</td>
+<td style="text-align:left;">
+alectona
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Callianax alectona (Duclos, 1835)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0007d63a-b15e-4cd5-9154-53a6204c0e41
+</td>
+<td style="text-align:left;">
+e87ad9af-e536-4303-a622-048892bf4dae
+</td>
+<td style="text-align:left;">
+LACMIP 2533.3708
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Coleoptera indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0007f380-2797-40fe-8071-a836be493f5b
+</td>
+<td style="text-align:left;">
+22d202d2-ce38-467c-aa2e-778070a37c3f
+</td>
+<td style="text-align:left;">
+LACMIP 22848.1
+</td>
+<td style="text-align:left;color: red !important;">
+gaudryceratidae
+</td>
+<td style="text-align:left;">
+Gaudryceratidae
+</td>
+<td style="text-align:left;color: red !important;">
+eogaudryceras
+</td>
+<td style="text-align:left;color: red !important;">
+hertleini
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Eogaudryceras
+</td>
+<td style="text-align:left;">
+hertleini
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Eogaudryceras hertleini (Wiedmann, 1962)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0009b3cf-ba45-4631-ad9f-b8e84b690bdf
+</td>
+<td style="text-align:left;">
+341ca08b-892f-40bf-8ad0-00a9a1aa8208
+</td>
+<td style="text-align:left;">
+LACMIP 260.336
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Diptera indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000ae0be-f613-43cf-a2bf-0eaefe5eedb8
+</td>
+<td style="text-align:left;">
+c3f51eee-ecc6-4d35-b05e-7b1dac915e7e
+</td>
+<td style="text-align:left;">
+LACMIP 42035.31
+</td>
+<td style="text-align:left;color: red !important;">
+conidae
+</td>
+<td style="text-align:left;">
+Conidae
+</td>
+<td style="text-align:left;color: red !important;">
+conus
+</td>
+<td style="text-align:left;color: red !important;">
+californicus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus
+</td>
+<td style="text-align:left;">
+californicus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus californicus (Reeve, 1844)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000ba35c-8bea-4528-b1cf-bbbb15d9a68d
+</td>
+<td style="text-align:left;">
+17750fa4-8422-4fd7-8167-9a31c00e0096
+</td>
+<td style="text-align:left;">
+LACMIP 5090.6
+</td>
+<td style="text-align:left;color: red !important;">
+tellinidae
+</td>
+<td style="text-align:left;">
+Tellinidae
+</td>
+<td style="text-align:left;color: red !important;">
+macoma
+</td>
+<td style="text-align:left;color: red !important;">
+astori
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Macoma
+</td>
+<td style="text-align:left;">
+astori
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Macoma (Rexithaerus) astori Dall, 1909
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000bb3a9-7161-4c90-ad21-f28b0aac7f15
+</td>
+<td style="text-align:left;">
+911b1326-38b2-4946-9eb4-61aaa3ca812a
+</td>
+<td style="text-align:left;">
+LACMIP 23225.88
+</td>
+<td style="text-align:left;color: red !important;">
+littorinidae
+</td>
+<td style="text-align:left;">
+Littorinidae
+</td>
+<td style="text-align:left;color: red !important;">
+lacuna
+</td>
+<td style="text-align:left;color: red !important;">
+unifasciata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Lacuna
+</td>
+<td style="text-align:left;">
+unifasciata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Lacuna (Epheria) unifasciata Carpenter, 1857
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000d25fe-9b7c-4a8a-b200-23b8643adee1
+</td>
+<td style="text-align:left;">
+5d3319d4-a595-4f10-a897-e82d29eb5032
+</td>
+<td style="text-align:left;">
+LACMIP 2533.1396
+</td>
+<td style="text-align:left;color: red !important;">
+incertae sedis
+</td>
+<td style="text-align:left;">
+Incertae sedis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Anisoptera indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000d50ee-faa7-4cf7-a276-cded9bc2b92d
+</td>
+<td style="text-align:left;">
+2d4ec77f-c893-4595-bb3c-299f23ef09be
+</td>
+<td style="text-align:left;">
+LACMIP 22404.62
+</td>
+<td style="text-align:left;color: red !important;">
+lucinidae
+</td>
+<td style="text-align:left;">
+Lucinidae
+</td>
+<td style="text-align:left;color: red !important;">
+lucinoma
+</td>
+<td style="text-align:left;color: red !important;">
+annulata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Lucinoma
+</td>
+<td style="text-align:left;">
+annulatum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Lucinoma annulatum (Reeve, 1850)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000ea1d1-128a-4963-b1e2-2a142d91a32b
+</td>
+<td style="text-align:left;">
+9824ec2c-4122-4196-a1df-4763e78450f8
+</td>
+<td style="text-align:left;">
+LACMIP 2533.1797
+</td>
+<td style="text-align:left;color: red !important;">
+notonectidae
+</td>
+<td style="text-align:left;">
+Notonectidae
+</td>
+<td style="text-align:left;color: red !important;">
+notonecta
+</td>
+<td style="text-align:left;color: red !important;">
+glauca
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Notonecta
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Notonecta sp.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000eb38d-2ae0-4475-814e-c9ca812be6b1
+</td>
+<td style="text-align:left;">
+d158b0eb-bb73-4afe-95fc-5d220dd2be0c
+</td>
+<td style="text-align:left;">
+LACMIP 17898.333
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Insecta indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000fa3fc-5311-475a-80d5-30b638db3db3
+</td>
+<td style="text-align:left;">
+a65ffe73-68d1-457a-a4c7-4bce55bd81f5
+</td>
+<td style="text-align:left;">
+LACMIP 10101.2
+</td>
+<td style="text-align:left;color: red !important;">
+nuculidae
+</td>
+<td style="text-align:left;">
+Nuculidae
+</td>
+<td style="text-align:left;color: red !important;">
+acila
+</td>
+<td style="text-align:left;color: red !important;">
+demessa
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Acila
+</td>
+<td style="text-align:left;">
+demessa
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Acila (Truncacila) demessa Finlay, 1927
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000fec10-9144-4b0d-b88c-a06a27b9f380
+</td>
+<td style="text-align:left;">
+e26c1d53-ecb6-41b0-aedb-944306bafd29
+</td>
+<td style="text-align:left;">
+LACMIP 29180.20
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Bivalvia indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000ffcfb-9ea0-44ad-a1d3-a000b180d400
+</td>
+<td style="text-align:left;">
+e0d808f9-77fb-4321-80eb-b86b4733e2b1
+</td>
+<td style="text-align:left;">
+LACMIP 17095.4
+</td>
+<td style="text-align:left;color: red !important;">
+inoceramidae
+</td>
+<td style="text-align:left;">
+Inoceramidae
+</td>
+<td style="text-align:left;color: red !important;">
+cataceramus
+</td>
+<td style="text-align:left;color: red !important;">
+subundatus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cataceramus
+</td>
+<td style="text-align:left;">
+subundatus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Cataceramus subundatus (Meek, 1861)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00105f0e-4f02-4cf6-924d-24334aa36168
+</td>
+<td style="text-align:left;">
+27f4bacb-b697-49a0-896d-883356825c69
+</td>
+<td style="text-align:left;">
+LACMIP 21589.7
+</td>
+<td style="text-align:left;color: red !important;">
+turritellidae
+</td>
+<td style="text-align:left;">
+Turritellidae
+</td>
+<td style="text-align:left;color: red !important;">
+turritella
+</td>
+<td style="text-align:left;color: red !important;">
+peninsularis
+</td>
+<td style="text-align:left;color: red !important;">
+quaylei
+</td>
+<td style="text-align:left;">
+Turritella
+</td>
+<td style="text-align:left;">
+peninsularis
+</td>
+<td style="text-align:left;">
+quaylei
+</td>
+<td style="text-align:left;">
+Turritella peninsularis quaylei Saul, 1983
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0010a364-e56e-41a0-80da-bc7ec0f580f0
+</td>
+<td style="text-align:left;">
+aa2aa1a1-c6cb-47d7-9254-10a87f05a014
+</td>
+<td style="text-align:left;">
+LACMIP 23153.5
+</td>
+<td style="text-align:left;color: red !important;">
+turritellidae
+</td>
+<td style="text-align:left;">
+Turritellidae
+</td>
+<td style="text-align:left;color: red !important;">
+mesalia
+</td>
+<td style="text-align:left;color: red !important;">
+martinezensis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mesalia
+</td>
+<td style="text-align:left;">
+martinezensis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Mesalia martinezensis (Gabb, 1869)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00112f80-1f0f-4cce-9f58-fb58142b4cea
+</td>
+<td style="text-align:left;">
+5b9c0097-95d3-457c-9a12-69d5a6b3c0ec
+</td>
+<td style="text-align:left;">
+LACMIP 29233.34
+</td>
+<td style="text-align:left;color: red !important;">
+nuculidae
+</td>
+<td style="text-align:left;">
+Nuculidae
+</td>
+<td style="text-align:left;color: red !important;">
+acila
+</td>
+<td style="text-align:left;color: red !important;">
+haidana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Acila
+</td>
+<td style="text-align:left;">
+haidana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Acila (Truncacila) haidana Packard in Schenck, 1936
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00113821-2386-425a-bfe7-b86b30c3571a
+</td>
+<td style="text-align:left;">
+4df5ade2-6242-402c-b44e-4f74a0f263af
+</td>
+<td style="text-align:left;">
+LACMIP 8226.206
+</td>
+<td style="text-align:left;color: red !important;">
+naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0011e9dc-aea8-4909-b277-671f660572b0
+</td>
+<td style="text-align:left;">
+c8a22b89-070a-4101-b1fe-6bd3558ae098
+</td>
+<td style="text-align:left;">
+LACMIP 20187.59
+</td>
+<td style="text-align:left;color: red !important;">
+naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00121bbf-0162-47aa-9d66-70825c61853f
+</td>
+<td style="text-align:left;">
+3b4e0b4a-0529-42e9-8ca8-a31f1b18746c
+</td>
+<td style="text-align:left;">
+LACMIP 129.10
+</td>
+<td style="text-align:left;color: red !important;">
+veneridae
+</td>
+<td style="text-align:left;">
+Veneridae
+</td>
+<td style="text-align:left;color: red !important;">
+leukoma
+</td>
+<td style="text-align:left;color: red !important;">
+laciniata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Leukoma
+</td>
+<td style="text-align:left;">
+laciniata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Leukoma laciniata (Carpenter, 1864)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0012598c-c37c-4d8c-a03f-26f4910b04df
+</td>
+<td style="text-align:left;">
+8db53592-bad0-4142-a4ac-3e73109c9a9e
+</td>
+<td style="text-align:left;">
+LACMIP 25446.101
+</td>
+<td style="text-align:left;color: red !important;">
+buccinidae
+</td>
+<td style="text-align:left;">
+Buccinidae
+</td>
+<td style="text-align:left;color: red !important;">
+neptunea
+</td>
+<td style="text-align:left;color: red !important;">
+tabulata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Neptunea
+</td>
+<td style="text-align:left;">
+tabulata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Neptunea (Sulcosipho) tabulata (Baird, 1863)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0012ce1c-6297-4854-9a89-a4ea3627b960
+</td>
+<td style="text-align:left;">
+8b13250e-5e43-48c2-a4ec-e77352a7c0dc
+</td>
+<td style="text-align:left;">
+LACMIP 20341.1
+</td>
+<td style="text-align:left;color: red !important;">
+hiatellidae
+</td>
+<td style="text-align:left;">
+Hiatellidae
+</td>
+<td style="text-align:left;color: red !important;">
+panopea
+</td>
+<td style="text-align:left;color: red !important;">
+whitfieldi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Panopea
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Panopea sp.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00130464-1faf-4526-be44-a8595f829352
+</td>
+<td style="text-align:left;">
+b61872a5-b278-446f-8834-99e070792e72
+</td>
+<td style="text-align:left;">
+LACMIP 421.73
+</td>
+<td style="text-align:left;color: red !important;">
+pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+spathochlamys
+</td>
+<td style="text-align:left;color: red !important;">
+vestalis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Spathochlamys
+</td>
+<td style="text-align:left;">
+vestalis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Spathochlamys vestalis (Reeve, 1853)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00139f82-3cb1-491f-a95a-c90207af164d
+</td>
+<td style="text-align:left;">
+989f4361-d944-4ff8-ac01-3c4ebb538265
+</td>
+<td style="text-align:left;">
+LACMIP 23637.185
+</td>
+<td style="text-align:left;color: red !important;">
+buccinidae
+</td>
+<td style="text-align:left;">
+Buccinidae
+</td>
+<td style="text-align:left;color: red !important;">
+“cominella”
+</td>
+<td style="text-align:left;color: red !important;">
+lecontei
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+“Cominella”
+</td>
+<td style="text-align:left;">
+lecontei
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+“Cominella” lecontei White, 1889
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0013c23e-b64b-4737-9c7b-b8d8149934b8
+</td>
+<td style="text-align:left;">
+e7c33bee-f096-47d9-9ee0-b699eada698d
+</td>
+<td style="text-align:left;">
+LACMIP 21054.29
+</td>
+<td style="text-align:left;color: red !important;">
+ostreidae
+</td>
+<td style="text-align:left;">
+Ostreidae
+</td>
+<td style="text-align:left;color: red !important;">
+ostrea
+</td>
+<td style="text-align:left;color: red !important;">
+conchaphila
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Ostrea
+</td>
+<td style="text-align:left;">
+conchaphila
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Ostrea conchaphila Carpenter, 1857
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00141151-babc-484d-b904-02aced161e7a
+</td>
+<td style="text-align:left;">
+5f5e0c91-7158-4cac-9932-e1f5a5855d46
+</td>
+<td style="text-align:left;">
+LACMIP 7205.93
+</td>
+<td style="text-align:left;color: red !important;">
+calyptraeidae
+</td>
+<td style="text-align:left;">
+Calyptraeidae
+</td>
+<td style="text-align:left;color: red !important;">
+crepidula
+</td>
+<td style="text-align:left;color: red !important;">
+dorsata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella
+</td>
+<td style="text-align:left;">
+dorsata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella dorsata (Broderip, 1834)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0014b73a-4ca3-4937-8e99-c5cbb35ca431
+</td>
+<td style="text-align:left;">
+220b3f78-5957-43c8-97c4-8154b3619b74
+</td>
+<td style="text-align:left;">
+LACMIP 2533.2188
+</td>
+<td style="text-align:left;color: red !important;">
+incertae sedis
+</td>
+<td style="text-align:left;">
+Incertae sedis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Nematocera indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00150998-6357-44f4-9ffc-b8dd6b2fe00a
+</td>
+<td style="text-align:left;">
+825e53ba-6813-48ff-9fee-cc04e380f011
+</td>
+<td style="text-align:left;">
+LACMIP 6953.58
+</td>
+<td style="text-align:left;color: red !important;">
+ostreidae
+</td>
+<td style="text-align:left;">
+Ostreidae
+</td>
+<td style="text-align:left;color: red !important;">
+ostrea
+</td>
+<td style="text-align:left;color: red !important;">
+conchaphila
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Ostrea
+</td>
+<td style="text-align:left;">
+conchaphila
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Ostrea conchaphila Carpenter, 1857
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0015396f-d1f6-48de-b015-6ebc1ea073cd
+</td>
+<td style="text-align:left;">
+7955b9a4-ad58-4547-92f7-73714bdf8781
+</td>
+<td style="text-align:left;">
+LACMIP 5848.2
+</td>
+<td style="text-align:left;color: red !important;">
+cancridae
+</td>
+<td style="text-align:left;">
+Cancridae
+</td>
+<td style="text-align:left;color: red !important;">
+romaleon
+</td>
+<td style="text-align:left;color: red !important;">
+wahkiakumensis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Romaleon
+</td>
+<td style="text-align:left;">
+wahkiakumensis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Romaleon wahkiakumensis (Berglund &amp; Goedert, 1992)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00156735-151c-40ec-af32-e95b70c7abe5
+</td>
+<td style="text-align:left;">
+d19de809-af30-4ff7-b5a6-db4c552a3d24
+</td>
+<td style="text-align:left;">
+LACMIP 23225.542
+</td>
+<td style="text-align:left;color: red !important;">
+pseudomelatomidae
+</td>
+<td style="text-align:left;">
+Pseudomelatomidae
+</td>
+<td style="text-align:left;color: red !important;">
+rectiplanes
+</td>
+<td style="text-align:left;color: red !important;">
+voyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Rectiplanes
+</td>
+<td style="text-align:left;">
+voyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Rectiplanes voyi (Gabb, 1866)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0015acac-ae8e-4fef-89fd-3b142bbc33da
+</td>
+<td style="text-align:left;">
+9a6ca880-b352-4465-b01e-cda524b881ba
+</td>
+<td style="text-align:left;">
+LACMIP 10843.10
+</td>
+<td style="text-align:left;color: red !important;">
+glycymerididae
+</td>
+<td style="text-align:left;">
+Glycymerididae
+</td>
+<td style="text-align:left;color: red !important;">
+glycymerita
+</td>
+<td style="text-align:left;color: red !important;">
+huttoni
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita
+</td>
+<td style="text-align:left;">
+veatchii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita veatchii (Gabb, 1864)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0015fe85-ea75-4ac5-9c85-c1d33f6e7fa3
+</td>
+<td style="text-align:left;">
+b796ab8d-3911-41f9-a64d-2b0290c3b6f9
+</td>
+<td style="text-align:left;">
+LACMIP 41662.37
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Bryozoa indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00166dc8-789f-4fb1-95c7-e41f745fe098
+</td>
+<td style="text-align:left;">
+d24bfa37-2ab7-4bb9-b3cf-f2bfafe6a2ce
+</td>
+<td style="text-align:left;">
+LACMIP 2056.4
+</td>
+<td style="text-align:left;color: red !important;">
+tegulidae
+</td>
+<td style="text-align:left;">
+Tegulidae
+</td>
+<td style="text-align:left;color: red !important;">
+tegula
+</td>
+<td style="text-align:left;color: red !important;">
+funebralis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma
+</td>
+<td style="text-align:left;">
+funebralis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma funebralis (A. Adams, 1855)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+001714ef-e925-4325-9e53-cd936c8f6568
+</td>
+<td style="text-align:left;">
+b6c81107-63a8-4733-bac0-c3434524b7df
+</td>
+<td style="text-align:left;">
+LACMIP 5868.196
+</td>
+<td style="text-align:left;color: red !important;">
+lucinidae
+</td>
+<td style="text-align:left;">
+Lucinidae
+</td>
+<td style="text-align:left;color: red !important;">
+lucinoma
+</td>
+<td style="text-align:left;color: red !important;">
+annulata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Lucinoma
+</td>
+<td style="text-align:left;">
+annulatum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Lucinoma annulatum (Reeve, 1850)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00173dc6-2ae1-4cfa-a04c-64f312920bfe
+</td>
+<td style="text-align:left;">
+472a09f7-dc72-496a-b55e-22bed92acd26
+</td>
+<td style="text-align:left;">
+LACMIP 31276.115
+</td>
+<td style="text-align:left;color: red !important;">
+mactridae
+</td>
+<td style="text-align:left;">
+Mactridae
+</td>
+<td style="text-align:left;color: red !important;">
+mactrotoma
+</td>
+<td style="text-align:left;color: red !important;">
+californica
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mactrotoma
+</td>
+<td style="text-align:left;">
+californica
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Mactrotoma californica (Conrad, 1837)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00176285-ecef-4407-9105-3b16b92c9145
+</td>
+<td style="text-align:left;">
+591250af-2ac8-4511-b86e-7d74e2fbf19d
+</td>
+<td style="text-align:left;">
+LACMIP 41688.16
+</td>
+<td style="text-align:left;color: red !important;">
+arcidae
+</td>
+<td style="text-align:left;">
+Arcidae
+</td>
+<td style="text-align:left;color: red !important;">
+arca
+</td>
+<td style="text-align:left;color: red !important;">
+sisquocensis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Arca
+</td>
+<td style="text-align:left;">
+sisquocensis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Arca sisquocensis Reinhart, 1937
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0017c563-b6a4-4d5f-8552-814d6d5bf31e
+</td>
+<td style="text-align:left;">
+19cddaa9-752a-482c-a95a-1d8106c4bbfc
+</td>
+<td style="text-align:left;">
+LACMIP 2533.757
+</td>
+<td style="text-align:left;color: red !important;">
+hydrophilidae
+</td>
+<td style="text-align:left;">
+Hydrophilidae
+</td>
+<td style="text-align:left;color: red !important;">
+berosus
+</td>
+<td style="text-align:left;color: red !important;">
+morticinus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Berosus
+</td>
+<td style="text-align:left;">
+morticinus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Berosus (Berosus) morticinus (Heyden &amp; Heyden, 1866)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00183af0-7b5a-4d2d-8ceb-90b50dbd375c
+</td>
+<td style="text-align:left;">
+77f1f34a-8f65-48fb-b9e5-c81416e640b1
+</td>
+<td style="text-align:left;">
+LACMIP 42035.85
+</td>
+<td style="text-align:left;color: red !important;">
+naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="explore-differences-in-the-data" class="section level2">
+<h2>Explore differences in the data</h2>
+<p>We can already see that there are some formatting differences between
+the data from the provider and that modified by the aggregator. For
+example, iDigBio converts all data to lowercase, which was historically
+useful for standardizing and indexing data across all of the recordsets
+represented in the iDigBio database. Family and genus names are
+capitalized by convention, so we will reformat those fields here:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Reformat aggregator fields to title case</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>df_names <span class="ot">&lt;-</span> df_names <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">aggregator_family =</span> <span class="fu">str_to_title</span>(aggregator_family)) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">aggregator_genus =</span> <span class="fu">str_to_title</span>(aggregator_genus))</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># Subset `df_names` to show example</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>df_names[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,] <span class="sc">%&gt;%</span> </span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>flags) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>                <span class="at">font_size =</span> <span class="dv">12</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>                <span class="at">fixed_thead =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="at">height =</span> <span class="st">&quot;400px&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+uuid
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+occurrenceID
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+catalogNumber
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_family
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_family
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_scientificName
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+000153f6-4861-4219-ac9e-f0d0f62fe60b
+</td>
+<td style="text-align:left;">
+0b6e2924-4b1a-4a18-a532-6c2d95962e95
+</td>
+<td style="text-align:left;">
+LACMIP 42500.14
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Clypeasteroida indet.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000249c8-5c27-4292-94a7-1802f4d1ca4b
+</td>
+<td style="text-align:left;">
+37ae5d77-073e-4713-aa54-92d7e0616fcf
+</td>
+<td style="text-align:left;">
+LACMIP 16817.200
+</td>
+<td style="text-align:left;color: red !important;">
+Borsoniidae
+</td>
+<td style="text-align:left;">
+Borsoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Ophiodermella
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Ophiodermella
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Ophiodermella sp.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00028446-c91d-47f2-b036-2134f011e282
+</td>
+<td style="text-align:left;">
+2933a74c-faeb-4519-9117-6000c9f43926
+</td>
+<td style="text-align:left;">
+LACMIP 2657.24
+</td>
+<td style="text-align:left;color: red !important;">
+Mactridae
+</td>
+<td style="text-align:left;">
+Mactridae
+</td>
+<td style="text-align:left;color: red !important;">
+Tresus
+</td>
+<td style="text-align:left;color: red !important;">
+nuttallii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Tresus
+</td>
+<td style="text-align:left;">
+nuttallii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Tresus nuttallii (Conrad, 1837)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00034f81-997b-499f-a176-ac2949facbb9
+</td>
+<td style="text-align:left;">
+aecc92f1-1994-41bf-988c-e095ce1ce030
+</td>
+<td style="text-align:left;">
+LACMIP 1195.4
+</td>
+<td style="text-align:left;color: red !important;">
+Fissurellidae
+</td>
+<td style="text-align:left;">
+Fissurellidae
+</td>
+<td style="text-align:left;color: red !important;">
+Puncturella
+</td>
+<td style="text-align:left;color: red !important;">
+cooperi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Puncturella
+</td>
+<td style="text-align:left;">
+cooperi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Puncturella cooperi Carpenter, 1864
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00038886-e0ca-4893-b454-e90d75f1eaa7
+</td>
+<td style="text-align:left;">
+07cfa54b-1f25-4ea2-a0f2-a812f4e0523c
+</td>
+<td style="text-align:left;">
+LACMIP 16408.1
+</td>
+<td style="text-align:left;color: red !important;">
+Cirolanidae
+</td>
+<td style="text-align:left;">
+Cirolanidae
+</td>
+<td style="text-align:left;color: red !important;">
+Palaega
+</td>
+<td style="text-align:left;color: red !important;">
+goedertorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Palaega
+</td>
+<td style="text-align:left;">
+goedertorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Palaega goedertorum Wieder &amp; Feldmann, 2016
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Let’s use the power of R to filter out data that <em>have not</em>
+been modified so that we can focus on rows where the aggregator has made
+changes. As an example, we will look at rows where the genus name does
+not match between the provider and the aggregator:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Filter for rows where genus does not match</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>df_names <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">filter</span>(provider_genus <span class="sc">!=</span> aggregator_genus) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>                <span class="at">font_size =</span> <span class="dv">12</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>                <span class="at">fixed_thead =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="at">height =</span> <span class="st">&quot;400px&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+uuid
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+occurrenceID
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+catalogNumber
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_family
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_family
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_scientificName
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+flags
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+00067a2d-5d0f-47d7-9072-4b9b7b89bd88
+</td>
+<td style="text-align:left;">
+e5e3733b-c1d8-4e8c-a435-9a8ac0bbcde4
+</td>
+<td style="text-align:left;">
+LACMIP 7290.22
+</td>
+<td style="text-align:left;color: red !important;">
+Potamididae
+</td>
+<td style="text-align:left;">
+Potamididae
+</td>
+<td style="text-align:left;color: red !important;">
+Cerithidea
+</td>
+<td style="text-align:left;color: red !important;">
+californica
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis
+</td>
+<td style="text-align:left;">
+californica
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis californica (Haldeman, 1840)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+000ae0be-f613-43cf-a2bf-0eaefe5eedb8
+</td>
+<td style="text-align:left;">
+c3f51eee-ecc6-4d35-b05e-7b1dac915e7e
+</td>
+<td style="text-align:left;">
+LACMIP 42035.31
+</td>
+<td style="text-align:left;color: red !important;">
+Conidae
+</td>
+<td style="text-align:left;">
+Conidae
+</td>
+<td style="text-align:left;color: red !important;">
+Conus
+</td>
+<td style="text-align:left;color: red !important;">
+californicus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus
+</td>
+<td style="text-align:left;">
+californicus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus californicus (Reeve, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+gbif_vernacularname_added , dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , dwc_multimedia_added ,
+gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00113821-2386-425a-bfe7-b86b30c3571a
+</td>
+<td style="text-align:left;">
+4df5ade2-6242-402c-b44e-4f74a0f263af
+</td>
+<td style="text-align:left;">
+LACMIP 8226.206
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0011e9dc-aea8-4909-b277-671f660572b0
+</td>
+<td style="text-align:left;">
+c8a22b89-070a-4101-b1fe-6bd3558ae098
+</td>
+<td style="text-align:left;">
+LACMIP 20187.59
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00141151-babc-484d-b904-02aced161e7a
+</td>
+<td style="text-align:left;">
+5f5e0c91-7158-4cac-9932-e1f5a5855d46
+</td>
+<td style="text-align:left;">
+LACMIP 7205.93
+</td>
+<td style="text-align:left;color: red !important;">
+Calyptraeidae
+</td>
+<td style="text-align:left;">
+Calyptraeidae
+</td>
+<td style="text-align:left;color: red !important;">
+Crepidula
+</td>
+<td style="text-align:left;color: red !important;">
+dorsata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella
+</td>
+<td style="text-align:left;">
+dorsata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella dorsata (Broderip, 1834)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00166dc8-789f-4fb1-95c7-e41f745fe098
+</td>
+<td style="text-align:left;">
+d24bfa37-2ab7-4bb9-b3cf-f2bfafe6a2ce
+</td>
+<td style="text-align:left;">
+LACMIP 2056.4
+</td>
+<td style="text-align:left;color: red !important;">
+Tegulidae
+</td>
+<td style="text-align:left;">
+Tegulidae
+</td>
+<td style="text-align:left;color: red !important;">
+Tegula
+</td>
+<td style="text-align:left;color: red !important;">
+funebralis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma
+</td>
+<td style="text-align:left;">
+funebralis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma funebralis (A. Adams, 1855)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_taxonomicstatus_added , dwc_originalnameusageid_added ,
+gbif_canonicalname_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added , dwc_genus_replaced , dwc_taxonid_added ,
+dwc_parentnameusageid_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00183af0-7b5a-4d2d-8ceb-90b50dbd375c
+</td>
+<td style="text-align:left;">
+77f1f34a-8f65-48fb-b9e5-c81416e640b1
+</td>
+<td style="text-align:left;">
+LACMIP 42035.85
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+001eb465-05cb-4ff1-9c7d-3b0217d1a03c
+</td>
+<td style="text-align:left;">
+00cc7a85-a440-40dd-955b-0e13a2a8ef98
+</td>
+<td style="text-align:left;">
+LACMIP 41678.50
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+002122b5-714f-4c17-8718-c8ff1d250c7b
+</td>
+<td style="text-align:left;">
+3e6695d5-5747-4c40-b562-05a2684d79da
+</td>
+<td style="text-align:left;">
+LACMIP 21055.13
+</td>
+<td style="text-align:left;color: red !important;">
+Tegulidae
+</td>
+<td style="text-align:left;">
+Tegulidae
+</td>
+<td style="text-align:left;color: red !important;">
+Tegula
+</td>
+<td style="text-align:left;color: red !important;">
+montereyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma
+</td>
+<td style="text-align:left;">
+montereyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma montereyi (Kiener, 1850)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , dwc_taxonrank_replaced , gbif_genericname_added ,
+dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+gbif_vernacularname_added , dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , gbif_taxon_corrected , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+002440ab-2a15-46db-aa8f-c043b4e143dc
+</td>
+<td style="text-align:left;">
+37b0e696-1328-4c5d-9884-def9b9026df9
+</td>
+<td style="text-align:left;">
+LACMIP 16521.17
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0025fcb8-8f8d-48af-9662-a579cf631b99
+</td>
+<td style="text-align:left;">
+6c739c75-5c26-4fd1-8520-55a1523614a9
+</td>
+<td style="text-align:left;">
+LACMIP 3936.94
+</td>
+<td style="text-align:left;color: red !important;">
+Epitoniidae
+</td>
+<td style="text-align:left;">
+Epitoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+indianorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+indianorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala indianorum (Carpenter, 1864)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00317c86-c463-4c45-8c23-f9fdcd363a25
+</td>
+<td style="text-align:left;">
+d9d6e433-73e9-4e96-937c-fd381e329855
+</td>
+<td style="text-align:left;">
+LACMIP 66.873
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Glossaulax
+</td>
+<td style="text-align:left;color: red !important;">
+draconis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Euspira
+</td>
+<td style="text-align:left;">
+draconis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Euspira draconis (Dall, 1903)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+dwc_taxonrank_replaced , gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , dwc_multimedia_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added ,
+gbif_taxon_corrected , idigbio_isocountrycode_added , dwc_genus_replaced
+, dwc_parentnameusageid_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0040542c-ed12-4dba-9246-325ab81cf27e
+</td>
+<td style="text-align:left;">
+99fad840-f82e-4e63-bb97-72acd55a2d8a
+</td>
+<td style="text-align:left;">
+LACMIP 23393.9
+</td>
+<td style="text-align:left;color: red !important;">
+Chamidae
+</td>
+<td style="text-align:left;">
+Chamidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pseudochama
+</td>
+<td style="text-align:left;color: red !important;">
+exogyra
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chama
+</td>
+<td style="text-align:left;">
+exogyra
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Chama exogyra Conrad, 1837
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+dwc_taxonrank_replaced , gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_order_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_multimedia_added , dwc_originalnameusageid_added ,
+gbif_canonicalname_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added , dwc_genus_replaced ,
+dwc_parentnameusageid_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00420e9a-1b9d-4638-93e4-a14f20b23103
+</td>
+<td style="text-align:left;">
+bd22b32b-ab88-40ad-afe6-6b7310209185
+</td>
+<td style="text-align:left;">
+LACMIP 77.139
+</td>
+<td style="text-align:left;color: red !important;">
+Cardiidae
+</td>
+<td style="text-align:left;">
+Cardiidae
+</td>
+<td style="text-align:left;color: red !important;">
+Americardia
+</td>
+<td style="text-align:left;color: red !important;">
+media
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mexicardia
+</td>
+<td style="text-align:left;">
+procerum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Mexicardia procerum (Sowerby I, 1833)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added ,
+dwc_order_replaced , dwc_genus_replaced , dwc_specificepithet_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0049f8e1-ed87-4c0e-81df-f03cd5012fb6
+</td>
+<td style="text-align:left;">
+2db62d06-4c59-47d4-8a59-2ac19a5be256
+</td>
+<td style="text-align:left;">
+LACMIP 41838.8
+</td>
+<td style="text-align:left;color: red !important;">
+Ostreidae
+</td>
+<td style="text-align:left;">
+Ostreidae
+</td>
+<td style="text-align:left;color: red !important;">
+Ostrea
+</td>
+<td style="text-align:left;color: red !important;">
+vespertina
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea
+</td>
+<td style="text-align:left;">
+vespertina
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea vespertina (Conrad, 1854)
+</td>
+<td style="text-align:left;">
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, gbif_taxon_corrected , idigbio_isocountrycode_added ,
+gbif_canonicalname_added , dwc_scientificnameauthorship_replaced,
+dwc_order_replaced , dwc_taxonid_added , dwc_parentnameusageid_added ,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+004b9842-0e3c-463b-b7c6-da0259f63c88
+</td>
+<td style="text-align:left;">
+c68ca582-6b7c-4493-bb7b-dde68e5de18e
+</td>
+<td style="text-align:left;">
+LACMIP 16815.14
+</td>
+<td style="text-align:left;color: red !important;">
+Columbellidae
+</td>
+<td style="text-align:left;">
+Columbellidae
+</td>
+<td style="text-align:left;color: red !important;">
+Alia
+</td>
+<td style="text-align:left;color: red !important;">
+gausapata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella
+</td>
+<td style="text-align:left;">
+gausapata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella gausapata (Gould, 1850)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , rev_geocode_mismatch , gbif_reference_added ,
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, dwc_taxonid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added, gbif_canonicalname_added ,
+dwc_parentnameusageid_added , taxon_match_failed , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00503f61-af2f-4882-ad6a-e59a9d9857a2
+</td>
+<td style="text-align:left;">
+b70b1004-32d6-4aff-a533-b17532db1c77
+</td>
+<td style="text-align:left;">
+LACMIP 25446.87
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00584135-2041-44b5-896d-6e2eeac20295
+</td>
+<td style="text-align:left;">
+28bd8af1-17c0-4b0a-8756-e3ae91ee48e8
+</td>
+<td style="text-align:left;">
+LACMIP 17848.45
+</td>
+<td style="text-align:left;color: red !important;">
+Cardiidae
+</td>
+<td style="text-align:left;">
+Cardiidae
+</td>
+<td style="text-align:left;color: red !important;">
+Cardium
+</td>
+<td style="text-align:left;color: red !important;">
+brewerii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Acanthocardia
+</td>
+<td style="text-align:left;">
+brewerii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Acanthocardia (Schedocardia) brewerii (Gabb, 1864)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added , gbif_canonicalname_added ,
+dwc_scientificnameauthorship_replaced, dwc_order_replaced ,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0058566e-f0f5-4917-81b9-e717953b6d11
+</td>
+<td style="text-align:left;">
+e779e326-8582-4b57-98a2-210c9aafc60b
+</td>
+<td style="text-align:left;">
+LACMIP 23386.27
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00591879-55a9-48df-afa5-32a637f47d5a
+</td>
+<td style="text-align:left;">
+abdac336-68aa-4e5e-b4e1-73e44bb29c40
+</td>
+<td style="text-align:left;">
+LACMIP 229.44
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, dwc_parentnameusageid_added , dwc_taxonid_added , gbif_taxon_corrected
+, idigbio_isocountrycode_added , gbif_vernacularname_added ,
+gbif_canonicalname_added , dwc_originalnameusageid_added,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+005bfaf1-a68a-4734-9d40-7826ce51f35d
+</td>
+<td style="text-align:left;">
+298e665b-66a1-423b-be7a-ec6b3dab277b
+</td>
+<td style="text-align:left;">
+LACMIP 22413.169
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+006495be-7f3d-4180-8940-2200c4f812e1
+</td>
+<td style="text-align:left;">
+e3532b29-4b90-41a5-9371-5aabd1acba10
+</td>
+<td style="text-align:left;">
+LACMIP 305.1256
+</td>
+<td style="text-align:left;color: red !important;">
+Pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+healeyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten
+</td>
+<td style="text-align:left;">
+healeyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten healeyi (Arnold, 1906)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , rev_geocode_mismatch , gbif_reference_added ,
+dwc_taxonrank_replaced , gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+006cad27-7f96-4a91-ac9d-e2e2f7be09f3
+</td>
+<td style="text-align:left;">
+138071e2-b4a8-4624-8281-e2e2405f91ca
+</td>
+<td style="text-align:left;">
+LACMIP 18090.4
+</td>
+<td style="text-align:left;color: red !important;">
+Ostreidae
+</td>
+<td style="text-align:left;">
+Ostreidae
+</td>
+<td style="text-align:left;color: red !important;">
+Ostrea
+</td>
+<td style="text-align:left;color: red !important;">
+vespertina
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea
+</td>
+<td style="text-align:left;">
+vespertina
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea vespertina (Conrad, 1854)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , dwc_order_replaced ,
+gbif_taxon_corrected , idigbio_isocountrycode_added ,
+gbif_canonicalname_added , dwc_scientificnameauthorship_replaced,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+006fe4fa-483c-4d4f-a114-2b82e175b2e3
+</td>
+<td style="text-align:left;">
+c266471b-54e6-475d-973b-2e23b4253c49
+</td>
+<td style="text-align:left;">
+LACMIP 5574.68
+</td>
+<td style="text-align:left;color: red !important;">
+Muricidae
+</td>
+<td style="text-align:left;">
+Muricidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pteropurpura
+</td>
+<td style="text-align:left;color: red !important;">
+festiva
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus
+</td>
+<td style="text-align:left;">
+festivus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus festivus (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , gbif_genericname_added , dwc_datasetid_added ,
+gbif_vernacularname_added , idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added, dwc_genus_replaced ,
+dwc_specificepithet_replaced , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , dwc_multimedia_added , dwc_parentnameusageid_added ,
+gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0072ebfc-76a0-4ac0-ac09-750e611ce0e0
+</td>
+<td style="text-align:left;">
+e1a5e47c-bd29-41dd-9126-cf40d604f847
+</td>
+<td style="text-align:left;">
+LACMIP 40054.17
+</td>
+<td style="text-align:left;color: red !important;">
+Pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+healeyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten
+</td>
+<td style="text-align:left;">
+healeyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten healeyi (Arnold, 1906)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , dwc_taxonrank_replaced ,
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, dwc_taxonid_added , gbif_taxon_corrected , gbif_canonicalname_added ,
+dwc_scientificnameauthorship_replaced, dwc_order_replaced ,
+idigbio_isocountrycode_added , dwc_parentnameusageid_added ,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+007da931-eba7-459b-81d0-88018a478a38
+</td>
+<td style="text-align:left;">
+d99553e3-67e9-4fd1-82df-09ddd9ac4317
+</td>
+<td style="text-align:left;">
+LACMIP 1215.25
+</td>
+<td style="text-align:left;color: red !important;">
+Pachydiscidae
+</td>
+<td style="text-align:left;">
+Pachydiscidae
+</td>
+<td style="text-align:left;color: red !important;">
+Eupachydiscus
+</td>
+<td style="text-align:left;color: red !important;">
+catarinae
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pachydiscus
+</td>
+<td style="text-align:left;">
+catarinae
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pachydiscus (Neodesmoceras) catarinae (Anderson &amp; Hanna, 1928)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced , gbif_genericname_added
+, dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced , taxon_match_failed , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , dwc_multimedia_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+007f0bfc-7829-4507-b94a-61b48c2aaf57
+</td>
+<td style="text-align:left;">
+193ad913-1629-4afa-a1de-c3ca4d379054
+</td>
+<td style="text-align:left;">
+LACMIP 7002.10
+</td>
+<td style="text-align:left;color: red !important;">
+Columbellidae
+</td>
+<td style="text-align:left;">
+Columbellidae
+</td>
+<td style="text-align:left;color: red !important;">
+Alia
+</td>
+<td style="text-align:left;color: red !important;">
+gausapata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella
+</td>
+<td style="text-align:left;">
+gausapata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella gausapata (Gould, 1850)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added, gbif_canonicalname_added ,
+dwc_taxonid_added , dwc_parentnameusageid_added , taxon_match_failed ,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+007f4e47-f6da-4749-8b92-8001b85d1581
+</td>
+<td style="text-align:left;">
+65bc1734-d437-4ca8-a22c-38d3e44b3853
+</td>
+<td style="text-align:left;">
+LACMIP 10328.80
+</td>
+<td style="text-align:left;color: red !important;">
+Serpulidae
+</td>
+<td style="text-align:left;">
+Serpulidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pyrgopolon
+</td>
+<td style="text-align:left;color: red !important;">
+onyx
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hamulus
+</td>
+<td style="text-align:left;">
+onyx
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hamulus onyx Morton, 1834
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added, gbif_canonicalname_added ,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0087bd4a-f55f-497b-9e22-33483a88bfec
+</td>
+<td style="text-align:left;">
+7153ae1c-75bd-4f8a-bf68-c90e452c0835
+</td>
+<td style="text-align:left;">
+LACMIP 76.18
+</td>
+<td style="text-align:left;color: red !important;">
+Lasaeidae
+</td>
+<td style="text-align:left;">
+Lasaeidae
+</td>
+<td style="text-align:left;color: red !important;">
+Aligena
+</td>
+<td style="text-align:left;color: red !important;">
+trigonalis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Isorobitella
+</td>
+<td style="text-align:left;">
+trigonalis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Isorobitella trigonalis (Carpenter, 1857)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , gbif_genericname_added , dwc_datasetid_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_order_replaced , dwc_genus_replaced , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00886c2e-99cf-4793-bf03-7560789fbc7e
+</td>
+<td style="text-align:left;">
+f21cb736-d86a-4752-846a-70a705b19d05
+</td>
+<td style="text-align:left;">
+LACMIP 10105.210
+</td>
+<td style="text-align:left;color: red !important;">
+Mactridae
+</td>
+<td style="text-align:left;">
+Mactridae
+</td>
+<td style="text-align:left;color: red !important;">
+Mactra
+</td>
+<td style="text-align:left;color: red !important;">
+stantoni
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cymbophora
+</td>
+<td style="text-align:left;">
+stantoni
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Cymbophora stantoni (Arnold, 1908)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_genericname_added ,
+dwc_parentnameusageid_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, idigbio_isocountrycode_added ,
+dwc_order_replaced , dwc_genus_replaced , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+008924fa-cb1e-4353-81e4-743fc73b6fb8
+</td>
+<td style="text-align:left;">
+7e313c7f-c58d-4bdb-9589-4cdae5a3cb45
+</td>
+<td style="text-align:left;">
+LACMIP 5041.29
+</td>
+<td style="text-align:left;color: red !important;">
+Vermetidae
+</td>
+<td style="text-align:left;">
+Vermetidae
+</td>
+<td style="text-align:left;color: red !important;">
+Thylacodes
+</td>
+<td style="text-align:left;color: red !important;">
+squamigerus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis
+</td>
+<td style="text-align:left;">
+squamigerus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis squamigerus (Carpenter, 1857)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+008d249e-a9b8-4654-b15f-bb7354e537aa
+</td>
+<td style="text-align:left;">
+280c5795-9370-4bbe-8d71-9af1441bd93a
+</td>
+<td style="text-align:left;">
+LACMIP 25992.45
+</td>
+<td style="text-align:left;color: red !important;">
+Columbellidae
+</td>
+<td style="text-align:left;">
+Columbellidae
+</td>
+<td style="text-align:left;color: red !important;">
+Alia
+</td>
+<td style="text-align:left;color: red !important;">
+gausapata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella
+</td>
+<td style="text-align:left;">
+gausapata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella gausapata (Gould, 1850)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added, dwc_genus_replaced , taxon_match_failed ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0093696a-2330-4a86-8913-7ed35a2281d5
+</td>
+<td style="text-align:left;">
+60b6851e-5919-49c2-88e3-081085400880
+</td>
+<td style="text-align:left;">
+LACMIP 5868.5
+</td>
+<td style="text-align:left;color: red !important;">
+Conidae
+</td>
+<td style="text-align:left;">
+Conidae
+</td>
+<td style="text-align:left;color: red !important;">
+Conus
+</td>
+<td style="text-align:left;color: red !important;">
+californicus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus
+</td>
+<td style="text-align:left;">
+californicus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus californicus (Reeve, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_multimedia_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+009e4a6e-9283-44f8-bd89-8ffe76475fac
+</td>
+<td style="text-align:left;">
+1b024d38-1f0c-47a1-832c-46a5fda6c00e
+</td>
+<td style="text-align:left;">
+LACMIP 4804.14
+</td>
+<td style="text-align:left;color: red !important;">
+Epitoniidae
+</td>
+<td style="text-align:left;">
+Epitoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+hindsii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+hindsii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala hindsii (Carpenter, 1856)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+dwc_parentnameusageid_added , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added , gbif_canonicalname_added ,
+dwc_taxonid_added , dwc_originalnameusageid_added, dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00a58d86-9cf9-4b88-9bf2-4f428ec4f6ba
+</td>
+<td style="text-align:left;">
+18215210-6352-4476-856f-40470062f081
+</td>
+<td style="text-align:left;">
+LACMIP 22387.54
+</td>
+<td style="text-align:left;color: red !important;">
+Glycymerididae
+</td>
+<td style="text-align:left;">
+Glycymerididae
+</td>
+<td style="text-align:left;color: red !important;">
+Glycymeris
+</td>
+<td style="text-align:left;color: red !important;">
+major
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita
+</td>
+<td style="text-align:left;">
+major
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita major (Stanton, 1896)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , dwc_order_replaced ,
+gbif_taxon_corrected , idigbio_isocountrycode_added ,
+gbif_canonicalname_added , dwc_scientificnameauthorship_replaced,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00a9677e-0262-4f78-b470-6541bb12dde0
+</td>
+<td style="text-align:left;">
+51751506-dc91-4bc9-b113-e6460b9577b2
+</td>
+<td style="text-align:left;">
+LACMIP 22413.218
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00b912fc-a225-4fbd-9b11-2ba629abcbfd
+</td>
+<td style="text-align:left;">
+9563b851-14e6-4f38-ab3c-972612d81b37
+</td>
+<td style="text-align:left;">
+LACMIP 64.264
+</td>
+<td style="text-align:left;color: red !important;">
+Vermetidae
+</td>
+<td style="text-align:left;">
+Vermetidae
+</td>
+<td style="text-align:left;color: red !important;">
+Thylacodes
+</td>
+<td style="text-align:left;color: red !important;">
+squamigerus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis
+</td>
+<td style="text-align:left;">
+squamigerus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis squamigerus (Carpenter, 1857)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+dwc_taxonrank_replaced , gbif_genericname_added , dwc_datasetid_added ,
+gbif_taxon_corrected , dwc_scientificnameauthorship_replaced,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00bcb521-f6b3-4ec7-9b2e-b75770a795d5
+</td>
+<td style="text-align:left;">
+dad42ef7-f184-4d46-97f7-3ee288ff25fb
+</td>
+<td style="text-align:left;">
+LACMIP 30123.64
+</td>
+<td style="text-align:left;color: red !important;">
+Cardiidae
+</td>
+<td style="text-align:left;">
+Cardiidae
+</td>
+<td style="text-align:left;color: red !important;">
+Cardium
+</td>
+<td style="text-align:left;color: red !important;">
+coronaensis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pachycardium
+</td>
+<td style="text-align:left;">
+coronaense
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pachycardium coronaense (Packard, 1922)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_specificepithet_replaced , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00bdf59a-c045-4302-80d6-525196c13c48
+</td>
+<td style="text-align:left;">
+6618fa60-ce0a-4a5a-b6e1-30db73c0f0f7
+</td>
+<td style="text-align:left;">
+LACMIP 59.51
+</td>
+<td style="text-align:left;color: red !important;">
+Epitoniidae
+</td>
+<td style="text-align:left;">
+Epitoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+indianorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+indianorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala indianorum (Carpenter, 1864)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00cde2a9-08f6-467d-9358-996bc7ce69c5
+</td>
+<td style="text-align:left;">
+c281817d-2aa6-4fb9-8b69-59e32a0e1506
+</td>
+<td style="text-align:left;">
+LACMIP 2685.9
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added ,
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, dwc_parentnameusageid_added , dwc_taxonid_added , gbif_taxon_corrected
+, idigbio_isocountrycode_added , gbif_vernacularname_added ,
+gbif_canonicalname_added , dwc_originalnameusageid_added,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00dbae3f-9973-4ec4-9c8b-7d04d6f36783
+</td>
+<td style="text-align:left;">
+d264258b-f47f-481d-a26a-7964ae1923d1
+</td>
+<td style="text-align:left;">
+LACMIP 4396.20
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+00e15c79-866d-458b-b1a3-00c8288e6adb
+</td>
+<td style="text-align:left;">
+b188a191-fb4e-406a-972e-7b2a4e51226e
+</td>
+<td style="text-align:left;">
+LACMIP 7290.1
+</td>
+<td style="text-align:left;color: red !important;">
+Conidae
+</td>
+<td style="text-align:left;">
+Conidae
+</td>
+<td style="text-align:left;color: red !important;">
+Conus
+</td>
+<td style="text-align:left;color: red !important;">
+californicus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus
+</td>
+<td style="text-align:left;">
+californicus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus californicus (Reeve, 1844)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_multimedia_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01119912-24c7-4405-9c1a-d0bf723dbbc0
+</td>
+<td style="text-align:left;">
+0769dc81-1085-49b7-b008-1f0ff48f9f34
+</td>
+<td style="text-align:left;">
+LACMIP 466.63
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0118a4fb-46f3-4356-ad3b-26af888a937d
+</td>
+<td style="text-align:left;">
+6de8d7cc-242d-423e-ac04-f44f97ecefd0
+</td>
+<td style="text-align:left;">
+LACMIP 10908.1
+</td>
+<td style="text-align:left;color: red !important;">
+Trigoniidae
+</td>
+<td style="text-align:left;">
+Trigoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Protrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia sp.
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , idigbio_isocountrycode_added ,
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, dwc_order_replaced , gbif_taxon_corrected , gbif_canonicalname_added ,
+dwc_scientificnameauthorship_added, dwc_taxonid_added ,
+dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0135d386-8226-4907-92e5-04ed3ea51ef4
+</td>
+<td style="text-align:left;">
+81af9fb2-45e1-4a0c-b8d9-a747756b3e85
+</td>
+<td style="text-align:left;">
+LACMIP 409.3
+</td>
+<td style="text-align:left;color: red !important;">
+Potamididae
+</td>
+<td style="text-align:left;">
+Potamididae
+</td>
+<td style="text-align:left;color: red !important;">
+Cerithidea
+</td>
+<td style="text-align:left;color: red !important;">
+californica
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis
+</td>
+<td style="text-align:left;">
+californica
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis californica (Haldeman, 1840)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_genericname_added , dwc_datasetid_added ,
+gbif_vernacularname_added , idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added, dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+013f124a-2b35-465d-affa-bcfbb27b879e
+</td>
+<td style="text-align:left;">
+1b3968bb-d69f-41e1-b4eb-1169b266c0a0
+</td>
+<td style="text-align:left;">
+LACMIP 23225.599
+</td>
+<td style="text-align:left;color: red !important;">
+Muricidae
+</td>
+<td style="text-align:left;">
+Muricidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pteropurpura
+</td>
+<td style="text-align:left;color: red !important;">
+festiva
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus
+</td>
+<td style="text-align:left;">
+festivus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus festivus (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, dwc_specificepithet_replaced , dwc_taxonomicstatus_added ,
+dwc_multimedia_added , gbif_taxon_corrected , gbif_canonicalname_added ,
+dwc_originalnameusageid_added, idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_taxonid_added , dwc_parentnameusageid_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+013fd299-9bc2-4076-a3d1-444cd4cc1706
+</td>
+<td style="text-align:left;">
+5cb1861c-621f-452c-9cba-c6bf0c8d8202
+</td>
+<td style="text-align:left;">
+LACMIP 10611.17
+</td>
+<td style="text-align:left;color: red !important;">
+Tegulidae
+</td>
+<td style="text-align:left;">
+Tegulidae
+</td>
+<td style="text-align:left;color: red !important;">
+Tegula
+</td>
+<td style="text-align:left;color: red !important;">
+funebralis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma
+</td>
+<td style="text-align:left;">
+funebralis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma funebralis (A. Adams, 1855)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , gbif_taxon_corrected ,
+dwc_taxonid_added , dwc_originalnameusageid_added ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0147e4c3-d7e4-4f23-924d-ce441d6589b9
+</td>
+<td style="text-align:left;">
+39a94132-37b4-4e6d-b1f6-04499a9eaefb
+</td>
+<td style="text-align:left;">
+LACMIP 21801.26
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0157b790-e96e-423b-a055-ff53537f1bc1
+</td>
+<td style="text-align:left;">
+f7602217-605f-4571-be3c-46dfa05269dc
+</td>
+<td style="text-align:left;">
+LACMIP 97.40
+</td>
+<td style="text-align:left;color: red !important;">
+Muricidae
+</td>
+<td style="text-align:left;">
+Muricidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pteropurpura
+</td>
+<td style="text-align:left;color: red !important;">
+festiva
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus
+</td>
+<td style="text-align:left;">
+festivus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus festivus (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_specificepithet_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , dwc_multimedia_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0167d93a-186b-4c11-91b6-c245ebf384ea
+</td>
+<td style="text-align:left;">
+9d138c51-a4dc-4adc-96a5-70c828acba4a
+</td>
+<td style="text-align:left;">
+LACMIP 18605.1
+</td>
+<td style="text-align:left;color: red !important;">
+Pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+healeyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten
+</td>
+<td style="text-align:left;">
+healeyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten healeyi (Arnold, 1906)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01696b3f-28e9-4312-b042-ae44fc1d149b
+</td>
+<td style="text-align:left;">
+36e386c3-105e-4151-9ccc-3c9d87594746
+</td>
+<td style="text-align:left;">
+LACMIP 2533.475
+</td>
+<td style="text-align:left;color: red !important;">
+Chironomidae
+</td>
+<td style="text-align:left;">
+Chironomidae
+</td>
+<td style="text-align:left;color: red !important;">
+Paracladius
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Procladius
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Procladius sp.
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_parentnameusageid_added , dwc_datasetid_added ,
+idigbio_isocountrycode_added , dwc_scientificnameauthorship_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01774058-6b93-4f15-ae70-9e5c634af68d
+</td>
+<td style="text-align:left;">
+6e2d319f-f3a8-4a1a-b155-2242ef940c85
+</td>
+<td style="text-align:left;">
+LACMIP 1499.5
+</td>
+<td style="text-align:left;color: red !important;">
+Pterotrigoniidae
+</td>
+<td style="text-align:left;">
+Trigoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Notoscabrotrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+klamathonia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+klamathonia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia klamathonia (Anderson, 1958)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced , gbif_genericname_added
+, dwc_datasetid_added , gbif_taxon_corrected ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_family_replaced , dwc_order_replaced
+, dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+017cac70-9c5e-4189-9770-ecf7a82caf17
+</td>
+<td style="text-align:left;">
+a9e7efe1-92a2-4d19-9616-af3b260c681e
+</td>
+<td style="text-align:left;">
+LACMIP 16204.2
+</td>
+<td style="text-align:left;color: red !important;">
+Ostreidae
+</td>
+<td style="text-align:left;">
+Ostreidae
+</td>
+<td style="text-align:left;color: red !important;">
+Ostrea
+</td>
+<td style="text-align:left;color: red !important;">
+vespertina
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea
+</td>
+<td style="text-align:left;">
+vespertina
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea vespertina (Conrad, 1854)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_genericname_added ,
+dwc_parentnameusageid_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, idigbio_isocountrycode_added ,
+dwc_order_replaced , dwc_genus_replaced , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+017d2baa-43b7-4cab-9fd2-4e2169edced6
+</td>
+<td style="text-align:left;">
+ca9e6925-b74d-49b6-9e4e-65fd138233af
+</td>
+<td style="text-align:left;">
+LACMIP 10781.7
+</td>
+<td style="text-align:left;color: red !important;">
+Acteonellidae
+</td>
+<td style="text-align:left;">
+Acteonellidae
+</td>
+<td style="text-align:left;color: red !important;">
+Actaeonella
+</td>
+<td style="text-align:left;color: red !important;">
+oviformis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Acteonella
+</td>
+<td style="text-align:left;">
+oviformis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Acteonella oviformis Gabb, 1869
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced ,
+dwc_taxonomicstatus_added , gbif_genericname_added , dwc_datasetid_added
+, gbif_taxon_corrected , gbif_canonicalname_added ,
+dwc_scientificnameauthorship_replaced, dwc_taxonid_added ,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+018dfa07-1327-49aa-8116-bdd6baac81aa
+</td>
+<td style="text-align:left;">
+c5de5a63-9876-418a-a13a-3af22382938a
+</td>
+<td style="text-align:left;">
+LACMIP 40054.16
+</td>
+<td style="text-align:left;color: red !important;">
+Epitoniidae
+</td>
+<td style="text-align:left;">
+Epitoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+indianorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+indianorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala indianorum (Carpenter, 1864)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_parentnameusageid_added , dwc_taxonid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added , gbif_canonicalname_added ,
+dwc_scientificnameauthorship_replaced, dwc_originalnameusageid_added ,
+dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+018eec44-bdca-432a-9144-9cb389f316d6
+</td>
+<td style="text-align:left;">
+191b7400-5bef-4b56-8fc6-6c7c2d38b07f
+</td>
+<td style="text-align:left;">
+LACMIP 7290.29
+</td>
+<td style="text-align:left;color: red !important;">
+Fasciolariidae
+</td>
+<td style="text-align:left;">
+Fasciolariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Fusinus
+</td>
+<td style="text-align:left;color: red !important;">
+luteopictus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hesperaptyxis
+</td>
+<td style="text-align:left;">
+luteopictus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hesperaptyxis luteopictus (Dall, 1877)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_vernacularname_added
+, idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0195789f-94e0-4d52-84ae-5d0390035d84
+</td>
+<td style="text-align:left;">
+2c3a785c-13d6-4430-8268-0a325eb965b3
+</td>
+<td style="text-align:left;">
+LACMIP 20259.1
+</td>
+<td style="text-align:left;color: red !important;">
+Pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+opuntia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlamys
+</td>
+<td style="text-align:left;">
+opuntia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Chlamys opuntia (Dall, 1898)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_parentnameusageid_added ,
+dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , dwc_multimedia_added ,
+gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+019b6cfc-1525-4c0c-bfc3-40e5ba219ef0
+</td>
+<td style="text-align:left;">
+1be3302f-e0b1-4703-a305-b045a4bcd079
+</td>
+<td style="text-align:left;">
+LACMIP 5062.114
+</td>
+<td style="text-align:left;color: red !important;">
+Vermetidae
+</td>
+<td style="text-align:left;">
+Vermetidae
+</td>
+<td style="text-align:left;color: red !important;">
+Thylacodes
+</td>
+<td style="text-align:left;color: red !important;">
+squamigerus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis
+</td>
+<td style="text-align:left;">
+squamigerus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis squamigerus (Carpenter, 1857)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , gbif_taxon_corrected , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01b6d44b-1bb0-4a41-afcf-e266d991ccf1
+</td>
+<td style="text-align:left;">
+fad75362-a905-4985-b590-a42a7fc98d16
+</td>
+<td style="text-align:left;">
+LACMIP 226.65
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , gbif_genericname_added , dwc_datasetid_added ,
+gbif_vernacularname_added , idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added, dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01b7ba89-5c9b-4c5e-8567-c6ec269ede31
+</td>
+<td style="text-align:left;">
+26784e25-70f4-4d75-8a7b-2967dee7178a
+</td>
+<td style="text-align:left;">
+LACMIP 21940.9
+</td>
+<td style="text-align:left;color: red !important;">
+Epitoniidae
+</td>
+<td style="text-align:left;">
+Epitoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+indianorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+indianorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala indianorum (Carpenter, 1864)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01bb2dd9-2e1d-49a9-ae2d-4cc369d726ed
+</td>
+<td style="text-align:left;">
+c99f4a65-b6f3-434d-9196-603969edef04
+</td>
+<td style="text-align:left;">
+LACMIP 10326.26
+</td>
+<td style="text-align:left;color: red !important;">
+Serpulidae
+</td>
+<td style="text-align:left;">
+Serpulidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pyrgopolon
+</td>
+<td style="text-align:left;color: red !important;">
+onyx
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hamulus
+</td>
+<td style="text-align:left;">
+onyx
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Hamulus onyx Morton, 1834
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added, gbif_canonicalname_added ,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01c171e8-dbb6-4d11-95f7-c267c1080553
+</td>
+<td style="text-align:left;">
+7fc4e114-e3be-4874-9ff4-b33b3e5cbff6
+</td>
+<td style="text-align:left;">
+LACMIP 23647.17
+</td>
+<td style="text-align:left;color: red !important;">
+Pachydiscidae
+</td>
+<td style="text-align:left;">
+Pachydiscidae
+</td>
+<td style="text-align:left;color: red !important;">
+Eupachydiscus
+</td>
+<td style="text-align:left;color: red !important;">
+grossouvrei
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pachydiscus
+</td>
+<td style="text-align:left;">
+buckhami
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pachydiscus buckhami Usher, 1952
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced , gbif_genericname_added
+, dwc_parentnameusageid_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_specificepithet_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , dwc_multimedia_added ,
+gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01c194f0-6b5b-4161-8746-00965a6423ca
+</td>
+<td style="text-align:left;">
+90632594-92b8-4116-8b9f-19387ba4d014
+</td>
+<td style="text-align:left;">
+LACMIP 23165.10
+</td>
+<td style="text-align:left;color: red !important;">
+Glycymerididae
+</td>
+<td style="text-align:left;">
+Glycymerididae
+</td>
+<td style="text-align:left;color: red !important;">
+Glycymeris
+</td>
+<td style="text-align:left;color: red !important;">
+major
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita
+</td>
+<td style="text-align:left;">
+major
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita major (Stanton, 1896)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , dwc_order_replaced ,
+gbif_taxon_corrected , idigbio_isocountrycode_added ,
+gbif_canonicalname_added , dwc_scientificnameauthorship_replaced,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01d096ec-c783-4605-b49e-0609205532e1
+</td>
+<td style="text-align:left;">
+41f39393-6a7f-4be7-94e2-03ce30ea195c
+</td>
+<td style="text-align:left;">
+LACMIP 31263.78
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+01d3ad81-682f-4d15-8265-7bc5b1693259
+</td>
+<td style="text-align:left;">
+30fc1ed1-b44a-4f8d-b1cc-14c09fceb8f6
+</td>
+<td style="text-align:left;">
+LACMIP 26980.18
+</td>
+<td style="text-align:left;color: red !important;">
+Bakevelliidae
+</td>
+<td style="text-align:left;">
+Bakevelliidae
+</td>
+<td style="text-align:left;color: red !important;">
+Gervillaria
+</td>
+<td style="text-align:left;color: red !important;">
+alifera
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Gervillia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Gervillia sp.
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced ,
+dwc_specificepithet_added , gbif_genericname_added , dwc_datasetid_added
+, dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_scientificnameauthorship_added, dwc_order_replaced ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0205cc71-a358-49e3-9b94-c15e92d16db4
+</td>
+<td style="text-align:left;">
+f1d27794-ef56-4c7d-8294-29743e2caf03
+</td>
+<td style="text-align:left;">
+LACMIP 23633.23
+</td>
+<td style="text-align:left;color: red !important;">
+Trigoniidae
+</td>
+<td style="text-align:left;">
+Trigoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pleurotrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+jacobseni
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+evansana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia evansana (Meek, 1858)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_specificepithet_replaced , dwc_taxonomicstatus_added ,
+dwc_taxonid_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+020ed019-afc2-45a9-bf36-6a38c306cd51
+</td>
+<td style="text-align:left;">
+e2e2f1a5-31a3-4b77-ab32-e6d897ccf046
+</td>
+<td style="text-align:left;">
+LACMIP 18601.4
+</td>
+<td style="text-align:left;color: red !important;">
+Pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+healeyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten
+</td>
+<td style="text-align:left;">
+healeyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten healeyi (Arnold, 1906)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , dwc_taxonrank_replaced ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0210ef77-9139-4602-8984-9d0ca01bd9ed
+</td>
+<td style="text-align:left;">
+d172a61e-c537-4029-8563-59ffb4f62611
+</td>
+<td style="text-align:left;">
+LACMIP 8194.6
+</td>
+<td style="text-align:left;color: red !important;">
+Pterotrigoniidae
+</td>
+<td style="text-align:left;">
+Trigoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Notoscabrotrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+klamathonia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+klamathonia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia klamathonia (Anderson, 1958)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced , gbif_genericname_added
+, dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_family_replaced , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , gbif_taxon_corrected , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+02183e26-5f4b-4b2c-93a3-ce4af35a6c2a
+</td>
+<td style="text-align:left;">
+9e8c52db-31fd-4d71-8d81-877864cc46f3
+</td>
+<td style="text-align:left;">
+LACMIP 11921.12
+</td>
+<td style="text-align:left;color: red !important;">
+Cerithiidae
+</td>
+<td style="text-align:left;">
+Cerithiidae
+</td>
+<td style="text-align:left;color: red !important;">
+Stylidium
+</td>
+<td style="text-align:left;color: red !important;">
+eschrichtii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Neostylidium
+</td>
+<td style="text-align:left;">
+eschrichtii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Neostylidium eschrichtii (Middendorff, 1849)
+</td>
+<td style="text-align:left;">
+rev_geocode_eez , geopoint_low_precision , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+02190def-2a96-4aea-8efb-7e8ed39c2ccb
+</td>
+<td style="text-align:left;">
+1b669af4-3c97-4165-924d-a8f2e7eba839
+</td>
+<td style="text-align:left;">
+LACMIP 16862.121
+</td>
+<td style="text-align:left;color: red !important;">
+Pectinidae
+</td>
+<td style="text-align:left;">
+Pectinidae
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+healeyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten
+</td>
+<td style="text-align:left;">
+healeyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten healeyi (Arnold, 1906)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , rev_geocode_mismatch , gbif_reference_added ,
+dwc_taxonrank_replaced , gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, dwc_parentnameusageid_added ,
+idigbio_isocountrycode_added , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+021b33b4-7fd7-4109-814a-735b5c14781e
+</td>
+<td style="text-align:left;">
+750fb2ec-7706-408b-be72-f57bef291e0c
+</td>
+<td style="text-align:left;">
+LACMIP 6953.184
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , gbif_genericname_added , dwc_datasetid_added ,
+gbif_vernacularname_added , idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added, dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0226d059-bb79-4f8d-8ae9-ef2b3280c19b
+</td>
+<td style="text-align:left;">
+0b01930b-c3ff-4052-8034-bfcc8ee3c00f
+</td>
+<td style="text-align:left;">
+LACMIP 16520.155
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , gbif_reference_added , gbif_genericname_added ,
+dwc_datasetid_added , gbif_vernacularname_added ,
+idigbio_isocountrycode_added , dwc_originalnameusageid_added,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+023336f3-59a6-44c4-bfae-6bf009c5444c
+</td>
+<td style="text-align:left;">
+2e6952d9-ae1b-4ac8-b76b-293ee19ada30
+</td>
+<td style="text-align:left;">
+LACMIP 421.18
+</td>
+<td style="text-align:left;color: red !important;">
+Nassariidae
+</td>
+<td style="text-align:left;">
+Nassariidae
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , gbif_genericname_added , dwc_datasetid_added ,
+gbif_vernacularname_added , idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added, dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+023d255e-3614-4765-8b5f-75580f0b72b1
+</td>
+<td style="text-align:left;">
+60318c6a-b4e8-420a-a320-ab34190a87aa
+</td>
+<td style="text-align:left;">
+LACMIP 137.1
+</td>
+<td style="text-align:left;color: red !important;">
+Myidae
+</td>
+<td style="text-align:left;">
+Myidae
+</td>
+<td style="text-align:left;color: red !important;">
+Platydon
+</td>
+<td style="text-align:left;color: red !important;">
+cancellatus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Platyodon
+</td>
+<td style="text-align:left;">
+cancellatus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Platyodon cancellatus (Conrad, 1837)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , dwc_order_replaced ,
+gbif_taxon_corrected , idigbio_isocountrycode_added ,
+gbif_canonicalname_added , dwc_scientificnameauthorship_replaced,
+dwc_taxonid_added , dwc_parentnameusageid_added , dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+023de46a-ebc1-4ed8-b870-893174e283f7
+</td>
+<td style="text-align:left;">
+4a90361d-e784-459a-868e-bc15ba99eee2
+</td>
+<td style="text-align:left;">
+LACMIP 17650.56
+</td>
+<td style="text-align:left;color: red !important;">
+Naticidae
+</td>
+<td style="text-align:left;">
+Naticidae
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , rev_geocode_eez , geopoint_low_precision ,
+gbif_reference_added , gbif_genericname_added , dwc_datasetid_added ,
+gbif_vernacularname_added , idigbio_isocountrycode_added ,
+dwc_originalnameusageid_added, dwc_genus_replaced ,
+dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_parentnameusageid_added , gbif_taxon_corrected ,
+gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+02458ba3-ae85-4fd3-ad6b-f4e7fddd0910
+</td>
+<td style="text-align:left;">
+52105c17-8d1e-49ca-8a10-fc40d5ffa040
+</td>
+<td style="text-align:left;">
+LACMIP 29181.44
+</td>
+<td style="text-align:left;color: red !important;">
+Pterotrigoniidae
+</td>
+<td style="text-align:left;">
+Trigoniidae
+</td>
+<td style="text-align:left;color: red !important;">
+Notoscabrotrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+klamathonia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+klamathonia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia klamathonia (Anderson, 1958)
+</td>
+<td style="text-align:left;">
+geopoint_low_precision , dwc_taxonrank_replaced , gbif_genericname_added
+, dwc_datasetid_added , dwc_scientificnameauthorship_replaced,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_family_replaced , dwc_order_replaced , dwc_genus_replaced ,
+dwc_taxonomicstatus_added , gbif_taxon_corrected , dwc_taxonid_added ,
+dwc_originalnameusageid_added , gbif_canonicalname_added
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0258072d-5307-4d14-becd-9da6c164dc3d
+</td>
+<td style="text-align:left;">
+0e7fee00-1ffc-41ee-aa58-04f4e07070dd
+</td>
+<td style="text-align:left;">
+LACMIP 129.13
+</td>
+<td style="text-align:left;color: red !important;">
+Calyptraeidae
+</td>
+<td style="text-align:left;">
+Calyptraeidae
+</td>
+<td style="text-align:left;color: red !important;">
+Crepidula
+</td>
+<td style="text-align:left;color: red !important;">
+dorsata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella
+</td>
+<td style="text-align:left;">
+dorsata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella dorsata (Broderip, 1834)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+dwc_parentnameusageid_added , dwc_taxonomicstatus_added ,
+gbif_genericname_added , dwc_datasetid_added , gbif_taxon_corrected ,
+idigbio_isocountrycode_added , gbif_canonicalname_added ,
+dwc_taxonid_added , dwc_originalnameusageid_added, dwc_genus_replaced
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+026635d9-39c2-47d8-8a8e-3be6767f6c2a
+</td>
+<td style="text-align:left;">
+b07122cd-dc9d-4a24-bdd2-c4f12358433c
+</td>
+<td style="text-align:left;">
+LACMIP 228.37
+</td>
+<td style="text-align:left;color: red !important;">
+Conidae
+</td>
+<td style="text-align:left;">
+Conidae
+</td>
+<td style="text-align:left;color: red !important;">
+Conus
+</td>
+<td style="text-align:left;color: red !important;">
+californicus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus
+</td>
+<td style="text-align:left;">
+californicus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus californicus (Reeve, 1844)
+</td>
+<td style="text-align:left;">
+geopoint_datum_error , geopoint_low_precision , gbif_reference_added ,
+gbif_genericname_added , dwc_datasetid_added ,
+dwc_scientificnameauthorship_replaced, gbif_vernacularname_added ,
+dwc_parentnameusageid_added , idigbio_isocountrycode_added ,
+dwc_genus_replaced , dwc_taxonomicstatus_added , dwc_taxonid_added ,
+dwc_multimedia_added , gbif_taxon_corrected , gbif_canonicalname_added
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When iDigBio makes modifications to data, these actions are recorded
+with <strong>data quality flags</strong>, for instance you will notice
+that all of the rows in the filtered data above have the flag
+“dwc_genus_replaced.” We could have used values in the <em>flags</em>
+field, like “dwc_genus_replaced,” to search for records back at the
+beginning of this demo. You can learn more about the flags that iDigBio
+uses <a href="https://github.com/iDigBio/idigbio-search-api/wiki/Data-Quality-Flags">here</a>.</p>
+</div>
+<div id="summarize-differences-in-the-data" class="section level2">
+<h2>Summarize differences in the data</h2>
+<p>If you want to make changes based on the modifications we have
+discovered here, it may be helpful to summarize the distinct
+modifications, as opposed to seeing them repeated across many individual
+specimen records. We can summarize the distinct modifications for genus
+names using the <code>group_by</code> and <code>tally</code> functions
+from the <code>dplyr</code> package.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Summarize modifications made to genus names</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>df_names <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">filter</span>(provider_genus <span class="sc">!=</span> aggregator_genus) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="co"># Because of the nature of scientific names, it makes sense to group data by</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="co"># all of the primary fields that comprise a scientific name</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">group_by</span>(provider_genus, provider_species, provider_subspecies,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>           aggregator_genus, aggregator_species, aggregator_subspecies,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>           provider_scientificName) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="co"># Count how many rows are affected by this modification made to genus name</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="fu">tally</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="co"># Order by frequency of rows affected</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>),</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>                <span class="at">font_size =</span> <span class="dv">12</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>                <span class="at">fixed_thead =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="fu">column_spec</span>(<span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>), <span class="at">color =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="at">height =</span> <span class="st">&quot;400px&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="font-size: 12px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_genus
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_species
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+aggregator_subspecies
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+provider_scientificName
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Glossaulax
+</td>
+<td style="text-align:left;">
+reclusiana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Neverita
+</td>
+<td style="text-align:left;color: red !important;">
+reclusiana
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glossaulax reclusiana (Deshayes, 1839)
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Caesia
+</td>
+<td style="text-align:left;">
+perpinguis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Nassarius
+</td>
+<td style="text-align:left;color: red !important;">
+perpinguis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Caesia perpinguis (Hinds, 1844)
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Patinopecten
+</td>
+<td style="text-align:left;">
+healeyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+healeyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Patinopecten healeyi (Arnold, 1906)
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Californiconus
+</td>
+<td style="text-align:left;">
+californicus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Conus
+</td>
+<td style="text-align:left;color: red !important;">
+californicus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Californiconus californicus (Reeve, 1844)
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+indianorum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+indianorum
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala indianorum (Carpenter, 1864)
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dendostrea
+</td>
+<td style="text-align:left;">
+vespertina
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Ostrea
+</td>
+<td style="text-align:left;color: red !important;">
+vespertina
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Dendostrea vespertina (Conrad, 1854)
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mitrella
+</td>
+<td style="text-align:left;">
+gausapata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Alia
+</td>
+<td style="text-align:left;color: red !important;">
+gausapata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mitrella gausapata (Gould, 1850)
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+klamathonia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Notoscabrotrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+klamathonia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia klamathonia (Anderson, 1958)
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Serpulorbis
+</td>
+<td style="text-align:left;">
+squamigerus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Thylacodes
+</td>
+<td style="text-align:left;color: red !important;">
+squamigerus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Serpulorbis squamigerus (Carpenter, 1857)
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shaskyus
+</td>
+<td style="text-align:left;">
+festivus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Pteropurpura
+</td>
+<td style="text-align:left;color: red !important;">
+festiva
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Shaskyus festivus (Hinds, 1844)
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cerithideopsis
+</td>
+<td style="text-align:left;">
+californica
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Cerithidea
+</td>
+<td style="text-align:left;color: red !important;">
+californica
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cerithideopsis californica (Haldeman, 1840)
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chlorostoma
+</td>
+<td style="text-align:left;">
+funebralis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Tegula
+</td>
+<td style="text-align:left;color: red !important;">
+funebralis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma funebralis (A. Adams, 1855)
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Crepipatella
+</td>
+<td style="text-align:left;">
+dorsata
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Crepidula
+</td>
+<td style="text-align:left;color: red !important;">
+dorsata
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Crepipatella dorsata (Broderip, 1834)
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Glycymerita
+</td>
+<td style="text-align:left;">
+major
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Glycymeris
+</td>
+<td style="text-align:left;color: red !important;">
+major
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Glycymerita major (Stanton, 1896)
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hamulus
+</td>
+<td style="text-align:left;">
+onyx
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Pyrgopolon
+</td>
+<td style="text-align:left;color: red !important;">
+onyx
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hamulus onyx Morton, 1834
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Acanthocardia
+</td>
+<td style="text-align:left;">
+brewerii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Cardium
+</td>
+<td style="text-align:left;color: red !important;">
+brewerii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Acanthocardia (Schedocardia) brewerii (Gabb, 1864)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Acteonella
+</td>
+<td style="text-align:left;">
+oviformis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Actaeonella
+</td>
+<td style="text-align:left;color: red !important;">
+oviformis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Acteonella oviformis Gabb, 1869
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chama
+</td>
+<td style="text-align:left;">
+exogyra
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Pseudochama
+</td>
+<td style="text-align:left;color: red !important;">
+exogyra
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chama exogyra Conrad, 1837
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chlamys
+</td>
+<td style="text-align:left;">
+opuntia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Pecten
+</td>
+<td style="text-align:left;color: red !important;">
+opuntia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlamys opuntia (Dall, 1898)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Chlorostoma
+</td>
+<td style="text-align:left;">
+montereyi
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Tegula
+</td>
+<td style="text-align:left;color: red !important;">
+montereyi
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Chlorostoma montereyi (Kiener, 1850)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cymbophora
+</td>
+<td style="text-align:left;">
+stantoni
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Mactra
+</td>
+<td style="text-align:left;color: red !important;">
+stantoni
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Cymbophora stantoni (Arnold, 1908)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Euspira
+</td>
+<td style="text-align:left;">
+draconis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Glossaulax
+</td>
+<td style="text-align:left;color: red !important;">
+draconis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Euspira draconis (Dall, 1903)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gervillia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Gervillaria
+</td>
+<td style="text-align:left;color: red !important;">
+alifera
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Gervillia sp.
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hesperaptyxis
+</td>
+<td style="text-align:left;">
+luteopictus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Fusinus
+</td>
+<td style="text-align:left;color: red !important;">
+luteopictus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hesperaptyxis luteopictus (Dall, 1877)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hirtoscala
+</td>
+<td style="text-align:left;">
+hindsii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Epitonium
+</td>
+<td style="text-align:left;color: red !important;">
+hindsii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Hirtoscala hindsii (Carpenter, 1856)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Isorobitella
+</td>
+<td style="text-align:left;">
+trigonalis
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Aligena
+</td>
+<td style="text-align:left;color: red !important;">
+trigonalis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Isorobitella trigonalis (Carpenter, 1857)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mexicardia
+</td>
+<td style="text-align:left;">
+procerum
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Americardia
+</td>
+<td style="text-align:left;color: red !important;">
+media
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Mexicardia procerum (Sowerby I, 1833)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Neostylidium
+</td>
+<td style="text-align:left;">
+eschrichtii
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Stylidium
+</td>
+<td style="text-align:left;color: red !important;">
+eschrichtii
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Neostylidium eschrichtii (Middendorff, 1849)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pachycardium
+</td>
+<td style="text-align:left;">
+coronaense
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Cardium
+</td>
+<td style="text-align:left;color: red !important;">
+coronaensis
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pachycardium coronaense (Packard, 1922)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pachydiscus
+</td>
+<td style="text-align:left;">
+buckhami
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Eupachydiscus
+</td>
+<td style="text-align:left;color: red !important;">
+grossouvrei
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pachydiscus buckhami Usher, 1952
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pachydiscus
+</td>
+<td style="text-align:left;">
+catarinae
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Eupachydiscus
+</td>
+<td style="text-align:left;color: red !important;">
+catarinae
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pachydiscus (Neodesmoceras) catarinae (Anderson &amp; Hanna, 1928)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Platyodon
+</td>
+<td style="text-align:left;">
+cancellatus
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Platydon
+</td>
+<td style="text-align:left;color: red !important;">
+cancellatus
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Platyodon cancellatus (Conrad, 1837)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Procladius
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Paracladius
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Procladius sp.
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+evansana
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Pleurotrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+jacobseni
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia evansana (Meek, 1858)
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pterotrigonia
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+Protrigonia
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;color: red !important;">
+NA
+</td>
+<td style="text-align:left;">
+Pterotrigonia sp.
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>After reviewing the summarized data, you may wish to review
+individual specimens and possibly update their data. We can use the
+information from the summary above to search for the catalog numbers of
+which specimens to review.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Search for specimen records of an example modified genus name</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>df_names <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">filter</span>(provider_genus <span class="sc">==</span> <span class="st">&quot;Glossaulax&quot;</span> <span class="sc">&amp;</span> provider_species <span class="sc">==</span> <span class="st">&quot;reclusiana&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="fu">select</span>(catalogNumber)</span></code></pre></div>
+<pre><code>##       catalogNumber
+## 1   LACMIP 8226.206
+## 2   LACMIP 20187.59
+## 3   LACMIP 42035.85
+## 4   LACMIP 41678.50
+## 5   LACMIP 25446.87
+## 6  LACMIP 22413.169
+## 7     LACMIP 2685.9
+## 8    LACMIP 4396.20
+## 9     LACMIP 466.63
+## 10  LACMIP 31263.78
+## 11 LACMIP 16520.155
+## 12  LACMIP 17650.56</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

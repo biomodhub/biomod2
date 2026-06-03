@@ -1,0 +1,192 @@
+---
+title: "Functional programming: Sectioning function to a smaller domain"
+author: "Søren Højsgaard"
+output: 
+  rmarkdown::html_vignette
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{section_fun: Section functions to a smaller domain}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options("digits"=3)
+library(doBy)
+library(microbenchmark)
+#devtools::load_all()
+```
+
+
+## Sectioning a function domain with `section_fun()`
+
+The `section_fun` utility in **doBy** creates a new function by **fixing some arguments** of an existing function. The result is a *section* of the original function, defined only on the remaining arguments.
+
+For example, if you have:
+
+$$
+f(x,y) = x + y
+$$
+
+then fixing $x=10$ yields:
+
+$$
+f_x(y) = 10 + y
+$$
+
+In `R` terms, `section_fun` lets you programmatically create such specialized versions.
+
+---
+
+## How `section_fun` works
+
+`section_fun()` offers three ways to fix arguments:
+
+1. **Defaults (method = "def")** – Inserts the fixed values as defaults in the argument list.
+2. **Substitution (method = "sub")** – Rewrites the function body with the fixed values.
+3. **Environment (method = "env")** – Stores fixed values in an auxiliary environment.
+
+Example:
+
+```{r}
+fun  <- function(a, b, c=4, d=9) {
+    a + b + c + d
+}
+```
+
+```{r}
+fun_def <- section_fun(fun, list(b=7, d=10))
+fun_def
+fun_body <- section_fun(fun, list(b=7, d=10), method="sub")
+fun_body
+fun_env <- section_fun(fun, list(b=7, d=10), method = "env")
+fun_env
+```
+
+You can inspect the environment-based section:
+
+```{r}
+get_section(fun_env) 
+## same as: attr(fun_env, "arg_env")$args 
+get_fun(fun_env) 
+## same as: environment(fun_env)$fun
+```
+
+
+
+
+Example evaluations:
+
+```{r}
+fun(a=10, b=7, c=5, d=10)
+fun_def(a=10, c=5)
+fun_body(a=10, c=5)
+fun_env(a=10, c=5)
+```
+
+
+
+
+
+## Benchmarking example
+
+Suppose you want to benchmark a function for different input values without writing repetitive code:
+
+```{r}
+inv_toep <- function(n) {
+    solve(toeplitz(1:n))
+}
+```
+
+Instead of typing the following
+
+```{r, eval=F}
+microbenchmark(
+    inv_toep(4), inv_toep(8), inv_toep(16),
+    times=3
+)
+```
+
+you can create specialized versions programmatically:
+
+```{r}
+n.vec  <- c(4, 8, 16)
+fun_list <- lapply(n.vec,
+                   function(ni) {
+                       section_fun(inv_toep, list(n=ni))
+                   })
+fun_list
+```
+
+Inspect and evaluate:
+
+```{r}
+fun_list[[1]]
+fun_list[[1]]()
+```
+
+To use with microbenchmark, we need expressions:
+
+```{r}
+bquote_list <- function(fun_list) {
+    lapply(fun_list, function(g){
+        bquote(.(g)())
+    })
+}
+```
+
+We get:
+
+```{r}
+bq_fun_list <- bquote_list(fun_list)
+bq_fun_list
+bq_fun_list[[1]]
+eval(bq_fun_list[[1]])
+```
+
+
+Now run:
+
+```{r}
+microbenchmark(
+  list = bq_fun_list,
+  times = 5
+)
+```
+
+Running the code below provides a benchmark of the different ways of sectioning in terms of speed.
+
+```{r}
+n.vec  <- seq(20, 80, by=20)
+fun_def <- lapply(n.vec,
+                  function(n){
+                      section_fun(inv_toep, list(n=n), method="def")
+                  })
+fun_body <- lapply(n.vec,
+                  function(n){
+                      section_fun(inv_toep, list(n=n), method="sub")
+                  })
+fun_env <- lapply(n.vec,
+                  function(n){
+                      section_fun(inv_toep, list(n=n), method="env")
+                  })
+
+names(fun_def)  <- paste0("def", n.vec)
+names(fun_body) <- paste0("body", n.vec)
+names(fun_env)  <- paste0("env", n.vec)
+
+bq_fun_list <- bquote_list(c(fun_def, fun_body, fun_env))
+bq_fun_list |> head()
+
+mb <- microbenchmark(
+  list  = bq_fun_list,
+  times = 2
+)
+mb
+```
+

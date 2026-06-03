@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Geometrical Functionality of the 'spatstat' Family</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Geometrical Functionality of the 'spatstat' Family
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;spatstat.geom&rsquo; version 3.7-3</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../NEWS">Package NEWS</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="# "> </a>
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#Y">Y</a>
+<a href="#Z">Z</a>
+<a href="#misc">misc</a>
+</p>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="spatstat.geom-package.html">spatstat.geom-package</a></td>
+<td>The spatstat.geom Package</td></tr>
+</table>
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="add.texture.html">add.texture</a></td>
+<td>Fill Plot With Texture</td></tr>
+<tr><td style="width: 25%;"><a href="affine.html">affine</a></td>
+<td>Apply Affine Transformation</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">affine.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="affine.im.html">affine.im</a></td>
+<td>Apply Affine Transformation To Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">affine.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="affine.owin.html">affine.owin</a></td>
+<td>Apply Affine Transformation To Window</td></tr>
+<tr><td style="width: 25%;"><a href="affine.ppp.html">affine.ppp</a></td>
+<td>Apply Affine Transformation To Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="affine.psp.html">affine.psp</a></td>
+<td>Apply Affine Transformation To Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="affine.tess.html">affine.tess</a></td>
+<td>Apply Geometrical Transformation To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="angles.psp.html">angles.psp</a></td>
+<td>Orientation Angles of Line Segments</td></tr>
+<tr><td style="width: 25%;"><a href="duplicated.ppp.html">anyDuplicated.ppp</a></td>
+<td>Determine Duplicated Points in a Spatial Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="duplicated.ppp.html">anyDuplicated.ppx</a></td>
+<td>Determine Duplicated Points in a Spatial Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="solapply.html">anylapply</a></td>
+<td>Apply a Function Over a List and Obtain a List of Objects</td></tr>
+<tr><td style="width: 25%;"><a href="anylist.html">anylist</a></td>
+<td>List of Objects</td></tr>
+<tr><td style="width: 25%;"><a href="anyNA.im.html">anyNA.im</a></td>
+<td>Check Whether Image Contains NA Values</td></tr>
+<tr><td style="width: 25%;"><a href="append.psp.html">append.psp</a></td>
+<td>Combine Two Line Segment Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="applynbd.html">applynbd</a></td>
+<td>Apply Function to Every Neighbourhood in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="area.owin.html">area</a></td>
+<td>Area of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="area.owin.html">area.default</a></td>
+<td>Area of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="area.owin.html">area.owin</a></td>
+<td>Area of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="areaGain.html">areaGain</a></td>
+<td>Difference of Disc Areas</td></tr>
+<tr><td style="width: 25%;"><a href="areaLoss.html">areaLoss</a></td>
+<td>Difference of Disc Areas</td></tr>
+<tr><td style="width: 25%;"><a href="anylist.html">as.anylist</a></td>
+<td>List of Objects</td></tr>
+<tr><td style="width: 25%;"><a href="as.matrix.im.html">as.array.im</a></td>
+<td>Convert Pixel Image to Matrix or Array</td></tr>
+<tr><td style="width: 25%;"><a href="as.box3.html">as.box3</a></td>
+<td>Convert Data to Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="as.boxx.html">as.boxx</a></td>
+<td>Convert Data to Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="as.colourmap.html">as.colourmap</a></td>
+<td>Convert to Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="as.colourmap.html">as.colourmap.colourmap</a></td>
+<td>Convert to Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="as.colourmap.html">as.colourmap.symbolmap</a></td>
+<td>Convert to Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.hyperframe.html">as.data.frame.hyperframe</a></td>
+<td>Coerce Hyperframe to Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.im.html">as.data.frame.im</a></td>
+<td>Convert Pixel Image to Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.owin.html">as.data.frame.owin</a></td>
+<td>Convert Window to Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.ppp.html">as.data.frame.ppp</a></td>
+<td>Coerce Point Pattern to a Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.ppx.html">as.data.frame.ppx</a></td>
+<td>Extract coordinates and marks of multidimensional point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.psp.html">as.data.frame.psp</a></td>
+<td>Coerce Line Segment Pattern to a Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.data.frame.tess.html">as.data.frame.tess</a></td>
+<td>Convert Tessellation to Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.function.im.html">as.function.im</a></td>
+<td>Convert Pixel Image to Function of Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="as.function.owin.html">as.function.owin</a></td>
+<td>Convert Window to Indicator Function</td></tr>
+<tr><td style="width: 25%;"><a href="as.function.tess.html">as.function.tess</a></td>
+<td>Convert a Tessellation to a Function</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.html">as.hyperframe</a></td>
+<td>Convert Data to Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.html">as.hyperframe.anylist</a></td>
+<td>Convert Data to Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.html">as.hyperframe.data.frame</a></td>
+<td>Convert Data to Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.html">as.hyperframe.default</a></td>
+<td>Convert Data to Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.html">as.hyperframe.hyperframe</a></td>
+<td>Convert Data to Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.html">as.hyperframe.listof</a></td>
+<td>Convert Data to Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.ppx.html">as.hyperframe.ppx</a></td>
+<td>Extract coordinates and marks of multidimensional point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.data.frame</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.default</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.distfun</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.expression</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.function</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.funxy</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.im</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.matrix</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.nnfun</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.owin</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="pixellate.ppp.html">as.im.ppp</a></td>
+<td>Convert Point Pattern to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.im.html">as.im.tess</a></td>
+<td>Convert to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="as.layered.html">as.layered</a></td>
+<td>Convert Data To Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="as.layered.html">as.layered.default</a></td>
+<td>Convert Data To Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="as.layered.html">as.layered.listof</a></td>
+<td>Convert Data To Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="as.layered.html">as.layered.ppp</a></td>
+<td>Convert Data To Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="as.layered.html">as.layered.solist</a></td>
+<td>Convert Data To Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="as.layered.html">as.layered.splitppp</a></td>
+<td>Convert Data To Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="as.mask.html">as.mask</a></td>
+<td>Pixel Image Approximation of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="psp2mask.html">as.mask.psp</a></td>
+<td>Convert Line Segment Pattern to Binary Pixel Mask</td></tr>
+<tr><td style="width: 25%;"><a href="as.matrix.im.html">as.matrix.im</a></td>
+<td>Convert Pixel Image to Matrix or Array</td></tr>
+<tr><td style="width: 25%;"><a href="as.matrix.owin.html">as.matrix.owin</a></td>
+<td>Convert Pixel Image to Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="as.hyperframe.ppx.html">as.matrix.ppx</a></td>
+<td>Extract coordinates and marks of multidimensional point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.boxx</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.data.frame</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.default</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.distfun</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.funxy</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.im</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.layered</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.nnfun</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.owin</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.ppp</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.psp</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.quad</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.quadratcount</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.owin.html">as.owin.tess</a></td>
+<td>Convert Data To Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="as.polygonal.html">as.polygonal</a></td>
+<td>Convert a Window to a Polygonal Window</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp.data.frame</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp.default</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp.matrix</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp.ppp</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp.psp</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.ppp.html">as.ppp.quad</a></td>
+<td>Convert Data To Class ppp</td></tr>
+<tr><td style="width: 25%;"><a href="as.psp.html">as.psp</a></td>
+<td>Convert Data To Class psp</td></tr>
+<tr><td style="width: 25%;"><a href="as.psp.html">as.psp.data.frame</a></td>
+<td>Convert Data To Class psp</td></tr>
+<tr><td style="width: 25%;"><a href="as.psp.html">as.psp.default</a></td>
+<td>Convert Data To Class psp</td></tr>
+<tr><td style="width: 25%;"><a href="as.psp.html">as.psp.matrix</a></td>
+<td>Convert Data To Class psp</td></tr>
+<tr><td style="width: 25%;"><a href="as.psp.html">as.psp.psp</a></td>
+<td>Convert Data To Class psp</td></tr>
+<tr><td style="width: 25%;"><a href="as.rectangle.html">as.rectangle</a></td>
+<td>Window Frame</td></tr>
+<tr><td style="width: 25%;"><a href="as.solist.html">as.solist</a></td>
+<td>Convert List of Two-Dimensional Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="as.tess.html">as.tess</a></td>
+<td>Convert Data To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="as.tess.html">as.tess.im</a></td>
+<td>Convert Data To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="as.tess.html">as.tess.list</a></td>
+<td>Convert Data To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="as.tess.html">as.tess.owin</a></td>
+<td>Convert Data To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="as.tess.html">as.tess.quadratcount</a></td>
+<td>Convert Data To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="as.tess.html">as.tess.tess</a></td>
+<td>Convert Data To Tessellation</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="bdist.pixels.html">bdist.pixels</a></td>
+<td>Distance to Boundary of Window</td></tr>
+<tr><td style="width: 25%;"><a href="bdist.points.html">bdist.points</a></td>
+<td>Distance to Boundary of Window</td></tr>
+<tr><td style="width: 25%;"><a href="bdist.tiles.html">bdist.tiles</a></td>
+<td>Distance to Boundary of Window</td></tr>
+<tr><td style="width: 25%;"><a href="beachcolours.html">beachcolourmap</a></td>
+<td>Create Colour Scheme for a Range of Numbers</td></tr>
+<tr><td style="width: 25%;"><a href="beachcolours.html">beachcolours</a></td>
+<td>Create Colour Scheme for a Range of Numbers</td></tr>
+<tr><td style="width: 25%;"><a href="border.html">border</a></td>
+<td>Border Region of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="bounding.box.xy.html">bounding.box.xy</a></td>
+<td>Convex Hull of Points</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.default</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.im</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.linnet</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.lpp</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.owin</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.ppp</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.psp</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingbox.html">boundingbox.solist</a></td>
+<td>Bounding Box of a Window, Image, or Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingcentre</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingcentre.owin</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingcentre.ppp</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingcircle</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingcircle.owin</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingcircle.ppp</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingradius</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingradius.owin</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="boundingcircle.html">boundingradius.ppp</a></td>
+<td>Smallest Enclosing Circle</td></tr>
+<tr><td style="width: 25%;"><a href="box3.html">box3</a></td>
+<td>Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="boxx.html">boxx</a></td>
+<td>Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="bufftess.html">bufftess</a></td>
+<td>Buffer Distance Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="by.im.html">by.im</a></td>
+<td>Apply Function to Image Broken Down by Factor</td></tr>
+<tr><td style="width: 25%;"><a href="by.ppp.html">by.ppp</a></td>
+<td>Apply a Function to a Point Pattern Broken Down by Factor</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="methods.layered.html">c.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="cbind.hyperframe.html">cbind.hyperframe</a></td>
+<td>Combine Hyperframes by Rows or by Columns</td></tr>
+<tr><td style="width: 25%;"><a href="centroid.owin.html">centroid.owin</a></td>
+<td>Centroid of a window</td></tr>
+<tr><td style="width: 25%;"><a href="chop.tess.html">chop.tess</a></td>
+<td>Subdivide a Window or Tessellation using a Set of Lines</td></tr>
+<tr><td style="width: 25%;"><a href="run.simplepanel.html">clear.simplepanel</a></td>
+<td>Run Point-and-Click Interface</td></tr>
+<tr><td style="width: 25%;"><a href="clickbox.html">clickbox</a></td>
+<td>Interactively Define a Rectangle</td></tr>
+<tr><td style="width: 25%;"><a href="clickdist.html">clickdist</a></td>
+<td>Interactively Measure Distance</td></tr>
+<tr><td style="width: 25%;"><a href="clickpoly.html">clickpoly</a></td>
+<td>Interactively Define a Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="clickppp.html">clickppp</a></td>
+<td>Interactively Add Points</td></tr>
+<tr><td style="width: 25%;"><a href="clip.infline.html">clip.infline</a></td>
+<td>Intersect Infinite Straight Lines with a Window</td></tr>
+<tr><td style="width: 25%;"><a href="closepairs.html">closepairs</a></td>
+<td>Close Pairs of Points</td></tr>
+<tr><td style="width: 25%;"><a href="closepairs.pp3.html">closepairs.pp3</a></td>
+<td>Close Pairs of Points in 3 Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="closepairs.html">closepairs.ppp</a></td>
+<td>Close Pairs of Points</td></tr>
+<tr><td style="width: 25%;"><a href="closetriples.html">closetriples</a></td>
+<td>Close Triples of Points</td></tr>
+<tr><td style="width: 25%;"><a href="closing.html">closing</a></td>
+<td>Morphological Closing</td></tr>
+<tr><td style="width: 25%;"><a href="closing.html">closing.owin</a></td>
+<td>Morphological Closing</td></tr>
+<tr><td style="width: 25%;"><a href="closing.html">closing.ppp</a></td>
+<td>Morphological Closing</td></tr>
+<tr><td style="width: 25%;"><a href="closing.html">closing.psp</a></td>
+<td>Morphological Closing</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">col2hex</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="colourmap.html">colourmap</a></td>
+<td>Colour Lookup Tables</td></tr>
+<tr><td style="width: 25%;"><a href="colouroutputs.html">colouroutputs</a></td>
+<td>Extract or Assign Colour Values in a Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="colouroutputs.html">colouroutputs&lt;-</a></td>
+<td>Extract or Assign Colour Values in a Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">colourtools</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="commonGrid.html">commonGrid</a></td>
+<td>Determine A Common Spatial Domain And Pixel Resolution</td></tr>
+<tr><td style="width: 25%;"><a href="compatible.html">compatible</a></td>
+<td>Test Whether Objects Are Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="compatible.im.html">compatible.im</a></td>
+<td>Test Whether Pixel Images Are Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">compatible.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="complement.owin.html">complement.owin</a></td>
+<td>Take Complement of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">complementarycolour</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="Math.im.html">Complex.im</a></td>
+<td>S3 Group Generic methods for images</td></tr>
+<tr><td style="width: 25%;"><a href="Math.imlist.html">Complex.imlist</a></td>
+<td>S3 Group Generic methods for List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="concatxy.html">concatxy</a></td>
+<td>Concatenate x,y Coordinate Vectors</td></tr>
+<tr><td style="width: 25%;"><a href="connected.html">connected</a></td>
+<td>Connected components</td></tr>
+<tr><td style="width: 25%;"><a href="connected.html">connected.im</a></td>
+<td>Connected components</td></tr>
+<tr><td style="width: 25%;"><a href="connected.html">connected.owin</a></td>
+<td>Connected components</td></tr>
+<tr><td style="width: 25%;"><a href="connected.ppp.html">connected.pp3</a></td>
+<td>Connected Components of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="connected.ppp.html">connected.ppp</a></td>
+<td>Connected Components of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="connected.tess.html">connected.tess</a></td>
+<td>Connected Components of Tiles of a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="methods.funxy.html">contour.funxy</a></td>
+<td>Methods for Spatial Functions</td></tr>
+<tr><td style="width: 25%;"><a href="contour.im.html">contour.im</a></td>
+<td>Contour plot of pixel image</td></tr>
+<tr><td style="width: 25%;"><a href="contour.imlist.html">contour.imlist</a></td>
+<td>Array of Contour Plots</td></tr>
+<tr><td style="width: 25%;"><a href="contour.imlist.html">contour.listof</a></td>
+<td>Array of Contour Plots</td></tr>
+<tr><td style="width: 25%;"><a href="convexhull.html">convexhull</a></td>
+<td>Convex Hull</td></tr>
+<tr><td style="width: 25%;"><a href="convexhull.xy.html">convexhull.xy</a></td>
+<td>Convex Hull of Points</td></tr>
+<tr><td style="width: 25%;"><a href="convexify.html">convexify</a></td>
+<td>Weil's Convexifying Operation</td></tr>
+<tr><td style="width: 25%;"><a href="convexmetric.html">convexmetric</a></td>
+<td>Distance Metric Defined by Convex Set</td></tr>
+<tr><td style="width: 25%;"><a href="convolve.im.html">convolve.im</a></td>
+<td>Convolution of Pixel Images</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords.ppp</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords.ppx</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords.quad</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords&lt;-</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords&lt;-.ppp</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="coords.html">coords&lt;-.ppx</a></td>
+<td>Extract or Change Coordinates of a Spatial or Spatiotemporal Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="corners.html">corners</a></td>
+<td>Corners of a rectangle</td></tr>
+<tr><td style="width: 25%;"><a href="covering.html">covering</a></td>
+<td>Cover Region with Discs</td></tr>
+<tr><td style="width: 25%;"><a href="crossdist.html">crossdist</a></td>
+<td>Pairwise distances</td></tr>
+<tr><td style="width: 25%;"><a href="crossdist.default.html">crossdist.default</a></td>
+<td>Pairwise distances between two different sets of points</td></tr>
+<tr><td style="width: 25%;"><a href="crossdist.pp3.html">crossdist.pp3</a></td>
+<td>Pairwise distances between two different three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="crossdist.ppp.html">crossdist.ppp</a></td>
+<td>Pairwise distances between two different point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="crossdist.ppx.html">crossdist.ppx</a></td>
+<td>Pairwise Distances Between Two Different Multi-Dimensional Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="crossdist.psp.html">crossdist.psp</a></td>
+<td>Pairwise distances between two different line segment patterns</td></tr>
+<tr><td style="width: 25%;"><a href="crossing.psp.html">crossing.psp</a></td>
+<td>Crossing Points of Two Line Segment Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="closepairs.html">crosspairs</a></td>
+<td>Close Pairs of Points</td></tr>
+<tr><td style="width: 25%;"><a href="closepairs.pp3.html">crosspairs.pp3</a></td>
+<td>Close Pairs of Points in 3 Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="closepairs.html">crosspairs.ppp</a></td>
+<td>Close Pairs of Points</td></tr>
+<tr><td style="width: 25%;"><a href="cut.im.html">cut.im</a></td>
+<td>Convert Pixel Image from Numeric to Factor</td></tr>
+<tr><td style="width: 25%;"><a href="cut.ppp.html">cut.ppp</a></td>
+<td>Classify Points in a Point Pattern</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="default.colourmap.html">default.colourmap</a></td>
+<td>Default Colour Map for Plotting a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="default.dummy.html">default.dummy</a></td>
+<td>Generate a Default Pattern of Dummy Points</td></tr>
+<tr><td style="width: 25%;"><a href="default.image.colours.html">default.image.colours</a></td>
+<td>Default Colours for Images in Spatstat</td></tr>
+<tr><td style="width: 25%;"><a href="default.symbolmap.html">default.symbolmap</a></td>
+<td>Default Symbol Map for Plotting a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="default.symbolmap.ppp.html">default.symbolmap.ppp</a></td>
+<td>Default Symbol Map for Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="delaunay.html">delaunay</a></td>
+<td>Delaunay Triangulation of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="delaunayDistance.html">delaunayDistance</a></td>
+<td>Distance on Delaunay Triangulation</td></tr>
+<tr><td style="width: 25%;"><a href="deltametric.html">deltametric</a></td>
+<td>Delta Metric</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.html">diameter</a></td>
+<td>Diameter of an Object</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">diameter.box3</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.boxx.html">diameter.boxx</a></td>
+<td>Geometrical Calculations for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.owin.html">diameter.owin</a></td>
+<td>Diameter of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="dilated.areas.html">dilated.areas</a></td>
+<td>Areas of Morphological Dilations</td></tr>
+<tr><td style="width: 25%;"><a href="dilation.html">dilation</a></td>
+<td>Morphological Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="dilation.html">dilation.owin</a></td>
+<td>Morphological Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="dilation.html">dilation.ppp</a></td>
+<td>Morphological Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="dilation.html">dilation.psp</a></td>
+<td>Morphological Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="MinkowskiSum.html">dilationAny</a></td>
+<td>Minkowski Sum of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="dirichlet.html">dirichlet</a></td>
+<td>Dirichlet Tessellation of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="dirichletAreas.html">dirichletAreas</a></td>
+<td>Compute Areas of Tiles in Dirichlet Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="dirichletVertices.html">dirichletEdges</a></td>
+<td>Vertices and Edges of Dirichlet Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="dirichletVertices.html">dirichletVertices</a></td>
+<td>Vertices and Edges of Dirichlet Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="dirichletWeights.html">dirichletWeights</a></td>
+<td>Compute Quadrature Weights Based on Dirichlet Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="disc.html">disc</a></td>
+<td>Circular Window</td></tr>
+<tr><td style="width: 25%;"><a href="discpartarea.html">discpartarea</a></td>
+<td>Area of Part of Disc</td></tr>
+<tr><td style="width: 25%;"><a href="discretise.html">discretise</a></td>
+<td>Safely Convert Point Pattern Window to Binary Mask</td></tr>
+<tr><td style="width: 25%;"><a href="discs.html">discs</a></td>
+<td>Union of Discs</td></tr>
+<tr><td style="width: 25%;"><a href="distfun.html">distfun</a></td>
+<td>Distance Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="distfun.html">distfun.owin</a></td>
+<td>Distance Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="distfun.html">distfun.ppp</a></td>
+<td>Distance Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="distfun.html">distfun.psp</a></td>
+<td>Distance Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="distmap.html">distmap</a></td>
+<td>Distance Map</td></tr>
+<tr><td style="width: 25%;"><a href="distmap.owin.html">distmap.owin</a></td>
+<td>Distance Map of Window</td></tr>
+<tr><td style="width: 25%;"><a href="distmap.ppp.html">distmap.ppp</a></td>
+<td>Distance Map of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="distmap.psp.html">distmap.psp</a></td>
+<td>Distance Map of Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.distfun</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.funxy</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.im</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.layered</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.nnfun</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.pp3</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.ppp</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.ppx</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.psp</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.quad</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.quadratcount</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="domain.html">domain.tess</a></td>
+<td>Extract the Domain of any Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="duplicated.ppp.html">duplicated.ppp</a></td>
+<td>Determine Duplicated Points in a Spatial Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="duplicated.ppp.html">duplicated.ppx</a></td>
+<td>Determine Duplicated Points in a Spatial Point Pattern</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="edges.html">edges</a></td>
+<td>Extract Boundary Edges of a Window.</td></tr>
+<tr><td style="width: 25%;"><a href="edges2triangles.html">edges2triangles</a></td>
+<td>List Triangles in a Graph</td></tr>
+<tr><td style="width: 25%;"><a href="edges2vees.html">edges2vees</a></td>
+<td>List Dihedral Triples in a Graph</td></tr>
+<tr><td style="width: 25%;"><a href="edit.hyperframe.html">edit.hyperframe</a></td>
+<td>Invoke Text Editor on Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="edit.ppp.html">edit.im</a></td>
+<td>Invoke Text Editor on Spatial Data</td></tr>
+<tr><td style="width: 25%;"><a href="edit.ppp.html">edit.ppp</a></td>
+<td>Invoke Text Editor on Spatial Data</td></tr>
+<tr><td style="width: 25%;"><a href="edit.ppp.html">edit.psp</a></td>
+<td>Invoke Text Editor on Spatial Data</td></tr>
+<tr><td style="width: 25%;"><a href="ellipse.html">ellipse</a></td>
+<td>Elliptical Window.</td></tr>
+<tr><td style="width: 25%;"><a href="endpoints.psp.html">endpoints.psp</a></td>
+<td>Endpoints of Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="eroded.areas.html">eroded.areas</a></td>
+<td>Areas of Morphological Erosions</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">eroded.volumes</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">eroded.volumes.box3</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.boxx.html">eroded.volumes.boxx</a></td>
+<td>Geometrical Calculations for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="erosion.html">erosion</a></td>
+<td>Morphological Erosion by a Disc</td></tr>
+<tr><td style="width: 25%;"><a href="erosion.html">erosion.owin</a></td>
+<td>Morphological Erosion by a Disc</td></tr>
+<tr><td style="width: 25%;"><a href="erosion.html">erosion.ppp</a></td>
+<td>Morphological Erosion by a Disc</td></tr>
+<tr><td style="width: 25%;"><a href="erosion.html">erosion.psp</a></td>
+<td>Morphological Erosion by a Disc</td></tr>
+<tr><td style="width: 25%;"><a href="erosionAny.html">erosionAny</a></td>
+<td>Morphological Erosion of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="eval.im.html">eval.im</a></td>
+<td>Evaluate Expression Involving Pixel Images</td></tr>
+<tr><td style="width: 25%;"><a href="extrapolate.psp.html">extrapolate.psp</a></td>
+<td>Extrapolate Line Segments to Obtain Infinite Lines</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="fardist.html">fardist</a></td>
+<td>Farthest Distance to Boundary of Window</td></tr>
+<tr><td style="width: 25%;"><a href="fardist.html">fardist.owin</a></td>
+<td>Farthest Distance to Boundary of Window</td></tr>
+<tr><td style="width: 25%;"><a href="fardist.html">fardist.ppp</a></td>
+<td>Farthest Distance to Boundary of Window</td></tr>
+<tr><td style="width: 25%;"><a href="FeretBox.html">FeretBox</a></td>
+<td>Feret Box Enclosing a Domain</td></tr>
+<tr><td style="width: 25%;"><a href="FeretDiamFun.html">FeretDiamFun</a></td>
+<td>Feret Diameter as a Function of Direction</td></tr>
+<tr><td style="width: 25%;"><a href="fillholes.owin.html">fillholes.owin</a></td>
+<td>Remove Small Holes in a Window</td></tr>
+<tr><td style="width: 25%;"><a href="flipxy.html">flipxy</a></td>
+<td>Exchange X and Y Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">flipxy.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="flipxy.html">flipxy.im</a></td>
+<td>Exchange X and Y Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.infline.html">flipxy.infline</a></td>
+<td>Rotate or Shift Infinite Lines</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">flipxy.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="flipxy.html">flipxy.owin</a></td>
+<td>Exchange X and Y Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="flipxy.html">flipxy.ppp</a></td>
+<td>Exchange X and Y Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="flipxy.html">flipxy.psp</a></td>
+<td>Exchange X and Y Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="affine.tess.html">flipxy.tess</a></td>
+<td>Apply Geometrical Transformation To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="fourierbasis.html">fourierbasis</a></td>
+<td>Fourier Basis Functions</td></tr>
+<tr><td style="width: 25%;"><a href="fourierbasis.html">fourierbasisraw</a></td>
+<td>Fourier Basis Functions</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame.default</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame&lt;-</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame&lt;-.default</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame&lt;-.im</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame&lt;-.owin</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Frame.html">Frame&lt;-.ppp</a></td>
+<td>Extract or Change the Containing Rectangle of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="framedist.pixels.html">framedist.pixels</a></td>
+<td>Distance to Bounding Frame</td></tr>
+<tr><td style="width: 25%;"><a href="funxy.html">funxy</a></td>
+<td>Spatial Function Class</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="gridcentres.html">gridcenters</a></td>
+<td>Rectangular grid of points</td></tr>
+<tr><td style="width: 25%;"><a href="gridcentres.html">gridcentres</a></td>
+<td>Rectangular grid of points</td></tr>
+<tr><td style="width: 25%;"><a href="gridweights.html">gridweights</a></td>
+<td>Compute Quadrature Weights Based on Grid Counts</td></tr>
+<tr><td style="width: 25%;"><a href="grow.boxx.html">grow.box3</a></td>
+<td>Add margins to box in any dimension</td></tr>
+<tr><td style="width: 25%;"><a href="grow.boxx.html">grow.boxx</a></td>
+<td>Add margins to box in any dimension</td></tr>
+<tr><td style="width: 25%;"><a href="grow.rectangle.html">grow.rectangle</a></td>
+<td>Add margins to rectangle</td></tr>
+<tr><td style="width: 25%;"><a href="simplepanel.html">grow.simplepanel</a></td>
+<td>Simple Point-and-Click Interface Panels</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="quasirandom.html">Halton</a></td>
+<td>Quasirandom Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="quasirandom.html">Hammersley</a></td>
+<td>Quasirandom Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="harmonise.html">harmonise</a></td>
+<td>Make Objects Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="harmonise.im.html">harmonise.im</a></td>
+<td>Make Pixel Images Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="harmonise.owin.html">harmonise.owin</a></td>
+<td>Make Windows Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">harmonise.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="harmoniseLevels.html">harmoniseLevels</a></td>
+<td>Harmonise the levels of several factors, or factor-valued pixel images.</td></tr>
+<tr><td style="width: 25%;"><a href="harmonise.html">harmonize</a></td>
+<td>Make Objects Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="harmonise.im.html">harmonize.im</a></td>
+<td>Make Pixel Images Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="harmonise.owin.html">harmonize.owin</a></td>
+<td>Make Windows Compatible</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">harmonize.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="has.close.html">has.close</a></td>
+<td>Check Whether Points Have Close Neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="has.close.html">has.close.default</a></td>
+<td>Check Whether Points Have Close Neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="has.close.html">has.close.pp3</a></td>
+<td>Check Whether Points Have Close Neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="has.close.html">has.close.ppp</a></td>
+<td>Check Whether Points Have Close Neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">head.ppp</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">head.ppx</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">head.psp</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">head.tess</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="regularpolygon.html">hexagon</a></td>
+<td>Create A Regular Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="hextess.html">hexgrid</a></td>
+<td>Hexagonal Grid or Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="hextess.html">hextess</a></td>
+<td>Hexagonal Grid or Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="hist.funxy.html">hist.funxy</a></td>
+<td>Histogram of Values of a Spatial Function</td></tr>
+<tr><td style="width: 25%;"><a href="hist.im.html">hist.im</a></td>
+<td>Histogram of Pixel Values in an Image</td></tr>
+<tr><td style="width: 25%;"><a href="rgbim.html">hsvim</a></td>
+<td>Create Colour-Valued Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="hyperframe.html">hyperframe</a></td>
+<td>Hyper Data Frame</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="identify.ppp.html">identify.ppp</a></td>
+<td>Identify Points in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="identify.psp.html">identify.psp</a></td>
+<td>Identify Segments in a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="identify.tess.html">identify.tess</a></td>
+<td>Interactively Identify Tiles of a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="im.html">im</a></td>
+<td>Create a Pixel Image Object</td></tr>
+<tr><td style="width: 25%;"><a href="im.apply.html">im.apply</a></td>
+<td>Apply Function Pixelwise to List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="im.object.html">im.object</a></td>
+<td>Class of Images</td></tr>
+<tr><td style="width: 25%;"><a href="plot.im.html">image.im</a></td>
+<td>Plot a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="plot.imlist.html">image.imlist</a></td>
+<td>Plot a List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="plot.imlist.html">image.listof</a></td>
+<td>Plot a List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="imcov.html">imcov</a></td>
+<td>Spatial Covariance of a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="incircle.html">incircle</a></td>
+<td>Find Largest Circle Inside Window</td></tr>
+<tr><td style="width: 25%;"><a href="infline.html">infline</a></td>
+<td>Infinite Straight Lines</td></tr>
+<tr><td style="width: 25%;"><a href="incircle.html">inradius</a></td>
+<td>Find Largest Circle Inside Window</td></tr>
+<tr><td style="width: 25%;"><a href="inside.boxx.html">inside.boxx</a></td>
+<td>Test Whether Points Are Inside A Multidimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="inside.owin.html">inside.owin</a></td>
+<td>Test Whether Points Are Inside A Window</td></tr>
+<tr><td style="width: 25%;"><a href="integral.im.html">integral.im</a></td>
+<td>Integral of a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="integral.tessfun.html">integral.tessfun</a></td>
+<td>Integrate a Function Which is Constant on Each Tile of a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="intensity.html">intensity</a></td>
+<td>Intensity of a Dataset or a Model</td></tr>
+<tr><td style="width: 25%;"><a href="intensity.ppp.html">intensity.ppp</a></td>
+<td>Empirical Intensity of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="intensity.ppx.html">intensity.ppx</a></td>
+<td>Intensity of a Multidimensional Space-Time Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="intensity.psp.html">intensity.psp</a></td>
+<td>Empirical Intensity of Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="intensity.quadratcount.html">intensity.quadratcount</a></td>
+<td>Intensity Estimates Using Quadrat Counts</td></tr>
+<tr><td style="width: 25%;"><a href="intensity.ppp.html">intensity.splitppp</a></td>
+<td>Empirical Intensity of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="interp.colourmap.html">interp.colourmap</a></td>
+<td>Interpolate smoothly between specified colours</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">interp.colours</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="interp.im.html">interp.im</a></td>
+<td>Interpolate a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="intersect.boxx.html">intersect.boxx</a></td>
+<td>Intersection Of Boxes Of Arbitrary Dimension</td></tr>
+<tr><td style="width: 25%;"><a href="intersect.owin.html">intersect.owin</a></td>
+<td>Intersection, Union or Set Subtraction of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="intersect.tess.html">intersect.tess</a></td>
+<td>Intersection of Two Tessellations</td></tr>
+<tr><td style="width: 25%;"><a href="invoke.metric.html">invoke.metric</a></td>
+<td>Perform Geometric Task using a Specified Metric</td></tr>
+<tr><td style="width: 25%;"><a href="invoke.symbolmap.html">invoke.symbolmap</a></td>
+<td>Plot Data Using Graphics Symbol Map</td></tr>
+<tr><td style="width: 25%;"><a href="is.boxx.html">is.boxx</a></td>
+<td>Recognise a Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">is.colour</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="is.connected.html">is.connected</a></td>
+<td>Determine Whether an Object is Connected</td></tr>
+<tr><td style="width: 25%;"><a href="is.connected.html">is.connected.default</a></td>
+<td>Determine Whether an Object is Connected</td></tr>
+<tr><td style="width: 25%;"><a href="is.connected.ppp.html">is.connected.ppp</a></td>
+<td>Determine Whether a Point Pattern is Connected</td></tr>
+<tr><td style="width: 25%;"><a href="is.convex.html">is.convex</a></td>
+<td>Test Whether a Window is Convex</td></tr>
+<tr><td style="width: 25%;"><a href="is.empty.html">is.empty</a></td>
+<td>Test Whether An Object Is Empty</td></tr>
+<tr><td style="width: 25%;"><a href="is.empty.html">is.empty.default</a></td>
+<td>Test Whether An Object Is Empty</td></tr>
+<tr><td style="width: 25%;"><a href="is.empty.html">is.empty.owin</a></td>
+<td>Test Whether An Object Is Empty</td></tr>
+<tr><td style="width: 25%;"><a href="is.empty.html">is.empty.ppp</a></td>
+<td>Test Whether An Object Is Empty</td></tr>
+<tr><td style="width: 25%;"><a href="is.empty.html">is.empty.psp</a></td>
+<td>Test Whether An Object Is Empty</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">is.grey</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="is.im.html">is.im</a></td>
+<td>Test Whether An Object Is A Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="is.linim.html">is.linim</a></td>
+<td>Test Whether an Object is a Pixel Image on a Linear Network</td></tr>
+<tr><td style="width: 25%;"><a href="is.linnet.html">is.linnet</a></td>
+<td>Test Whether An Object Is A Linear Network</td></tr>
+<tr><td style="width: 25%;"><a href="is.lpp.html">is.lpp</a></td>
+<td>Test Whether An Object Is A Point Pattern on a Linear Network</td></tr>
+<tr><td style="width: 25%;"><a href="is.marked.html">is.marked</a></td>
+<td>Test Whether Marks Are Present</td></tr>
+<tr><td style="width: 25%;"><a href="is.marked.ppp.html">is.marked.ppp</a></td>
+<td>Test Whether A Point Pattern is Marked</td></tr>
+<tr><td style="width: 25%;"><a href="is.rectangle.html">is.mask</a></td>
+<td>Determine Type of Window</td></tr>
+<tr><td style="width: 25%;"><a href="is.multitype.html">is.multitype</a></td>
+<td>Test whether Object is Multitype</td></tr>
+<tr><td style="width: 25%;"><a href="is.multitype.ppp.html">is.multitype.ppp</a></td>
+<td>Test Whether A Point Pattern is Multitype</td></tr>
+<tr><td style="width: 25%;"><a href="is.na.hyperframe.html">is.na.hyperframe</a></td>
+<td>Identify Missing Entries in a Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="is.na.solist.html">is.na.solist</a></td>
+<td>Identify Missing Entries in a List of Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.NAobject.html">is.NAobject</a></td>
+<td>Recognise NA Objects</td></tr>
+<tr><td style="width: 25%;"><a href="is.owin.html">is.owin</a></td>
+<td>Test Whether An Object Is A Window</td></tr>
+<tr><td style="width: 25%;"><a href="is.rectangle.html">is.polygonal</a></td>
+<td>Determine Type of Window</td></tr>
+<tr><td style="width: 25%;"><a href="is.ppp.html">is.ppp</a></td>
+<td>Test Whether An Object Is A Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="is.rectangle.html">is.rectangle</a></td>
+<td>Determine Type of Window</td></tr>
+<tr><td style="width: 25%;"><a href="is.subset.owin.html">is.subset.owin</a></td>
+<td>Determine Whether One Window is Contained In Another</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="layered.html">layered</a></td>
+<td>Create List of Plotting Layers</td></tr>
+<tr><td style="width: 25%;"><a href="layerplotargs.html">layerplotargs</a></td>
+<td>Extract or Replace the Plot Arguments of a Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="layerplotargs.html">layerplotargs&lt;-</a></td>
+<td>Extract or Replace the Plot Arguments of a Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="layout.boxes.html">layout.boxes</a></td>
+<td>Generate a Row or Column Arrangement of Rectangles.</td></tr>
+<tr><td style="width: 25%;"><a href="lengths_psp.html">lengths_psp</a></td>
+<td>Lengths of Line Segments</td></tr>
+<tr><td style="width: 25%;"><a href="levelset.html">levelset</a></td>
+<td>Level Set of a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="levelset.distfun.html">levelset.distfun</a></td>
+<td>Level Set of a Distance Function</td></tr>
+<tr><td style="width: 25%;"><a href="levelset.html">levelset.im</a></td>
+<td>Level Set of a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="lut.html">lut</a></td>
+<td>Lookup Tables</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="marks.html">marks</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">marks.ppp</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">marks.ppx</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.psp.html">marks.psp</a></td>
+<td>Marks of a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.tess.html">marks.tess</a></td>
+<td>Marks of a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">marks&lt;-</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">marks&lt;-.ppp</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">marks&lt;-.ppx</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.psp.html">marks&lt;-.psp</a></td>
+<td>Marks of a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="marks.tess.html">marks&lt;-.tess</a></td>
+<td>Marks of a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="markstat.html">markstat</a></td>
+<td>Summarise Marks in Every Neighbourhood in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="matchingdist.html">matchingdist</a></td>
+<td>Distance for a Point Pattern Matching</td></tr>
+<tr><td style="width: 25%;"><a href="Math.im.html">Math.im</a></td>
+<td>S3 Group Generic methods for images</td></tr>
+<tr><td style="width: 25%;"><a href="Math.imlist.html">Math.imlist</a></td>
+<td>S3 Group Generic methods for List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="FeretDiamFun.html">maxFeretDiam</a></td>
+<td>Feret Diameter as a Function of Direction</td></tr>
+<tr><td style="width: 25%;"><a href="maxnndist.html">maxnndist</a></td>
+<td>Compute Minimum or Maximum Nearest-Neighbour Distance</td></tr>
+<tr><td style="width: 25%;"><a href="mean.im.html">mean.im</a></td>
+<td>Mean and Median of Pixel Values in an Image</td></tr>
+<tr><td style="width: 25%;"><a href="mean.im.html">median.im</a></td>
+<td>Mean and Median of Pixel Values in an Image</td></tr>
+<tr><td style="width: 25%;"><a href="mergeLevels.html">mergeLevels</a></td>
+<td>Merge Levels of a Factor</td></tr>
+<tr><td style="width: 25%;"><a href="mergeTiles.html">mergeTiles</a></td>
+<td>Merge Groups of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="mergeTiles.html">mergeTiles.tess</a></td>
+<td>Merge Groups of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="methods.box3.html">methods.box3</a></td>
+<td>Methods for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="methods.boxx.html">methods.boxx</a></td>
+<td>Methods for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">methods.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="methods.funxy.html">methods.funxy</a></td>
+<td>Methods for Spatial Functions</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">methods.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="methods.pp3.html">methods.pp3</a></td>
+<td>Methods for three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="methods.ppx.html">methods.ppx</a></td>
+<td>Methods for Multidimensional Space-Time Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">methods.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="metric.object.html">metric.object</a></td>
+<td>Distance Metric</td></tr>
+<tr><td style="width: 25%;"><a href="midpoints.psp.html">midpoints.psp</a></td>
+<td>Midpoints of Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="FeretDiamFun.html">minFeretDiam</a></td>
+<td>Feret Diameter as a Function of Direction</td></tr>
+<tr><td style="width: 25%;"><a href="MinkowskiSum.html">MinkowskiSum</a></td>
+<td>Minkowski Sum of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="maxnndist.html">minnndist</a></td>
+<td>Compute Minimum or Maximum Nearest-Neighbour Distance</td></tr>
+<tr><td style="width: 25%;"><a href="multiplicity.ppp.html">multiplicity</a></td>
+<td>Count Multiplicity of Duplicate Points</td></tr>
+<tr><td style="width: 25%;"><a href="multiplicity.ppp.html">multiplicity.data.frame</a></td>
+<td>Count Multiplicity of Duplicate Points</td></tr>
+<tr><td style="width: 25%;"><a href="multiplicity.ppp.html">multiplicity.default</a></td>
+<td>Count Multiplicity of Duplicate Points</td></tr>
+<tr><td style="width: 25%;"><a href="multiplicity.ppp.html">multiplicity.ppp</a></td>
+<td>Count Multiplicity of Duplicate Points</td></tr>
+<tr><td style="width: 25%;"><a href="multiplicity.ppp.html">multiplicity.ppx</a></td>
+<td>Count Multiplicity of Duplicate Points</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="NAobject.html">NAobject</a></td>
+<td>Make an NA Object</td></tr>
+<tr><td style="width: 25%;"><a href="nearest.raster.point.html">nearest.raster.point</a></td>
+<td>Find Pixel Nearest to a Given Point</td></tr>
+<tr><td style="width: 25%;"><a href="nearestsegment.html">nearestsegment</a></td>
+<td>Find Line Segment Nearest to Each Point</td></tr>
+<tr><td style="width: 25%;"><a href="nearestValue.html">nearestValue</a></td>
+<td>Image of Nearest Defined Pixel Value</td></tr>
+<tr><td style="width: 25%;"><a href="nestsplit.html">nestsplit</a></td>
+<td>Nested Split</td></tr>
+<tr><td style="width: 25%;"><a href="nncross.html">nncross</a></td>
+<td>Nearest Neighbours Between Two Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="nncross.html">nncross.default</a></td>
+<td>Nearest Neighbours Between Two Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="nncross.pp3.html">nncross.pp3</a></td>
+<td>Nearest Neighbours Between Two Patterns in 3D</td></tr>
+<tr><td style="width: 25%;"><a href="nncross.html">nncross.ppp</a></td>
+<td>Nearest Neighbours Between Two Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="nncross.ppx.html">nncross.ppx</a></td>
+<td>Nearest Neighbours Between Two Patterns in Any Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="nndist.html">nndist</a></td>
+<td>Nearest neighbour distances</td></tr>
+<tr><td style="width: 25%;"><a href="nndist.html">nndist.default</a></td>
+<td>Nearest neighbour distances</td></tr>
+<tr><td style="width: 25%;"><a href="nndist.pp3.html">nndist.pp3</a></td>
+<td>Nearest neighbour distances in three dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="nndist.html">nndist.ppp</a></td>
+<td>Nearest neighbour distances</td></tr>
+<tr><td style="width: 25%;"><a href="nndist.ppx.html">nndist.ppx</a></td>
+<td>Nearest Neighbour Distances in Any Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="nndist.psp.html">nndist.psp</a></td>
+<td>Nearest neighbour distances between line segments</td></tr>
+<tr><td style="width: 25%;"><a href="nnfun.html">nnfun</a></td>
+<td>Nearest Neighbour Index Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="nnfun.html">nnfun.ppp</a></td>
+<td>Nearest Neighbour Index Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="nnfun.html">nnfun.psp</a></td>
+<td>Nearest Neighbour Index Map as a Function</td></tr>
+<tr><td style="width: 25%;"><a href="nnmap.html">nnmap</a></td>
+<td>K-th Nearest Point Map</td></tr>
+<tr><td style="width: 25%;"><a href="nnmark.html">nnmark</a></td>
+<td>Mark of Nearest Neighbour</td></tr>
+<tr><td style="width: 25%;"><a href="nnwhich.html">nnwhich</a></td>
+<td>Nearest neighbour</td></tr>
+<tr><td style="width: 25%;"><a href="nnwhich.html">nnwhich.default</a></td>
+<td>Nearest neighbour</td></tr>
+<tr><td style="width: 25%;"><a href="nnwhich.pp3.html">nnwhich.pp3</a></td>
+<td>Nearest neighbours in three dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="nnwhich.html">nnwhich.ppp</a></td>
+<td>Nearest neighbour</td></tr>
+<tr><td style="width: 25%;"><a href="nnwhich.ppx.html">nnwhich.ppx</a></td>
+<td>Nearest Neighbours in Any Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="nobjects.html">nobjects</a></td>
+<td>Count Number of Geometrical Objects in a Spatial Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="nobjects.html">nobjects.ppp</a></td>
+<td>Count Number of Geometrical Objects in a Spatial Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="nobjects.html">nobjects.ppx</a></td>
+<td>Count Number of Geometrical Objects in a Spatial Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="nobjects.html">nobjects.psp</a></td>
+<td>Count Number of Geometrical Objects in a Spatial Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="nobjects.html">nobjects.tess</a></td>
+<td>Count Number of Geometrical Objects in a Spatial Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="npoints.html">npoints</a></td>
+<td>Number of Points in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="npoints.html">npoints.pp3</a></td>
+<td>Number of Points in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="npoints.html">npoints.ppp</a></td>
+<td>Number of Points in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="npoints.html">npoints.ppx</a></td>
+<td>Number of Points in a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="nsegments.html">nsegments</a></td>
+<td>Number of Line Segments in a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="nsegments.html">nsegments.psp</a></td>
+<td>Number of Line Segments in a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="nvertices.html">nvertices</a></td>
+<td>Count Number of Vertices</td></tr>
+<tr><td style="width: 25%;"><a href="nvertices.html">nvertices.default</a></td>
+<td>Count Number of Vertices</td></tr>
+<tr><td style="width: 25%;"><a href="nvertices.html">nvertices.owin</a></td>
+<td>Count Number of Vertices</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="yardstick.html">onearrow</a></td>
+<td>Text, Arrow or Scale Bar in a Diagram</td></tr>
+<tr><td style="width: 25%;"><a href="opening.html">opening</a></td>
+<td>Morphological Opening</td></tr>
+<tr><td style="width: 25%;"><a href="opening.html">opening.owin</a></td>
+<td>Morphological Opening</td></tr>
+<tr><td style="width: 25%;"><a href="opening.html">opening.ppp</a></td>
+<td>Morphological Opening</td></tr>
+<tr><td style="width: 25%;"><a href="opening.html">opening.psp</a></td>
+<td>Morphological Opening</td></tr>
+<tr><td style="width: 25%;"><a href="Math.im.html">Ops.im</a></td>
+<td>S3 Group Generic methods for images</td></tr>
+<tr><td style="width: 25%;"><a href="Math.imlist.html">Ops.imlist</a></td>
+<td>S3 Group Generic methods for List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="overlap.owin.html">overlap.owin</a></td>
+<td>Compute Area of Overlap</td></tr>
+<tr><td style="width: 25%;"><a href="owin.html">owin</a></td>
+<td>Create a Window</td></tr>
+<tr><td style="width: 25%;"><a href="owin.object.html">owin.object</a></td>
+<td>Class owin</td></tr>
+<tr><td style="width: 25%;"><a href="owin2mask.html">owin2mask</a></td>
+<td>Convert Window to Binary Mask under Constraints</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="padimage.html">padimage</a></td>
+<td>Pad the Border of a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="pairdist.html">pairdist</a></td>
+<td>Pairwise distances</td></tr>
+<tr><td style="width: 25%;"><a href="pairdist.default.html">pairdist.default</a></td>
+<td>Pairwise distances</td></tr>
+<tr><td style="width: 25%;"><a href="pairdist.pp3.html">pairdist.pp3</a></td>
+<td>Pairwise distances in Three Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="pairdist.ppp.html">pairdist.ppp</a></td>
+<td>Pairwise distances</td></tr>
+<tr><td style="width: 25%;"><a href="pairdist.ppx.html">pairdist.ppx</a></td>
+<td>Pairwise Distances in Any Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="pairdist.psp.html">pairdist.psp</a></td>
+<td>Pairwise distances between line segments</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">paletteindex</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="perimeter.html">perimeter</a></td>
+<td>Perimeter Length of Window</td></tr>
+<tr><td style="width: 25%;"><a href="periodify.html">periodify</a></td>
+<td>Make Periodic Copies of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="periodify.html">periodify.owin</a></td>
+<td>Make Periodic Copies of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="periodify.html">periodify.ppp</a></td>
+<td>Make Periodic Copies of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="periodify.html">periodify.psp</a></td>
+<td>Make Periodic Copies of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="methods.funxy.html">persp.funxy</a></td>
+<td>Methods for Spatial Functions</td></tr>
+<tr><td style="width: 25%;"><a href="persp.im.html">persp.im</a></td>
+<td>Perspective Plot of Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="persp.ppp.html">persp.ppp</a></td>
+<td>Perspective Plot of Marked Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="perspPoints.html">perspContour</a></td>
+<td>Draw Points or Lines on a Surface Viewed in Perspective</td></tr>
+<tr><td style="width: 25%;"><a href="perspPoints.html">perspLines</a></td>
+<td>Draw Points or Lines on a Surface Viewed in Perspective</td></tr>
+<tr><td style="width: 25%;"><a href="perspPoints.html">perspPoints</a></td>
+<td>Draw Points or Lines on a Surface Viewed in Perspective</td></tr>
+<tr><td style="width: 25%;"><a href="perspPoints.html">perspSegments</a></td>
+<td>Draw Points or Lines on a Surface Viewed in Perspective</td></tr>
+<tr><td style="width: 25%;"><a href="pHcolourmap.html">pHcolour</a></td>
+<td>Colour Map for pH Values</td></tr>
+<tr><td style="width: 25%;"><a href="pHcolourmap.html">pHcolourmap</a></td>
+<td>Colour Map for pH Values</td></tr>
+<tr><td style="width: 25%;"><a href="pixelcentres.html">pixelcentres</a></td>
+<td>Extract Pixel Centres as Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="pixellate.html">pixellate</a></td>
+<td>Convert Spatial Object to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="pixellate.owin.html">pixellate.owin</a></td>
+<td>Convert Window to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="pixellate.ppp.html">pixellate.ppp</a></td>
+<td>Convert Point Pattern to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="pixellate.psp.html">pixellate.psp</a></td>
+<td>Convert Line Segment Pattern to Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="pixelquad.html">pixelquad</a></td>
+<td>Quadrature Scheme Based on Pixel Grid</td></tr>
+<tr><td style="width: 25%;"><a href="plot.anylist.html">plot.anylist</a></td>
+<td>Plot a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="plot.colourmap.html">plot.colourmap</a></td>
+<td>Plot a Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="methods.funxy.html">plot.funxy</a></td>
+<td>Methods for Spatial Functions</td></tr>
+<tr><td style="width: 25%;"><a href="plot.hyperframe.html">plot.hyperframe</a></td>
+<td>Plot Entries in a Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="plot.im.html">plot.im</a></td>
+<td>Plot a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="plot.imlist.html">plot.imlist</a></td>
+<td>Plot a List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="infline.html">plot.infline</a></td>
+<td>Infinite Straight Lines</td></tr>
+<tr><td style="width: 25%;"><a href="plot.layered.html">plot.layered</a></td>
+<td>Layered Plot</td></tr>
+<tr><td style="width: 25%;"><a href="plot.listof.html">plot.listof</a></td>
+<td>Plot a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="plot.onearrow.html">plot.onearrow</a></td>
+<td>Plot an Arrow</td></tr>
+<tr><td style="width: 25%;"><a href="plot.owin.html">plot.owin</a></td>
+<td>Plot a Spatial Window</td></tr>
+<tr><td style="width: 25%;"><a href="plot.pp3.html">plot.pp3</a></td>
+<td>Plot a Three-Dimensional Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="plot.ppp.html">plot.ppp</a></td>
+<td>plot a Spatial Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="plot.pppmatching.html">plot.pppmatching</a></td>
+<td>Plot a Point Matching</td></tr>
+<tr><td style="width: 25%;"><a href="methods.ppx.html">plot.ppx</a></td>
+<td>Methods for Multidimensional Space-Time Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="plot.psp.html">plot.psp</a></td>
+<td>plot a Spatial Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="plot.quad.html">plot.quad</a></td>
+<td>Plot a Spatial Quadrature Scheme</td></tr>
+<tr><td style="width: 25%;"><a href="plot.quadratcount.html">plot.quadratcount</a></td>
+<td>Plot Quadrat Counts</td></tr>
+<tr><td style="width: 25%;"><a href="plot.solist.html">plot.solist</a></td>
+<td>Plot a List of Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="plot.splitppp.html">plot.splitppp</a></td>
+<td>Plot a List of Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="plot.symbolmap.html">plot.symbolmap</a></td>
+<td>Plot a Graphics Symbol Map</td></tr>
+<tr><td style="width: 25%;"><a href="plot.tess.html">plot.tess</a></td>
+<td>Plot a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="plot.textstring.html">plot.textstring</a></td>
+<td>Plot a Text String</td></tr>
+<tr><td style="width: 25%;"><a href="plot.texturemap.html">plot.texturemap</a></td>
+<td>Plot a Texture Map</td></tr>
+<tr><td style="width: 25%;"><a href="plot.yardstick.html">plot.yardstick</a></td>
+<td>Plot a Yardstick or Scale Bar</td></tr>
+<tr><td style="width: 25%;"><a href="pointsOnLines.html">pointsOnLines</a></td>
+<td>Place Points Evenly Along Specified Lines</td></tr>
+<tr><td style="width: 25%;"><a href="polarbody.html">polarbody</a></td>
+<td>Polar Body and Voronoi Flower</td></tr>
+<tr><td style="width: 25%;"><a href="polartess.html">polartess</a></td>
+<td>Tessellation Using Polar Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="pp3.html">pp3</a></td>
+<td>Three Dimensional Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="ppp.html">ppp</a></td>
+<td>Create a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="ppp.object.html">ppp.object</a></td>
+<td>Class of Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="pppdist.html">pppdist</a></td>
+<td>Distance Between Two Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="pppmatching.html">pppmatching</a></td>
+<td>Create a Point Matching</td></tr>
+<tr><td style="width: 25%;"><a href="pppmatching.object.html">pppmatching.object</a></td>
+<td>Class of Point Matchings</td></tr>
+<tr><td style="width: 25%;"><a href="ppx.html">ppx</a></td>
+<td>Multidimensional Space-Time Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="methods.box3.html">print.box3</a></td>
+<td>Methods for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="methods.boxx.html">print.boxx</a></td>
+<td>Methods for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="print.im.html">print.im</a></td>
+<td>Print Brief Details of an Image</td></tr>
+<tr><td style="width: 25%;"><a href="infline.html">print.infline</a></td>
+<td>Infinite Straight Lines</td></tr>
+<tr><td style="width: 25%;"><a href="print.owin.html">print.owin</a></td>
+<td>Print Brief Details of a Spatial Window</td></tr>
+<tr><td style="width: 25%;"><a href="methods.pp3.html">print.pp3</a></td>
+<td>Methods for three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="print.ppp.html">print.ppp</a></td>
+<td>Print Brief Details of a Point Pattern Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="methods.ppx.html">print.ppx</a></td>
+<td>Methods for Multidimensional Space-Time Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="print.psp.html">print.psp</a></td>
+<td>Print Brief Details of a Line Segment Pattern Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="print.quad.html">print.quad</a></td>
+<td>Print a Quadrature Scheme</td></tr>
+<tr><td style="width: 25%;"><a href="summary.im.html">print.summary.im</a></td>
+<td>Summarizing a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="methods.pp3.html">print.summary.pp3</a></td>
+<td>Methods for three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="summary.quad.html">print.summary.quad</a></td>
+<td>Summarizing a Quadrature Scheme</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">print.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="progressreport.html">progressreport</a></td>
+<td>Print Progress Reports</td></tr>
+<tr><td style="width: 25%;"><a href="project2segment.html">project2segment</a></td>
+<td>Move Point To Nearest Line</td></tr>
+<tr><td style="width: 25%;"><a href="project2set.html">project2set</a></td>
+<td>Find Nearest Point in a Region</td></tr>
+<tr><td style="width: 25%;"><a href="psp.html">psp</a></td>
+<td>Create a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="psp.object.html">psp.object</a></td>
+<td>Class of Line Segment Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="psp2mask.html">psp2mask</a></td>
+<td>Convert Line Segment Pattern to Binary Pixel Mask</td></tr>
+</table>
+
+<h2><a id="Q">-- Q --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="quad.object.html">quad.object</a></td>
+<td>Class of Quadrature Schemes</td></tr>
+<tr><td style="width: 25%;"><a href="quadratcount.html">quadratcount</a></td>
+<td>Quadrat counting for a point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="quadratcount.html">quadratcount.ppp</a></td>
+<td>Quadrat counting for a point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="quadratcount.html">quadratcount.splitppp</a></td>
+<td>Quadrat counting for a point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="quadrats.html">quadrats</a></td>
+<td>Divide Region into Quadrats</td></tr>
+<tr><td style="width: 25%;"><a href="quadscheme.html">quadscheme</a></td>
+<td>Generate a Quadrature Scheme from a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="quadscheme.logi.html">quadscheme.logi</a></td>
+<td>Generate a Logistic Regression Quadrature Scheme from a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="quantess.html">quantess</a></td>
+<td>Quantile Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="quantess.html">quantess.im</a></td>
+<td>Quantile Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="quantess.html">quantess.owin</a></td>
+<td>Quantile Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="quantess.html">quantess.ppp</a></td>
+<td>Quantile Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="quantile.im.html">quantile.im</a></td>
+<td>Sample Quantiles of Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="quantilefun.im.html">quantilefun.im</a></td>
+<td>Quantile Function for Images</td></tr>
+<tr><td style="width: 25%;"><a href="quasirandom.html">quasirandom</a></td>
+<td>Quasirandom Patterns</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="raster.x.html">raster.x</a></td>
+<td>Cartesian Coordinates for a Pixel Raster</td></tr>
+<tr><td style="width: 25%;"><a href="raster.x.html">raster.xy</a></td>
+<td>Cartesian Coordinates for a Pixel Raster</td></tr>
+<tr><td style="width: 25%;"><a href="raster.x.html">raster.y</a></td>
+<td>Cartesian Coordinates for a Pixel Raster</td></tr>
+<tr><td style="width: 25%;"><a href="cbind.hyperframe.html">rbind.hyperframe</a></td>
+<td>Combine Hyperframes by Rows or by Columns</td></tr>
+<tr><td style="width: 25%;"><a href="rectdistmap.html">rectdistmap</a></td>
+<td>Distance Map Using Rectangular Distance Metric</td></tr>
+<tr><td style="width: 25%;"><a href="run.simplepanel.html">redraw.simplepanel</a></td>
+<td>Run Point-and-Click Interface</td></tr>
+<tr><td style="width: 25%;"><a href="reflect.html">reflect</a></td>
+<td>Reflect In Origin</td></tr>
+<tr><td style="width: 25%;"><a href="reflect.html">reflect.default</a></td>
+<td>Reflect In Origin</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">reflect.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="reflect.html">reflect.im</a></td>
+<td>Reflect In Origin</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.infline.html">reflect.infline</a></td>
+<td>Rotate or Shift Infinite Lines</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">reflect.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="affine.tess.html">reflect.tess</a></td>
+<td>Apply Geometrical Transformation To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="regularpolygon.html">regularpolygon</a></td>
+<td>Create A Regular Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="relevel.im.html">relevel.im</a></td>
+<td>Reorder Levels of a Factor-Valued Image or Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="relevel.im.html">relevel.ppp</a></td>
+<td>Reorder Levels of a Factor-Valued Image or Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="relevel.im.html">relevel.ppx</a></td>
+<td>Reorder Levels of a Factor-Valued Image or Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="requireversion.html">requireversion</a></td>
+<td>Require a Specific Version of a Package</td></tr>
+<tr><td style="width: 25%;"><a href="rescale.html">rescale</a></td>
+<td>Convert dataset to another unit of length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">rescale.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="rescale.im.html">rescale.im</a></td>
+<td>Convert Pixel Image to Another Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">rescale.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="rescale.owin.html">rescale.owin</a></td>
+<td>Convert Window to Another Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="rescale.ppp.html">rescale.ppp</a></td>
+<td>Convert Point Pattern to Another Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="rescale.psp.html">rescale.psp</a></td>
+<td>Convert Line Segment Pattern to Another Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">rescale.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="rescue.rectangle.html">rescue.rectangle</a></td>
+<td>Convert Window Back To Rectangle</td></tr>
+<tr><td style="width: 25%;"><a href="default.image.colours.html">reset.default.image.colours</a></td>
+<td>Default Colours for Images in Spatstat</td></tr>
+<tr><td style="width: 25%;"><a href="spatstat.options.html">reset.spatstat.options</a></td>
+<td>Internal Options in Spatstat Package</td></tr>
+<tr><td style="width: 25%;"><a href="restrict.colourmap.html">restrict.colourmap</a></td>
+<td>Restrict a Colour Map to a Subset of Values</td></tr>
+<tr><td style="width: 25%;"><a href="rev.colourmap.html">rev.colourmap</a></td>
+<td>Reverse the Colours in a Colour Map</td></tr>
+<tr><td style="width: 25%;"><a href="rexplode.html">rexplode</a></td>
+<td>Explode a Point Pattern by Displacing Duplicated Points</td></tr>
+<tr><td style="width: 25%;"><a href="rexplode.html">rexplode.ppp</a></td>
+<td>Explode a Point Pattern by Displacing Duplicated Points</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">rgb2hex</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">rgb2hsva</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="rgbim.html">rgbim</a></td>
+<td>Create Colour-Valued Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="ripras.html">ripras</a></td>
+<td>Estimate window from points alone</td></tr>
+<tr><td style="width: 25%;"><a href="rjitter.html">rjitter</a></td>
+<td>Random Perturbation of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="rjitter.html">rjitter.ppp</a></td>
+<td>Random Perturbation of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="rlinegrid.html">rlinegrid</a></td>
+<td>Generate grid of parallel lines with random displacement</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.html">rotate</a></td>
+<td>Rotate</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">rotate.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.im.html">rotate.im</a></td>
+<td>Rotate a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.infline.html">rotate.infline</a></td>
+<td>Rotate or Shift Infinite Lines</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">rotate.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.owin.html">rotate.owin</a></td>
+<td>Rotate a Window</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.ppp.html">rotate.ppp</a></td>
+<td>Rotate a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.psp.html">rotate.psp</a></td>
+<td>Rotate a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="affine.tess.html">rotate.tess</a></td>
+<td>Apply Geometrical Transformation To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="round.ppp.html">round.pp3</a></td>
+<td>Apply Numerical Rounding to Spatial Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="round.ppp.html">round.ppp</a></td>
+<td>Apply Numerical Rounding to Spatial Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="round.ppp.html">round.ppx</a></td>
+<td>Apply Numerical Rounding to Spatial Coordinates</td></tr>
+<tr><td style="width: 25%;"><a href="rounding.ppp.html">rounding.pp3</a></td>
+<td>Detect Numerical Rounding</td></tr>
+<tr><td style="width: 25%;"><a href="rounding.ppp.html">rounding.ppp</a></td>
+<td>Detect Numerical Rounding</td></tr>
+<tr><td style="width: 25%;"><a href="rounding.ppp.html">rounding.ppx</a></td>
+<td>Detect Numerical Rounding</td></tr>
+<tr><td style="width: 25%;"><a href="rQuasi.html">rQuasi</a></td>
+<td>Generate Quasirandom Point Pattern in Given Window</td></tr>
+<tr><td style="width: 25%;"><a href="rsyst.html">rsyst</a></td>
+<td>Simulate systematic random point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="run.simplepanel.html">run.simplepanel</a></td>
+<td>Run Point-and-Click Interface</td></tr>
+<tr><td style="width: 25%;"><a href="runifrect.html">runifrect</a></td>
+<td>Generate N Uniform Random Points in a Rectangle</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="colourtools.html">samecolour</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="scalardilate.html">scalardilate</a></td>
+<td>Apply Scalar Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="scalardilate.html">scalardilate.default</a></td>
+<td>Apply Scalar Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">scalardilate.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="scalardilate.html">scalardilate.im</a></td>
+<td>Apply Scalar Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">scalardilate.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="scalardilate.html">scalardilate.owin</a></td>
+<td>Apply Scalar Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="scalardilate.html">scalardilate.ppp</a></td>
+<td>Apply Scalar Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="scalardilate.html">scalardilate.psp</a></td>
+<td>Apply Scalar Dilation</td></tr>
+<tr><td style="width: 25%;"><a href="affine.tess.html">scalardilate.tess</a></td>
+<td>Apply Geometrical Transformation To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="methods.boxx.html">scale.boxx</a></td>
+<td>Methods for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="methods.ppx.html">scale.ppx</a></td>
+<td>Methods for Multidimensional Space-Time Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="scaletointerval.html">scaletointerval</a></td>
+<td>Rescale Data to Lie Between Specified Limits</td></tr>
+<tr><td style="width: 25%;"><a href="scaletointerval.html">scaletointerval.default</a></td>
+<td>Rescale Data to Lie Between Specified Limits</td></tr>
+<tr><td style="width: 25%;"><a href="scaletointerval.html">scaletointerval.im</a></td>
+<td>Rescale Data to Lie Between Specified Limits</td></tr>
+<tr><td style="width: 25%;"><a href="scanpp.html">scanpp</a></td>
+<td>Read Point Pattern From Data File</td></tr>
+<tr><td style="width: 25%;"><a href="selfcrossing.psp.html">selfcrossing.psp</a></td>
+<td>Crossing Points in a Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="selfcut.psp.html">selfcut.psp</a></td>
+<td>Cut Line Segments Where They Intersect</td></tr>
+<tr><td style="width: 25%;"><a href="sessionLibs.html">sessionLibs</a></td>
+<td>Print Names and Version Numbers of Libraries Loaded</td></tr>
+<tr><td style="width: 25%;"><a href="setcov.html">setcov</a></td>
+<td>Set Covariance of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">setmarks</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="intersect.owin.html">setminus.owin</a></td>
+<td>Intersection, Union or Set Subtraction of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="shift.html">shift</a></td>
+<td>Apply Vector Translation</td></tr>
+<tr><td style="width: 25%;"><a href="shift.ppx.html">shift.boxx</a></td>
+<td>Apply Vector Translation To Box Or Point Pattern In Arbitrary Dimension</td></tr>
+<tr><td style="width: 25%;"><a href="methods.distfun.html">shift.distfun</a></td>
+<td>Geometrical Operations for Distance Functions</td></tr>
+<tr><td style="width: 25%;"><a href="shift.im.html">shift.im</a></td>
+<td>Apply Vector Translation To Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="rotate.infline.html">shift.infline</a></td>
+<td>Rotate or Shift Infinite Lines</td></tr>
+<tr><td style="width: 25%;"><a href="methods.layered.html">shift.layered</a></td>
+<td>Methods for Layered Objects</td></tr>
+<tr><td style="width: 25%;"><a href="shift.owin.html">shift.owin</a></td>
+<td>Apply Vector Translation To Window</td></tr>
+<tr><td style="width: 25%;"><a href="shift.ppp.html">shift.ppp</a></td>
+<td>Apply Vector Translation To Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="shift.ppx.html">shift.ppx</a></td>
+<td>Apply Vector Translation To Box Or Point Pattern In Arbitrary Dimension</td></tr>
+<tr><td style="width: 25%;"><a href="shift.psp.html">shift.psp</a></td>
+<td>Apply Vector Translation To Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="affine.tess.html">shift.tess</a></td>
+<td>Apply Geometrical Transformation To Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">shortside</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">shortside.box3</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.boxx.html">shortside.boxx</a></td>
+<td>Geometrical Calculations for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="sidelengths.owin.html">shortside.owin</a></td>
+<td>Side Lengths of Enclosing Rectangle of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">sidelengths</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">sidelengths.box3</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.boxx.html">sidelengths.boxx</a></td>
+<td>Geometrical Calculations for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="sidelengths.owin.html">sidelengths.owin</a></td>
+<td>Side Lengths of Enclosing Rectangle of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="simplepanel.html">simplepanel</a></td>
+<td>Simple Point-and-Click Interface Panels</td></tr>
+<tr><td style="width: 25%;"><a href="simplify.owin.html">simplify.owin</a></td>
+<td>Approximate a Window by a Simpler Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="solapply.html">solapply</a></td>
+<td>Apply a Function Over a List and Obtain a List of Objects</td></tr>
+<tr><td style="width: 25%;"><a href="solist.html">solist</a></td>
+<td>List of Two-Dimensional Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="solutionset.html">solutionset</a></td>
+<td>Evaluate Logical Expression Involving Pixel Images and Return Region Where Expression is True</td></tr>
+<tr><td style="width: 25%;"><a href="spatdim.html">spatdim</a></td>
+<td>Spatial Dimension of a Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="spatstat.geom-package.html">spatstat.geom</a></td>
+<td>The spatstat.geom Package</td></tr>
+<tr><td style="width: 25%;"><a href="spatstat.options.html">spatstat.options</a></td>
+<td>Internal Options in Spatstat Package</td></tr>
+<tr><td style="width: 25%;"><a href="split.hyperframe.html">split.hyperframe</a></td>
+<td>Divide Hyperframe Into Subsets and Reassemble</td></tr>
+<tr><td style="width: 25%;"><a href="split.im.html">split.im</a></td>
+<td>Divide Image Into Sub-images</td></tr>
+<tr><td style="width: 25%;"><a href="split.ppp.html">split.ppp</a></td>
+<td>Divide Point Pattern into Sub-patterns</td></tr>
+<tr><td style="width: 25%;"><a href="split.ppx.html">split.ppx</a></td>
+<td>Divide Multidimensional Point Pattern into Sub-patterns</td></tr>
+<tr><td style="width: 25%;"><a href="split.hyperframe.html">split&lt;-.hyperframe</a></td>
+<td>Divide Hyperframe Into Subsets and Reassemble</td></tr>
+<tr><td style="width: 25%;"><a href="split.ppp.html">split&lt;-.ppp</a></td>
+<td>Divide Point Pattern into Sub-patterns</td></tr>
+<tr><td style="width: 25%;"><a href="spokes.html">spokes</a></td>
+<td>Spokes pattern of dummy points</td></tr>
+<tr><td style="width: 25%;"><a href="square.html">square</a></td>
+<td>Square Window</td></tr>
+<tr><td style="width: 25%;"><a href="stratrand.html">stratrand</a></td>
+<td>Stratified random point pattern</td></tr>
+<tr><td style="width: 25%;"><a href="subset.hyperframe.html">subset.hyperframe</a></td>
+<td>Subset of Hyperframe Satisfying A Condition</td></tr>
+<tr><td style="width: 25%;"><a href="subset.ppp.html">subset.pp3</a></td>
+<td>Subset of Point Pattern Satisfying A Condition</td></tr>
+<tr><td style="width: 25%;"><a href="subset.ppp.html">subset.ppp</a></td>
+<td>Subset of Point Pattern Satisfying A Condition</td></tr>
+<tr><td style="width: 25%;"><a href="subset.ppp.html">subset.ppx</a></td>
+<td>Subset of Point Pattern Satisfying A Condition</td></tr>
+<tr><td style="width: 25%;"><a href="subset.psp.html">subset.psp</a></td>
+<td>Subset of Line Segment Satisfying A Condition</td></tr>
+<tr><td style="width: 25%;"><a href="summary.anylist.html">summary.anylist</a></td>
+<td>Summary of a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="summary.distfun.html">summary.distfun</a></td>
+<td>Summarizing a Function of Spatial Location</td></tr>
+<tr><td style="width: 25%;"><a href="summary.distfun.html">summary.funxy</a></td>
+<td>Summarizing a Function of Spatial Location</td></tr>
+<tr><td style="width: 25%;"><a href="Math.im.html">Summary.im</a></td>
+<td>S3 Group Generic methods for images</td></tr>
+<tr><td style="width: 25%;"><a href="summary.im.html">summary.im</a></td>
+<td>Summarizing a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="Math.imlist.html">Summary.imlist</a></td>
+<td>S3 Group Generic methods for List of Images</td></tr>
+<tr><td style="width: 25%;"><a href="summary.listof.html">summary.listof</a></td>
+<td>Summary of a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="summary.owin.html">summary.owin</a></td>
+<td>Summary of a Spatial Window</td></tr>
+<tr><td style="width: 25%;"><a href="methods.pp3.html">summary.pp3</a></td>
+<td>Methods for three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="summary.ppp.html">summary.ppp</a></td>
+<td>Summary of a Point Pattern Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="summary.psp.html">summary.psp</a></td>
+<td>Summary of a Line Segment Pattern Dataset</td></tr>
+<tr><td style="width: 25%;"><a href="summary.quad.html">summary.quad</a></td>
+<td>Summarizing a Quadrature Scheme</td></tr>
+<tr><td style="width: 25%;"><a href="summary.solist.html">summary.solist</a></td>
+<td>Summary of a List of Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="summary.splitppp.html">summary.splitppp</a></td>
+<td>Summary of a Split Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="methods.unitname.html">summary.unitname</a></td>
+<td>Methods for Units</td></tr>
+<tr><td style="width: 25%;"><a href="superimpose.html">superimpose</a></td>
+<td>Superimpose Several Geometric Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="superimpose.html">superimpose.default</a></td>
+<td>Superimpose Several Geometric Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="superimpose.html">superimpose.ppp</a></td>
+<td>Superimpose Several Geometric Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="superimpose.html">superimpose.ppplist</a></td>
+<td>Superimpose Several Geometric Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="superimpose.html">superimpose.psp</a></td>
+<td>Superimpose Several Geometric Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="superimpose.html">superimpose.splitppp</a></td>
+<td>Superimpose Several Geometric Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="SupportFun.html">SupportFun</a></td>
+<td>Support Function</td></tr>
+<tr><td style="width: 25%;"><a href="symbolmap.html">symbolmap</a></td>
+<td>Graphics Symbol Map</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="headtail.html">tail.ppp</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">tail.ppx</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">tail.psp</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="headtail.html">tail.tess</a></td>
+<td>First or Last Part of a Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="tess.html">tess</a></td>
+<td>Create a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="test.crossing.psp.html">test.crossing.psp</a></td>
+<td>Check Whether Segments Cross</td></tr>
+<tr><td style="width: 25%;"><a href="test.crossing.psp.html">test.selfcrossing.psp</a></td>
+<td>Check Whether Segments Cross</td></tr>
+<tr><td style="width: 25%;"><a href="text.ppp.html">text.ppp</a></td>
+<td>Add Text Labels to Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="text.ppp.html">text.psp</a></td>
+<td>Add Text Labels to Spatial Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="yardstick.html">textstring</a></td>
+<td>Text, Arrow or Scale Bar in a Diagram</td></tr>
+<tr><td style="width: 25%;"><a href="texturemap.html">texturemap</a></td>
+<td>Texture Map</td></tr>
+<tr><td style="width: 25%;"><a href="textureplot.html">textureplot</a></td>
+<td>Plot Image or Tessellation Using Texture Fill</td></tr>
+<tr><td style="width: 25%;"><a href="tile.areas.html">tile.areas</a></td>
+<td>Compute Areas of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tile.centroids.html">tile.centroids</a></td>
+<td>Compute Centroids of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tileindex.html">tileindex</a></td>
+<td>Determine Which Tile Contains Each Given Point</td></tr>
+<tr><td style="width: 25%;"><a href="tilenames.html">tilenames</a></td>
+<td>Names of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tilenames.html">tilenames.tess</a></td>
+<td>Names of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tilenames.html">tilenames&lt;-</a></td>
+<td>Names of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tilenames.html">tilenames&lt;-.tess</a></td>
+<td>Names of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tiles.html">tiles</a></td>
+<td>Extract List of Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="tiles.empty.html">tiles.empty</a></td>
+<td>Check For Empty Tiles in a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="timed.html">timed</a></td>
+<td>Record the Computation Time</td></tr>
+<tr><td style="width: 25%;"><a href="timeTaken.html">timeTaken</a></td>
+<td>Extract the Total Computation Time</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">to.grey</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">to.opaque</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">to.saturated</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="colourtools.html">to.transparent</a></td>
+<td>Convert and Compare Colours in Different Formats</td></tr>
+<tr><td style="width: 25%;"><a href="transmat.html">transmat</a></td>
+<td>Convert Pixel Array Between Different Conventions</td></tr>
+<tr><td style="width: 25%;"><a href="triangulate.owin.html">triangulate.owin</a></td>
+<td>Decompose Window into Triangles</td></tr>
+<tr><td style="width: 25%;"><a href="trim.rectangle.html">trim.rectangle</a></td>
+<td>Cut margins from rectangle</td></tr>
+<tr><td style="width: 25%;"><a href="tweak.colourmap.html">tweak.colourmap</a></td>
+<td>Change Colour Values in a Colour Map</td></tr>
+</table>
+
+<h2><a id="U">-- U --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="intersect.owin.html">union.owin</a></td>
+<td>Intersection, Union or Set Subtraction of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="union.quad.html">union.quad</a></td>
+<td>Union of Data and Dummy Points</td></tr>
+<tr><td style="width: 25%;"><a href="unique.ppp.html">unique.ppp</a></td>
+<td>Extract Unique Points from a Spatial Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="unique.ppp.html">unique.ppx</a></td>
+<td>Extract Unique Points from a Spatial Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="uniquemap.ppp.html">uniquemap.lpp</a></td>
+<td>Map Duplicate Entries to Unique Entries</td></tr>
+<tr><td style="width: 25%;"><a href="uniquemap.ppp.html">uniquemap.ppp</a></td>
+<td>Map Duplicate Entries to Unique Entries</td></tr>
+<tr><td style="width: 25%;"><a href="uniquemap.ppp.html">uniquemap.ppx</a></td>
+<td>Map Duplicate Entries to Unique Entries</td></tr>
+<tr><td style="width: 25%;"><a href="square.html">unit.square</a></td>
+<td>Square Window</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.box3.html">unitname.box3</a></td>
+<td>Methods for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="methods.boxx.html">unitname.boxx</a></td>
+<td>Methods for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname.im</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname.owin</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.pp3.html">unitname.pp3</a></td>
+<td>Methods for three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname.ppp</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.ppx.html">unitname.ppx</a></td>
+<td>Methods for Multidimensional Space-Time Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname.psp</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname.quad</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname.tess</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.box3.html">unitname&lt;-.box3</a></td>
+<td>Methods for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="methods.boxx.html">unitname&lt;-.boxx</a></td>
+<td>Methods for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-.im</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-.owin</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.pp3.html">unitname&lt;-.pp3</a></td>
+<td>Methods for three-dimensional point patterns</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-.ppp</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="methods.ppx.html">unitname&lt;-.ppx</a></td>
+<td>Methods for Multidimensional Space-Time Point Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-.psp</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-.quad</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unitname.html">unitname&lt;-.tess</a></td>
+<td>Name for Unit of Length</td></tr>
+<tr><td style="width: 25%;"><a href="unmark.html">unmark</a></td>
+<td>Remove Marks</td></tr>
+<tr><td style="width: 25%;"><a href="unmark.html">unmark.ppp</a></td>
+<td>Remove Marks</td></tr>
+<tr><td style="width: 25%;"><a href="unmark.html">unmark.ppx</a></td>
+<td>Remove Marks</td></tr>
+<tr><td style="width: 25%;"><a href="unmark.html">unmark.psp</a></td>
+<td>Remove Marks</td></tr>
+<tr><td style="width: 25%;"><a href="unmark.html">unmark.splitppp</a></td>
+<td>Remove Marks</td></tr>
+<tr><td style="width: 25%;"><a href="marks.tess.html">unmark.tess</a></td>
+<td>Marks of a Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="unstack.solist.html">unstack.layered</a></td>
+<td>Unstack Each Spatial Object in a List of Objects</td></tr>
+<tr><td style="width: 25%;"><a href="unstack.ppp.html">unstack.ppp</a></td>
+<td>Separate Multiple Columns of Marks</td></tr>
+<tr><td style="width: 25%;"><a href="unstack.ppp.html">unstack.psp</a></td>
+<td>Separate Multiple Columns of Marks</td></tr>
+<tr><td style="width: 25%;"><a href="unstack.solist.html">unstack.solist</a></td>
+<td>Unstack Each Spatial Object in a List of Objects</td></tr>
+<tr><td style="width: 25%;"><a href="unstack.ppp.html">unstack.tess</a></td>
+<td>Separate Multiple Columns of Marks</td></tr>
+<tr><td style="width: 25%;"><a href="update.symbolmap.html">update.symbolmap</a></td>
+<td>Update a Graphics Symbol Map.</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="quasirandom.html">vdCorput</a></td>
+<td>Quasirandom Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="venn.tess.html">venn.tess</a></td>
+<td>Tessellation Delimited by Several Sets</td></tr>
+<tr><td style="width: 25%;"><a href="vertices.html">vertices</a></td>
+<td>Vertices of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="vertices.html">vertices.owin</a></td>
+<td>Vertices of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="volume.html">volume</a></td>
+<td>Volume of an Object</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.box3.html">volume.box3</a></td>
+<td>Geometrical Calculations for Three-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="diameter.boxx.html">volume.boxx</a></td>
+<td>Geometrical Calculations for Multi-Dimensional Box</td></tr>
+<tr><td style="width: 25%;"><a href="area.owin.html">volume.owin</a></td>
+<td>Area of a Window</td></tr>
+<tr><td style="width: 25%;"><a href="polarbody.html">voronoiFlower</a></td>
+<td>Polar Body and Voronoi Flower</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="where.max.html">where.max</a></td>
+<td>Find Location of Maximum in a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="where.max.html">where.min</a></td>
+<td>Find Location of Maximum in a Pixel Image</td></tr>
+<tr><td style="width: 25%;"><a href="whichhalfplane.html">whichhalfplane</a></td>
+<td>Test Which Side of Infinite Line a Point Falls On</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.tess.html">Window.distfun</a></td>
+<td>Extract Window of Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.tess.html">Window.funxy</a></td>
+<td>Extract Window of Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window.im</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.tess.html">Window.layered</a></td>
+<td>Extract Window of Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.tess.html">Window.nnfun</a></td>
+<td>Extract Window of Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window.ppp</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window.psp</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window.quad</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.tess.html">Window.quadratcount</a></td>
+<td>Extract Window of Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.tess.html">Window.tess</a></td>
+<td>Extract Window of Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window&lt;-</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window&lt;-.im</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window&lt;-.ppp</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window&lt;-.psp</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="Window.html">Window&lt;-.quad</a></td>
+<td>Extract or Change the Window of a Spatial Object</td></tr>
+<tr><td style="width: 25%;"><a href="with.hyperframe.html">with.hyperframe</a></td>
+<td>Evaluate an Expression in Each Row of a Hyperframe</td></tr>
+</table>
+
+<h2><a id="Y">-- Y --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="yardstick.html">yardstick</a></td>
+<td>Text, Arrow or Scale Bar in a Diagram</td></tr>
+</table>
+
+<h2><a id="Z">-- Z --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="zapsmall.im.html">zapsmall.im</a></td>
+<td>Rounding of Pixel Values</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="Extract.hyperframe.html">$.hyperframe</a></td>
+<td>Extract or Replace Subset of Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.hyperframe.html">$&lt;-.hyperframe</a></td>
+<td>Extract or Replace Subset of Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="MinkowskiSum.html">%(+)%</a></td>
+<td>Minkowski Sum of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="erosionAny.html">%(-)%</a></td>
+<td>Morphological Erosion of Windows</td></tr>
+<tr><td style="width: 25%;"><a href="marks.html">%mark%</a></td>
+<td>Marks of a Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.anylist.html">[.anylist</a></td>
+<td>Extract or Replace Subset of a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.hyperframe.html">[.hyperframe</a></td>
+<td>Extract or Replace Subset of Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.im.html">[.im</a></td>
+<td>Extract Subset of Image</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.layered.html">[.layered</a></td>
+<td>Extract or Replace Subset of a Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.owin.html">[.owin</a></td>
+<td>Extract Subset of Window</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.ppp.html">[.ppp</a></td>
+<td>Extract or Replace Subset of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.ppx.html">[.ppx</a></td>
+<td>Extract Subset of Multidimensional Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.psp.html">[.psp</a></td>
+<td>Extract Subset of Line Segment Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.quad.html">[.quad</a></td>
+<td>Subset of Quadrature Scheme</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.solist.html">[.solist</a></td>
+<td>Extract or Replace Subset of a List of Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.splitppp.html">[.splitppp</a></td>
+<td>Extract or Replace Sub-Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.tess.html">[.tess</a></td>
+<td>Extract or Replace Subset of Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.anylist.html">[&lt;-.anylist</a></td>
+<td>Extract or Replace Subset of a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.hyperframe.html">[&lt;-.hyperframe</a></td>
+<td>Extract or Replace Subset of Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="Replace.im.html">[&lt;-.im</a></td>
+<td>Reset Values in Subset of Image</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.layered.html">[&lt;-.layered</a></td>
+<td>Extract or Replace Subset of a Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.listof.html">[&lt;-.listof</a></td>
+<td>Extract or Replace Subset of a List of Things</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.ppp.html">[&lt;-.ppp</a></td>
+<td>Extract or Replace Subset of Point Pattern</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.solist.html">[&lt;-.solist</a></td>
+<td>Extract or Replace Subset of a List of Spatial Objects</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.splitppp.html">[&lt;-.splitppp</a></td>
+<td>Extract or Replace Sub-Patterns</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.tess.html">[&lt;-.tess</a></td>
+<td>Extract or Replace Subset of Tessellation</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.hyperframe.html">[[.hyperframe</a></td>
+<td>Extract or Replace Subset of Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.hyperframe.html">[[&lt;-.hyperframe</a></td>
+<td>Extract or Replace Subset of Hyperframe</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.layered.html">[[&lt;-.layered</a></td>
+<td>Extract or Replace Subset of a Layered Object</td></tr>
+<tr><td style="width: 25%;"><a href="Extract.solist.html">[[&lt;-.solist</a></td>
+<td>Extract or Replace Subset of a List of Spatial Objects</td></tr>
+</table>
+</div></body></html>

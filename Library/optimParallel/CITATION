@@ -1,0 +1,20 @@
+citHeader("To cite optimParallel in publications use:")
+
+citEntry(entry = "article",
+  title        = "optimParallel: An R Package Providing a Parallel Version of the L-BFGS-B Optimization Method",
+  author       = personList(as.person("Florian Gerber"),
+                            as.person("Reinhard Furrer")
+                            ),
+  journal      = "The R Journal",
+  year         = "2019",
+  volume       = "11",
+  number       = "1",
+  pages        = "352--358",
+  url          = "https://doi.org/10.32614/RJ-2019-030",
+  doi          = "10.32614/RJ-2019-030",
+  
+  textVersion  =
+  paste("F. Gerber and R. Furrer (2019)",
+"optimParallel: An R package providing a parallel version of the L-BFGS-B optimization method.
+The R Journal, 11(1):352-358, 2019, https://doi.org/10.32614/RJ-2019-030")
+)

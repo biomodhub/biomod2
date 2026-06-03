@@ -1,0 +1,74 @@
+			******** VERSION 0.13.3 ********
+
+BUG FIXES
+
+  - The S3 plot() method for class Intervals was ignoring the y argument. (The
+    method for class Intervals_full did, however, use the argument properly.)
+    This has been fixed.
+
+			******** VERSION 0.13.2 ********
+
+BUG FIXES
+
+  - The initialization method for the Intervals class threw errors when empty
+    objects were created. This has been fixed.
+
+			******** VERSION 0.13.0 ********
+NEW FEATURES
+
+  - New interval_included methods, similar to interval_overlap, but requiring
+    full inclusion.
+
+			******** VERSION 0.12.3 ********
+NEW FEATURES
+
+  - S3 as.matrix methods for Intervals and Intervals_full objects.
+
+			******** VERSION 0.12.0 ********
+NEW FEATURES
+
+  - S3 plot methods for Intervals and Intervals_full objects.
+
+			******** VERSION 0.11.1 ********
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+  - The interval_overlap and distance_to_nearest methods are now just wrappers
+    for which_nearest. Because of this, the argument names for interval_overlap,
+    have been changed from 'target' and 'query' to 'from' and 'to',
+    respectively, in order to match the other two functions. Argument order is
+    the same as before, but functions which call arguments by name and use the
+    old names will now generate an (informative) error message.
+
+BUG FIXES
+
+  - The C++ code for interval_overlap correctly handles all varieties of
+    endpoint closure, but does not handle cases like (0,2) vs. (1,3) over
+    Z. (These intervals do not overlap, even though the right endpoint of the
+    first interval is nominally after the left endpoint of the second interval.)
+    This should have been handled by the R wrapper -- by applying
+    close_intervals before passing on to compiled code -- but this step had
+    previously been omitted. This is now fixed.
+
+NEW FEATURES
+
+  - The interval_overlap, which_nearest, and distance_to_nearest methods now all
+    accept a numeric vector in both the 'from' and 'to' arguments.
+
+IMPROVEMENTS
+
+  - The distance_to_nearest methods were previously based on old code using
+    approxfun(). They now work of the same algorithm used for interval_overlap
+    and which_nearest. This algorithm simultaneously generates all three types
+    of information: identity of overlaps and nearest neighbors, as well as
+    distance to nearest neighbors.
+
+			******** VERSION 0.11.0 ********
+
+NEW FEATURES
+
+  - Adding a NEWS file!
+    
+  - Added which_nearest methods, as a complement to distance_to_nearest. The C++
+    code previously used for interval_overlap calculations was augmented to
+    provide this functionality.

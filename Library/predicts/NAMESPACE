@@ -1,0 +1,3 @@
+import("methods", "terra")
+exportPattern("^[^\\.\\_]")
+exportMethods("plot", "predict")

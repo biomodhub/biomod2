@@ -1,0 +1,15 @@
+Package: poibin
+Version: 1.6
+Date: 2024-08-23
+Title: The Poisson Binomial Distribution
+Authors@R: c(person("Yili", "Hong", role = c("aut", "cre"),email = "yilihong@vt.edu"),person("", "R Core Team", role = c("aut", "cph")))
+Author: Yili Hong [aut, cre],
+  R Core Team [aut, cph]
+Maintainer: Yili Hong <yilihong@vt.edu>
+Description: Implementation of both the exact and approximation methods for computing the cdf of the Poisson binomial distribution as described in Hong (2013) <doi: 10.1016/j.csda.2012.10.006>. It also provides the pmf, quantile function, and random number generation for the Poisson binomial distribution. The C code for fast Fourier transformation (FFT) is written by R Core Team (2019)<https://www.R-project.org/>, which implements the FFT algorithm in Singleton (1969) <doi: 10.1109/TAU.1969.1162042>.
+License: GPL-2
+NeedsCompilation: yes
+Packaged: 2024-08-23 14:18:07 UTC; yilih
+Repository: CRAN
+Date/Publication: 2024-08-23 15:10:01 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:46:07 UTC; unix

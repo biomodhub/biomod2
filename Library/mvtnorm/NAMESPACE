@@ -1,0 +1,69 @@
+
+useDynLib(mvtnorm, .registration = TRUE, .fixes = "mvtnorm_")
+
+importFrom("stats",
+	   pnorm, qnorm, rnorm, dnorm, runif,
+	   pt, qt,
+	   rchisq, uniroot, simulate,
+	   cov2cor, optim, coef, glm, pcauchy, qcauchy, predict, quasi, logLik)
+
+export(rmvnorm, dmvnorm, pmvnorm, pmvt, rmvt, qmvnorm, qmvt, dmvt,
+       GenzBretz, Miwa, TVPACK, ltMatrices, syMatrices, as.syMatrices, Tcrossprod, Crossprod, diagonals, 
+       is.ltMatrices, is.syMatrices, as.ltMatrices, is.chol, is.invchol, as.chol, as.invchol,
+       chol2cov, invchol2chol, chol2invchol, invchol2cov, 
+       invchol2pre, chol2pre, Dchol, invcholD, chol2cor, invchol2cor,
+       invchol2pc, chol2pc, "diagonals<-", vectrick, Lower_tri, logdet,
+       marg_mvnorm, cond_mvnorm, Mult, lpmvnorm, slpmvnorm,
+       ldmvnorm, sldmvnorm, ldpmvnorm, sldpmvnorm, standardize, destandardize, deperma,
+       mvnorm, margDist, condDist, lLgrad, lpRR, slpRR)
+
+S3method("as.array", "ltMatrices")
+S3method("as.array", "syMatrices")
+S3method("[", "ltMatrices")
+S3method("[", "syMatrices")
+S3method("print", "ltMatrices")
+S3method("print", "syMatrices")
+S3method("dim", "ltMatrices")
+S3method("dimnames", "ltMatrices")
+S3method("names", "ltMatrices")
+S3method("dim", "syMatrices")
+S3method("dimnames", "syMatrices")
+S3method("names", "syMatrices")
+S3method("solve", "ltMatrices")
+S3method("diagonals", "ltMatrices")
+S3method("diagonals", "syMatrices")
+S3method("diagonals", "matrix")
+S3method("diagonals", "integer")
+S3method("diagonals<-", "ltMatrices")
+S3method("diagonals<-", "syMatrices")
+S3method("chol", "syMatrices")
+S3method("aperm", "chol")
+S3method("aperm", "invchol")
+S3method("aperm", "ltMatrices")
+S3method("aperm", "syMatrices")
+S3method("aperm", "mvnorm")
+S3method("names", "mvnorm")
+S3method("margDist", "mvnorm")
+S3method("condDist", "mvnorm")
+S3method("logLik", "mvnorm")
+S3method("lLgrad", "mvnorm")
+S3method("mean", "mvnorm")
+S3method("vcov", "mvnorm")
+S3method("coef", "mvnorm")
+S3method("simulate", "mvnorm")
+S3method("Mult", "ltMatrices")
+S3method("Mult", "syMatrices")
+S3method("%*%", "ltMatrices")
+S3method("%*%", "syMatrices")
+S3method("Mult", "default")
+S3method("crossprod", "ltMatrices")
+S3method("crossprod", "syMatrices")
+S3method("tcrossprod", "ltMatrices")
+S3method("tcrossprod", "syMatrices")
+S3method("as.ltMatrices", "default")
+S3method("as.ltMatrices", "ltMatrices")
+S3method("as.ltMatrices", "syMatrices")
+### internal methods
+S3method("probval", "GenzBretz")
+S3method("probval", "Miwa")
+S3method("probval", "TVPACK")

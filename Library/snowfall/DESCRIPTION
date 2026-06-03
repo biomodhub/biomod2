@@ -1,0 +1,23 @@
+Package: snowfall
+Type: Package
+Title: Easier Cluster Computing (Based on 'snow')
+Version: 1.84-6.3
+Date: 2013-12-18
+Author: Jochen Knaus
+Maintainer: Jochen Knaus <jo@imbi.uni-freiburg.de>
+Description: Usability wrapper around snow for easier development of
+        parallel R programs. This package offers e.g. extended error
+        checks, and additional functions. All functions work in
+        sequential mode, too, if no cluster is present or wished.
+        Package is also designed as connector to the cluster management
+        tool sfCluster, but can also used without it.
+Depends: R (>= 2.10), snow
+Suggests: Rmpi
+License: GPL
+Encoding: UTF-8
+Packaged: 2023-11-26 11:34:08 UTC; hornik
+Repository: CRAN
+Date/Publication: 2023-11-26 13:55:58 UTC
+NeedsCompilation: no
+LazyData: yes
+Built: R 4.6.0; ; 2026-05-22 09:21:04 UTC; unix

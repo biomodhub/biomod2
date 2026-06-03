@@ -1,0 +1,64 @@
+bibentry(bibtype = "Article",
+  title          = "The {ade4} Package: Implementing the Duality Diagram for Ecologists",
+  author         = c(person(given = "St\\'ephane", family = "Dray"),
+                     person(given = "Anne--B\\'eatrice", family = "Dufour")),
+  journal        = "Journal of Statistical Software",
+  year           = "2007",
+  volume         = "22",
+  number         = "4",         
+  pages          = "1--20",
+  doi            = "10.18637/jss.v022.i04",
+
+  header         = "To cite ade4 in publications use:"
+)
+
+bibentry(bibtype = "Article",
+  title          = "Supervised Multiblock Analysis in {R} with the {ade4} Package",
+  author         = c(person(given = "St\\'ephanie", family = "Bougeard", email = "stephanie.bougeard@anses.fr"),
+                     person(given = "St\\'ephane", family = "Dray", email = "stephane.dray@univ-lyon1.fr")),
+  journal        = "Journal of Statistical Software",
+  year           = "2018",
+  volume         = "86",
+  number         = "1",
+  pages          = "1--17",
+  doi            = "10.18637/jss.v086.i01"
+)
+
+bibentry(bibtype = "Article",
+  title          = "The {ade4} Package -- {I}: One-Table Methods",
+  author         = c(person(given = "Daniel", family = "Chessel"),
+                     person(given = "Anne-B\\'eatrice", family = "Dufour"),
+                     person(given = "Jean", family = "Thioulouse")),
+  journal        = "R News",
+  year           = "2004",  
+  volume         = "4",
+  number         = "1",
+  pages          = "5--10",
+  url            = "https://cran.r-project.org/doc/Rnews/"
+)
+
+bibentry(bibtype = "Article",
+  title          = "The {ade4} Package -- {II}: Two-Table and {K}-Table Methods",
+  author         = c(person(given = "St\\'ephane", family = "Dray"),
+                     person(given = "Anne-B\\'eatrice", family = "Dufour"),
+                     person(given = "Daniel", family = "Chessel")),
+  journal        = "R News",
+  year           = "2007",
+  volume         = "7",
+  number         = "2",
+  pages          = "47--52",
+  url            = "https://cran.r-project.org/doc/Rnews/"
+)
+
+bibentry(bibtype = "Book",
+  title          = "Multivariate Analysis of Ecological Data with {ade4}",
+  author         = c(person(given = "Jean", family = "Thioulouse"),
+                     person(given = "St\\'ephane", family = "Dray"),
+                     person(given = "Anne--B\\'eatrice", family = "Dufour"),
+                     person(given = "Aur\\'elie", family = "Siberchicot"),
+                     person(given = "Thibaut", family = "Jombart"),
+                     person(given = "Sandrine", family = "Pavoine")),
+  year           = "2018",
+  publisher      = "Springer",
+  doi            = "10.1007/978-1-4939-8850-1"
+)

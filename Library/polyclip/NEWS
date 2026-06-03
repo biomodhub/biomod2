@@ -1,0 +1,153 @@
+
+        CHANGES IN polyclip VERSION 1.10-7
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes to placate package checker.
+
+    o polyclip now requires R 3.5.0 or later.
+
+        CHANGES IN polyclip VERSION 1.10-6
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes to placate package checker.
+
+        CHANGES IN polyclip VERSION 1.10-5
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes to placate package checker.
+
+        CHANGES IN polyclip VERSION 1.10-4
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes to placate package checker.
+
+        CHANGES IN polyclip VERSION 1.10-3
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes to placate package checker.
+
+        CHANGES IN polyclip VERSION 1.10-2
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes in help files to placate package checker.
+
+        CHANGES IN polyclip VERSION 1.10-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Minor changes to placate package checker.
+
+        CHANGES IN polyclip VERSION 1.10-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o polyclip
+    Now handles polygonal lines as well as closed polygons.
+    New argument 'closed' specifies whether A is a closed polygon.
+    [Thanks to Paul Murrell.]
+
+        CHANGES IN polyclip VERSION 1.9-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Changes to installation procedure (namely the choice of C++ compiler)
+    to comply with CRAN requirements.
+
+        CHANGES IN polyclip VERSION 1.9-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o NEWS file has been added.
+
+    o Internal code has been modified to work in the 'datacamp' environment.
+    There are no changes to the user interface or the functionality.
+
+        CHANGES IN polyclip VERSION 1.8-4
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No visible changes.
+
+        CHANGES IN polyclip VERSION 1.8-3
+
+NEW FUNCTIONS
+
+    o pointinpolygon
+    Test whether a point falls inside a polygon.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Internal changes to comply with new CRAN requirements.
+    
+    o Improvements to package installation.
+
+        CHANGES IN polyclip VERSION 1.6-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Internal changes to comply with new CRAN requirements.
+
+    o Improvements to package installation.
+
+        CHANGES IN polyclip VERSION 1.5-6
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o The code can be compiled using older C++ compilers.
+
+    o The package can be installed on a wider range of systems.
+
+        CHANGES IN polyclip VERSION 1.5-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Package prints a startup message.
+
+        CHANGES IN polyclip VERSION 1.4-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No history is available.
+
+        CHANGES IN polyclip VERSION 1.3-2
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No history is available.
+
+        CHANGES IN polyclip VERSION 1.3-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No history is available.
+
+        CHANGES IN polyclip VERSION 1.2-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No history is available.
+
+        CHANGES IN polyclip VERSION 1.1-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No history is available.
+
+        CHANGES IN polyclip VERSION 1.0-0
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o No history is available.
+
+        CHANGES IN polyclip VERSION 0.0-1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o This is the first public release of 'polyclip'.
+

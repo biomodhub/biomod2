@@ -1,0 +1,1211 @@
+* installing *source* package ‘s2’ ...
+** this is package ‘s2’ version ‘1.1.9’
+** package ‘s2’ successfully unpacked and MD5 sums checked
+** using staged installation
+Found OpenSSL pkg-config cflags and libs!
+Testing compiler OpenSSL configuration using PKG_CFLAGS=
+** Using PKG_CONFIG_PATH=:/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/pkgconfig
+** Building abseil-cpp using cmake
+Message d'avis :
+Dans readRenviron("~/.R/Makevars") :
+  le fichier '/home/gueguema/.R/Makevars' ne peut être ouvert en lecture
+GNU Make 4.3
+Construit pour x86_64-pc-linux-gnu
+Copyright (C) 1988-2020 Free Software Foundation, Inc.
+Licence GPLv3+ : GNU GPL version 3 ou ultérieure <http://gnu.org/licenses/gpl.html>
+Ceci est un logiciel libre : vous êtes autorisé à le modifier et à la redistribuer.
+Il ne comporte AUCUNE GARANTIE, dans la mesure de ce que permet la loi.
+Using MAKE=make 
+cmake version 3.22.1
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+Using CMAKE=/usr/bin/cmake
+Using MAKE=make 
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test ABSL_INTERNAL_AT_LEAST_CXX17
+-- Performing Test ABSL_INTERNAL_AT_LEAST_CXX17 - Success
+-- Looking for C++ include pthread.h
+-- Looking for C++ include pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/build/abseil-cpp
+[  0%] Building CXX object absl/base/CMakeFiles/log_severity.dir/log_severity.cc.o
+[  1%] Linking CXX static library libabsl_log_severity.a
+[  1%] Built target log_severity
+[  2%] Building CXX object absl/base/CMakeFiles/raw_logging_internal.dir/internal/raw_logging.cc.o
+[  2%] Linking CXX static library libabsl_raw_logging_internal.a
+[  2%] Built target raw_logging_internal
+[  2%] Building CXX object absl/base/CMakeFiles/spinlock_wait.dir/internal/spinlock_wait.cc.o
+[  3%] Linking CXX static library libabsl_spinlock_wait.a
+[  3%] Built target spinlock_wait
+[  3%] Building CXX object absl/base/CMakeFiles/base.dir/internal/cycleclock.cc.o
+[  4%] Building CXX object absl/base/CMakeFiles/base.dir/internal/spinlock.cc.o
+[  4%] Building CXX object absl/base/CMakeFiles/base.dir/internal/sysinfo.cc.o
+[  5%] Building CXX object absl/base/CMakeFiles/base.dir/internal/thread_identity.cc.o
+[  5%] Building CXX object absl/base/CMakeFiles/base.dir/internal/unscaledcycleclock.cc.o
+[  6%] Linking CXX static library libabsl_base.a
+[  6%] Built target base
+[  7%] Building CXX object absl/base/CMakeFiles/malloc_internal.dir/internal/low_level_alloc.cc.o
+[  7%] Linking CXX static library libabsl_malloc_internal.a
+[  7%] Built target malloc_internal
+[  7%] Building CXX object absl/base/CMakeFiles/throw_delegate.dir/internal/throw_delegate.cc.o
+[  8%] Linking CXX static library libabsl_throw_delegate.a
+[  8%] Built target throw_delegate
+[  8%] Building CXX object absl/base/CMakeFiles/scoped_set_env.dir/internal/scoped_set_env.cc.o
+[  9%] Linking CXX static library libabsl_scoped_set_env.a
+[  9%] Built target scoped_set_env
+[  9%] Building CXX object absl/base/CMakeFiles/strerror.dir/internal/strerror.cc.o
+[ 10%] Linking CXX static library libabsl_strerror.a
+[ 10%] Built target strerror
+[ 11%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_fixed.cc.o
+[ 11%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_format.cc.o
+[ 12%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_if.cc.o
+[ 12%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_impl.cc.o
+[ 12%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_info.cc.o
+[ 13%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_libc.cc.o
+[ 13%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_lookup.cc.o
+[ 14%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/time_zone_posix.cc.o
+[ 14%] Building CXX object absl/time/CMakeFiles/time_zone.dir/internal/cctz/src/zone_info_source.cc.o
+[ 15%] Linking CXX static library libabsl_time_zone.a
+[ 15%] Built target time_zone
+[ 15%] Building CXX object absl/debugging/CMakeFiles/debugging_internal.dir/internal/address_is_readable.cc.o
+[ 16%] Building CXX object absl/debugging/CMakeFiles/debugging_internal.dir/internal/elf_mem_image.cc.o
+[ 16%] Building CXX object absl/debugging/CMakeFiles/debugging_internal.dir/internal/vdso_support.cc.o
+[ 17%] Linking CXX static library libabsl_debugging_internal.a
+[ 17%] Built target debugging_internal
+[ 17%] Building CXX object absl/debugging/CMakeFiles/stacktrace.dir/stacktrace.cc.o
+[ 18%] Linking CXX static library libabsl_stacktrace.a
+[ 18%] Built target stacktrace
+[ 18%] Building CXX object absl/strings/CMakeFiles/strings_internal.dir/internal/ostringstream.cc.o
+[ 19%] Building CXX object absl/strings/CMakeFiles/strings_internal.dir/internal/utf8.cc.o
+[ 19%] Building CXX object absl/strings/CMakeFiles/strings_internal.dir/internal/escaping.cc.o
+[ 19%] Linking CXX static library libabsl_strings_internal.a
+[ 19%] Built target strings_internal
+[ 19%] Building CXX object absl/debugging/CMakeFiles/demangle_internal.dir/internal/demangle.cc.o
+[ 19%] Linking CXX static library libabsl_demangle_internal.a
+[ 19%] Built target demangle_internal
+[ 20%] Building CXX object absl/numeric/CMakeFiles/int128.dir/int128.cc.o
+[ 20%] Linking CXX static library libabsl_int128.a
+[ 20%] Built target int128
+[ 20%] Building CXX object absl/strings/CMakeFiles/string_view.dir/string_view.cc.o
+[ 20%] Linking CXX static library libabsl_string_view.a
+[ 20%] Built target string_view
+[ 21%] Building CXX object absl/strings/CMakeFiles/strings.dir/ascii.cc.o
+[ 21%] Building CXX object absl/strings/CMakeFiles/strings.dir/charconv.cc.o
+[ 22%] Building CXX object absl/strings/CMakeFiles/strings.dir/escaping.cc.o
+[ 22%] Building CXX object absl/strings/CMakeFiles/strings.dir/internal/charconv_bigint.cc.o
+[ 23%] Building CXX object absl/strings/CMakeFiles/strings.dir/internal/charconv_parse.cc.o
+[ 23%] Building CXX object absl/strings/CMakeFiles/strings.dir/internal/damerau_levenshtein_distance.cc.o
+[ 23%] Building CXX object absl/strings/CMakeFiles/strings.dir/internal/memutil.cc.o
+[ 24%] Building CXX object absl/strings/CMakeFiles/strings.dir/internal/stringify_sink.cc.o
+[ 24%] Building CXX object absl/strings/CMakeFiles/strings.dir/match.cc.o
+[ 25%] Building CXX object absl/strings/CMakeFiles/strings.dir/numbers.cc.o
+[ 25%] Building CXX object absl/strings/CMakeFiles/strings.dir/str_cat.cc.o
+[ 25%] Building CXX object absl/strings/CMakeFiles/strings.dir/str_replace.cc.o
+[ 26%] Building CXX object absl/strings/CMakeFiles/strings.dir/str_split.cc.o
+[ 26%] Building CXX object absl/strings/CMakeFiles/strings.dir/substitute.cc.o
+[ 27%] Linking CXX static library libabsl_strings.a
+[ 27%] Built target strings
+[ 28%] Building CXX object absl/debugging/CMakeFiles/symbolize.dir/symbolize.cc.o
+[ 28%] Linking CXX static library libabsl_symbolize.a
+[ 28%] Built target symbolize
+[ 29%] Building CXX object absl/profiling/CMakeFiles/exponential_biased.dir/internal/exponential_biased.cc.o
+[ 29%] Linking CXX static library libabsl_exponential_biased.a
+[ 29%] Built target exponential_biased
+[ 30%] Building CXX object absl/synchronization/CMakeFiles/graphcycles_internal.dir/internal/graphcycles.cc.o
+[ 30%] Linking CXX static library libabsl_graphcycles_internal.a
+[ 30%] Built target graphcycles_internal
+[ 31%] Building CXX object absl/time/CMakeFiles/civil_time.dir/internal/cctz/src/civil_time_detail.cc.o
+[ 31%] Linking CXX static library libabsl_civil_time.a
+[ 31%] Built target civil_time
+[ 31%] Building CXX object absl/time/CMakeFiles/time.dir/civil_time.cc.o
+[ 32%] Building CXX object absl/time/CMakeFiles/time.dir/clock.cc.o
+[ 32%] Building CXX object absl/time/CMakeFiles/time.dir/duration.cc.o
+[ 32%] Building CXX object absl/time/CMakeFiles/time.dir/format.cc.o
+[ 33%] Building CXX object absl/time/CMakeFiles/time.dir/time.cc.o
+[ 33%] Linking CXX static library libabsl_time.a
+[ 33%] Built target time
+[ 33%] Building CXX object absl/synchronization/CMakeFiles/kernel_timeout_internal.dir/internal/kernel_timeout.cc.o
+[ 34%] Linking CXX static library libabsl_kernel_timeout_internal.a
+[ 34%] Built target kernel_timeout_internal
+[ 35%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/barrier.cc.o
+[ 35%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/blocking_counter.cc.o
+[ 36%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/create_thread_identity.cc.o
+[ 36%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/futex_waiter.cc.o
+[ 36%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/per_thread_sem.cc.o
+[ 37%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/pthread_waiter.cc.o
+[ 37%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/sem_waiter.cc.o
+[ 38%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/stdcpp_waiter.cc.o
+[ 38%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/waiter_base.cc.o
+[ 39%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/internal/win32_waiter.cc.o
+[ 39%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/notification.cc.o
+[ 39%] Building CXX object absl/synchronization/CMakeFiles/synchronization.dir/mutex.cc.o
+[ 40%] Linking CXX static library libabsl_synchronization.a
+[ 40%] Built target synchronization
+[ 40%] Building CXX object absl/container/CMakeFiles/hashtablez_sampler.dir/internal/hashtablez_sampler.cc.o
+[ 41%] Building CXX object absl/container/CMakeFiles/hashtablez_sampler.dir/internal/hashtablez_sampler_force_weak_definition.cc.o
+[ 41%] Linking CXX static library libabsl_hashtablez_sampler.a
+[ 41%] Built target hashtablez_sampler
+[ 42%] Building CXX object absl/types/CMakeFiles/bad_variant_access.dir/bad_variant_access.cc.o
+[ 42%] Linking CXX static library libabsl_bad_variant_access.a
+[ 42%] Built target bad_variant_access
+[ 42%] Building CXX object absl/hash/CMakeFiles/city.dir/internal/city.cc.o
+[ 42%] Linking CXX static library libabsl_city.a
+[ 42%] Built target city
+[ 42%] Building CXX object absl/hash/CMakeFiles/low_level_hash.dir/internal/low_level_hash.cc.o
+[ 42%] Linking CXX static library libabsl_low_level_hash.a
+[ 42%] Built target low_level_hash
+[ 43%] Building CXX object absl/types/CMakeFiles/bad_optional_access.dir/bad_optional_access.cc.o
+[ 43%] Linking CXX static library libabsl_bad_optional_access.a
+[ 43%] Built target bad_optional_access
+[ 43%] Building CXX object absl/hash/CMakeFiles/hash.dir/internal/hash.cc.o
+[ 44%] Linking CXX static library libabsl_hash.a
+[ 44%] Built target hash
+[ 45%] Building CXX object absl/container/CMakeFiles/raw_hash_set.dir/internal/raw_hash_set.cc.o
+[ 45%] Linking CXX static library libabsl_raw_hash_set.a
+[ 45%] Built target raw_hash_set
+[ 45%] Building CXX object absl/crc/CMakeFiles/crc_cpu_detect.dir/internal/cpu_detect.cc.o
+[ 46%] Linking CXX static library libabsl_crc_cpu_detect.a
+[ 46%] Built target crc_cpu_detect
+[ 46%] Building CXX object absl/crc/CMakeFiles/crc_internal.dir/internal/crc.cc.o
+[ 47%] Building CXX object absl/crc/CMakeFiles/crc_internal.dir/internal/crc_x86_arm_combined.cc.o
+[ 47%] Linking CXX static library libabsl_crc_internal.a
+[ 47%] Built target crc_internal
+[ 47%] Building CXX object absl/strings/CMakeFiles/str_format_internal.dir/internal/str_format/arg.cc.o
+[ 48%] Building CXX object absl/strings/CMakeFiles/str_format_internal.dir/internal/str_format/bind.cc.o
+[ 48%] Building CXX object absl/strings/CMakeFiles/str_format_internal.dir/internal/str_format/extension.cc.o
+[ 48%] Building CXX object absl/strings/CMakeFiles/str_format_internal.dir/internal/str_format/float_conversion.cc.o
+[ 49%] Building CXX object absl/strings/CMakeFiles/str_format_internal.dir/internal/str_format/output.cc.o
+[ 49%] Building CXX object absl/strings/CMakeFiles/str_format_internal.dir/internal/str_format/parser.cc.o
+[ 50%] Linking CXX static library libabsl_str_format_internal.a
+[ 50%] Built target str_format_internal
+[ 50%] Building CXX object absl/crc/CMakeFiles/crc32c.dir/crc32c.cc.o
+[ 51%] Building CXX object absl/crc/CMakeFiles/crc32c.dir/internal/crc_memcpy_fallback.cc.o
+[ 51%] Building CXX object absl/crc/CMakeFiles/crc32c.dir/internal/crc_memcpy_x86_64.cc.o
+[ 52%] Building CXX object absl/crc/CMakeFiles/crc32c.dir/internal/crc_non_temporal_memcpy.cc.o
+[ 52%] Linking CXX static library libabsl_crc32c.a
+[ 52%] Built target crc32c
+[ 52%] Building CXX object absl/crc/CMakeFiles/crc_cord_state.dir/internal/crc_cord_state.cc.o
+[ 53%] Linking CXX static library libabsl_crc_cord_state.a
+[ 53%] Built target crc_cord_state
+[ 54%] Building CXX object absl/debugging/CMakeFiles/examine_stack.dir/internal/examine_stack.cc.o
+[ 54%] Linking CXX static library libabsl_examine_stack.a
+[ 54%] Built target examine_stack
+[ 54%] Building CXX object absl/debugging/CMakeFiles/failure_signal_handler.dir/failure_signal_handler.cc.o
+[ 55%] Linking CXX static library libabsl_failure_signal_handler.a
+[ 55%] Built target failure_signal_handler
+[ 55%] Building CXX object absl/debugging/CMakeFiles/leak_check.dir/leak_check.cc.o
+[ 56%] Linking CXX static library libabsl_leak_check.a
+[ 56%] Built target leak_check
+[ 56%] Building CXX object absl/flags/CMakeFiles/flags_program_name.dir/internal/program_name.cc.o
+[ 57%] Linking CXX static library libabsl_flags_program_name.a
+[ 57%] Built target flags_program_name
+[ 58%] Building CXX object absl/flags/CMakeFiles/flags_config.dir/usage_config.cc.o
+[ 58%] Linking CXX static library libabsl_flags_config.a
+[ 58%] Built target flags_config
+[ 59%] Building CXX object absl/flags/CMakeFiles/flags_marshalling.dir/marshalling.cc.o
+[ 59%] Linking CXX static library libabsl_flags_marshalling.a
+[ 59%] Built target flags_marshalling
+[ 59%] Building CXX object absl/flags/CMakeFiles/flags_commandlineflag_internal.dir/internal/commandlineflag.cc.o
+[ 59%] Linking CXX static library libabsl_flags_commandlineflag_internal.a
+[ 59%] Built target flags_commandlineflag_internal
+[ 59%] Building CXX object absl/flags/CMakeFiles/flags_commandlineflag.dir/commandlineflag.cc.o
+[ 60%] Linking CXX static library libabsl_flags_commandlineflag.a
+[ 60%] Built target flags_commandlineflag
+[ 60%] Building CXX object absl/flags/CMakeFiles/flags_private_handle_accessor.dir/internal/private_handle_accessor.cc.o
+[ 61%] Linking CXX static library libabsl_flags_private_handle_accessor.a
+[ 61%] Built target flags_private_handle_accessor
+[ 61%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_internal.cc.o
+[ 62%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_rep_btree.cc.o
+[ 62%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_rep_btree_navigator.cc.o
+[ 63%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_rep_btree_reader.cc.o
+[ 63%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_rep_crc.cc.o
+[ 64%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_rep_consume.cc.o
+[ 64%] Building CXX object absl/strings/CMakeFiles/cord_internal.dir/internal/cord_rep_ring.cc.o
+[ 64%] Linking CXX static library libabsl_cord_internal.a
+[ 64%] Built target cord_internal
+[ 65%] Building CXX object absl/strings/CMakeFiles/cordz_functions.dir/internal/cordz_functions.cc.o
+[ 65%] Linking CXX static library libabsl_cordz_functions.a
+[ 65%] Built target cordz_functions
+[ 66%] Building CXX object absl/strings/CMakeFiles/cordz_handle.dir/internal/cordz_handle.cc.o
+[ 66%] Linking CXX static library libabsl_cordz_handle.a
+[ 66%] Built target cordz_handle
+[ 67%] Building CXX object absl/strings/CMakeFiles/cordz_info.dir/internal/cordz_info.cc.o
+[ 67%] Linking CXX static library libabsl_cordz_info.a
+[ 67%] Built target cordz_info
+[ 68%] Building CXX object absl/strings/CMakeFiles/cord.dir/cord.cc.o
+[ 68%] Building CXX object absl/strings/CMakeFiles/cord.dir/cord_analysis.cc.o
+[ 69%] Building CXX object absl/strings/CMakeFiles/cord.dir/cord_buffer.cc.o
+[ 69%] Linking CXX static library libabsl_cord.a
+[ 69%] Built target cord
+[ 69%] Building CXX object absl/flags/CMakeFiles/flags_reflection.dir/reflection.cc.o
+[ 69%] Linking CXX static library libabsl_flags_reflection.a
+[ 69%] Built target flags_reflection
+[ 70%] Building CXX object absl/flags/CMakeFiles/flags_internal.dir/internal/flag.cc.o
+[ 70%] Linking CXX static library libabsl_flags_internal.a
+[ 70%] Built target flags_internal
+[ 70%] Building CXX object absl/flags/CMakeFiles/flags.dir/flag.cc.o
+[ 71%] Linking CXX static library libabsl_flags.a
+[ 71%] Built target flags
+[ 72%] Building CXX object absl/flags/CMakeFiles/flags_usage_internal.dir/internal/usage.cc.o
+[ 72%] Linking CXX static library libabsl_flags_usage_internal.a
+[ 72%] Built target flags_usage_internal
+[ 73%] Building CXX object absl/flags/CMakeFiles/flags_usage.dir/usage.cc.o
+[ 73%] Linking CXX static library libabsl_flags_usage.a
+[ 73%] Built target flags_usage
+[ 73%] Building CXX object absl/flags/CMakeFiles/flags_parse.dir/parse.cc.o
+[ 74%] Linking CXX static library libabsl_flags_parse.a
+[ 74%] Built target flags_parse
+[ 74%] Building CXX object absl/log/CMakeFiles/log_internal_globals.dir/internal/globals.cc.o
+[ 74%] Linking CXX static library libabsl_log_internal_globals.a
+[ 74%] Built target log_internal_globals
+[ 74%] Building CXX object absl/log/CMakeFiles/log_internal_format.dir/internal/log_format.cc.o
+[ 75%] Linking CXX static library libabsl_log_internal_format.a
+[ 75%] Built target log_internal_format
+[ 75%] Building CXX object absl/log/CMakeFiles/log_internal_proto.dir/internal/proto.cc.o
+[ 76%] Linking CXX static library libabsl_log_internal_proto.a
+[ 76%] Built target log_internal_proto
+[ 77%] Building CXX object absl/log/CMakeFiles/log_globals.dir/globals.cc.o
+[ 77%] Linking CXX static library libabsl_log_globals.a
+[ 77%] Built target log_globals
+[ 77%] Building CXX object absl/log/CMakeFiles/log_entry.dir/log_entry.cc.o
+[ 77%] Linking CXX static library libabsl_log_entry.a
+[ 77%] Built target log_entry
+[ 77%] Building CXX object absl/log/CMakeFiles/log_sink.dir/log_sink.cc.o
+[ 78%] Linking CXX static library libabsl_log_sink.a
+[ 78%] Built target log_sink
+[ 79%] Building CXX object absl/log/CMakeFiles/log_internal_log_sink_set.dir/internal/log_sink_set.cc.o
+[ 79%] Linking CXX static library libabsl_log_internal_log_sink_set.a
+[ 79%] Built target log_internal_log_sink_set
+[ 80%] Building CXX object absl/log/CMakeFiles/log_internal_nullguard.dir/internal/nullguard.cc.o
+[ 80%] Linking CXX static library libabsl_log_internal_nullguard.a
+[ 80%] Built target log_internal_nullguard
+[ 81%] Building CXX object absl/log/CMakeFiles/log_internal_message.dir/internal/log_message.cc.o
+[ 81%] Linking CXX static library libabsl_log_internal_message.a
+[ 81%] Built target log_internal_message
+[ 81%] Building CXX object absl/log/CMakeFiles/log_internal_check_op.dir/internal/check_op.cc.o
+[ 82%] Linking CXX static library libabsl_log_internal_check_op.a
+[ 82%] Built target log_internal_check_op
+[ 82%] Building CXX object absl/log/CMakeFiles/log_internal_conditions.dir/internal/conditions.cc.o
+[ 83%] Linking CXX static library libabsl_log_internal_conditions.a
+[ 83%] Built target log_internal_conditions
+[ 84%] Building CXX object absl/log/CMakeFiles/die_if_null.dir/die_if_null.cc.o
+[ 84%] Linking CXX static library libabsl_die_if_null.a
+[ 84%] Built target die_if_null
+[ 85%] Building CXX object absl/log/CMakeFiles/log_flags.dir/flags.cc.o
+[ 85%] Linking CXX static library libabsl_log_flags.a
+[ 85%] Built target log_flags
+[ 86%] Building CXX object absl/log/CMakeFiles/log_initialize.dir/initialize.cc.o
+[ 86%] Linking CXX static library libabsl_log_initialize.a
+[ 86%] Built target log_initialize
+[ 87%] Building CXX object absl/profiling/CMakeFiles/periodic_sampler.dir/internal/periodic_sampler.cc.o
+[ 87%] Linking CXX static library libabsl_periodic_sampler.a
+[ 87%] Built target periodic_sampler
+[ 88%] Building CXX object absl/random/CMakeFiles/random_distributions.dir/discrete_distribution.cc.o
+[ 88%] Building CXX object absl/random/CMakeFiles/random_distributions.dir/gaussian_distribution.cc.o
+[ 88%] Linking CXX static library libabsl_random_distributions.a
+[ 88%] Built target random_distributions
+[ 88%] Building CXX object absl/random/CMakeFiles/random_seed_gen_exception.dir/seed_gen_exception.cc.o
+[ 88%] Linking CXX static library libabsl_random_seed_gen_exception.a
+[ 88%] Built target random_seed_gen_exception
+[ 88%] Building CXX object absl/random/CMakeFiles/random_internal_seed_material.dir/internal/seed_material.cc.o
+[ 89%] Linking CXX static library libabsl_random_internal_seed_material.a
+[ 89%] Built target random_internal_seed_material
+[ 89%] Building CXX object absl/random/CMakeFiles/random_internal_platform.dir/internal/randen_round_keys.cc.o
+[ 90%] Linking CXX static library libabsl_random_internal_platform.a
+[ 90%] Built target random_internal_platform
+[ 90%] Building CXX object absl/random/CMakeFiles/random_internal_randen_hwaes_impl.dir/internal/randen_hwaes.cc.o
+[ 91%] Linking CXX static library libabsl_random_internal_randen_hwaes_impl.a
+[ 91%] Built target random_internal_randen_hwaes_impl
+[ 91%] Building CXX object absl/random/CMakeFiles/random_internal_randen_slow.dir/internal/randen_slow.cc.o
+[ 92%] Linking CXX static library libabsl_random_internal_randen_slow.a
+[ 92%] Built target random_internal_randen_slow
+[ 93%] Building CXX object absl/random/CMakeFiles/random_internal_randen_hwaes.dir/internal/randen_detect.cc.o
+[ 93%] Linking CXX static library libabsl_random_internal_randen_hwaes.a
+[ 93%] Built target random_internal_randen_hwaes
+[ 94%] Building CXX object absl/random/CMakeFiles/random_internal_randen.dir/internal/randen.cc.o
+[ 94%] Linking CXX static library libabsl_random_internal_randen.a
+[ 94%] Built target random_internal_randen
+[ 94%] Building CXX object absl/random/CMakeFiles/random_internal_pool_urbg.dir/internal/pool_urbg.cc.o
+[ 94%] Linking CXX static library libabsl_random_internal_pool_urbg.a
+[ 94%] Built target random_internal_pool_urbg
+[ 95%] Building CXX object absl/random/CMakeFiles/random_seed_sequences.dir/seed_sequences.cc.o
+[ 95%] Linking CXX static library libabsl_random_seed_sequences.a
+[ 95%] Built target random_seed_sequences
+[ 96%] Building CXX object absl/random/CMakeFiles/random_internal_distribution_test_util.dir/internal/chi_square.cc.o
+[ 96%] Building CXX object absl/random/CMakeFiles/random_internal_distribution_test_util.dir/internal/distribution_test_util.cc.o
+[ 97%] Linking CXX static library libabsl_random_internal_distribution_test_util.a
+[ 97%] Built target random_internal_distribution_test_util
+[ 97%] Building CXX object absl/status/CMakeFiles/status.dir/status.cc.o
+[ 97%] Building CXX object absl/status/CMakeFiles/status.dir/status_payload_printer.cc.o
+[ 98%] Linking CXX static library libabsl_status.a
+[ 98%] Built target status
+[ 98%] Building CXX object absl/status/CMakeFiles/statusor.dir/statusor.cc.o
+[ 99%] Linking CXX static library libabsl_statusor.a
+[ 99%] Built target statusor
+[ 99%] Building CXX object absl/strings/CMakeFiles/cordz_sample_token.dir/internal/cordz_sample_token.cc.o
+[100%] Linking CXX static library libabsl_cordz_sample_token.a
+[100%] Built target cordz_sample_token
+[100%] Building CXX object absl/types/CMakeFiles/bad_any_cast_impl.dir/bad_any_cast.cc.o
+[100%] Linking CXX static library libabsl_bad_any_cast_impl.a
+[100%] Built target bad_any_cast_impl
+-- Install configuration: "Release"
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/cmake/absl/abslTargets.cmake
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/cmake/absl/abslTargets-release.cmake
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/cmake/absl/abslConfig.cmake
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/cmake/absl/abslConfigVersion.cmake
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/blocking_counter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/notification.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/barrier.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/mutex.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/create_thread_identity.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/thread_pool.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/sem_waiter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/graphcycles.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/futex.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/stdcpp_waiter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/pthread_waiter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/waiter_base.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/waiter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/kernel_timeout.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/win32_waiter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/per_thread_sem.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/synchronization/internal/futex_waiter.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/flat_hash_map.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/node_hash_set.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/node_hash_map.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/btree_set.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/inlined_vector.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/fixed_array.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/btree_map.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/btree_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/common_policy_traits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_set_members_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_set_constructor_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/btree_container.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/container_memory.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hash_function_defaults.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/btree.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/tracked.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/inlined_vector.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_map_constructor_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/raw_hash_set.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_set_lookup_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/test_instance_tracker.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hash_generator_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/common.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_map_modifiers_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hashtable_debug.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hash_policy_traits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hash_policy_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/node_slot_policy.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_map_members_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/layout.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hashtable_debug_hooks.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/raw_hash_map.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/hashtablez_sampler.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_set_modifiers_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/counting_allocator.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/unordered_map_lookup_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/internal/compressed_tuple.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/container/flat_hash_set.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/flags.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/check.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/initialize.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/log_sink_registry.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/structured.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/globals.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/die_if_null.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/absl_check.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/check_test_impl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/absl_log.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/scoped_mock_log.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/log_sink.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/log_basic_test_impl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/flags.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/log_sink_set.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/check_impl.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/test_matchers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/log_impl.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/test_actions.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/log_message.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/proto.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/check_op.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/structured.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/strip.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/append_truncated.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/globals.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/test_helpers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/voidify.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/nullstream.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/conditions.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/nullguard.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/internal/log_format.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/log_streamer.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/log.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/log/log_entry.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/dynamic_annotations.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/nullability.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/call_once.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/thread_annotations.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/casts.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/optimization.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/log_severity.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/macros.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/port.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/const_init.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/prefetch.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/attributes.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/policy_checks.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/inline_variable.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/cycleclock.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/dynamic_annotations.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/nullability_impl.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/unscaledcycleclock.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/scheduling_mode.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/per_thread_tls.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/tsan_mutex_interface.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/atomic_hook_test_helper.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/unaligned_access.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/thread_annotations.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/spinlock_win32.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/thread_identity.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/cycleclock_config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/sysinfo.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/identity.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/exception_safety_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/spinlock_posix.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/spinlock_akaros.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/fast_type_id.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/exception_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/direct_mmap.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/invoke.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/hide_ptr.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/spinlock_wait.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/errno_saver.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/inline_variable_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/scoped_set_env.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/pretty_function.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/raw_logging.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/strerror.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/low_level_alloc.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/atomic_hook.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/spinlock.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/prefetch.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/unscaledcycleclock_config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/throw_delegate.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/spinlock_linux.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/low_level_scheduling.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/internal/endian.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/options.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/hash.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/internal/hash.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/internal/spy_hash_state.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/internal/low_level_hash.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/internal/city.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/internal/hash_test.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/hash/hash_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/meta
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/meta/type_traits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/int128_have_intrinsic.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/bits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/int128.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/int128_no_intrinsic.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/internal/representation.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/numeric/internal/bits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/mocking_bit_gen.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/discrete_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/distributions.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/exponential_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/uniform_int_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/gaussian_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/mock_distributions.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/zipf_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/bernoulli_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/beta_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/log_uniform_int_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/seed_sequences.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/uniform_real_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/poisson_distribution.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/random.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/bit_gen_ref.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/seed_gen_exception.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/seed_material.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/traits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/mock_overload_set.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/nanobenchmark.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/randen_engine.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/pool_urbg.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/platform.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/generate_real.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/pcg_engine.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/randen_detect.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/randen.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/randen_traits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/fastmath.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/randen_hwaes.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/uniform_helper.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/nonsecure_base.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/fast_uniform_bits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/distribution_test_util.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/sequence_urbg.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/randen_slow.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/iostream_state_saver.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/salted_seed_seq.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/chi_square.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/mock_helpers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/distribution_caller.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/wide_multiply.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/random/internal/explicit_seed_seq.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/any.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/compare.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/bad_optional_access.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/span.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/bad_any_cast.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/optional.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/variant.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/conformance_archetype.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/conformance_profile.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/span.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/conformance_aliases.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/optional.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/variant.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/conformance_testing.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/transform_args.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/conformance_testing_helpers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/internal/parentheses.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/types/bad_variant_access.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/bind_front.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/any_invocable.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/internal/any_invocable.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/internal/front_binder.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/internal/function_ref.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/functional/function_ref.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/cleanup
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/cleanup/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/cleanup/internal/cleanup.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/cleanup/cleanup.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/memory
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/memory/memory.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/crc32c.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc32c.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/non_temporal_memcpy.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc_memcpy.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc32_x86_arm_combined_simd.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc32c_inline.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/cpu_detect.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc_cord_state.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/crc_internal.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/crc/internal/non_temporal_arm_intrinsics.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/algorithm
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/algorithm/container.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/algorithm/algorithm.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/profiling
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/profiling/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/profiling/internal/sample_recorder.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/profiling/internal/periodic_sampler.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/profiling/internal/exponential_biased.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/failure_signal_handler.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/leak_check.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/symbolize_win32.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/symbolize_emscripten.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/symbolize_elf.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/stacktrace.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/symbolize_unimplemented.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/symbolize.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/elf_mem_image.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/address_is_readable.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/vdso_support.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/examine_stack.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_win32-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_emscripten-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_generic-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/demangle.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stack_consumption.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_unimplemented-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_aarch64-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_riscv-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_arm-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_powerpc-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/stacktrace_x86-inl.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/internal/symbolize.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/debugging/symbolize_darwin.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/civil_time.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/clock.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/time.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/get_current_time_chrono.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/test_util.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/get_current_time_posix.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/include
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/include/cctz
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/include/cctz/civil_time.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/include/cctz/time_zone.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/include/cctz/civil_time_detail.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/include/cctz/zone_info_source.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/time_zone_if.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/time_zone_info.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/time_zone_posix.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/time_zone_libc.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/time_zone_impl.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/time_zone_fixed.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/time/internal/cctz/src/tzfile.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/flag.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/usage.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/reflection.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/declare.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/usage_config.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/marshalling.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/commandlineflag.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/program_name.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/registry.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/flag.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/private_handle_accessor.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/usage.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/flag_msvc.inc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/sequence_lock.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/path_util.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/commandlineflag.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/internal/parse.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/flags/parse.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/str_split.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/str_cat.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/charconv.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/cordz_test_helpers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/cord_test_helpers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/ascii.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/numbers.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/strip.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/str_format.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/cord_analysis.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/cord.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/cord_buffer.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/match.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/str_replace.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/string_view.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/escaping.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/numbers_test_common.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_functions.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_update_tracker.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/has_absl_stringify.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/ostringstream.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/output.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/bind.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/float_conversion.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/extension.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/constexpr_parser.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/arg.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/parser.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_format/checker.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/string_constant.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/charconv_parse.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/stl_type_traits.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_btree.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_internal.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_handle.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_statistics.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/stringify_sink.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_btree_navigator.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_btree_reader.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/memutil.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/damerau_levenshtein_distance.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_test_util.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_sample_token.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_split_internal.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_crc.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_update_scope.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/pow10_helper.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/str_join_internal.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/resize_uninitialized.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cordz_info.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/escaping.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/utf8.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_consume.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/char_map.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_ring_reader.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_data_edge.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/charconv_bigint.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_ring.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/escaping_test_common.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/internal/cord_rep_flat.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/str_join.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/strings/substitute.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status/statusor.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status/status_payload_printer.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status/status.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status/internal/statusor_internal.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/status/internal/status_internal.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/utility
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/utility/utility.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/utility/internal
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/utility/internal/if_constexpr.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include/absl/base/options.h
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_atomic_hook.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_errno_saver.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_severity.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_severity.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_nullability.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_raw_logging_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_raw_logging_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_spinlock_wait.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_spinlock_wait.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_config.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_dynamic_annotations.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_core_headers.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_malloc_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_malloc_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_base_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_base.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_base.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_throw_delegate.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_throw_delegate.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_pretty_function.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_endian.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_scoped_set_env.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_scoped_set_env.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_strerror.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_strerror.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_fast_type_id.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_prefetch.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_algorithm.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_algorithm_container.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cleanup_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cleanup.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_btree.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_compressed_tuple.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_fixed_array.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_inlined_vector_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_inlined_vector.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_counting_allocator.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flat_hash_map.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flat_hash_set.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_node_hash_map.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_node_hash_set.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_container_memory.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_hash_function_defaults.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_hash_policy_traits.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_common_policy_traits.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_hashtablez_sampler.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_hashtablez_sampler.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_hashtable_debug.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_hashtable_debug_hooks.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_node_slot_policy.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_raw_hash_map.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_container_common.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_raw_hash_set.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_raw_hash_set.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_layout.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_crc_cpu_detect.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_crc_cpu_detect.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_crc_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_crc_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_crc32c.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_crc32c.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_non_temporal_arm_intrinsics.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_non_temporal_memcpy.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_crc_cord_state.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_crc_cord_state.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_stacktrace.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_stacktrace.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_symbolize.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_symbolize.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_examine_stack.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_examine_stack.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_failure_signal_handler.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_failure_signal_handler.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_debugging_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_debugging_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_demangle_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_demangle_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_leak_check.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_leak_check.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_debugging.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_path_util.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_program_name.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_program_name.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_config.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_config.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_marshalling.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_marshalling.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_commandlineflag_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_commandlineflag_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_commandlineflag.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_commandlineflag.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_private_handle_accessor.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_private_handle_accessor.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_reflection.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_reflection.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_usage_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_usage_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_usage.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_usage.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_flags_parse.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_flags_parse.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_any_invocable.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_bind_front.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_function_ref.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_hash.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_hash.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_city.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_city.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_low_level_hash.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_low_level_hash.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_check_impl.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_check_op.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_check_op.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_conditions.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_conditions.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_config.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_flags.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_format.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_format.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_globals.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_globals.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_log_impl.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_proto.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_proto.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_message.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_message.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_log_sink_set.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_log_sink_set.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_nullguard.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_internal_nullguard.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_nullstream.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_strip.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_voidify.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_append_truncated.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_absl_check.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_absl_log.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_check.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_die_if_null.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_die_if_null.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_flags.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_flags.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_globals.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_globals.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_initialize.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_initialize.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_entry.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_entry.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_sink.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_log_sink.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_sink_registry.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_streamer.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_internal_structured.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_log_structured.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_memory.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_type_traits.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_meta.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_bits.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_int128.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_int128.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_numeric.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_numeric_representation.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_sample_recorder.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_exponential_biased.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_exponential_biased.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_periodic_sampler.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_periodic_sampler.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_random.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_bit_gen_ref.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_mock_helpers.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_distributions.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_distributions.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_seed_gen_exception.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_seed_gen_exception.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_seed_sequences.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_seed_sequences.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_traits.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_distribution_caller.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_fast_uniform_bits.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_seed_material.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_seed_material.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_pool_urbg.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_pool_urbg.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_salted_seed_seq.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_iostream_state_saver.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_generate_real.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_wide_multiply.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_fastmath.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_nonsecure_base.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_pcg_engine.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_randen_engine.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_platform.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_platform.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_randen.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_randen.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_randen_slow.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_randen_slow.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_randen_hwaes.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_randen_hwaes.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_randen_hwaes_impl.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_randen_hwaes_impl.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_distribution_test_util.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_random_internal_distribution_test_util.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_random_internal_uniform_helper.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_status.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_status.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_statusor.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_statusor.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_string_view.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_string_view.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_strings.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_strings.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_strings_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_strings_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_str_format.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_str_format_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_str_format_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cord_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_cord_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_update_tracker.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_functions.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_cordz_functions.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_statistics.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_handle.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_cordz_handle.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_info.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_cordz_info.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_sample_token.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_cordz_sample_token.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cordz_update_scope.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_cord.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_cord.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_graphcycles_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_graphcycles_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_kernel_timeout_internal.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_kernel_timeout_internal.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_synchronization.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_synchronization.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_time.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_time.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_civil_time.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_civil_time.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_time_zone.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_time_zone.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_any.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_bad_any_cast.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_bad_any_cast_impl.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_bad_any_cast_impl.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_span.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_optional.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_bad_optional_access.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_bad_optional_access.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_bad_variant_access.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/libabsl_bad_variant_access.a
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_variant.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_compare.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_utility.pc
+-- Installing: /tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib/pkgconfig/absl_if_constexpr.pc
+** Done!
+** Using PKG_CONFIG_PATH=tools/dist/lib/pkgconfig::/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/pkgconfig
+Testing Abseil configuration using PKG_CFLAGS=-I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include 
+Using PKG_LIBS=-L/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib -labsl_flags -labsl_flags_internal -labsl_flags_marshalling -labsl_flags_reflection -labsl_flags_private_handle_accessor -labsl_flags_commandlineflag -labsl_flags_commandlineflag_internal -labsl_flags_config -labsl_flags_program_name -labsl_raw_hash_set -labsl_hashtablez_sampler -labsl_log_internal_check_op -labsl_log_internal_conditions -labsl_log_internal_message -labsl_examine_stack -labsl_log_internal_format -labsl_log_internal_proto -labsl_log_internal_nullguard -labsl_log_internal_log_sink_set -labsl_log_internal_globals -labsl_log_globals -labsl_hash -labsl_city -labsl_bad_variant_access -labsl_low_level_hash -labsl_log_sink -labsl_log_entry -labsl_status -labsl_cord -labsl_cordz_info -labsl_cord_internal -labsl_cordz_functions -labsl_exponential_biased -labsl_cordz_handle -labsl_synchronization -labsl_graphcycles_internal -labsl_kernel_timeout_internal -labsl_time -labsl_civil_time -labsl_time_zone -labsl_crc_cord_state -labsl_crc32c -labsl_crc_internal -labsl_crc_cpu_detect -labsl_bad_optional_access -labsl_stacktrace -labsl_str_format_internal -labsl_strerror -labsl_symbolize -labsl_debugging_internal -labsl_demangle_internal -labsl_malloc_internal -labsl_strings -labsl_string_view -labsl_strings_internal -labsl_base -lrt -labsl_spinlock_wait -labsl_int128 -labsl_throw_delegate -labsl_raw_logging_internal -labsl_log_severity -lssl -lcrypto
+Using PKG_CFLAGS=-I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include 
+** libs
+specified C++17
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++17
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c cpp-compat.cpp -o cpp-compat.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-accessors.cpp -o s2-accessors.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-bounds.cpp -o s2-bounds.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-cell.cpp -o s2-cell.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-cell-union.cpp -o s2-cell-union.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-constructors-formatters.cpp -o s2-constructors-formatters.o
+In file included from /home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include/RcppCommon.h:29,
+                 from /home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include/Rcpp.h:27,
+                 from geography.h:5,
+                 from s2-constructors-formatters.cpp:9:
+/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include/Rcpp/r/check_r_headers.h:27:21: note: ‘#pragma message: R.h has been included before any Rcpp headers. This can lead to hard-to-debug errors, and is not necessary. See https://github.com/RcppCore/Rcpp/issues/1410’
+   27 |     #pragma message "R.h has been included before any Rcpp headers. This can lead to hard-to-debug errors, and is not necessary. See https://github.com/RcppCore/Rcpp/issues/1410"
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include/RcppCommon.h:29,
+                 from /home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include/Rcpp.h:27,
+                 from geography.h:5,
+                 from s2-constructors-formatters.cpp:9:
+/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include/Rcpp/r/check_r_headers.h:35:21: note: ‘#pragma message: Rinternals.h has been included before any Rcpp headers. This can lead to hard-to-debug errors, and is not necessary. See https://github.com/RcppCore/Rcpp/issues/1410’
+   35 |     #pragma message "Rinternals.h has been included before any Rcpp headers. This can lead to hard-to-debug errors, and is not necessary. See https://github.com/RcppCore/Rcpp/issues/1410"
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-predicates.cpp -o s2-predicates.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-transformers.cpp -o s2-transformers.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c init.cpp -o init.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c RcppExports.cpp -o RcppExports.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-geography.cpp -o s2-geography.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-lnglat.cpp -o s2-lnglat.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2-matrix.cpp -o s2-matrix.o
+cc -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c wk-impl.c -o wk-impl.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/accessors-geog.cc -o s2geography/accessors-geog.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/accessors.cc -o s2geography/accessors.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/build.cc -o s2geography/build.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/coverings.cc -o s2geography/coverings.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/distance.cc -o s2geography/distance.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/geography.cc -o s2geography/geography.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/linear-referencing.cc -o s2geography/linear-referencing.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2geography/predicates.cc -o s2geography/predicates.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/encoded_s2cell_id_vector.cc -o s2/encoded_s2cell_id_vector.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/encoded_s2point_vector.cc -o s2/encoded_s2point_vector.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/encoded_s2shape_index.cc -o s2/encoded_s2shape_index.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/encoded_string_vector.cc -o s2/encoded_string_vector.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/id_set_lexicon.cc -o s2/id_set_lexicon.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/mutable_s2shape_index.cc -o s2/mutable_s2shape_index.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/r2rect.cc -o s2/r2rect.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s1angle.cc -o s2/s1angle.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s1chord_angle.cc -o s2/s1chord_angle.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s1interval.cc -o s2/s1interval.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2boolean_operation.cc -o s2/s2boolean_operation.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2buffer_operation.cc -o s2/s2buffer_operation.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builder_graph.cc -o s2/s2builder_graph.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builder.cc -o s2/s2builder.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_closed_set_normalizer.cc -o s2/s2builderutil_closed_set_normalizer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_find_polygon_degeneracies.cc -o s2/s2builderutil_find_polygon_degeneracies.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_get_snapped_winding_delta.cc -o s2/s2builderutil_get_snapped_winding_delta.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_lax_polygon_layer.cc -o s2/s2builderutil_lax_polygon_layer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_lax_polyline_layer.cc -o s2/s2builderutil_lax_polyline_layer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_s2point_vector_layer.cc -o s2/s2builderutil_s2point_vector_layer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_s2polygon_layer.cc -o s2/s2builderutil_s2polygon_layer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_s2polyline_layer.cc -o s2/s2builderutil_s2polyline_layer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_s2polyline_vector_layer.cc -o s2/s2builderutil_s2polyline_vector_layer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2builderutil_snap_functions.cc -o s2/s2builderutil_snap_functions.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2cap.cc -o s2/s2cap.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2cell_id.cc -o s2/s2cell_id.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2cell_index.cc -o s2/s2cell_index.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2cell_union.cc -o s2/s2cell_union.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2cell.cc -o s2/s2cell.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2centroids.cc -o s2/s2centroids.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2closest_cell_query.cc -o s2/s2closest_cell_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2closest_edge_query.cc -o s2/s2closest_edge_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2closest_point_query.cc -o s2/s2closest_point_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2contains_vertex_query.cc -o s2/s2contains_vertex_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2convex_hull_query.cc -o s2/s2convex_hull_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2coords.cc -o s2/s2coords.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2crossing_edge_query.cc -o s2/s2crossing_edge_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2debug.cc -o s2/s2debug.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2earth.cc -o s2/s2earth.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2edge_clipping.cc -o s2/s2edge_clipping.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2edge_crosser.cc -o s2/s2edge_crosser.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2edge_crossings.cc -o s2/s2edge_crossings.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2edge_distances.cc -o s2/s2edge_distances.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2edge_tessellator.cc -o s2/s2edge_tessellator.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2error.cc -o s2/s2error.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2furthest_edge_query.cc -o s2/s2furthest_edge_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2hausdorff_distance_query.cc -o s2/s2hausdorff_distance_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2latlng_rect_bounder.cc -o s2/s2latlng_rect_bounder.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2latlng_rect.cc -o s2/s2latlng_rect.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2latlng.cc -o s2/s2latlng.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2lax_loop_shape.cc -o s2/s2lax_loop_shape.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2lax_polygon_shape.cc -o s2/s2lax_polygon_shape.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2lax_polyline_shape.cc -o s2/s2lax_polyline_shape.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2loop_measures.cc -o s2/s2loop_measures.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2loop.cc -o s2/s2loop.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2max_distance_targets.cc -o s2/s2max_distance_targets.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2measures.cc -o s2/s2measures.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2memory_tracker.cc -o s2/s2memory_tracker.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2metrics.cc -o s2/s2metrics.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2min_distance_targets.cc -o s2/s2min_distance_targets.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2padded_cell.cc -o s2/s2padded_cell.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2point_compression.cc -o s2/s2point_compression.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2point_region.cc -o s2/s2point_region.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2pointutil.cc -o s2/s2pointutil.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2polygon.cc -o s2/s2polygon.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2polyline_alignment.cc -o s2/s2polyline_alignment.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2polyline_measures.cc -o s2/s2polyline_measures.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2polyline_simplifier.cc -o s2/s2polyline_simplifier.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2polyline.cc -o s2/s2polyline.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2predicates.cc -o s2/s2predicates.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2projections.cc -o s2/s2projections.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2r2rect.cc -o s2/s2r2rect.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2region_coverer.cc -o s2/s2region_coverer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2region_intersection.cc -o s2/s2region_intersection.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2region_term_indexer.cc -o s2/s2region_term_indexer.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2region_union.cc -o s2/s2region_union.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2region.cc -o s2/s2region.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shape_index_buffered_region.cc -o s2/s2shape_index_buffered_region.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shape_index_measures.cc -o s2/s2shape_index_measures.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shape_index.cc -o s2/s2shape_index.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shape_measures.cc -o s2/s2shape_measures.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shape_nesting_query.cc -o s2/s2shape_nesting_query.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_build_polygon_boundaries.cc -o s2/s2shapeutil_build_polygon_boundaries.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_coding.cc -o s2/s2shapeutil_coding.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_contains_brute_force.cc -o s2/s2shapeutil_contains_brute_force.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_conversion.cc -o s2/s2shapeutil_conversion.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_edge_iterator.cc -o s2/s2shapeutil_edge_iterator.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_get_reference_point.cc -o s2/s2shapeutil_get_reference_point.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2shapeutil_visit_crossing_edge_pairs.cc -o s2/s2shapeutil_visit_crossing_edge_pairs.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2text_format.cc -o s2/s2text_format.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2wedge_relations.cc -o s2/s2wedge_relations.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/s2winding_operation.cc -o s2/s2winding_operation.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/util/bits/bit-interleave.cc -o s2/util/bits/bit-interleave.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/util/coding/coder.cc -o s2/util/coding/coder.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/util/coding/varint.cc -o s2/util/coding/varint.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/util/math/exactfloat/exactfloat.cc -o s2/util/math/exactfloat/exactfloat.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/util/math/mathutil.cc -o s2/util/math/mathutil.o
+g++ -std=gnu++17 -I"/usr/share/R/include" -DNDEBUG -I../src -DSTRICT_R_HEADERS -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/wk/include'    -I/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/include  -pthread -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c s2/util/units/length-units.cc -o s2/util/units/length-units.o
+ar rcs s2/libs2static.a s2/encoded_s2cell_id_vector.o s2/encoded_s2point_vector.o s2/encoded_s2shape_index.o s2/encoded_string_vector.o s2/id_set_lexicon.o s2/mutable_s2shape_index.o s2/r2rect.o s2/s1angle.o s2/s1chord_angle.o s2/s1interval.o s2/s2boolean_operation.o s2/s2buffer_operation.o s2/s2builder_graph.o s2/s2builder.o s2/s2builderutil_closed_set_normalizer.o s2/s2builderutil_find_polygon_degeneracies.o s2/s2builderutil_get_snapped_winding_delta.o s2/s2builderutil_lax_polygon_layer.o s2/s2builderutil_lax_polyline_layer.o s2/s2builderutil_s2point_vector_layer.o s2/s2builderutil_s2polygon_layer.o s2/s2builderutil_s2polyline_layer.o s2/s2builderutil_s2polyline_vector_layer.o s2/s2builderutil_snap_functions.o s2/s2cap.o s2/s2cell_id.o s2/s2cell_index.o s2/s2cell_union.o s2/s2cell.o s2/s2centroids.o s2/s2closest_cell_query.o s2/s2closest_edge_query.o s2/s2closest_point_query.o s2/s2contains_vertex_query.o s2/s2convex_hull_query.o s2/s2coords.o s2/s2crossing_edge_query.o s2/s2debug.o s2/s2earth.o s2/s2edge_clipping.o s2/s2edge_crosser.o s2/s2edge_crossings.o s2/s2edge_distances.o s2/s2edge_tessellator.o s2/s2error.o s2/s2furthest_edge_query.o s2/s2hausdorff_distance_query.o s2/s2latlng_rect_bounder.o s2/s2latlng_rect.o s2/s2latlng.o s2/s2lax_loop_shape.o s2/s2lax_polygon_shape.o s2/s2lax_polyline_shape.o s2/s2loop_measures.o s2/s2loop.o s2/s2max_distance_targets.o s2/s2measures.o s2/s2memory_tracker.o s2/s2metrics.o s2/s2min_distance_targets.o s2/s2padded_cell.o s2/s2point_compression.o s2/s2point_region.o s2/s2pointutil.o s2/s2polygon.o s2/s2polyline_alignment.o s2/s2polyline_measures.o s2/s2polyline_simplifier.o s2/s2polyline.o s2/s2predicates.o s2/s2projections.o s2/s2r2rect.o s2/s2region_coverer.o s2/s2region_intersection.o s2/s2region_term_indexer.o s2/s2region_union.o s2/s2region.o s2/s2shape_index_buffered_region.o s2/s2shape_index_measures.o s2/s2shape_index.o s2/s2shape_measures.o s2/s2shape_nesting_query.o s2/s2shapeutil_build_polygon_boundaries.o s2/s2shapeutil_coding.o s2/s2shapeutil_contains_brute_force.o s2/s2shapeutil_conversion.o s2/s2shapeutil_edge_iterator.o s2/s2shapeutil_get_reference_point.o s2/s2shapeutil_visit_crossing_edge_pairs.o s2/s2text_format.o s2/s2wedge_relations.o s2/s2winding_operation.o s2/util/bits/bit-interleave.o s2/util/coding/coder.o s2/util/coding/varint.o s2/util/math/exactfloat/exactfloat.o s2/util/math/mathutil.o s2/util/units/length-units.o
+g++ -std=gnu++17 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o s2.so cpp-compat.o s2-accessors.o s2-bounds.o s2-cell.o s2-cell-union.o s2-constructors-formatters.o s2-predicates.o s2-transformers.o init.o RcppExports.o s2-geography.o s2-lnglat.o s2-matrix.o wk-impl.o s2geography/accessors-geog.o s2geography/accessors.o s2geography/build.o s2geography/coverings.o s2geography/distance.o s2geography/geography.o s2geography/linear-referencing.o s2geography/predicates.o -Ls2 -ls2static -L/tmp/RtmpXMwBsK/R.INSTALL9c7f30d592c3/s2/tools/dist/lib -labsl_flags -labsl_flags_internal -labsl_flags_marshalling -labsl_flags_reflection -labsl_flags_private_handle_accessor -labsl_flags_commandlineflag -labsl_flags_commandlineflag_internal -labsl_flags_config -labsl_flags_program_name -labsl_raw_hash_set -labsl_hashtablez_sampler -labsl_log_internal_check_op -labsl_log_internal_conditions -labsl_log_internal_message -labsl_examine_stack -labsl_log_internal_format -labsl_log_internal_proto -labsl_log_internal_nullguard -labsl_log_internal_log_sink_set -labsl_log_internal_globals -labsl_log_globals -labsl_hash -labsl_city -labsl_bad_variant_access -labsl_low_level_hash -labsl_log_sink -labsl_log_entry -labsl_status -labsl_cord -labsl_cordz_info -labsl_cord_internal -labsl_cordz_functions -labsl_exponential_biased -labsl_cordz_handle -labsl_synchronization -labsl_graphcycles_internal -labsl_kernel_timeout_internal -labsl_time -labsl_civil_time -labsl_time_zone -labsl_crc_cord_state -labsl_crc32c -labsl_crc_internal -labsl_crc_cpu_detect -labsl_bad_optional_access -labsl_stacktrace -labsl_str_format_internal -labsl_strerror -labsl_symbolize -labsl_debugging_internal -labsl_demangle_internal -labsl_malloc_internal -labsl_strings -labsl_string_view -labsl_strings_internal -labsl_base -lrt -labsl_spinlock_wait -labsl_int128 -labsl_throw_delegate -labsl_raw_logging_internal -labsl_log_severity -lssl -lcrypto -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-s2/00new/s2/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (s2)

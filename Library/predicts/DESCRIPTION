@@ -1,0 +1,32 @@
+Package: predicts
+Type: Package
+Title: Spatial Prediction Tools
+Description: Methods for spatial predictive modeling, especially for spatial distribution models. This includes algorithms for model fitting and prediction, as well as methods for model evaluation. 
+Version: 0.2-2
+Date: 2026-04-29
+Depends: R (>= 3.5.0), methods, terra
+Encoding: UTF-8
+Suggests: disdat, rJava
+Authors@R: c(
+	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
+			email = "r.hijmans@gmail.com", comment = c(ORCID = "0000-0001-5872-2872")),
+	person("Steven", "Phillips", role = "ctb"),
+	person("Márcia", "Barbosa", role = "ctb"),	
+	person("Chris", "Brunsdon", role = "ctb"),
+	person("Barry", "Rowlingson", role = "ctb"))
+Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
+License: GPL (>= 3)
+LazyLoad: yes
+URL: https://rspatial.org/sdm/
+BugReports: https://github.com/rspatial/predicts/issues/
+NeedsCompilation: no
+Packaged: 2026-04-29 10:07:38 UTC; rhijm
+Author: Robert J. Hijmans [cre, aut] (ORCID:
+    <https://orcid.org/0000-0001-5872-2872>),
+  Steven Phillips [ctb],
+  Márcia Barbosa [ctb],
+  Chris Brunsdon [ctb],
+  Barry Rowlingson [ctb]
+Repository: CRAN
+Date/Publication: 2026-04-29 11:00:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:30:50 UTC; unix

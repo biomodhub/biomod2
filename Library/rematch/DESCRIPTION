@@ -1,0 +1,19 @@
+Package: rematch
+Title: Match Regular Expressions with a Nicer 'API'
+Version: 2.0.0
+Author: Gabor Csardi
+Maintainer: Gabor Csardi <csardi.gabor@gmail.com>
+Description: A small wrapper on 'regexpr' to extract the matches and
+    captured groups from the match of a regular expression to a character
+    vector.
+License: MIT + file LICENSE
+URL: https://github.com/gaborcsardi/rematch
+BugReports: https://github.com/gaborcsardi/rematch/issues
+RoxygenNote: 5.0.1.9000
+Suggests: covr, testthat
+Encoding: UTF-8
+NeedsCompilation: no
+Packaged: 2023-08-30 12:10:51 UTC; gaborcsardi
+Repository: CRAN
+Date/Publication: 2023-08-30 16:50:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:22:11 UTC; unix

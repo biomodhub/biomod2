@@ -1,0 +1,14 @@
+combn                   Generate all combinations of the elements of x
+                        taken m at a time.
+dmnom                   density of multinomial, and support functions
+hcube                   Generate all points on a hypercuboid lattice.
+nsimplex                Computes the number of points on a (p,
+                        n)-simplex lattice
+permn                   Generates all permutations of the elements of
+                        x
+rmultinomial            Generate random samples from multinomial
+                        distributions
+x2u                     Convert an x-encoded simplex-lattice point to
+                        a u-encoded simplex-lattice point
+xsimplex                Generates all points on a (p,n) simplex
+                        lattice (i.e. a p-part composition of n).

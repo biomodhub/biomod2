@@ -1,0 +1,77 @@
+Package: phangorn
+Title: Phylogenetic Reconstruction and Analysis
+Version: 2.12.1
+Authors@R: 
+    c(person("Klaus", "Schliep", role = c("aut", "cre"),
+             email = "klaus.schliep@gmail.com",
+             comment = c(ORCID = "0000-0003-2941-0161")),
+      person("Emmanuel", "Paradis", role = "aut",
+             comment = c(ORCID = "0000-0003-3092-2199")),
+      person("Leonardo", "de Oliveira Martins", role = "aut",
+             comment = c(ORCID = "0000-0001-5247-1320")),
+      person("Alastair", "Potts", role = "aut"),
+      person("Iris", "Bardel-Kahr", role = "aut",
+             comment = c(ORCID = "0000-0002-8950-834X")),            
+      person("Tim W.", "White", role = "ctb"),
+      person("Cyrill", "Stachniss", role = "ctb"),
+      person("Michelle", "Kendall", role = "ctb",
+             email = "m.kendall@imperial.ac.uk"),
+      person("Keren", "Halabi",  role = "ctb"),
+      person("Richel", "Bilderbeek",  role = "ctb"),
+      person("Kristin", "Winchell", role = "ctb"),
+      person("Liam", "Revell", role = "ctb"),
+      person("Mike", "Gilchrist", role = "ctb"),
+      person("Jeremy", "Beaulieu", role = "ctb"),
+      person("Brian", "O'Meara", role = "ctb"),
+      person("Long", "Qu", role = "ctb"), 
+      person(given= "Joseph", "Brown", role = "ctb", 
+             comment = c(ORCID = "0000-0002-3835-8062")),
+      person(given="Santiago", "Claramunt", role = "ctb", 
+             comment = c(ORCID = "0000-0002-8926-5974")))
+Description: Allows for estimation of phylogenetic trees and networks
+    using Maximum Likelihood, Maximum Parsimony, distance methods and
+    Hadamard conjugation (Schliep 2011). Offers methods for tree comparison, 
+    model selection and visualization of phylogenetic networks as described in
+    Schliep et al. (2017).
+License: GPL (>= 2)
+URL: https://github.com/KlausVigo/phangorn,
+        https://klausvigo.github.io/phangorn/
+BugReports: https://github.com/KlausVigo/phangorn/issues
+Depends: ape (>= 5.8), R (>= 4.1.0)
+Imports: digest, fastmatch, generics, graphics, grDevices, igraph (>=
+        1.0), Matrix, methods, parallel, quadprog, Rcpp, stats, utils
+Suggests: apex, Biostrings, ggseqlogo, ggplot2, knitr, magick, rgl,
+        rmarkdown, seqinr, testthat (>= 3.0.0), tinytest, vdiffr,
+        xtable
+LinkingTo: Rcpp
+VignetteBuilder: knitr, utils
+biocViews: Software, Technology, QualityControl
+Encoding: UTF-8
+Repository: CRAN
+RoxygenNote: 7.3.2
+Language: en-US
+Config/testthat/edition: 3
+NeedsCompilation: yes
+Packaged: 2024-09-17 15:09:22 UTC; klaus
+Author: Klaus Schliep [aut, cre] (<https://orcid.org/0000-0003-2941-0161>),
+  Emmanuel Paradis [aut] (<https://orcid.org/0000-0003-3092-2199>),
+  Leonardo de Oliveira Martins [aut]
+    (<https://orcid.org/0000-0001-5247-1320>),
+  Alastair Potts [aut],
+  Iris Bardel-Kahr [aut] (<https://orcid.org/0000-0002-8950-834X>),
+  Tim W. White [ctb],
+  Cyrill Stachniss [ctb],
+  Michelle Kendall [ctb],
+  Keren Halabi [ctb],
+  Richel Bilderbeek [ctb],
+  Kristin Winchell [ctb],
+  Liam Revell [ctb],
+  Mike Gilchrist [ctb],
+  Jeremy Beaulieu [ctb],
+  Brian O'Meara [ctb],
+  Long Qu [ctb],
+  Joseph Brown [ctb] (<https://orcid.org/0000-0002-3835-8062>),
+  Santiago Claramunt [ctb] (<https://orcid.org/0000-0002-8926-5974>)
+Maintainer: Klaus Schliep <klaus.schliep@gmail.com>
+Date/Publication: 2024-09-17 17:00:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:56:35 UTC; unix

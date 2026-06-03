@@ -1,0 +1,269 @@
+2023-06-19  Roger Bivand <Roger.Bivand@gmail.com>
+
+	* DESCRIPTION: add docs
+
+2023-06-19  Roger Bivand <Roger.Bivand@gmail.com>
+
+	* .Rbuildignore, .github/workflows/check-standard.yaml, README.md,
+	_pkgdown.yml, docs/404.html, docs/authors.html,
+	docs/bootstrap-toc.css, docs/bootstrap-toc.js, docs/docsearch.css,
+	docs/docsearch.js, docs/index.html, docs/link.svg,
+	docs/pkgdown.css, docs/pkgdown.js, docs/pkgdown.yml,
+	docs/reference/Fhat.html, docs/reference/Fzero.html,
+	docs/reference/Ghat.html, docs/reference/Kenv.csr.html,
+	docs/reference/Kenv.label.html, docs/reference/Kenv.pcp.html,
+	docs/reference/Kenv.tor.html, docs/reference/Kenv.tor1.html,
+	docs/reference/addpoints.html, docs/reference/amacrines.html,
+	docs/reference/areapl.html, docs/reference/as.points.html,
+	docs/reference/bbox.html, docs/reference/bodmin.html,
+	docs/reference/burkitt.html, docs/reference/cardiff.html,
+	docs/reference/csr.html, docs/reference/delpoints.html,
+	docs/reference/dsquare.html, docs/reference/gen.html,
+	docs/reference/getpoly.html, docs/reference/gridpts.html,
+	docs/reference/index.html, docs/reference/inout.html,
+	docs/reference/inpip.html, docs/reference/is.points.html,
+	docs/reference/k12hat.html, docs/reference/kernel2d.html,
+	docs/reference/kernel3d.html, docs/reference/kernrat.html,
+	docs/reference/kerview.html, docs/reference/khat.html,
+	docs/reference/khvc.html, docs/reference/khvmat.html,
+	docs/reference/mpoint.html, docs/reference/mse2d.html,
+	docs/reference/n2dist.html, docs/reference/nndistF.html,
+	docs/reference/nndistG.html, docs/reference/npts.html,
+	docs/reference/okblack.html, docs/reference/okwhite.html,
+	docs/reference/pcp.html, docs/reference/pcp.sim.html,
+	docs/reference/pdense.html, docs/reference/pip.html,
+	docs/reference/plt.html, docs/reference/pointmap.html,
+	docs/reference/polymap.html, docs/reference/print.ribfit.html,
+	docs/reference/ranpts.html, docs/reference/rlabel.html,
+	docs/reference/rtor.shift.html, docs/reference/sbox.html,
+	docs/reference/secal.html, docs/reference/shift.html,
+	docs/reference/southlancs.html, docs/reference/splancs.html,
+	docs/reference/spoints.html, docs/reference/stdiagn.html,
+	docs/reference/stkhat.html, docs/reference/stmctest.html,
+	docs/reference/stsecal.html, docs/reference/stvmat.html,
+	docs/reference/thin.html, docs/reference/tor.shift.html,
+	docs/reference/tribble.html, docs/reference/triblik.html,
+	docs/reference/uganda.html, docs/reference/zoom.html,
+	docs/sitemap.xml: add docs
+
+2023-06-19  Roger Bivand <Roger.Bivand@gmail.com>
+
+	* DESCRIPTION, src/dokhat.f, src/k12hat.f, src/khvc.f,
+	src/khvmat.f, src/krnqne.f, src/krnqrt.f, src/sekhat.f,
+	src/stkhat.f, src/stsecal.f, src/tribble.f: change dfloat() to
+	dble()
+
+2022-04-17  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, man/Fhat.Rd, man/Fzero.Rd, man/Ghat.Rd,
+	man/Kenv.csr.Rd, man/Kenv.label.Rd, man/Kenv.tor.Rd,
+	man/Kenv.tor1.Rd, man/addpoints.Rd, man/amacrines.Rd,
+	man/areapl.Rd, man/as.points.Rd, man/bbox.Rd, man/bodmin.Rd,
+	man/burkitt.Rd, man/cardiff.Rd, man/csr.Rd, man/delpoints.Rd,
+	man/dsquare.Rd, man/gen.Rd, man/getpoly.Rd, man/gridpts.Rd,
+	man/inout.Rd, man/inpip.Rd, man/is.points.Rd, man/k12hat.Rd,
+	man/kernel2d.Rd, man/kernel3d.Rd, man/kernrat.Rd, man/kerview.Rd,
+	man/khat.Rd, man/khvc.Rd, man/khvmat.Rd, man/mpoint.Rd,
+	man/mse2d.Rd, man/n2dist.Rd, man/nndistF.Rd, man/nndistG.Rd,
+	man/npts.Rd, man/okblack.Rd, man/okwhite.Rd, man/pdense.Rd,
+	man/pip.Rd, man/plt.Rd, man/pointmap.Rd, man/polymap.Rd,
+	man/print.ribfit.Rd, man/ranpts.Rd, man/rlabel.Rd,
+	man/rtor.shift.Rd, man/sbox.Rd, man/secal.Rd, man/shift.Rd,
+	man/splancs.Rd, man/spoints.Rd, man/stdiagn.Rd, man/stkhat.Rd,
+	man/stmctest.Rd, man/stsecal.Rd, man/stvmat.Rd, man/thin.Rd,
+	man/tor.shift.Rd, man/tribble.Rd, man/triblik.Rd, man/uganda.Rd,
+	man/zoom.Rd: unescape underscores in help pages
+
+2017-04-16  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-04-16  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2017-04-16  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, src/init.c: add registration
+
+2016-08-23  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2016-08-23  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, src/areapl.f, src/bounds.h, src/cncvwt.f,
+	src/dokhat.f, src/inpip.f, src/ipippa.f, src/iplace.f,
+	src/k12hat.f, src/kernel3d.f, src/khvc.f, src/khvmat.f,
+	src/krnnrm.f, src/krnqne.f, src/krnqrt.f, src/nndist.f,
+	src/plarea.f, src/sekhat.f, src/sort.f, src/sort2.f, src/stkhat.f,
+	src/stsecal.f, src/tribble.f, src/twodimmse.f, src/weight.f: real*8
+	changed to double precision
+
+2015-09-28  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, DESCRIPTION, inst/ChangeLog: tidy
+
+2015-06-28  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, NAMESPACE: CRAN
+	_R_CHECK_CODE_USAGE_WITH_ONLY_BASE_ATTACHED_=true NAMESPACE tidy
+
+2015-04-13  Roger Bivand <roger.bivand@nhh.no>
+
+	* svn2cl.xsl: move to distributed svn2cl
+
+2015-03-18  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2015-03-18  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, src/ptinpoly.c: tidy
+
+2015-02-03  Roger Bivand <roger.bivand@nhh.no>
+
+	* NAMESPACE: tidy
+
+2014-10-03  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, R/inout.S: inout
+
+2014-09-30  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2014-09-30  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, R/inout.S, src/inpip.f: logical to integer inpip.f
+
+2013-08-30  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-08-30  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION: tidy
+
+2013-08-29  Roger Bivand <roger.bivand@nhh.no>
+
+	* .Rbuildignore: tidy
+
+2013-06-22  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-06-22  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, inst/{LICENCE => README}, man/burkitt.Rd: help line
+	lengths
+
+2013-03-30  Roger Bivand <roger.bivand@nhh.no>
+
+	* LICENCE: remove clang warning
+
+2013-03-30  Roger Bivand <roger.bivand@nhh.no>
+
+	* src/ptinpoly.c: remove clang warning
+
+2013-01-16  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: tidy
+
+2013-01-16  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, R/First.lib.S: change to .onAttach for startup
+	message
+
+2012-01-20  Roger Bivand <roger.bivand@nhh.no>
+
+	* inst/ChangeLog: tidy
+
+2012-01-20  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog: tidy
+
+2012-01-20  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, R/kernel2d.S, man/kernel2d.Rd: add quiet to kernel2d
+
+2011-11-05  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: harden as.points
+
+2011-11-05  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, DESCRIPTION, R/as.points.S: harden as.points
+
+2011-08-20  Roger Bivand <roger.bivand@nhh.no>
+
+	* src/ptinpoly.c: fix unused i in ptinpoly.c
+
+2011-08-19  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: coercion to two-column matrix points in
+	inout()
+
+2011-08-19  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, R/as.points.S, R/inout.S, R/inpip.S: coercion to
+	two-column matrix points in inout()
+
+2011-08-17  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, inst/ChangeLog: adding NAMESPACE, .onLoad()
+
+2011-08-17  Roger Bivand <roger.bivand@nhh.no>
+
+	* DESCRIPTION, INDEX, NAMESPACE, R/First.lib.S, R/spkernel2d.R,
+	data/00Index, man/kernel2d.Rd: adding NAMESPACE, .onLoad()
+
+2011-02-22  Roger Bivand <roger.bivand@nhh.no>
+
+	* oChangeLog, svn2cl.xsl: tidy
+
+2011-02-22  Roger Bivand <roger.bivand@nhh.no>
+
+	* ChangeLog, DESCRIPTION, INDEX, LICENCE, R/Fhat.S, R/First.lib.S,
+	R/Fzero.S, R/Ghat.S, R/Kenv.csr.S, R/Kenv.label.S, R/Kenv.pcp.R,
+	R/Kenv.tor.S, R/addpoints.S, R/area.S, R/as.points.S, R/bbox.S,
+	R/csr.S, R/delpoints.S, R/dsquare.S, R/getpoly.S, R/gridpts.S,
+	R/inout.S, R/inpip.S, R/is.points.S, R/k12hat.S, R/kernel2d.S,
+	R/kernel3d.S, R/kernrat.S, R/kerview.S, R/khat.S, R/khvc.S,
+	R/khvmat.S, R/mpoint.S, R/mse2d.S, R/n2dist.S, R/nndistF.S,
+	R/nndistG.S, R/npts.S, R/pcp.R, R/pcp.sim.R, R/pdense.S, R/pip.S,
+	R/plt.S, R/pointmap.S, R/polymap.S, R/print.ribfit.S, R/rlabel.S,
+	R/rtor.shift.S, R/sbox.S, R/secal.S, R/shift.S, R/spkernel2d.R,
+	R/splancs.S, R/spoints.S, R/stdiagn.S, R/stkhat.S, R/stmctest.S,
+	R/stsecal.S, R/stvmat.S, R/thin.S, R/tor.shift.S, R/tribble.S,
+	R/triblik.S, R/zoom.S, data/00Index, inst/ChangeLog, inst/LICENCE,
+	man/Fhat.Rd, man/Fzero.Rd, man/Ghat.Rd, man/Kenv.csr.Rd,
+	man/Kenv.label.Rd, man/Kenv.pcp.Rd, man/Kenv.tor.Rd,
+	man/Kenv.tor1.Rd, man/addpoints.Rd, man/amacrines.Rd,
+	man/areapl.Rd, man/as.points.Rd, man/bbox.Rd, man/bodmin.Rd,
+	man/burkitt.Rd, man/cardiff.Rd, man/csr.Rd, man/delpoints.Rd,
+	man/dsquare.Rd, man/gen.Rd, man/getpoly.Rd, man/gridpts.Rd,
+	man/inout.Rd, man/inpip.Rd, man/is.points.Rd, man/k12hat.Rd,
+	man/kernel2d.Rd, man/kernel3d.Rd, man/kernrat.Rd, man/kerview.Rd,
+	man/khat.Rd, man/khvc.Rd, man/khvmat.Rd, man/mpoint.Rd,
+	man/mse2d.Rd, man/n2dist.Rd, man/nndistF.Rd, man/nndistG.Rd,
+	man/npts.Rd, man/okblack.Rd, man/okwhite.Rd, man/pcp.Rd,
+	man/pcp.sim.Rd, man/pdense.Rd, man/pip.Rd, man/plt.Rd,
+	man/pointmap.Rd, man/polymap.Rd, man/print.ribfit.Rd,
+	man/ranpts.Rd, man/rlabel.Rd, man/rtor.shift.Rd, man/sbox.Rd,
+	man/secal.Rd, man/shift.Rd, man/southlancs.Rd, man/splancs.Rd,
+	man/spoints.Rd, man/stdiagn.Rd, man/stkhat.Rd, man/stmctest.Rd,
+	man/stsecal.Rd, man/stvmat.Rd, man/thin.Rd, man/tor.shift.Rd,
+	man/tribble.Rd, man/triblik.Rd, man/uganda.Rd, man/zoom.Rd,
+	src/areapl.f, src/bounds.h, src/cncvwt.f, src/dokhat.f,
+	src/inpip.f, src/ipippa.f, src/iplace.f, src/k12hat.f,
+	src/kernel3d.f, src/khvc.f, src/khvmat.f, src/krnnrm.f,
+	src/krnqne.f, src/krnqrt.f, src/nndist.f, src/plarea.f,
+	src/ptinpoly.c, src/sekhat.f, src/sort.f, src/sort2.f,
+	src/stkhat.f, src/stsecal.f, src/tribble.f, src/twodimmse.f,
+	src/weight.f: tidy
+
+2011-02-21  Roger Bivand <roger.bivand@nhh.no>
+
+	* add package directories
+

@@ -1,0 +1,28 @@
+[general]
+creator=R package 'raster'
+created= 2010-06-01 15:24:24
+[georeference]
+nrows= 192
+ncols= 186
+xmin= -125
+ymin= -56
+xmax= -32
+ymax= 40
+projection= +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0
+[data]
+datatype= INT2S
+byteorder= little
+nbands= 1
+bandorder= BIL
+categorical= FALSE
+levels=
+minvalue= -212
+maxvalue= 242
+nodatavalue= -32768
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername= bio6
+history=

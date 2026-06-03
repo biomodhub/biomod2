@@ -1,0 +1,34 @@
+Package: spatstat.utils
+Version: 3.2-3
+Date: 2026-05-10
+Title: Utility Functions for 'spatstat'
+Authors@R: c(person("Adrian", "Baddeley", 
+                    role = c("aut", "cre"),
+       	            email = "Adrian.Baddeley@curtin.edu.au",
+		    comment = c(ORCID="0000-0001-9499-8382")),
+	     person("Rolf", "Turner", 
+                    role = "aut",
+ 	            email="rolfturner@posteo.net",
+		    comment=c(ORCID="0000-0001-5521-5218")),
+	    person("Ege",   "Rubak", 
+                    role = "aut",
+		    email = "rubak@math.aau.dk",
+		    comment=c(ORCID="0000-0002-6675-533X")))
+Maintainer: Adrian Baddeley <Adrian.Baddeley@curtin.edu.au>
+Depends: R (>= 3.5.0), stats, graphics, grDevices, utils, methods
+Suggests: spatstat.model
+Description: Contains utility functions for the 'spatstat' family of packages
+             which may also be useful for other purposes.
+License: GPL (>= 2)
+URL: http://spatstat.org/
+NeedsCompilation: yes
+ByteCompile: true
+BugReports: https://github.com/spatstat/spatstat.utils/issues
+Packaged: 2026-05-10 04:47:40 UTC; adrian
+Author: Adrian Baddeley [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-9499-8382>),
+  Rolf Turner [aut] (ORCID: <https://orcid.org/0000-0001-5521-5218>),
+  Ege Rubak [aut] (ORCID: <https://orcid.org/0000-0002-6675-533X>)
+Repository: CRAN
+Date/Publication: 2026-05-10 05:50:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:41:51 UTC; unix

@@ -1,0 +1,22 @@
+#NEXUS
+
+BEGIN DATA;
+  DIMENSIONS NTAX = 5 NCHAR = 7;
+  CHARSTATELABELS
+    1 'Character one' / absent present,
+    2 Character_two /  absent present,
+    3 'lots-of-punctuation, and "so on"!' / here there 'everywhere',
+    4 Character_n / a_long_description present,
+    5 Character_5 / simple more_complex 'with (parentheses)' 'more complex, 6 still',
+    6 Character_6 /
+      'this one has'
+      'multiple lines',
+    7 final_character / absent present;
+	MATRIX
+	'taxon_a'  0000000
+	'taxon_b'  0000000
+	'taxon_c'  1111?00
+	'taxon_d'  111??11
+	'taxon_e'  1111?11
+	;
+ENDBLOCK;

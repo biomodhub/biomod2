@@ -1,0 +1,27 @@
+Package: carData
+Version: 3.0-6
+Date: 2026-01-30
+Title: Companion to Applied Regression Data Sets
+Authors@R: c(person("John", "Fox", role = "aut", email = "jfox@mcmaster.ca"),
+	person("Sanford", "Weisberg", role = "aut", email = "sandy@umn.edu"),
+    person("Brad", "Price", role = c("aut", "cre"), email = "brad.price@mail.wvu.edu"))
+Depends: R (>= 3.5.0)
+Suggests: car (>= 3.0-0)
+LazyLoad: yes
+LazyData: yes
+Description: 
+  Datasets to Accompany J. Fox and S. Weisberg, 
+  An R Companion to Applied Regression, Third Edition, Sage (2019).
+License: GPL (>= 2)
+URL: https://r-forge.r-project.org/projects/car/,
+        https://CRAN.R-project.org/package=carData,
+        https://z.umn.edu/carbook
+NeedsCompilation: no
+Packaged: 2026-01-30 13:46:36 UTC; user
+Author: John Fox [aut],
+  Sanford Weisberg [aut],
+  Brad Price [aut, cre]
+Maintainer: Brad Price <brad.price@mail.wvu.edu>
+Repository: CRAN
+Date/Publication: 2026-01-30 15:10:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:30:46 UTC; unix

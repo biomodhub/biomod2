@@ -1,0 +1,54 @@
+.parseISO8601           Internal ISO 8601:2004(e) Time Parser
+CLASS                   Extract and Set .CLASS Attribute
+[.xts                   Extract Subsets of xts Objects
+addEventLines           Add vertical lines to an existing xts plot
+addLegend               Add Legend
+addPanel                Add a panel to an existing xts plot
+addPolygon              Add a polygon to an existing xts plot
+addSeries               Add a time series to an existing xts plot
+adj.time                Align seconds, minutes, and hours to beginning
+                        of next period.
+apply.daily             Apply Function over Calendar Periods
+as.environment.xts      Coerce an xts Object to an Environment by
+                        Column
+as.xts.Date             Convert Objects To and From xts
+axTicksByTime           Compute x-Axis Tickmark Locations by Time
+c.xts                   Concatenate Two or More xts Objects by Row
+coredata.xts            Extract/Replace Core Data of an xts Object
+dimnames.xts            Dimnames of an xts Object
+endpoints               Locate Endpoints by Time
+first                   Return First or Last n Elements of A Data
+                        Object
+firstof                 Create a POSIXct Object
+index.xts               Get and Replace the Class of an xts Index
+indexTZ                 Get or Replace the Timezone of an xts Object's
+                        Index
+is.index.unique         Force Time Values To Be Unique
+is.timeBased            Check if Class is Time-Based
+isOrdered               Check If A Vector Is Ordered
+lag.xts                 Lags and Differences of xts Objects
+merge.xts               Merge xts Objects
+na.locf.xts             Last Observation Carried Forward
+nseconds                Number of Periods in Data
+period.apply            Apply Function Over Specified Interval
+period.sum              Optimized Calculations By Period
+periodicity             Approximate Series Periodicity
+plot.xts                Plotting xts Objects
+print.xts               Print An xts Time-Series Object
+sample_matrix           Sample Data Matrix For xts Example and Unit
+                        Testing
+split.xts               Divide into Groups by Time
+tclass                  Get or Replace the Class of an xts Object's
+                        Index
+tformat                 Get or Replace the Format of an xts Object's
+                        Index
+timeBasedRange          Create a Sequence or Range of Times
+to.period               Convert time series data to an OHLC series
+try.xts                 Convert Objects to xts and Back to Original
+                        Class
+window.xts              Extract Time Windows from xts Objects
+xts                     Create or Test For An xts Time-Series Object
+xts-internals           Internal Documentation
+xts-package             xts: extensible time-series
+xtsAPI                  xts C API Documentation
+xtsAttributes           Extract and Replace xts Attributes

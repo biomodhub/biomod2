@@ -1,0 +1,155 @@
+
+## RcppArmadillo: R and Armadillo via Rcpp
+
+[![CI](https://github.com/RcppCore/RcppArmadillo/workflows/ci/badge.svg)](https://github.com/RcppCore/RcppArmadillo/actions?query=workflow%3Aci)
+[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.r-project.org/Licenses/GPL-2)
+[![CRAN](https://www.r-pkg.org/badges/version/RcppArmadillo)](https://cran.r-project.org/package=RcppArmadillo)
+[![Debian package](https://img.shields.io/debian/v/r-cran-rcpparmadillo/sid?color=brightgreen)](https://packages.debian.org/sid/r-cran-rcpparmadillo)
+[![r-universe](https://rcppcore.r-universe.dev/badges/RcppArmadillo)](https://rcppcore.r-universe.dev/RcppArmadillo)
+[![Dependencies](https://tinyverse.netlify.app/badge/RcppArmadillo)](https://cran.r-project.org/package=RcppArmadillo)
+[![Coverage Status](https://codecov.io/gh/RcppCore/RcppArmadillo/graph/badge.svg)](https://app.codecov.io/github/RcppCore/RcppArmadillo?branch=master)
+[![Last Commit](https://img.shields.io/github/last-commit/RcppCore/RcppArmadillo)](https://github.com/RcppCore/RcppArmadillo)
+[![Downloads (monthly)](https://cranlogs.r-pkg.org/badges/RcppArmadillo?color=brightgreen)](https://www.r-pkg.org/pkg/RcppArmadillo)
+[![Downloads (total)](https://cranlogs.r-pkg.org/badges/grand-total/RcppArmadillo?color=brightgreen)](https://www.r-pkg.org/pkg/RcppArmadillo)
+[![CRAN use](https://jangorecki.gitlab.io/rdeps/RcppArmadillo/CRAN_usage.svg?sanitize=true)](https://cran.r-project.org/package=RcppArmadillo)
+[![CRAN indirect](https://jangorecki.gitlab.io/rdeps/RcppArmadillo/indirect_usage.svg?sanitize=true)](https://cran.r-project.org/package=RcppArmadillo)
+[![BioConductor use](https://jangorecki.gitlab.io/rdeps/RcppArmadillo/BioC_usage.svg?sanitize=true)](https://cran.r-project.org/package=RcppArmadillo)
+[![CSDA](https://img.shields.io/badge/CSDA-10.1016%2Fj.csda.2013.02.005-brightgreen)](https://doi.org/10.1016/j.csda.2013.02.005)
+
+### Synopsis
+
+RcppArmadillo provides an interface from R to and from [Armadillo][armadillo] by utilising the [Rcpp
+R/C++ interface library][rcpp].
+
+### What is Armadillo?
+
+[Armadillo][armadillo] is a high-quality linear algebra library for the C++ language, aiming towards
+a good balance between speed and ease of use. It provides high-level syntax and
+[functionality](https://arma.sourceforge.net/docs.html) deliberately similar to Matlab (TM).  See
+[its website][armadillo] more information about Armadillo.
+
+### So give me an example!
+
+Glad you asked. Here is a light-weight and fast implementation of linear regression:
+
+```c++
+#include <RcppArmadillo/Lighter>
+// [[Rcpp::depends(RcppArmadillo)]]
+
+// [[Rcpp::export]]
+Rcpp::List fastLm(const arma::mat& X, const arma::colvec& y) {
+    int n = X.n_rows, k = X.n_cols;
+
+    arma::colvec coef = arma::solve(X, y);     // fit model y ~ X
+    arma::colvec res  = y - X*coef;            // residuals
+    double s2 = arma::dot(res, res) / (n - k); // std.errors of coefficients
+    arma::colvec std_err = arma::sqrt(s2 * arma::diagvec(arma::pinv(arma::trans(X)*X)));
+
+    return Rcpp::List::create(Rcpp::Named("coefficients") = coef,
+                              Rcpp::Named("stderr")       = std_err,
+                              Rcpp::Named("df.residual")  = n - k);
+}
+```
+
+You can
+[`Rcpp::sourceCpp()`](https://cran.r-project.org/package=Rcpp/vignettes/Rcpp-attributes.pdf)
+the file above to compile the function.  A version is also included in the
+package [as the `fastLm()`](https://github.com/RcppCore/RcppArmadillo/blob/master/R/fastLm.R)
+function.
+
+The `RcppArmadillo/Lighter` header includes [Rcpp][rcpp] via its `Rcpp/Lighter` header which
+precludes some more compile-time heavy features such as 'Rcpp Modules' which we may not need. See
+the [Rcpp][rcpp] docs more details about 'Light', 'Lighter' and 'Lightest'.  In the example above,
+the switch saves about 15% of total compilation time.
+
+You can also experiment directly at the R prompt. The next example creates a one-liner to access the
+Armadillo `hess()` method to compute a [Hessenberg
+matrix](https://en.wikipedia.org/wiki/Hessenberg_matrix), a decomposition into an 'almost
+triangular' matrix. (We chose this example as base R does not have this functionality; it is a more
+interesting example than providing yet another QR, SVD, or Eigen decomposition though these are of
+course equally easily accessible from Armadillo.)
+
+```r
+> library(Rcpp)   # for cppFunction()
+> cppFunction("arma::mat hd(const arma::mat& m) { return hess(m); }",
+              depends="RcppArmadillo")
+> set.seed(20251122)
+> m <- matrix(rnorm(49), 7, 7)
+> hd(m)  # compute Hessenberg decom using the function we just created
+        [,1]     [,2]      [,3]      [,4]       [,5]      [,6]      [,7]
+[1,] 1.15745  1.64589 -0.809926  0.220417 -1.6050835 -0.947760 -0.972432
+[2,] 2.80695 -2.65613  0.119320  0.484858 -0.0877464  0.913440 -0.488142
+[3,] 0.00000  1.95335 -1.436409  1.879113 -0.1532293 -0.532077 -0.319914
+[4,] 0.00000  0.00000 -1.253221 -1.694414  0.2497111  1.233231  1.055706
+[5,] 0.00000  0.00000  0.000000 -3.333499 -1.4800146 -0.913523 -0.667435
+[6,] 0.00000  0.00000  0.000000  0.000000 -1.2050704 -0.294369  1.254402
+[7,] 0.00000  0.00000  0.000000  0.000000  0.0000000  0.324987 -1.504329
+>
+```
+
+Note how we can once again access an Armadillo matrix via the `mat` class in the `arma`
+namespace. Here `mat` is a convenience shortcut for a matrix of type `double`, there is also `imat`
+for an integer matrix and more, see the Armadillo documentation. We tell `Rcpp::cppFunction()` about
+Armadillo via the `depends=` argument, it allows it use information the `RcppArmadillo` package
+provides about its header files etc.
+
+The convenience of an automatic mapping from R directly into the Armadillo classes is a key
+advantage. The package also permits the standard 'const reference' calling semantic ensuring
+efficient transfer and signalling that the variable will not be altered.
+
+
+### Status
+
+The package is mature yet under active development with releases to [CRAN][cran] about once every
+other month, and widely-used by other CRAN packages as can be seen from the [CRAN package page][cran
+pkg].  As of August 2025, there are 1266 CRAN packages using RcppArmadillo.
+
+As of Armadillo 15.0.0, the minimum compilation standard is C++14. R [defaults to
+C++17](https://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Portable-C-and-C_002b_002b-code-1)
+since version 4.3.0. As described in [GitHub issue
+#475](https://github.com/RcppCore/RcppArmadillo/issues/475), for a period we also accommodated
+a transition period where we included 'legacy' Armadillo 14.6.3 along with but have reverted to
+shipping just the current upstream version.
+
+### Performance
+
+Performance is excellent, and on par or exceeding the performance of another package (or two,
+following a renaming) claiming otherwise. See [this post][benchmark] and its [repo][ldlasb2] for a
+detailed debunking of that claim.
+
+### Documentation
+
+The package contains a pdf vignette which is a pre-print of the [paper by Eddelbuettel and
+Sanderson][rcpparmapaper] in CSDA (2014), as well as an introductory vignette for the sparse matrix
+conversions.
+
+### Installation
+
+RcppArmadillo is a [CRAN package][cran pkg], and lives otherwise in its own habitat on
+[GitHub](https://github.com/RcppCore/RcppArmadillo) within the
+[RcppCore](https://github.com/RcppCore) GitHub organization.
+
+Run
+
+```r
+install.packages("RcppArmadillo")
+```
+
+to install from your nearest CRAN mirror.
+
+### Authors
+
+Dirk Eddelbuettel, Romain Francois, Doug Bates, Binxiang Ni, and Conrad Sanderson
+
+### License
+
+GPL (>= 2)
+
+
+[armadillo]: https://arma.sourceforge.net
+[rcpp]: https://www.rcpp.org
+[cran]: https://cran.r-project.org
+[cran pkg]: https://cran.r-project.org/package=RcppArmadillo
+[benchmark]: https://eddelbuettel.github.io/ldlasb2/benchmarks.html
+[ldlasb2]: https://github.com/eddelbuettel/ldlasb2
+[rcpparmapaper]: http://dx.doi.org/10.1016/j.csda.2013.02.005

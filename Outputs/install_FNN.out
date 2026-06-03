@@ -1,0 +1,42 @@
+* installing *source* package ‘FNN’ ...
+** this is package ‘FNN’ version ‘1.1.4.1’
+** package ‘FNN’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c ANN.cpp -o ANN.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c KNN_ANN.cpp -o KNN_ANN.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c KNN_correlation_distance.cpp -o KNN_correlation_distance.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c KNN_cover_test.cpp -o KNN_cover_test.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c KNN_cover_tree.cpp -o KNN_cover_tree.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c KNN_mutual_information.cpp -o KNN_mutual_information.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c bd_fix_rad_search.cpp -o bd_fix_rad_search.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c bd_pr_search.cpp -o bd_pr_search.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c bd_search.cpp -o bd_search.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c bd_tree.cpp -o bd_tree.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c brute.cpp -o brute.o
+cc -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c init_FNN.c -o init_FNN.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_dump.cpp -o kd_dump.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_fix_rad_search.cpp -o kd_fix_rad_search.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_pr_search.cpp -o kd_pr_search.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_search.cpp -o kd_search.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_split.cpp -o kd_split.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_tree.cpp -o kd_tree.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c kd_util.cpp -o kd_util.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c label_point.cpp -o label_point.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG -Iinclude -DUSING_R -DUSING_RPRINT      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c perf.cpp -o perf.o
+g++ -std=gnu++20 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o FNN.so ANN.o KNN_ANN.o KNN_correlation_distance.o KNN_cover_test.o KNN_cover_tree.o KNN_mutual_information.o bd_fix_rad_search.o bd_pr_search.o bd_search.o bd_tree.o brute.o init_FNN.o kd_dump.o kd_fix_rad_search.o kd_pr_search.o kd_search.o kd_split.o kd_tree.o kd_util.o label_point.o perf.o -L/usr/lib/R/lib -lR
+rm -f *.o core
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-FNN/00new/FNN/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (FNN)

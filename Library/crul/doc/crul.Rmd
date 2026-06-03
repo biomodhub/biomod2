@@ -1,0 +1,316 @@
+---
+title: 1. crul introduction
+author: Scott Chamberlain
+date: "2024-09-13"
+output: rmarkdown::html_vignette
+vignette: >
+    %\VignetteIndexEntry{1. crul introduction}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+
+
+`crul` is an HTTP client for R.
+
+## Install
+
+Stable CRAN version
+
+
+``` r
+install.packages("crul")
+```
+
+Dev version
+
+
+``` r
+install.packages("pak")
+pak::pkg_install("ropensci/crul")
+```
+
+
+``` r
+library("crul")
+```
+
+## HttpClient - the main interface
+
+`HttpClient` is where to start
+
+
+``` r
+(x <- HttpClient$new(
+  url = "https://hb.opencpu.org",
+  opts = list(
+    timeout = 1
+  ),
+  headers = list(
+    a = "hello world"
+  )
+))
+#> <crul connection> 
+#>   url: https://hb.opencpu.org
+#>   curl options: 
+#>     timeout: 1
+#>   proxies: 
+#>   auth: 
+#>   headers: 
+#>     a: hello world
+#>   progress: FALSE
+#>   hooks:
+```
+
+Makes a R6 class, that has all the bits and bobs you'd expect for doing HTTP
+requests. When it prints, it gives any defaults you've set. As you update
+the object you can see what's been set
+
+
+``` r
+x$opts
+#> $timeout
+#> [1] 1
+```
+
+
+``` r
+x$headers
+#> $a
+#> [1] "hello world"
+```
+
+## Do some HTTP requests
+
+The client object created above has http methods that you can call,
+and pass paths to, as well as query parameters, body values, and any other
+curl options.
+
+Here, we'll do a __GET__ request on the route `/get` on our base url
+`https://hb.opencpu.org` (the full url is then `https://hb.opencpu.org/get`)
+
+
+``` r
+res <- x$get("get")
+```
+
+The response from a http request is another R6 class `HttpResponse`, which
+has slots for the outputs of the request, and some functions to deal with
+the response:
+
+Status code
+
+
+``` r
+res$status_code
+#> [1] 200
+```
+
+The content
+
+
+``` r
+res$content
+#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
+#>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 41 22 3a 20 22 68 65 6c 6c 6f 20 77 6f
+#>  [51] 72 6c 64 22 2c 20 0a 20 20 20 20 22 41 63 63 65 70 74 22 3a 20 22 61 70 70
+#>  [76] 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 2c 20 74 65 78 74 2f 78 6d 6c 2c 20
+#> [101] 61 70 70 6c 69 63 61 74 69 6f 6e 2f 78 6d 6c 2c 20 2a 2f 2a 22 2c 20 0a 20
+#> [126] 20 20 20 22 41 63 63 65 70 74 2d 45 6e 63 6f 64 69 6e 67 22 3a 20 22 67 7a
+#> [151] 69 70 2c 20 64 65 66 6c 61 74 65 22 2c 20 0a 20 20 20 20 22 43 6f 6e 6e 65
+#> [176] 63 74 69 6f 6e 22 3a 20 22 63 6c 6f 73 65 22 2c 20 0a 20 20 20 20 22 48 6f
+#> [201] 73 74 22 3a 20 22 68 74 74 70 62 69 6e 3a 38 30 38 30 22 2c 20 0a 20 20 20
+#> [226] 20 22 55 73 65 72 2d 41 67 65 6e 74 22 3a 20 22 6c 69 62 63 75 72 6c 2f 38
+#> [251] 2e 37 2e 31 20 72 2d 63 75 72 6c 2f 35 2e 32 2e 31 20 63 72 75 6c 2f 31 2e
+#> [276] 35 2e 30 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31
+#> [301] 37 32 2e 31 38 2e 30 2e 34 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74
+#> [326] 74 70 3a 2f 2f 68 74 74 70 62 69 6e 3a 38 30 38 30 2f 67 65 74 22 0a 7d 0a
+```
+
+HTTP method
+
+
+``` r
+res$method
+#> [1] "get"
+```
+
+Request headers
+
+
+``` r
+res$request_headers
+#> $`User-Agent`
+#> [1] "libcurl/8.7.1 r-curl/5.2.1 crul/1.5.0"
+#> 
+#> $`Accept-Encoding`
+#> [1] "gzip, deflate"
+#> 
+#> $Accept
+#> [1] "application/json, text/xml, application/xml, */*"
+#> 
+#> $a
+#> [1] "hello world"
+```
+
+Response headers
+
+
+``` r
+res$response_headers
+#> $status
+#> [1] "HTTP/1.1 200 OK"
+#> 
+#> $server
+#> [1] "nginx/1.22.1"
+#> 
+#> $date
+#> [1] "Fri, 13 Sep 2024 18:17:24 GMT"
+#> 
+#> $`content-type`
+#> [1] "application/json"
+#> 
+#> $`content-length`
+#> [1] "350"
+#> 
+#> $connection
+#> [1] "keep-alive"
+#> 
+#> $`access-control-allow-origin`
+#> [1] "*"
+#> 
+#> $`access-control-allow-credentials`
+#> [1] "true"
+#> 
+#> $`x-powered-by`
+#> [1] "Flask"
+#> 
+#> $`x-processed-time`
+#> [1] "0"
+```
+
+All response headers, including intermediate headers, if any
+
+
+``` r
+res$response_headers_all
+#> [[1]]
+#> [[1]]$status
+#> [1] "HTTP/1.1 200 OK"
+#> 
+#> [[1]]$server
+#> [1] "nginx/1.22.1"
+#> 
+#> [[1]]$date
+#> [1] "Fri, 13 Sep 2024 18:17:24 GMT"
+#> 
+#> [[1]]$`content-type`
+#> [1] "application/json"
+#> 
+#> [[1]]$`content-length`
+#> [1] "350"
+#> 
+#> [[1]]$connection
+#> [1] "keep-alive"
+#> 
+#> [[1]]$`access-control-allow-origin`
+#> [1] "*"
+#> 
+#> [[1]]$`access-control-allow-credentials`
+#> [1] "true"
+#> 
+#> [[1]]$`x-powered-by`
+#> [1] "Flask"
+#> 
+#> [[1]]$`x-processed-time`
+#> [1] "0"
+```
+
+And you can parse the content with a provided function:
+
+
+``` r
+res$parse()
+#> [1] "{\n  \"args\": {}, \n  \"headers\": {\n    \"A\": \"hello world\", \n    \"Accept\": \"application/json, text/xml, application/xml, */*\", \n    \"Accept-Encoding\": \"gzip, deflate\", \n    \"Connection\": \"close\", \n    \"Host\": \"httpbin:8080\", \n    \"User-Agent\": \"libcurl/8.7.1 r-curl/5.2.1 crul/1.5.0\"\n  }, \n  \"origin\": \"172.18.0.4\", \n  \"url\": \"http://httpbin:8080/get\"\n}\n"
+jsonlite::fromJSON(res$parse())
+#> $args
+#> named list()
+#> 
+#> $headers
+#> $headers$A
+#> [1] "hello world"
+#> 
+#> $headers$Accept
+#> [1] "application/json, text/xml, application/xml, */*"
+#> 
+#> $headers$`Accept-Encoding`
+#> [1] "gzip, deflate"
+#> 
+#> $headers$Connection
+#> [1] "close"
+#> 
+#> $headers$Host
+#> [1] "httpbin:8080"
+#> 
+#> $headers$`User-Agent`
+#> [1] "libcurl/8.7.1 r-curl/5.2.1 crul/1.5.0"
+#> 
+#> 
+#> $origin
+#> [1] "172.18.0.4"
+#> 
+#> $url
+#> [1] "http://httpbin:8080/get"
+```
+
+With the `HttpClient` object, which holds any configuration stuff
+we set, we can make other HTTP verb requests. For example, a `HEAD`
+request:
+
+
+``` r
+x$post(
+  path = "post", 
+  body = list(hello = "world")
+)
+```
+
+
+## write to disk
+
+
+``` r
+x <- HttpClient$new(url = "https://hb.opencpu.org")
+f <- tempfile()
+res <- x$get(disk = f)
+#> Error in curl::curl_fetch_disk(x$url$url, x$disk, handle = x$url$handle): Operation was aborted by an application callback
+# when using write to disk, content is a path
+res$content 
+#>   [1] 7b 0a 20 20 22 61 72 67 73 22 3a 20 7b 7d 2c 20 0a 20 20 22 68 65 61 64 65
+#>  [26] 72 73 22 3a 20 7b 0a 20 20 20 20 22 41 22 3a 20 22 68 65 6c 6c 6f 20 77 6f
+#>  [51] 72 6c 64 22 2c 20 0a 20 20 20 20 22 41 63 63 65 70 74 22 3a 20 22 61 70 70
+#>  [76] 6c 69 63 61 74 69 6f 6e 2f 6a 73 6f 6e 2c 20 74 65 78 74 2f 78 6d 6c 2c 20
+#> [101] 61 70 70 6c 69 63 61 74 69 6f 6e 2f 78 6d 6c 2c 20 2a 2f 2a 22 2c 20 0a 20
+#> [126] 20 20 20 22 41 63 63 65 70 74 2d 45 6e 63 6f 64 69 6e 67 22 3a 20 22 67 7a
+#> [151] 69 70 2c 20 64 65 66 6c 61 74 65 22 2c 20 0a 20 20 20 20 22 43 6f 6e 6e 65
+#> [176] 63 74 69 6f 6e 22 3a 20 22 63 6c 6f 73 65 22 2c 20 0a 20 20 20 20 22 48 6f
+#> [201] 73 74 22 3a 20 22 68 74 74 70 62 69 6e 3a 38 30 38 30 22 2c 20 0a 20 20 20
+#> [226] 20 22 55 73 65 72 2d 41 67 65 6e 74 22 3a 20 22 6c 69 62 63 75 72 6c 2f 38
+#> [251] 2e 37 2e 31 20 72 2d 63 75 72 6c 2f 35 2e 32 2e 31 20 63 72 75 6c 2f 31 2e
+#> [276] 35 2e 30 22 0a 20 20 7d 2c 20 0a 20 20 22 6f 72 69 67 69 6e 22 3a 20 22 31
+#> [301] 37 32 2e 31 38 2e 30 2e 34 22 2c 20 0a 20 20 22 75 72 6c 22 3a 20 22 68 74
+#> [326] 74 70 3a 2f 2f 68 74 74 70 62 69 6e 3a 38 30 38 30 2f 67 65 74 22 0a 7d 0a
+```
+
+Read lines
+
+
+``` r
+readLines(res$content, n = 10)
+#> Error in readLines(res$content, n = 10): 'con' is not a connection
+```
+
+## stream data
+
+
+

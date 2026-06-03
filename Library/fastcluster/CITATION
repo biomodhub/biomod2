@@ -1,0 +1,10 @@
+bibentry(bibtype = "Article",
+  title        = "{fastcluster}: Fast Hierarchical, Agglomerative Clustering Routines for {R} and {Python}",
+  author       = c(person("Daniel", "Müllner")),
+  journal      = "Journal of Statistical Software",
+  year         = "2013",
+  volume       = "53",
+  number       = "9",
+  pages        = "1--18",
+  doi          = "10.18637/jss.v053.i09",
+)

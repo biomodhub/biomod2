@@ -1,0 +1,6 @@
+%\VignetteIndexEntry{A Parallel Version of the L-BFGS-B Optimization Method}
+%\VignetteEngine{R.rsp::asis}
+%\VignetteKeyword{parallel}
+%\VignetteKeyword{optim}
+%\VignetteKeyword{optimParallel}
+%\VignetteKeyword{optimization}

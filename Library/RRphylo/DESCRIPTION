@@ -1,0 +1,61 @@
+Package: RRphylo
+Type: Package
+Title: Phylogenetic Ridge Regression Methods for Comparative Studies
+Date: 2026-01-09
+Version: 3.0.2
+Authors@R: c(person(given = "Pasquale",
+                    family = "Raia",
+                    role = "aut"),
+             person(given = "Silvia",
+                    family = "Castiglione",
+                    role = c("aut","cre"),
+                    email = "silvia.castiglione@unina.it"),
+             person(given = "Carmela",
+                    family = "Serio",
+                    role = "aut"),
+             person(given = "Giorgia",
+                    family = "Girardi",
+                    role = "aut"),
+             person(given = "Alessandro",
+                    family = "Mondanaro",
+                    role = "aut"),
+             person(given = "Marina",
+                    family = "Melchionna",
+                    role = "aut"),
+             person(given = "Mirko",
+                    family = "Di Febbraro",
+                    role = "aut"),
+             person(given = "Antonio",
+                    family = "Profico",
+                    role = "aut"),
+             person(given = "Francesco",
+                    family = "Carotenuto",
+                    role = "aut"))
+Maintainer: Silvia Castiglione <silvia.castiglione@unina.it>
+Description: Functions for phylogenetic analysis (Castiglione et al., 2018 <doi:10.1111/2041-210X.12954>). The functions perform the estimation of phenotypic evolutionary rates, identification of phenotypic evolutionary rate shifts, quantification of direction and size of evolutionary change in multivariate traits, the computation of ontogenetic shape vectors and test for morphological convergence.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.6.0), emmeans(>= 1.4.3)
+Imports: ape, phytools, foreach, doParallel, parallel
+Suggests: phangorn, rlist, scales, R.utils, cluster, RColorBrewer,
+        nlme, car, smatr, picante, vegan, ddpcr, geomorph, rmarkdown,
+        knitr, kableExtra, plotrix, pdftools, rgl, mvMORPH, ggplot2,
+        qpdf, inflection, Rvcg, Morpho, evolqg, manipulate, markdown,
+        Rphylopars, phylolm, webshot2, testthat (>= 3.0.0)
+VignetteBuilder: knitr
+RoxygenNote: 7.3.3
+NeedsCompilation: no
+Packaged: 2026-01-09 11:51:24 UTC; Silvia
+Author: Pasquale Raia [aut],
+  Silvia Castiglione [aut, cre],
+  Carmela Serio [aut],
+  Giorgia Girardi [aut],
+  Alessandro Mondanaro [aut],
+  Marina Melchionna [aut],
+  Mirko Di Febbraro [aut],
+  Antonio Profico [aut],
+  Francesco Carotenuto [aut]
+Repository: CRAN
+Date/Publication: 2026-01-10 07:52:16 UTC
+Built: R 4.6.0; ; 2026-05-22 09:35:44 UTC; unix

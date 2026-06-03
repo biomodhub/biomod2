@@ -1,0 +1,16 @@
+ArithmeticGMP           GMP Rational Arithmetic
+ConvertGMP              Convert Between Real, Integer, and GMP Rational
+all.intersect           subsets and maximal sets
+allfaces                All Faces of a Convex Polyhedron
+linearity               Find implicit linearities in H-representation
+                        and V-representation of convex polyhedron
+lpcdd                   linear programming with exact arithmetic
+makeH                   make H-representation of convex polyhedron
+makeV                   make V-representation of convex polyhedron
+qgram                   GMP Rational Gram-Schmidt
+redundant               Eliminate redundant rows of H-representation
+                        and V-representation
+scdd                    Go between H-representation and
+                        V-representation of convex polyhedron
+validcdd                validate an H-representation or
+                        V-representation of convex polyhedron

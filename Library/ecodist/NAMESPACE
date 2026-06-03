@@ -1,0 +1,21 @@
+## Functions
+export(bcdist, distance, fixdmat, pathdist, relrange)
+export(mantel, mgroup, mgram, pmgram, MRM)
+export(cor2m, corgen, crosstab, full, lower)
+export(pco, nmds, nmds.min, min.nmds, vf, addord, rotate2d)
+export(plot.vf, plot.mgram, plot.nmds, residuals.mgram)
+export(xdistance, xmantel, xmgram)
+## import for S3
+import(stats, graphics)
+## import for graph methods
+importFrom(igraph, add_edges, make_empty_graph, distances)
+## S3 methods
+S3method(min, nmds)
+S3method(plot, nmds)
+S3method(plot, vf)
+S3method(plot, mgram)
+S3method(residuals, mgram)
+S3method(dim, dist)
+## Compiled code
+useDynLib(ecodist, .registration = TRUE)
+

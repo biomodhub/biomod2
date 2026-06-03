@@ -1,0 +1,69 @@
+From - Sat Nov 15 11:56:30 2008
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Delivered-To: matthieu.stigler@gmail.com
+Received: by 10.100.110.6 with SMTP id i6cs31074anc;
+        Fri, 14 Nov 2008 18:53:21 -0800 (PST)
+Received: by 10.65.23.5 with SMTP id a5mr1662842qbj.30.1226717600830;
+        Fri, 14 Nov 2008 18:53:20 -0800 (PST)
+Return-Path: <jgm@jgm.econ.queensu.ca>
+Received: from jgm.econ.queensu.ca (JGM.econ.QueensU.CA [130.15.74.85])
+        by mx.google.com with ESMTP id p9si2368721qbp.15.2008.11.14.18.53.20;
+        Fri, 14 Nov 2008 18:53:20 -0800 (PST)
+Received-SPF: pass (google.com: best guess record for domain of jgm@jgm.econ.queensu.ca designates 130.15.74.85 as permitted sender) client-ip=130.15.74.85;
+Authentication-Results: mx.google.com; spf=pass (google.com: best guess record for domain of jgm@jgm.econ.queensu.ca designates 130.15.74.85 as permitted sender) smtp.mail=jgm@jgm.econ.queensu.ca
+Received: from jgm by jgm.econ.queensu.ca with local (Exim 4.63)
+	(envelope-from <jgm@jgm.econ.queensu.ca>)
+	id 1L1BHk-00018U-3o
+	for matthieu.stigler@gmail.com; Fri, 14 Nov 2008 21:53:20 -0500
+Date: Fri, 14 Nov 2008 21:53:20 -0500 (EST)
+From: James MacKinnon <jgm@econ.queensu.ca>
+To: Matthieu Stigler <matthieu.stigler@gmail.com>
+Subject: Re: Program for surface response function
+In-Reply-To: <491D8DF3.20907@gmail.com>
+Message-ID: <Pine.LNX.4.62.0811142148490.4293@jgm.econ.queensu.ca>
+References: <491D8DF3.20907@gmail.com>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="260199754-1936399293-1226717600=:4293"
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--260199754-1936399293-1226717600=:4293
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Fri, 14 Nov 2008, Matthieu Stigler wrote:
+
+> mat@cunix:~/Repertoires/urcdist$ f77  -O urcrouts.f -o urcrout
+> /usr/lib/gcc/i486-linux-gnu/3.4.6/../../../../lib/libfrtbegin.a(frtbegin.o):
+> In function `main':
+> (.text+0x35): undefined reference to `MAIN__'
+> collect2: ld a retourn=E9 1 code d'=E9tat d'ex=E9cution
+
+The problem is simply that urcrouts.f contains no main program. Either add
+a main program that calls one or more routines from urcrouts.f (you will
+need this anyway), or compile with the -c switch (instead of -o urcrout).
+This will create urcrouts.o, but it won't be any use without a main=20
+program.
+
+> Furthermore, I contributed some functions for the R program and would be
+> interested to try to integrate your functions for the package devoted to
+> unit root tests (urca). Do you agree that your code will be used in a R
+> package under the GPL license?
+
+That would be fine with me. But I would want to make sure the R code works
+properly and provides appropriate citations before you make it available.
+
+Cheers,
+
+James G. MacKinnon
+Head, Department of Economics
+Queen's University
+Kingston, Ontario, Canada
+K7L 3N6
+
+Email: jgm@econ.queensu.ca
+Phone: 613 533-2293
+Fax:   613 533-6668
+--260199754-1936399293-1226717600=:4293--

@@ -1,0 +1,5 @@
+
+See
+  ‘/home/gueguema/Documents/_PACKAGES/biomod2/biomod2.Rcheck/00check.log’
+for details.
+

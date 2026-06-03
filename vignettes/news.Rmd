@@ -18,6 +18,7 @@ vignette: >
 
 - 4.3-4-7 : 
     + fix `set_new_dirname` function
+    + add check when `CV.do.full.models = NULL` in `BIOMOD_Modeling` function
 - 4.3-4-6 : 
     + update user related messages : 
         * remove _test_ argument from `.fun_test[...]` functions and use them whenever possible

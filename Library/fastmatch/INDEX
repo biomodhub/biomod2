@@ -1,0 +1,4 @@
+coalesce                Create an index that groups unique values
+                        together
+ctapply                 Fast tapply() replacement functions
+fmatch                  Fast match() replacement

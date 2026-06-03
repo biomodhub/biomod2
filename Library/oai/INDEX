@@ -1,0 +1,16 @@
+count_identifiers       Count OAI-PMH identifiers for a data provider.
+dumpers                 Result dumpers
+get_records             Get records
+id                      Identify the OAI-PMH service for each data
+                        provider.
+list_identifiers        List OAI-PMH identifiers
+list_metadataformats    List available metadata formats from various
+                        providers.
+list_records            List records
+list_sets               List sets
+load_providers          Load an updated cache
+oai-package             OAI-PMH Client
+oai_available           Test of OAI-PMH service is available
+providers               Metadata providers data.frame.
+update_providers        Update the locally stored OAI-PMH data
+                        providers table.

@@ -1,0 +1,119 @@
+Package: spatstat.explore
+Version: 3.8-0
+Date: 2026-03-22
+Title: Exploratory Data Analysis for the 'spatstat' Family
+Authors@R: c(person("Adrian", "Baddeley", 
+                    role = c("aut", "cre", "cph"),
+       	            email = "Adrian.Baddeley@curtin.edu.au",
+		    comment = c(ORCID="0000-0001-9499-8382")),
+	     person("Rolf", "Turner", 
+                    role = c("aut", "cph"),
+ 	            email="rolfturner@posteo.net",
+		    comment=c(ORCID="0000-0001-5521-5218")),
+	     person("Ege",   "Rubak", 
+                    role = c("aut", "cph"),
+		    email = "rubak@math.aau.dk",
+		    comment=c(ORCID="0000-0002-6675-533X")),
+	     person("Kasper", "Klitgaard Berthelsen",
+	            role = "ctb"),
+	     person("Warick", "Brown",
+	            role = "cph"),
+	     person("Achmad", "Choiruddin",
+	            role = "ctb"),
+	     person("Ya-Mei", "Chang",
+	            role = "ctb"),
+	     person("Jean-Francois", "Coeurjolly",
+	            role = "ctb"),
+	     person("Lucia", "Cobo Sanchez",
+	            role = c("ctb", "cph")),
+	     person("Ottmar", "Cronie",
+	            role = "ctb"),
+	     person("Tilman", "Davies",
+	            role = c("ctb", "cph")),
+	     person("Julian", "Gilbey",
+	            role = "ctb"),
+	     person("Jonatan", "Gonzalez",
+	            role = "ctb"),
+	     person("Yongtao", "Guan",
+	            role = "ctb"),
+	     person("Ute", "Hahn",
+	            role = "ctb"),
+	     person("Martin", "Hazelton", 
+	            role = "ctb"),
+	     person("Kassel", "Hingee",
+	            role = c("ctb", "cph")),
+	     person("Abdollah", "Jalilian", 
+	            role = "ctb"),
+	     person("Frederic", "Lavancier",
+	            role = "ctb"),
+	     person("Marie-Colette", "van Lieshout",
+	            role = c("ctb", "cph")),
+	     person("Greg", "McSwiggan",
+	            role = "ctb"),
+	     person("Robin K", "Milne",
+	            role = "cph"),
+	     person("Tuomas", "Rajala",
+	            role = "ctb"),
+	     person("Suman", "Rakshit",
+	            role = c("ctb", "cph")),
+	     person("Dominic", "Schuhmacher",
+	            role = "ctb"),
+	     person("Rasmus", "Plenge Waagepetersen",
+	            role = "ctb"),
+	     person("Hangsheng", "Wang",
+	            role = "ctb"),
+             person("Tingting", "Zhan",
+	            role="ctb"))
+Maintainer: Adrian Baddeley <Adrian.Baddeley@curtin.edu.au>
+Depends: R (>= 3.5.0), spatstat.data (>= 3.1-9), spatstat.univar (>=
+        3.1-7), spatstat.geom (>= 3.7-2), spatstat.random (>= 3.4-5),
+        stats, graphics, grDevices, utils, methods, nlme
+Imports: spatstat.utils (>= 3.2-2), spatstat.sparse (>= 3.1), goftest
+        (>= 1.2-2), Matrix, abind
+Suggests: sm, gsl, locfit, spatial, fftwtools (>= 0.9-8),
+        spatstat.linnet (>= 3.4), spatstat.model (>= 3.6), spatstat (>=
+        3.5)
+Description: Functionality for exploratory data analysis and nonparametric analysis of
+	     spatial data, mainly spatial point patterns,
+	     in the 'spatstat' family of packages.
+	     (Excludes analysis of spatial data on a linear network,
+	     which is covered by the separate package 'spatstat.linnet'.)
+	     Methods include quadrat counts, K-functions and their simulation envelopes, nearest neighbour distance and empty space statistics, Fry plots, pair correlation function, kernel smoothed intensity, relative risk estimation with cross-validated bandwidth selection, mark correlation functions, segregation indices, mark dependence diagnostics, and kernel estimates of covariate effects. Formal hypothesis tests of random pattern (chi-squared, Kolmogorov-Smirnov, Monte Carlo, Diggle-Cressie-Loosmore-Ford, Dao-Genton, two-stage Monte Carlo) and tests for covariate effects (Cox-Berman-Waller-Lawson, Kolmogorov-Smirnov, ANOVA) are also supported.
+License: GPL (>= 2)
+URL: http://spatstat.org/
+NeedsCompilation: yes
+ByteCompile: true
+BugReports: https://github.com/spatstat/spatstat.explore/issues
+Packaged: 2026-03-22 10:00:55 UTC; adrian
+Author: Adrian Baddeley [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0001-9499-8382>),
+  Rolf Turner [aut, cph] (ORCID: <https://orcid.org/0000-0001-5521-5218>),
+  Ege Rubak [aut, cph] (ORCID: <https://orcid.org/0000-0002-6675-533X>),
+  Kasper Klitgaard Berthelsen [ctb],
+  Warick Brown [cph],
+  Achmad Choiruddin [ctb],
+  Ya-Mei Chang [ctb],
+  Jean-Francois Coeurjolly [ctb],
+  Lucia Cobo Sanchez [ctb, cph],
+  Ottmar Cronie [ctb],
+  Tilman Davies [ctb, cph],
+  Julian Gilbey [ctb],
+  Jonatan Gonzalez [ctb],
+  Yongtao Guan [ctb],
+  Ute Hahn [ctb],
+  Martin Hazelton [ctb],
+  Kassel Hingee [ctb, cph],
+  Abdollah Jalilian [ctb],
+  Frederic Lavancier [ctb],
+  Marie-Colette van Lieshout [ctb, cph],
+  Greg McSwiggan [ctb],
+  Robin K Milne [cph],
+  Tuomas Rajala [ctb],
+  Suman Rakshit [ctb, cph],
+  Dominic Schuhmacher [ctb],
+  Rasmus Plenge Waagepetersen [ctb],
+  Hangsheng Wang [ctb],
+  Tingting Zhan [ctb]
+Repository: CRAN
+Date/Publication: 2026-03-22 11:00:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 09:38:55 UTC; unix

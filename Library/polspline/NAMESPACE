@@ -1,0 +1,39 @@
+
+useDynLib(polspline,.registration = TRUE)
+
+export(unstrip, hare, plot.hare, print.hare, summary.hare, dhare, hhare, phare,
+qhare, rhare, xhare, heft, plot.heft, print.heft, summary.heft, dheft, hheft,
+pheft, qheft, rheft, oldlogspline.to.logspline, poldlogspline, qoldlogspline,
+roldlogspline, doldlogspline, plot.oldlogspline, print.oldlogspline,
+summary.oldlogspline, oldlogspline, lspec, clspec, dlspec, plspec, rlspec,
+plot.lspec, print.lspec, summary.lspec, polymars, predict.polymars, testhare,
+print.polymars, summary.polymars, plot.polymars, persp.polymars, design.polymars,
+logspline, plogspline, qlogspline, rlogspline, dlogspline, plot.logspline,
+print.logspline, summary.logspline, polyclass, cpolyclass, ppolyclass,
+plot.polyclass, rpolyclass, print.polyclass, summary.polyclass, beta.polyclass)
+
+S3method(persp, polymars)
+S3method(plot, hare)
+S3method(plot, heft)
+S3method(plot, logspline)
+S3method(plot, lspec)
+S3method(plot, oldlogspline)
+S3method(plot, polyclass)
+S3method(plot, polymars)
+S3method(predict, polymars)
+S3method(print, hare)
+S3method(print, heft)
+S3method(print, logspline)
+S3method(print, lspec)
+S3method(print, oldlogspline)
+S3method(print, polyclass)
+S3method(print, polymars)
+S3method(summary, hare)
+S3method(summary, heft)
+S3method(summary, logspline)
+S3method(summary, lspec)
+S3method(summary, oldlogspline)
+S3method(summary, polyclass)
+S3method(summary, polymars)
+importFrom("graphics", "abline", "contour", "image", "lines", "par", "persp", "plot", "points", "text")
+importFrom("stats", "fft", "lm", "median", "quantile", "rnorm", "runif", "var")

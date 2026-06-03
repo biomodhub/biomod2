@@ -1,0 +1,78 @@
+---
+title: "vtools: Flexible Variable Selection"
+author: "Søren Højsgaard"
+output:
+  rmarkdown::html_vignette
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Working with vtools: Flexible Variable Selection}
+  %\VignettePackage{doBy}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```r
+library(doBy)
+library(rlang)
+data(CO2)
+```
+
+## Overview
+
+The `v*` functions in the `doBy` package allow for flexible and consistent handling of variable input.
+These tools support unquoted names, character vectors, and formulas.
+
+The main functions are:
+
+- `vparse()` – extract variable names from flexible input
+- `v()` – shorthand for `vparse()`
+- `vselect()` – select columns from a data frame using flexible input
+- `vcheck()` – verify that variables exist in a data frame
+- `vmap()` – apply a function to each parsed variable name
+- `vrename()` – rename variables in a data frame
+
+---
+
+## Examples
+
+### `vparse()`
+```r
+vparse(Treatment, Type)
+vparse(c("Treatment", "Type"))
+vparse(~Treatment + Type)
+```
+
+### `v()` – shorthand for `vparse()`
+```r
+v(Treatment, Type)
+v(~Treatment + Type)
+v(c("Treatment", "Type"))
+```
+
+### `vselect()`
+```r
+vselect(CO2, Treatment, Type)
+vselect(CO2, ~Treatment + Type)
+```
+
+### `vcheck()`
+```r
+vcheck(CO2, Treatment)
+vcheck(CO2, ~Treatment + Type)
+```
+
+### `vmap()`
+```r
+vmap(~Treatment + Type, toupper)
+```
+
+### `vrename()`
+```r
+vrename(CO2, c(Treatment = "Trt", Type = "Group"))
+```
+
+## Summary
+
+The `v*` tools simplify working with variable names and selection in data frames,
+making it easier to write functions that accept flexible input formats.

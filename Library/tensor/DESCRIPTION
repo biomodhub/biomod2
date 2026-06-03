@@ -1,0 +1,18 @@
+Package: tensor
+Version: 1.5.1
+Title: Tensor Product of Arrays
+Authors@R: person(given = "Jonathan",
+                  family = "Rougier",
+                  role = c("aut", "cre"),
+                  email = "j.c.rougier@bristol.ac.uk")
+Description: The tensor product of two arrays is notionally an outer
+        product of the arrays collapsed in specific extents by summing
+        along the appropriate diagonals.
+License: GPL (>= 2)
+Packaged: 2025-06-17 10:36:58 UTC; hornik
+Repository: CRAN
+Date/Publication: 2025-06-17 10:53:36 UTC
+NeedsCompilation: no
+Author: Jonathan Rougier [aut, cre]
+Maintainer: Jonathan Rougier <j.c.rougier@bristol.ac.uk>
+Built: R 4.6.0; ; 2026-05-22 08:30:27 UTC; unix

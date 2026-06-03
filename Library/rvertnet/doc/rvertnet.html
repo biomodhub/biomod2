@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Introduction to rvertnet</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to rvertnet</h1>
+
+
+
+<p><code>rvertnet</code> is a client for interacting with <a href="http://vertnet.org/">VertNet.org</a>.</p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>Stable CRAN version</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rvertnet&quot;</span>)</span></code></pre></div>
+<p>Development version from GitHub</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/rvertnet&quot;</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="loading-the-package" class="section level2">
+<h2>Loading the package</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&#39;rvertnet&#39;</span>)</span></code></pre></div>
+</div>
+<div id="search-by-term" class="section level2">
+<h2>Search by term</h2>
+<p>Search for <em>Aves</em> in the state of <em>California</em>, limit
+to 10 records</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">searchbyterm</span>(<span class="at">class =</span> <span class="st">&quot;Aves&quot;</span>, <span class="at">state =</span> <span class="st">&quot;California&quot;</span>, <span class="at">limit =</span> <span class="dv">10</span>, <span class="at">messages =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>All major functions (<code>searchbyterm()</code>,
+<code>spatialsearch()</code>, <code>vertsearch()</code>) give back a
+<code>meta</code> (for metadata, in a list) and <code>data</code> (for
+data, in a data.frame) slot. The metadata:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>res<span class="sc">$</span>meta</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; $request_date</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2024-02-15T03:20:26.162111&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; $response_records</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; $submitted_query</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;class:Aves&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; $request_origin</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;47.252877,-122.444291&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; $limit</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; $last_cursor</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; [1] &quot;False:CskFCtIDCqQD9wAAABn_____jIGJmo2LkZqL0o-QjYuek96WkZuah9LNz87M0s_H0s_H_wAA_3RtoKCZi4ygoP8AAP9dno-PmpGYlpGa_wAA_3N0bZaRm5qH_wAA_12biJz_AAD_c3Rtm5CcoJab_wAA_12ektCQjZGWi5eQk5CYhtDPz87GmcjGztLGzcbJ0svPzprSxsfGy9Kdycqcz53NnMfGnpv_AAD_c3-ektCQjZGWi5eQk5CYhtDPz87GmcjGztLGzcbJ0svPzprSxsfGy9Kdycqcz53NnMfGnpv_AAD__wD-__6MgYmajYuRmovSj5CNi56T3paRm5qH0s3PzszSz8fSz8f_AHRtoKCZi4ygoP8AXZ6Pj5qRmJaRmv8Ac3RtlpGbmof_AF2biJz_AHN0bZuQnKCWm_8AXZ6S0JCNkZaLl5CTkJiG0M_PzsaZyMbO0sbNxsnSy8_OmtLGx8bL0p3JypzPnc2cx8aem_8Ac3-ektCQjZGWi5eQk5CYhtDPz87GmcjGztLGzcbJ0svPzprSxsfGy9Kdycqcz53NnMfGnpv_AP_-EAohBN0EkB08Gxk5AAAAAOb___9IClAAWgsJJ5Q__S_keXEQA2D6k__lBRINRG9jdW1lbnRJbmRleBrAAShBTkQgKElTICJjdXN0b21lcl9uYW1lIiAiYXBwZW5naW5lIikgKElTICJncm91cF9uYW1lIiAic352ZXJ0bmV0LXBvcnRhbCIpIChJUyAibmFtZXNwYWNlIiAiaW5kZXgtMjAxMy0wOC0wOCIpIChJUyAiaW5kZXhfbmFtZSIgImR3YyIpIChPUiAoUVQgIkF2ZXMiICJydGV4dF9jbGFzcyIpIChJUyAicmF0b21fY2xhc3MiICJhdmVzIikpKToZCgwoTiBvcmRlcl9pZCkQARkAAAAAAADw_0oFCABA6Ac&quot;</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; $query_version</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; [1] &quot;search.py 2016-08-15T16:43+02:00&quot;</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; $matching_records</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; [1] &quot;&gt;10000&quot;</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; $api_version</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; [1] &quot;api.py 2017-11-24T12:16-03:00&quot;</span></span></code></pre></div>
+<p>Inspect data. A <code>tibble</code> is returned, so you get a nice
+brief data summary:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>res<span class="sc">$</span>data</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 46</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;    kingdom  recordedby    higherclassification stateprovince basisofrecord month</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;                &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;  1 Animalia NSW STATE GO… Animalia | Chordata… New South Wa… PreservedSpe… 11   </span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;  2 Animalia TARONGA ZOO … Animalia | Chordata… New South Wa… PreservedSpe… 6    </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;  3 Animalia MCLENNAN, MR… Animalia | Chordata… Queensland    PreservedSpe… 4    </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;  4 Animalia WATTS, MIKE   Animalia | Chordata… New South Wa… PreservedSpe… 1    </span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;  5 Animalia HOLCOMBE, B.  Animalia | Chordata… New South Wa… PreservedSpe… 7    </span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;  6 Animalia RHODES, C. A. Animalia | Chordata… New South Wa… PreservedSpe… 10   </span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;  7 Animalia C. HEDLEY, A… Animalia | Chordata… Queensland    PreservedSpe… 10   </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;  8 Animalia ROBINSON, SEP Animalia | Chordata… New South Wa… PreservedSpe… 10   </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;  9 Animalia SHARP, GEORGE Animalia | Chordata… Queensland    PreservedSpe… 11   </span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 10 Animalia J.A. KEAST, … Animalia | Chordata… New South Wa… PreservedSpe… 3    </span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 40 more variables: decimallongitude &lt;chr&gt;, phylum &lt;chr&gt;, references &lt;chr&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; #   year &lt;chr&gt;, startdayofyear &lt;chr&gt;, taxonrank &lt;chr&gt;, specificepithet &lt;chr&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; #   bibliographiccitation &lt;chr&gt;, family &lt;chr&gt;, countrycode &lt;chr&gt;,</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; #   geodeticdatum &lt;chr&gt;, coordinateuncertaintyinmeters &lt;chr&gt;,</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; #   highergeography &lt;chr&gt;, accessrights &lt;chr&gt;, verbatimlocality &lt;chr&gt;,</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; #   verbatimeventdate &lt;chr&gt;, day &lt;chr&gt;, eventid &lt;chr&gt;, collectioncode &lt;chr&gt;,</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; #   occurrencestatus &lt;chr&gt;, locationremarks &lt;chr&gt;, coordinateprecision &lt;chr&gt;, …</span></span></code></pre></div>
+<p>Search for <em>Mustela nigripes</em> in the states of
+<em>Wyoming</em> or <em>South Dakota</em>, limit to 20 records</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">searchbyterm</span>(<span class="at">specificepithet =</span> <span class="st">&quot;nigripes&quot;</span>, <span class="at">genus =</span> <span class="st">&quot;Mustela&quot;</span>, <span class="at">state =</span> <span class="st">&quot;(wyoming OR south dakota)&quot;</span>, <span class="at">limit =</span> <span class="dv">20</span>, <span class="at">messages =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>res<span class="sc">$</span>data</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 20 × 76</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;    month decimallongitude startdayofyear accessrights                    kingdom</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;                           &lt;chr&gt;  </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  1 1     -88.305352       1              http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  2 03    -104.77472       74             http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  3 02    -103.731861      52             http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  4 12    -105.0137067407  349            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;  5 2     -103.067931      32             http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  6 1     -103.067931      1              http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;  7 02    -103.067931      40             http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  8 05    -104.926320116   126            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;  9 02    -104.79742       42             http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; 10 04    -106.1329632593  108            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; 11 10    -105.064706      304            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; 12 4     -106.3467709375  92             http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; 13 05    -104.225829      133            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; 14 09    -105.873904      258            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; 15 12    -105.298898      362            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; 16 06    -105.376986      152            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; 17 11    -104.3831505257  305            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; 18 11    -104.7714765     314            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; 19 09    -106.9094        267            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt; 20 08    -107.5579841     234            http://vertnet.org/resources/n… Animal…</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt; # ℹ 71 more variables: verbatimcoordinatesystem &lt;chr&gt;, day &lt;chr&gt;,</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; #   identificationverificationstatus &lt;chr&gt;, occurrenceid &lt;chr&gt;,</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; #   identificationqualifier &lt;chr&gt;, georeferenceddate &lt;chr&gt;,</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="co">#&gt; #   verbatimeventdate &lt;chr&gt;, coordinateuncertaintyinmeters &lt;chr&gt;,</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt; #   higherclassification &lt;chr&gt;, sex &lt;chr&gt;, year &lt;chr&gt;, specificepithet &lt;chr&gt;,</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt; #   basisofrecord &lt;chr&gt;, geodeticdatum &lt;chr&gt;, occurrenceremarks &lt;chr&gt;,</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">#&gt; #   highergeography &lt;chr&gt;, continent &lt;chr&gt;, scientificname &lt;chr&gt;, …</span></span></code></pre></div>
+<p>Search for class <em>Aves</em>, in the state of <em>Nevada</em>, with
+a coordinate uncertainty range (in meters) of less than 25 meters</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">searchbyterm</span>(<span class="at">class =</span> <span class="st">&quot;Aves&quot;</span>, <span class="at">stateprovince =</span> <span class="st">&quot;Nevada&quot;</span>, <span class="at">error =</span> <span class="st">&quot;&lt;25&quot;</span>, <span class="at">messages =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>res<span class="sc">$</span>data</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1,000 × 91</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;    georeferenceprotocol       higherclassification stateprovince lifestage month</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;                      &lt;chr&gt;                &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;  1 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     3    </span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;  2 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad      12   </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;  3 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        Nestling  5    </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;  4 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     9    </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;  5 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     9    </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;  6 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     9    </span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;  7 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        Downy     6    </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;  8 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     6    </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt;  9 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     6    </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; 10 MaNIS/HerpNet/ORNIS Geore… Animalia; Chordata;… Nevada        U-Ad.     6    </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 990 more rows</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; # ℹ 86 more variables: decimallongitude &lt;chr&gt;, phylum &lt;chr&gt;,</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; #   verbatimlongitude &lt;chr&gt;, year &lt;chr&gt;, specificepithet &lt;chr&gt;,</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; #   bibliographiccitation &lt;chr&gt;, verbatimlatitude &lt;chr&gt;, family &lt;chr&gt;,</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; #   locality &lt;chr&gt;, geodeticdatum &lt;chr&gt;, coordinateuncertaintyinmeters &lt;chr&gt;,</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt; #   highergeography &lt;chr&gt;, continent &lt;chr&gt;, scientificnameauthorship &lt;chr&gt;,</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#&gt; #   day &lt;chr&gt;, kingdom &lt;chr&gt;, institutioncode &lt;chr&gt;, scientificname &lt;chr&gt;, …</span></span></code></pre></div>
+<div id="dplyr-downstream" class="section level3">
+<h3>dplyr downstream</h3>
+<p>You can pass the data object directly on to <code>dplyr</code>
+functions. Here, we get a table of record counts by species in
+descending order.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">searchbyterm</span>(<span class="at">genus =</span> <span class="st">&quot;Ochotona&quot;</span>, <span class="at">limit =</span> <span class="dv">800</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>out<span class="sc">$</span>data <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">group_by</span>(scientificname) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">length</span>(scientificname)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(count))</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; # A tibble: 20 × 2</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;    scientificname                  count</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;                           &lt;int&gt;</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;  1 Ochotona princeps                 450</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt;  2 Ochotona pallasi                  129</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt;  3 Ochotona princeps saxatilis       103</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;  4 Ochotona hyperborea                30</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt;  5 Ochotona dauurica                  21</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;  6 Ochotona collaris                  15</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt;  7 Ochotona princeps figginsi         14</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;  8 Ochotona princeps taylori           8</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt;  9 Ochotona princeps schisticeps       6</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 10 Ochotona alpina                     4</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 11 Ochotona princeps muiri             4</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 12 Ochotona hyperborea mantchurica     3</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 13 Ochotona princeps incana            3</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 14 Ochotona princeps princeps          3</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; 15 Ochotona princeps murri             2</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; 16 Ochotona princeps brunnescens       1</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; 17 Ochotona princeps jewetti           1</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; 18 Ochotona princeps tutelata          1</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#&gt; 19 Ochotona princeps uinta             1</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co">#&gt; 20 Ochotona princeps ventorum          1</span></span></code></pre></div>
+</div>
+</div>
+<div id="spatial-search" class="section level2">
+<h2>Spatial search</h2>
+<p>Spatial search service allows only to search on a point defined by
+latitude and longitude pair, with a radius (meters) from that point. All
+three parameters are required.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">spatialsearch</span>(<span class="at">lat =</span> <span class="fl">33.529</span>, <span class="at">lon =</span> <span class="sc">-</span><span class="fl">105.694</span>, <span class="at">radius =</span> <span class="dv">2000</span>, <span class="at">limit =</span> <span class="dv">10</span>, <span class="at">messages =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>res<span class="sc">$</span>data</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 62</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;    month decimallongitude startdayofyear minimumelevationinmeters accessrights  </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;                    &lt;chr&gt;         </span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;  1 07    -105.68633       193            2182.368                 http://vertne…</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;  2 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt;  3 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;  4 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt;  5 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;  6 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt;  7 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;  8 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;  9 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; 10 07    -105.705479      196            2023.872                 http://vertne…</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 57 more variables: kingdom &lt;chr&gt;, day &lt;chr&gt;,</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; #   identificationverificationstatus &lt;chr&gt;, occurrenceid &lt;chr&gt;,</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; #   identificationqualifier &lt;chr&gt;, georeferenceddate &lt;chr&gt;,</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; #   verbatimeventdate &lt;chr&gt;, coordinateuncertaintyinmeters &lt;chr&gt;,</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; #   higherclassification &lt;chr&gt;, sex &lt;chr&gt;, year &lt;chr&gt;, specificepithet &lt;chr&gt;,</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; #   basisofrecord &lt;chr&gt;, geodeticdatum &lt;chr&gt;, occurrenceremarks &lt;chr&gt;,</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; #   highergeography &lt;chr&gt;, continent &lt;chr&gt;, scientificname &lt;chr&gt;, …</span></span></code></pre></div>
+</div>
+<div id="global-full-text-search" class="section level2">
+<h2>Global full text search</h2>
+<p><code>vertsearch()</code> provides a simple full text search against
+all fields. For more info see <a href="https://github.com/VertNet/webapp/wiki/The-API-search-function#global-full-text-search">the
+docs</a>. An example:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">vertsearch</span>(<span class="at">taxon =</span> <span class="st">&quot;aves&quot;</span>, <span class="at">state =</span> <span class="st">&quot;california&quot;</span>, <span class="at">limit =</span> <span class="dv">10</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>res<span class="sc">$</span>data</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 57</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt;    higherclassification       stateprovince basisofrecord month decimallongitude</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;                      &lt;chr&gt;         &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;           </span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt;  1 Animalia | Chordata |  | … California    PreservedSpe… 2     -121.7833       </span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;  2 Animalia | Chordata |  | … California    PreservedSpe… 6     -122.15         </span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;  3 Animalia | Chordata |  | … California    PreservedSpe… 5     -120.9014       </span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt;  4 Animalia; Chordata; Aves;… South Caroli… PreservedSpe… 2     -79.86151       </span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#&gt;  5 Animalia; Chordata; Aves;… California    PreservedSpe… 1     -121.93300      </span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt;  6 Animalia; Chordata; Aves;… California    PreservedSpe… 1     -121.93300      </span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt;  7 Animalia; Chordata; Aves;… California    PreservedSpe… 7     -121.85760      </span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt;  8 Animalia; Chordata; Aves;… California    PreservedSpe… 7     -121.85760      </span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt;  9 Animalia; Chordata; Aves;… California    PreservedSpe… 7     -121.85760      </span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt; 10 Animalia; Chordata; Aves;… California    PreservedSpe… 7     -121.85760      </span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 52 more variables: phylum &lt;chr&gt;, references &lt;chr&gt;, year &lt;chr&gt;,</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; #   startdayofyear &lt;chr&gt;, taxonrank &lt;chr&gt;, specificepithet &lt;chr&gt;,</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; #   bibliographiccitation &lt;chr&gt;, family &lt;chr&gt;, countrycode &lt;chr&gt;,</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; #   geodeticdatum &lt;chr&gt;, coordinateuncertaintyinmeters &lt;chr&gt;,</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; #   highergeography &lt;chr&gt;, continent &lt;chr&gt;, verbatimlocality &lt;chr&gt;, day &lt;chr&gt;,</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt; #   kingdom &lt;chr&gt;, collectioncode &lt;chr&gt;, occurrencestatus &lt;chr&gt;,</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt; #   coordinateprecision &lt;chr&gt;, institutioncode &lt;chr&gt;, scientificname &lt;chr&gt;, …</span></span></code></pre></div>
+<p>Limit the number of records returned (under 1000)</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">vertsearch</span>(<span class="st">&quot;(kansas state OR KSU)&quot;</span>, <span class="at">limit =</span> <span class="dv">200</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>res<span class="sc">$</span>data</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 200 × 78</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt;    individualcount georeferenceprotocol         recordedby bibliographiccitation</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;           &lt;chr&gt;                        &lt;chr&gt;      &lt;chr&gt;                </span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt;  1 8               GEOLocate (Rios &amp; Bart, 201… H. W. Rob… Academy of Natural S…</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt;  2 11              GEOLocate (Rios &amp; Bart, 201… H. W. Rob… Academy of Natural S…</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt;  3 3               GEOLocate (Rios &amp; Bart, 201… H. W. Rob… Academy of Natural S…</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt;  4 &lt;NA&gt;            &lt;NA&gt;                         &lt;NA&gt;       California Academy o…</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt;  5 &lt;NA&gt;            &lt;NA&gt;                         &lt;NA&gt;       California Academy o…</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt;  6 &lt;NA&gt;            &lt;NA&gt;                         &lt;NA&gt;       California Academy o…</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt;  7 1               VertNet Georeferencing Guid… MCCOY, C … Carnegie Museum of N…</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt;  8 1               VertNet Georeferencing Guid… MCCOY, C … Carnegie Museum of N…</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt;  9 1               VertNet Georeferencing Guid… MCCOY, C … Carnegie Museum of N…</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt; 10 1               VertNet Georeferencing Guid… MCCOY, C … Carnegie Museum of N…</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 190 more rows</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt; # ℹ 74 more variables: stateprovince &lt;chr&gt;, basisofrecord &lt;chr&gt;, month &lt;chr&gt;,</span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt; #   decimallongitude &lt;chr&gt;, phylum &lt;chr&gt;, references &lt;chr&gt;,</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; #   georeferencedby &lt;chr&gt;, year &lt;chr&gt;, taxonrank &lt;chr&gt;, specificepithet &lt;chr&gt;,</span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt; #   family &lt;chr&gt;, countrycode &lt;chr&gt;, locality &lt;chr&gt;, geodeticdatum &lt;chr&gt;,</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; #   coordinateuncertaintyinmeters &lt;chr&gt;, highergeography &lt;chr&gt;,</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt; #   continent &lt;chr&gt;, day &lt;chr&gt;, kingdom &lt;chr&gt;, georeferenceddate &lt;chr&gt;, …</span></span></code></pre></div>
+</div>
+<div id="lots-of-data" class="section level2">
+<h2>Lots of data</h2>
+<p>For <code>searchbyterm()</code>, <code>spatialsearch()</code>, and
+<code>vertsearch()</code>, you can request more than 1000 records.
+VertNet limits each request to 1000 records, but internally in this
+package, if you request more than 1000 records, we’ll continue to send
+requests to get all the records you want. See the <a href="https://github.com/VertNet/webapp/wiki/The-API-search-function#retrieving-large-result-sets">VertNet
+docs</a> for more information on this.</p>
+</div>
+<div id="email-dump-of-data" class="section level2">
+<h2>Email dump of data</h2>
+<p><code>bigsearch()</code> specifies a termwise search (like
+<code>searchbyterm()</code>), but requests that all available records be
+made available for download as a tab-delimited text file.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">bigsearch</span>(<span class="at">genus =</span> <span class="st">&quot;ochotona&quot;</span>, <span class="at">rfile =</span> <span class="st">&quot;mydata&quot;</span>, <span class="at">email =</span> <span class="st">&quot;you@gmail.com&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; Processing request...</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; Download of records file &#39;mydata&#39; requested for &#39;you@gmail.com&#39;</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; Query/URL: &quot;http://api.vertnet-portal.appspot.com/api/download?q=%7B%22q%22:%22genus:ochotona%22,%22n%22:%22mydata%22,%22e%22:%22you@gmail.com%22%7D&quot;</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; Thank you! Download instructions will be sent by email.</span></span></code></pre></div>
+</div>
+<div id="messages" class="section level2">
+<h2>Messages</h2>
+<p>In the previous examples, we’ve suppressed messages for more concise
+output, but you can set <code>messages=TRUE</code> to get helpful
+messages - <code>messages=TRUE</code> is also the default setting so if
+you don’t specify that parameter messages will be printed to the
+console.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">searchbyterm</span>(<span class="at">class =</span> <span class="st">&quot;Aves&quot;</span>, <span class="at">state =</span> <span class="st">&quot;California&quot;</span>, <span class="at">limit =</span> <span class="dv">10</span>, <span class="at">messages =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

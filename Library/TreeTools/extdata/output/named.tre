@@ -1,0 +1,3 @@
+tread 'tree(s) from TNT, for data in C:\TreeTools\input\dataset.nex'
+('taxon_a' ('taxon_b' ('taxon_c' ('taxon_d' 'taxon_e' ))));
+proc-;

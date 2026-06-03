@@ -1,0 +1,55 @@
+useDynLib(SparseM, .registration = TRUE, .fixes = "f_")
+
+importFrom("utils", packageDescription)
+importFrom("graphics", "axis", "box", "image.default")
+importFrom("methods", as, is, kronecker, new, show, validObject)
+importFrom("stats", "coef", "coefficients", "fitted", "model.extract",
+    "pf", "printCoefmat", "pt", "quantile", "residuals",
+    "rnorm", "symnum", "weighted.residuals", "weights")
+
+export(is.matrix.csr, is.matrix.csc, is.matrix.ssr, is.matrix.ssc, is.matrix.coo, # (not generic)
+       as.matrix.csr, as.matrix.csc, as.matrix.ssr, as.matrix.ssc, as.matrix.coo, # S4 generic
+       as.matrix,
+       det, forwardsolve,
+       norm,
+       read.matrix.hb, model.guess, model.xexact,
+       rbind.matrix.csr, cbind.matrix.csr,
+       Ops.matrix.csr, Ops.matrix.diag.csr,
+       "[.matrix.csr", "[<-.matrix.csr", "[.matrix.diag.csr",
+       slm, slm.fit, slm.wfit, slm.fit.csr,
+       t, chol, coef.slm, fitted.slm, residuals.slm, deviance.slm, extractAIC.slm,
+       summary.mslm, summary.slm, print.summary.slm, print.slm,
+       "[<-.matrix.coo","[.matrix.coo")
+
+
+
+## Exporting S4 classes
+exportClasses(matrix.csr, matrix.csc, matrix.ssr, matrix.ssc, matrix.coo,
+              matrix.csr.chol, matrix.csc.hb, matrix.ssc.hb, matrix.diag.csr,
+              mslm, slm, summary.slm)
+
+## Exporting S4 methods {*not* for S3 !}
+exportMethods(as.matrix.csr, as.matrix.csc, as.matrix.ssr, as.matrix.ssc, as.matrix.coo,
+	as.matrix, t, dim, diff, diag, "diag<-", norm, determinant, chol, backsolve,
+        show,
+	solve, model.matrix, model.response, "%*%", kronecker, image)
+
+S3method(coef, slm)
+S3method(fitted, slm)
+S3method(residuals, slm)
+S3method(summary, mslm)
+S3method(summary, slm)
+S3method(print, summary.slm)
+S3method(print, slm)
+S3method(deviance, slm)
+S3method(extractAIC, slm)
+
+S3method(cbind, matrix.csr)
+S3method(rbind, matrix.csr)
+S3method(Ops, matrix.csr)
+S3method(Ops, matrix.diag.csr)
+S3method("[", matrix.coo)
+S3method("[", matrix.csr)
+S3method("[", matrix.diag.csr)
+S3method("[<-", matrix.coo)
+S3method("[<-", matrix.csr)

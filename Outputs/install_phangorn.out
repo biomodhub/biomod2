@@ -1,0 +1,32 @@
+* installing *source* package ‘phangorn’ ...
+** this is package ‘phangorn’ version ‘2.12.1’
+** package ‘phangorn’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c RcppExports.cpp -o RcppExports.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c dist.c -o dist.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c dupAtomMat.cpp -o dupAtomMat.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c fitch64.cpp -o fitch64.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c ml.c -o ml.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c phangorn.c -o phangorn.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c phangorn_utils.cpp -o phangorn_utils.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c sankoff.c -o sankoff.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c sprdist.c -o sprdist.o
+g++ -std=gnu++20 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o phangorn.so RcppExports.o dist.o dupAtomMat.o fitch64.o ml.o phangorn.o phangorn_utils.o sankoff.o sprdist.o -lblas -lgfortran -lm -lquadmath -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-phangorn/00new/phangorn/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (phangorn)

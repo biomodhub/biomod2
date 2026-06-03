@@ -1,0 +1,8 @@
+ecospat.testData: Test Data For The Ecospat Package
+ecospat.testNiche: Test Data For The Niche Overlap Analysis
+ecospat.testTree: Test Tree For The Ecospat package
+ecospat.testNiche.inv: Test Data For The Niche Dynamics Analysis In The Invaded Range Of A Hypothetical Species
+ecospat.testNiche.nat: Test Data For The Niche Dynamics Analysis In The Native Range Of A Hypothetical Species
+ecospat.testMdr: Test Data For The Minimum Dispersal Routes Analysis
+ecospat.testEnv: Test Data For niche.projGeo analyses
+ecospat.testNichePOSNB: Test Data For niche position and breadth analyses

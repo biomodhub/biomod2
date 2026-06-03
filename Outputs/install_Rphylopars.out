@@ -1,0 +1,24 @@
+* installing *source* package ‘Rphylopars’ ...
+** this is package ‘Rphylopars’ version ‘0.3.10’
+** package ‘Rphylopars’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c RcppExports.cpp -o RcppExports.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include' -I'/home/gueguema/Documents/_PACKAGES/biomod2/Library/RcppArmadillo/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c phylopars_rcpp.cpp -o phylopars_rcpp.o
+'LdFlags' has not been needed since 2013 (!!) and may get removed in 2027. Please update your 'Makevars'.
+'RcppLdFlags' has not been needed since 2013 (!!) and may get removed in 2027. Please update your 'Makevars'.
+g++ -std=gnu++20 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o Rphylopars.so RcppExports.o phylopars_rcpp.o -llapack -lblas -lgfortran -lm -lquadmath -L/usr/lib/R/lib -lR
+'LdFlags' has not been needed since 2013 (!!) and may get removed in 2027. Please update your 'Makevars'.
+'RcppLdFlags' has not been needed since 2013 (!!) and may get removed in 2027. Please update your 'Makevars'.
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-Rphylopars/00new/Rphylopars/libs
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (Rphylopars)

@@ -1,0 +1,24 @@
+Math.sparse3Darray      S3 Group Generic Methods for Sparse
+                        Three-Dimensional Arrays
+[.sparse3Darray         Extract or Replace Entries in a Sparse Array
+aperm.sparse3Darray     Transposition of Sparse Array
+as.array.sparse3Darray
+                        Convert Sparse Array to Full Array
+as.sparse3Darray        Convert Data to a Sparse Three-Dimensional
+                        Array
+bind.sparse3Darray      Combine Three-Dimensional Sparse Arrays
+gridadjacencymatrix     Create Adjacency Matrix for Spatial Grid
+marginSumsSparse        Margin Sums of a Sparse Matrix or Sparse Array
+matrixpower             Power of a Matrix
+methods.sparse3Darray   Methods for Sparse Three-Dimensional Arrays
+runSparseMarkovChain    Run a Markov Chain with a Sparse Transition
+                        Matrix
+sparse3Darray           Create a Sparse Three-Dimensional Array
+spatstat.sparse-package
+                        The spatstat.sparse Package
+sumouter                Compute Quadratic Forms
+sumsymouter             Compute Quadratic Forms in 3D Arrays
+symmatrix               Create a Symmetric Matrix from a Triangular
+                        Subset
+tensorSparse            Tensor Product of Sparse Vectors, Matrices or
+                        Arrays

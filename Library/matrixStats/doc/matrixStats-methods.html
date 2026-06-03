@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>matrixStats: Summary of functions</title>
+<style type="text/css">
+body {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+body, .footnotes, code { font-size: .9em; }
+li li { font-size: .95em; }
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+pre, img { max-width: 100%; }
+pre, pre:hover {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+pre code {
+  display: block;
+  overflow-x: auto;
+}
+code { font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace; }
+:not(pre) > code, code[class] { background-color: #F8F8F8; }
+code.language-undefined, pre > code:not([class]) {
+  background-color: inherit;
+  border: 1px solid #eee;
+}
+table {
+  margin: auto;
+  border-top: 1px solid #666;
+}
+table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+thead, tfoot, tr:nth-child(even) { background: #eee; }
+blockquote {
+  color: #666;
+  margin: 0;
+  padding-left: 1em;
+  border-left: 0.5em solid #eee;
+}
+hr, .footnotes::before { border: 1px dashed #ddd; }
+.frontmatter { text-align: center; }
+#TOC .numbered li { list-style: none; }
+#TOC .numbered { padding-left: 0; }
+#TOC .numbered ul { padding-left: 1em; }
+table, .body h2 { border-bottom: 1px solid #666; }
+.body .appendix, .appendix ~ h2 { border-bottom-style: dashed; }
+.footnote-ref a::before { content: "["; }
+.footnote-ref a::after { content: "]"; }
+section.footnotes::before {
+  content: "";
+  display: block;
+  max-width: 20em;
+}
+
+@media print {
+  body {
+    font-size: 12pt;
+    max-width: 100%;
+  }
+  tr, img { page-break-inside: avoid; }
+}
+@media only screen and (min-width: 992px) {
+  pre { white-space: pre; }
+}
+</style>
+<meta name="keywords" content="matrix, vector, apply, rows, columns, memory, speed">
+<meta name="author" content="Henrik Bengtsson">
+</head>
+<body>
+<div class="frontmatter">
+<div class="title"><h1>matrixStats: Summary of functions</h1></div>
+<div class="author"><h2></h2></div>
+<div class="date"><h3></h3></div>
+</div>
+<div class="body">
+<h1 id="matrixstats-summary-of-functions">matrixStats: Summary of functions</h1>
+<p>Henrik Bengtsson on NA</p>
+<h2 id="location-and-scale-estimators">Location and scale estimators</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Estimator</th>
+<th align="left">Functions</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Weighted sample mean</td>
+<td align="left">weightedMean(), colWeightedMeans(), rowWeightedMeans()</td>
+<td align="left"><code>weightedMean(x, w); rowWeightedMeans(x, w)</code></td>
+</tr>
+<tr>
+<td align="left">Mean</td>
+<td align="left">mean2(), colMeans2(), rowMeans2()</td>
+<td align="left"><code>mean2(x); rowMeans2(x)</code></td>
+</tr>
+<tr>
+<td align="left">Median</td>
+<td align="left">median(), colMedians(), rowMedians()</td>
+<td align="left"><code>median(x); rowMedians(x)</code></td>
+</tr>
+<tr>
+<td align="left">Weighted median</td>
+<td align="left">weightedMedian(), colWeightedMedians(), rowWeightedMedians()</td>
+<td align="left"><code>weightedMedian(x, w); rowWeightedMedians(x, w)</code></td>
+</tr>
+<tr>
+<td align="left">Sample variance</td>
+<td align="left">var(), colVars(), rowVars()</td>
+<td align="left"><code>var(x); rowVars(x)</code></td>
+</tr>
+<tr>
+<td align="left">Weighted sample variance</td>
+<td align="left">weightedVar(), colWeightedVars(), rowWeightedVars()</td>
+<td align="left"><code>weightedVar(x, w), rowWeightedVars(x, w)</code></td>
+</tr>
+<tr>
+<td align="left">Sample variance by n-order differences</td>
+<td align="left">varDiff(), colVarDiffs(), rowVarDiffs()</td>
+<td align="left"><code>varDiff(x); rowVarDiffs(x)</code></td>
+</tr>
+<tr>
+<td align="left">Sample standard deviation</td>
+<td align="left">sd(), colSds(), rowSds()</td>
+<td align="left"><code>sd(x); rowSds(x)</code></td>
+</tr>
+<tr>
+<td align="left">Weighted sample deviation</td>
+<td align="left">weightedSd(), colWeightedSds(), rowWeightedSds()</td>
+<td align="left"><code>weightedSd(x, w), rowWeightedSds(x, w)</code></td>
+</tr>
+<tr>
+<td align="left">Sample standard deviation by n-order differences</td>
+<td align="left">sdDiff(), colSdDiffs(), rowSdDiffs()</td>
+<td align="left"><code>sdDiff(x); rowSdDiffs(x)</code></td>
+</tr>
+<tr>
+<td align="left">Median absolute deviation (MAD)</td>
+<td align="left">mad(), colMads(), rowMads()</td>
+<td align="left"><code>mad(x); rowMads(x)</code></td>
+</tr>
+<tr>
+<td align="left">Weighted median absolute deviation (MAD)</td>
+<td align="left">weightedMad(), colWeightedMads(), rowWeightedMads()</td>
+<td align="left"><code>weightedMad(x, w), rowWeightedMads(x, w)</code></td>
+</tr>
+<tr>
+<td align="left">Median absolute deviation (MAD) by n-order differences</td>
+<td align="left">madDiff(), colMadDiffs(), rowMadDiffs()</td>
+<td align="left"><code>madDiff(x); rowMadDiffs()</code></td>
+</tr>
+<tr>
+<td align="left">Quantile</td>
+<td align="left">quantile(), colQuantiles(), rowQuantiles()</td>
+<td align="left"><code>quantile(x, probs); rowQuantiles(x, probs)</code></td>
+</tr>
+<tr>
+<td align="left">Interquartile range (IQR)</td>
+<td align="left">iqr(), colIQRs(), rowIQRs()</td>
+<td align="left"><code>iqr(x); rowIQRs(x)</code></td>
+</tr>
+<tr>
+<td align="left">Interquartile range (IQR) by n-order differences</td>
+<td align="left">iqrDiff(), colIQRDiffs(), rowIQRDiffs()</td>
+<td align="left"><code>iqrDiff(x); rowIQRDiffs(x)</code></td>
+</tr>
+<tr>
+<td align="left">Range</td>
+<td align="left">range(), colRanges(), rowRanges()</td>
+<td align="left"><code>range(x); rowRanges(x)</code></td>
+</tr>
+<tr>
+<td align="left">Minimum</td>
+<td align="left">min(), colMins(), rowMins()</td>
+<td align="left"><code>min(x); rowMins(x)</code></td>
+</tr>
+<tr>
+<td align="left">Maximum</td>
+<td align="left">max(), colMaxs(), rowMaxs()</td>
+<td align="left"><code>max(x); rowMaxs(x)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="testing-for-and-counting-values">Testing for and counting values</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Operator</th>
+<th align="left">Functions</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Are there any missing values?</td>
+<td align="left">anyMissing(), colAnyMissings(), rowAnyMissings()</td>
+<td align="left"><code>anyMissing(x); rowAnyMissings(x)</code></td>
+</tr>
+<tr>
+<td align="left">Does TRUE exists?</td>
+<td align="left">any(), colAnys(), rowAnys()</td>
+<td align="left"><code>any(x); rowAnys(x)</code></td>
+</tr>
+<tr>
+<td align="left">Are all values TRUE?</td>
+<td align="left">all(), colAlls(), rowAlls()</td>
+<td align="left"><code>all(x); rowAlls(x)</code></td>
+</tr>
+<tr>
+<td align="left">Does value exists?</td>
+<td align="left">anyValue(), colAnys(), rowAnys()</td>
+<td align="left"><code>anyValue(x, value); rowAnys(x, value)</code></td>
+</tr>
+<tr>
+<td align="left">Do all elements have a given value?</td>
+<td align="left">allValue(), colAlls(), rowAlls()</td>
+<td align="left"><code>allValue(x, value); rowAlls(x, value)</code></td>
+</tr>
+<tr>
+<td align="left">Number of occurrences of a value?</td>
+<td align="left">count(), colCounts(), rowCounts()</td>
+<td align="left"><code>count(x, value); rowCounts(x, value)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cumulative-functions">Cumulative functions</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Operator</th>
+<th align="left">Functions</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Cumulative sum</td>
+<td align="left">cumsum(), colCumsums(), rowCumsums()</td>
+<td align="left"><code>cumsum(x); rowCumsums(x)</code></td>
+</tr>
+<tr>
+<td align="left">Cumulative product</td>
+<td align="left">cumprod(), colCumprods(), rowCumprods()</td>
+<td align="left"><code>cumprod(x); rowCumprods(x)</code></td>
+</tr>
+<tr>
+<td align="left">Cumulative minimum</td>
+<td align="left">cummin(), colCummins(), rowCummins()</td>
+<td align="left"><code>cummin(x); rowCummins(x)</code></td>
+</tr>
+<tr>
+<td align="left">Cumulative maximum</td>
+<td align="left">cummax(), colCummaxs(), rowCummaxs()</td>
+<td align="left"><code>cummax(x); rowCummaxs(x)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="binning">Binning</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Estimator</th>
+<th align="left">Functions</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Counts in disjoint bins</td>
+<td align="left">binCounts()</td>
+<td align="left"><code>binCounts(x, bx)</code></td>
+</tr>
+<tr>
+<td align="left">Sample means (and counts) in disjoint bins</td>
+<td align="left">binMeans()</td>
+<td align="left"><code>binMeans(y, x, bx)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Operation</th>
+<th align="left">Functions</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Sum</td>
+<td align="left">sum2(), colSums2(), rowSums2()</td>
+<td align="left"><code>sum2(x); rowSums2(x)</code></td>
+</tr>
+<tr>
+<td align="left">Lagged differences</td>
+<td align="left">diff2(), colDiffs(), rowDiffs()</td>
+<td align="left"><code>diff2(x), rowDiffs(x)</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>matrixStats v1.5.0.  Release: <a href="https://cran.r-project.org/package=matrixStats">CRAN</a>, Development: <a href="https://github.com/HenrikBengtsson/matrixStats">GitHub</a>.</p>
+</div>
+</body>
+</html>

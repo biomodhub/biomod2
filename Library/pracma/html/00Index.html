@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Practical Numerical Math Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Practical Numerical Math Functions
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;pracma&rsquo; version 2.4.6</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain">DESCRIPTION file</a></li>
+<li><a href="../demo">Code demos</a>.  Use <a href="../../utils/help/demo">demo()</a> to run them.</li>
+<li><a href="../NEWS">Package NEWS</a></li>
+<li><a href="../README.md">Package README</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="# "> </a>
+<a href="#A">A</a>
+<a href="#B">B</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#J">J</a>
+<a href="#K">K</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#U">U</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#Z">Z</a>
+</p>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pracma-package.html">pracma-package</a></td>
+<td>Practical Numerical Math Routines</td></tr>
+</table>
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="abm3.html">abm3pc</a></td>
+<td>Adams-Bashford-Moulton</td></tr>
+<tr><td style="width: 25%;"><a href="accumarray.html">accumarray</a></td>
+<td>Accumulate Vector Elements</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">acosd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="trigonometric.html">acot</a></td>
+<td>More Trigonometric Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">acotd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="hyperbolic.html">acoth</a></td>
+<td>More Hyperbolic Functions</td></tr>
+<tr><td style="width: 25%;"><a href="trigonometric.html">acsc</a></td>
+<td>More Trigonometric Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">acscd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="hyperbolic.html">acsch</a></td>
+<td>More Hyperbolic Functions</td></tr>
+<tr><td style="width: 25%;"><a href="linearproj.html">affineproj</a></td>
+<td>Linear Projection onto a Subspace</td></tr>
+<tr><td style="width: 25%;"><a href="agmean.html">agmean</a></td>
+<td>Arithmetic-geometric Mean</td></tr>
+<tr><td style="width: 25%;"><a href="aitken.html">aitken</a></td>
+<td>Aitken' Method</td></tr>
+<tr><td style="width: 25%;"><a href="akima.html">akimaInterp</a></td>
+<td>Univariate Akima Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="andor.html">and</a></td>
+<td>Logical AND, OR (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="andrews.html">andrewsplot</a></td>
+<td>Andrews' Curves</td></tr>
+<tr><td style="width: 25%;"><a href="angle.html">angle</a></td>
+<td>Basic Complex Functions</td></tr>
+<tr><td style="width: 25%;"><a href="anms.html">anms</a></td>
+<td>Adaptive Nelder-Mead Minimization</td></tr>
+<tr><td style="width: 25%;"><a href="entropy.html">approx_entropy</a></td>
+<td>Approximate and Sample Entropy</td></tr>
+<tr><td style="width: 25%;"><a href="arclength.html">arclength</a></td>
+<td>Arc Length of a Curve</td></tr>
+<tr><td style="width: 25%;"><a href="arnoldi.html">arnoldi</a></td>
+<td>Arnoldi Iteration</td></tr>
+<tr><td style="width: 25%;"><a href="bsxfun.html">arrayfun</a></td>
+<td>Elementwise Function Application (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="trigonometric.html">asec</a></td>
+<td>More Trigonometric Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">asecd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="hyperbolic.html">asech</a></td>
+<td>More Hyperbolic Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">asind</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">atan2d</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">atand</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+</table>
+
+<h2><a id="B">-- B --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="barylag.html">barylag</a></td>
+<td>Barycentric Lagrange Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="barylag2d.html">barylag2d</a></td>
+<td>2-D Barycentric Lagrange Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="beep.html">beep</a></td>
+<td>Utility functions (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="bernoulli.html">bernoulli</a></td>
+<td>Bernoulli Numbers and Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="bernstein.html">bernstein</a></td>
+<td>Bernstein Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="bernstein.html">bernsteinb</a></td>
+<td>Bernstein Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="bisect.html">bisect</a></td>
+<td>Rootfinding Through Bisection or Secant Rule</td></tr>
+<tr><td style="width: 25%;"><a href="bits.html">bits</a></td>
+<td>Binary Representation</td></tr>
+<tr><td style="width: 25%;"><a href="blanks.html">blanks</a></td>
+<td>String of Blank Carakters</td></tr>
+<tr><td style="width: 25%;"><a href="blkdiag.html">blkdiag</a></td>
+<td>Block Diagonal Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="brentdekker.html">brent</a></td>
+<td>Brent-Dekker Root Finding Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="brentdekker.html">brentDekker</a></td>
+<td>Brent-Dekker Root Finding Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="brown72.html">brown72</a></td>
+<td>Brownian Motion</td></tr>
+<tr><td style="width: 25%;"><a href="broyden.html">broyden</a></td>
+<td>Broyden's Method</td></tr>
+<tr><td style="width: 25%;"><a href="bsxfun.html">bsxfun</a></td>
+<td>Elementwise Function Application (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">bubbleSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">bulirsch_stoer</a></td>
+<td>Bulirsch-Stoer Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="bvp.html">bvp</a></td>
+<td>Boundary Value Problems</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="cart2sph.html">cart2pol</a></td>
+<td>Coordinate Transformations</td></tr>
+<tr><td style="width: 25%;"><a href="cart2sph.html">cart2sph</a></td>
+<td>Coordinate Transformations</td></tr>
+<tr><td style="width: 25%;"><a href="cd.html">cd</a></td>
+<td>Directory Functions (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="ceil.html">ceil</a></td>
+<td>Integer Functions (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="charpoly.html">charpoly</a></td>
+<td>Characteristic Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="chebApprox.html">chebApprox</a></td>
+<td>Chebyshev Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="chebCoeff.html">chebCoeff</a></td>
+<td>Chebyshev Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="chebPoly.html">chebPoly</a></td>
+<td>Chebyshev Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="sici.html">Ci</a></td>
+<td>Sine and Cosine Integral Functions</td></tr>
+<tr><td style="width: 25%;"><a href="circlefit.html">circlefit</a></td>
+<td>Fitting a Circle</td></tr>
+<tr><td style="width: 25%;"><a href="flipdim.html">circshift</a></td>
+<td>Matrix Flipping (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="clear.html">clear</a></td>
+<td>Clear function (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="clenshaw_curtis.html">clenshaw_curtis</a></td>
+<td>Clenshaw-Curtis Quadrature Formula</td></tr>
+<tr><td style="width: 25%;"><a href="combs.html">combs</a></td>
+<td>Generate Combinations</td></tr>
+<tr><td style="width: 25%;"><a href="compan.html">compan</a></td>
+<td>Companion Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="complexstep.html">complexstep</a></td>
+<td>Complex Step Derivatives</td></tr>
+<tr><td style="width: 25%;"><a href="cond.html">cond</a></td>
+<td>Matrix Condition</td></tr>
+<tr><td style="width: 25%;"><a href="conv.html">conv</a></td>
+<td>Polynomial Convolution</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">cosd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="trigonometric.html">cot</a></td>
+<td>More Trigonometric Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">cotd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="cotes.html">cotes</a></td>
+<td>Newton-Cotes Formulas</td></tr>
+<tr><td style="width: 25%;"><a href="hyperbolic.html">coth</a></td>
+<td>More Hyperbolic Functions</td></tr>
+<tr><td style="width: 25%;"><a href="cranknic.html">cranknic</a></td>
+<td>Crank-Nicolson Method</td></tr>
+<tr><td style="width: 25%;"><a href="cross.html">cross</a></td>
+<td>Vector Cross Product</td></tr>
+<tr><td style="width: 25%;"><a href="crossn.html">crossn</a></td>
+<td>n-dimensional Vector Cross Product</td></tr>
+<tr><td style="width: 25%;"><a href="trigonometric.html">csc</a></td>
+<td>More Trigonometric Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">cscd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="hyperbolic.html">csch</a></td>
+<td>More Hyperbolic Functions</td></tr>
+<tr><td style="width: 25%;"><a href="cubicspline.html">cubicspline</a></td>
+<td>Interpolating Cubic Spline</td></tr>
+<tr><td style="width: 25%;"><a href="trapz.html">cumtrapz</a></td>
+<td>Trapezoidal Integration</td></tr>
+<tr><td style="width: 25%;"><a href="curvefit.html">curvefit</a></td>
+<td>Parametric Curve Fit</td></tr>
+<tr><td style="width: 25%;"><a href="cutpoints.html">cutpoints</a></td>
+<td>Find Cutting Points</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="dblquad.html">dblquad</a></td>
+<td>Double and Triple Integration</td></tr>
+<tr><td style="width: 25%;"><a href="strtrim.html">deblank</a></td>
+<td>Remove leading and trailing white space.</td></tr>
+<tr><td style="width: 25%;"><a href="deconv.html">deconv</a></td>
+<td>Deconvolution</td></tr>
+<tr><td style="width: 25%;"><a href="deeve.html">deeve</a></td>
+<td>Event Detection in ODE solution</td></tr>
+<tr><td style="width: 25%;"><a href="deg2rad.html">deg2rad</a></td>
+<td>Degrees to Radians</td></tr>
+<tr><td style="width: 25%;"><a href="detrend.html">detrend</a></td>
+<td>Remove Linear Trends</td></tr>
+<tr><td style="width: 25%;"><a href="deval.html">deval</a></td>
+<td>Evaluate ODE Solution</td></tr>
+<tr><td style="width: 25%;"><a href="diag.html">Diag</a></td>
+<td>Matrix Diagonal</td></tr>
+<tr><td style="width: 25%;"><a href="beep.html">disp</a></td>
+<td>Utility functions (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="distmat.html">distmat</a></td>
+<td>Distance Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="dot.html">dot</a></td>
+<td>Scalar Product</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="eig.html">eig</a></td>
+<td>Eigenvalue Function (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="eigjacobi.html">eigjacobi</a></td>
+<td>Jacobi Eigenvalue Method</td></tr>
+<tr><td style="width: 25%;"><a href="einsteinF.html">einsteinF</a></td>
+<td>Einstein Functions</td></tr>
+<tr><td style="width: 25%;"><a href="ellip.html">ellipj</a></td>
+<td>Elliptic and Jacobi Elliptic Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="ellip.html">ellipke</a></td>
+<td>Elliptic and Jacobi Elliptic Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="eps.html">eps</a></td>
+<td>Floating Point Relative Accuracy</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erf</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erfc</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erfcinv</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erfcx</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erfi</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erfinv</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="erfz.html">erfz</a></td>
+<td>Error Functions and Inverses (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="errorbar.html">errorbar</a></td>
+<td>Plot Error Bars</td></tr>
+<tr><td style="width: 25%;"><a href="eta.html">eta</a></td>
+<td>Dirichlet Eta Function</td></tr>
+<tr><td style="width: 25%;"><a href="euler_heun.html">euler_heun</a></td>
+<td>Euler-Heun ODE Solver</td></tr>
+<tr><td style="width: 25%;"><a href="expint.html">expint</a></td>
+<td>Exponential and Logarithmic Integral</td></tr>
+<tr><td style="width: 25%;"><a href="expint.html">expint_E1</a></td>
+<td>Exponential and Logarithmic Integral</td></tr>
+<tr><td style="width: 25%;"><a href="expint.html">expint_Ei</a></td>
+<td>Exponential and Logarithmic Integral</td></tr>
+<tr><td style="width: 25%;"><a href="expm.html">expm</a></td>
+<td>Matrix Exponential</td></tr>
+<tr><td style="width: 25%;"><a href="eye.html">eye</a></td>
+<td>Some Basic Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="ezcontour.html">ezcontour</a></td>
+<td>Contour, Surface, and Mesh Plotter</td></tr>
+<tr><td style="width: 25%;"><a href="ezcontour.html">ezmesh</a></td>
+<td>Contour, Surface, and Mesh Plotter</td></tr>
+<tr><td style="width: 25%;"><a href="ezplot.html">ezplot</a></td>
+<td>Easy Function Plot</td></tr>
+<tr><td style="width: 25%;"><a href="ezpolar.html">ezpolar</a></td>
+<td>Easy Polar Plot</td></tr>
+<tr><td style="width: 25%;"><a href="ezcontour.html">ezsurf</a></td>
+<td>Contour, Surface, and Mesh Plotter</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="fact.html">fact</a></td>
+<td>Factorial Function</td></tr>
+<tr><td style="width: 25%;"><a href="fact.html">factorial2</a></td>
+<td>Factorial Function</td></tr>
+<tr><td style="width: 25%;"><a href="factors.html">factors</a></td>
+<td>Prime Factors</td></tr>
+<tr><td style="width: 25%;"><a href="fderiv.html">fderiv</a></td>
+<td>Numerical Differentiation</td></tr>
+<tr><td style="width: 25%;"><a href="ifft.html">fftshift</a></td>
+<td>Inverse Fast Fourier Transformation</td></tr>
+<tr><td style="width: 25%;"><a href="fibsearch.html">fibsearch</a></td>
+<td>Fibonacci Search</td></tr>
+<tr><td style="width: 25%;"><a href="figure.html">figure</a></td>
+<td>Control Plot Devices (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="findintervals.html">findintervals</a></td>
+<td>Find Interval Indices</td></tr>
+<tr><td style="width: 25%;"><a href="findmins.html">findmins</a></td>
+<td>Find All Minima</td></tr>
+<tr><td style="width: 25%;"><a href="findpeaks.html">findpeaks</a></td>
+<td>Find Peaks</td></tr>
+<tr><td style="width: 25%;"><a href="find.html">finds</a></td>
+<td>find function (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="strfind.html">findstr</a></td>
+<td>Find Substrings</td></tr>
+<tr><td style="width: 25%;"><a href="findzeros.html">findzeros</a></td>
+<td>Find All Roots</td></tr>
+<tr><td style="width: 25%;"><a href="ceil.html">Fix</a></td>
+<td>Integer Functions (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="fletcherpowell.html">fletcher_powell</a></td>
+<td>Fletcher-Powell Conjugate Gradient Minimization</td></tr>
+<tr><td style="width: 25%;"><a href="flipdim.html">flipdim</a></td>
+<td>Matrix Flipping (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="flipdim.html">fliplr</a></td>
+<td>Matrix Flipping (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="flipdim.html">flipud</a></td>
+<td>Matrix Flipping (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="fminbnd.html">fminbnd</a></td>
+<td>Finding Function Minimum</td></tr>
+<tr><td style="width: 25%;"><a href="fmincon.html">fmincon</a></td>
+<td>Minimize Nonlinear Constrained Multivariable Function.</td></tr>
+<tr><td style="width: 25%;"><a href="fminsearch.html">fminsearch</a></td>
+<td>Derivative-free Nonlinear Function Minimization</td></tr>
+<tr><td style="width: 25%;"><a href="fminunc.html">fminunc</a></td>
+<td>Minimize Unconstrained Multivariable Function</td></tr>
+<tr><td style="width: 25%;"><a href="fnorm.html">fnorm</a></td>
+<td>Function Norm</td></tr>
+<tr><td style="width: 25%;"><a href="fornberg.html">fornberg</a></td>
+<td>Fornberg's Finite Difference Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="ezplot.html">fplot</a></td>
+<td>Easy Function Plot</td></tr>
+<tr><td style="width: 25%;"><a href="fprintf.html">fprintf</a></td>
+<td>Formatted Printing (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="fractalcurve.html">fractalcurve</a></td>
+<td>Fractal Curves</td></tr>
+<tr><td style="width: 25%;"><a href="fresnel.html">fresnelC</a></td>
+<td>Fresnel Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="fresnel.html">fresnelS</a></td>
+<td>Fresnel Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="fsolve.html">fsolve</a></td>
+<td>Solve System of Nonlinear Equations</td></tr>
+<tr><td style="width: 25%;"><a href="fzero.html">fzero</a></td>
+<td>Root Finding Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="fzsolve.html">fzsolve</a></td>
+<td>Complex Root Finding</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="gammainc.html">gammainc</a></td>
+<td>Incomplete Gamma Function</td></tr>
+<tr><td style="width: 25%;"><a href="gammaz.html">gammaz</a></td>
+<td>Complex Gamma Function</td></tr>
+<tr><td style="width: 25%;"><a href="gaussHermite.html">gaussHermite</a></td>
+<td>Gauss-Hermite Quadrature Formula</td></tr>
+<tr><td style="width: 25%;"><a href="gaussLaguerre.html">gaussLaguerre</a></td>
+<td>Gauss-Laguerre Quadrature Formula</td></tr>
+<tr><td style="width: 25%;"><a href="gaussLegendre.html">gaussLegendre</a></td>
+<td>Gauss-Legendre Quadrature Formula</td></tr>
+<tr><td style="width: 25%;"><a href="gaussNewton.html">gaussNewton</a></td>
+<td>Gauss-Newton Function Minimization</td></tr>
+<tr><td style="width: 25%;"><a href="gauss_kronrod.html">gauss_kronrod</a></td>
+<td>Gauss-Kronrod Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="gcd.html">gcd</a></td>
+<td>GCD and LCM Integer Functions</td></tr>
+<tr><td style="width: 25%;"><a href="mean.html">geomean</a></td>
+<td>Geometric and Harmonic Mean (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="geo_median.html">geo_median</a></td>
+<td>Geometric Median</td></tr>
+<tr><td style="width: 25%;"><a href="givens.html">givens</a></td>
+<td>Givens Rotation</td></tr>
+<tr><td style="width: 25%;"><a href="gmres.html">gmres</a></td>
+<td>Generalized Minimal Residual Method</td></tr>
+<tr><td style="width: 25%;"><a href="golden_ratio.html">golden_ratio</a></td>
+<td>Golden Ratio Search</td></tr>
+<tr><td style="width: 25%;"><a href="grad.html">grad</a></td>
+<td>Numerical Gradient</td></tr>
+<tr><td style="width: 25%;"><a href="gradient.html">gradient</a></td>
+<td>Discrete Gradient (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="complexstep.html">grad_csd</a></td>
+<td>Complex Step Derivatives</td></tr>
+<tr><td style="width: 25%;"><a href="gramschmidt.html">gramSchmidt</a></td>
+<td>Gram-Schmidt</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="hadamard.html">hadamard</a></td>
+<td>Hadamard Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="halley.html">halley</a></td>
+<td>Halley's Root Finding Mathod</td></tr>
+<tr><td style="width: 25%;"><a href="hampel.html">hampel</a></td>
+<td>Hampel Filter</td></tr>
+<tr><td style="width: 25%;"><a href="hankel.html">hankel</a></td>
+<td>Hankel Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="mean.html">harmmean</a></td>
+<td>Geometric and Harmonic Mean (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="hausdorff.html">hausdorff_dist</a></td>
+<td>Hausdorff Distance</td></tr>
+<tr><td style="width: 25%;"><a href="haversine.html">haversine</a></td>
+<td>Haversine Formula</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">heapSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="hessutils.html">hessdiag</a></td>
+<td>Hessian utilities</td></tr>
+<tr><td style="width: 25%;"><a href="hessenberg.html">hessenberg</a></td>
+<td>Hessenberg Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="hessian.html">hessian</a></td>
+<td>Hessian Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="complexstep.html">hessian_csd</a></td>
+<td>Complex Step Derivatives</td></tr>
+<tr><td style="width: 25%;"><a href="hessutils.html">hessvec</a></td>
+<td>Hessian utilities</td></tr>
+<tr><td style="width: 25%;"><a href="hilb.html">hilb</a></td>
+<td>Hilbert Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="histc.html">histc</a></td>
+<td>Histogram Count (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="histss.html">histss</a></td>
+<td>Histogram Bin-width Optimization</td></tr>
+<tr><td style="width: 25%;"><a href="hookejeeves.html">hooke_jeeves</a></td>
+<td>Hooke-Jeeves Function Minimization Method</td></tr>
+<tr><td style="width: 25%;"><a href="horner.html">horner</a></td>
+<td>Horner's Rule</td></tr>
+<tr><td style="width: 25%;"><a href="horner.html">hornerdefl</a></td>
+<td>Horner's Rule</td></tr>
+<tr><td style="width: 25%;"><a href="householder.html">householder</a></td>
+<td>Householder Reflections</td></tr>
+<tr><td style="width: 25%;"><a href="humps.html">humps</a></td>
+<td>Matlab Test Functions</td></tr>
+<tr><td style="width: 25%;"><a href="hurst.html">hurstexp</a></td>
+<td>Hurst Exponent</td></tr>
+<tr><td style="width: 25%;"><a href="hypot.html">hypot</a></td>
+<td>Hypotenuse Function</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="mod.html">idivide</a></td>
+<td>Integer Division</td></tr>
+<tr><td style="width: 25%;"><a href="ifft.html">ifft</a></td>
+<td>Inverse Fast Fourier Transformation</td></tr>
+<tr><td style="width: 25%;"><a href="ifft.html">ifftshift</a></td>
+<td>Inverse Fast Fourier Transformation</td></tr>
+<tr><td style="width: 25%;"><a href="angle.html">Imag</a></td>
+<td>Basic Complex Functions</td></tr>
+<tr><td style="width: 25%;"><a href="gammainc.html">incgam</a></td>
+<td>Incomplete Gamma Function</td></tr>
+<tr><td style="width: 25%;"><a href="inpolygon.html">inpolygon</a></td>
+<td>Polygon Region</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">insertionSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="integral.html">integral</a></td>
+<td>Adaptive Numerical Integration</td></tr>
+<tr><td style="width: 25%;"><a href="integral2.html">integral2</a></td>
+<td>Numerically Evaluate Double and Triple Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="integral2.html">integral3</a></td>
+<td>Numerically Evaluate Double and Triple Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="interp1.html">interp1</a></td>
+<td>One-dimensional Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="interp2.html">interp2</a></td>
+<td>Two-dimensional Data Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="inv.html">inv</a></td>
+<td>Matrix Inverse (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="invlap.html">invlap</a></td>
+<td>Inverse Laplacian</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">is.sorted</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="isempty.html">isempty</a></td>
+<td>isempty Property</td></tr>
+<tr><td style="width: 25%;"><a href="isposdef.html">isposdef</a></td>
+<td>Positive Definiteness</td></tr>
+<tr><td style="width: 25%;"><a href="isprime.html">isprime</a></td>
+<td>isprime Property</td></tr>
+<tr><td style="width: 25%;"><a href="itersolve.html">itersolve</a></td>
+<td>Iterative Methods</td></tr>
+</table>
+
+<h2><a id="J">-- J --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="jacobian.html">jacobian</a></td>
+<td>Jacobian Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="complexstep.html">jacobian_csd</a></td>
+<td>Complex Step Derivatives</td></tr>
+</table>
+
+<h2><a id="K">-- K --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="procrustes.html">kabsch</a></td>
+<td>Solving the Procrustes Problem</td></tr>
+<tr><td style="width: 25%;"><a href="kriging.html">kriging</a></td>
+<td>Interpolation by Kriging</td></tr>
+<tr><td style="width: 25%;"><a href="kron.html">kron</a></td>
+<td>Kronecker product (Matlab Style)</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="l1linreg.html">L1linreg</a></td>
+<td>L1 Linear Regression</td></tr>
+<tr><td style="width: 25%;"><a href="newtonInterp.html">lagrangeInterp</a></td>
+<td>Lagrange and Newtons Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="laguerre.html">laguerre</a></td>
+<td>Laguerre's Method</td></tr>
+<tr><td style="width: 25%;"><a href="lambertW.html">lambertWn</a></td>
+<td>Lambert's W Function</td></tr>
+<tr><td style="width: 25%;"><a href="lambertW.html">lambertWp</a></td>
+<td>Lambert's W Function</td></tr>
+<tr><td style="width: 25%;"><a href="laplacian.html">laplacian</a></td>
+<td>Laplacian Operator</td></tr>
+<tr><td style="width: 25%;"><a href="complexstep.html">laplacian_csd</a></td>
+<td>Complex Step Derivatives</td></tr>
+<tr><td style="width: 25%;"><a href="gcd.html">Lcm</a></td>
+<td>GCD and LCM Integer Functions</td></tr>
+<tr><td style="width: 25%;"><a href="lebesgue.html">lebesgue</a></td>
+<td>Lebesgue Constant</td></tr>
+<tr><td style="width: 25%;"><a href="legendre.html">legendre</a></td>
+<td>Legendre Functions (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="expint.html">li</a></td>
+<td>Exponential and Logarithmic Integral</td></tr>
+<tr><td style="width: 25%;"><a href="linearproj.html">linearproj</a></td>
+<td>Linear Projection onto a Subspace</td></tr>
+<tr><td style="width: 25%;"><a href="line_integral.html">line_integral</a></td>
+<td>Line integral (in the complex plane)</td></tr>
+<tr><td style="width: 25%;"><a href="linprog.html">linprog</a></td>
+<td>Linear Programming Solver</td></tr>
+<tr><td style="width: 25%;"><a href="linspace.html">linspace</a></td>
+<td>Linearly Spaced Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="sigmoid.html">logit</a></td>
+<td>Sigmoid Function</td></tr>
+<tr><td style="width: 25%;"><a href="semilog.html">loglog</a></td>
+<td>Semi-logarithmic Plots (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="expm.html">logm</a></td>
+<td>Matrix Exponential</td></tr>
+<tr><td style="width: 25%;"><a href="logspace.html">logseq</a></td>
+<td>Log-linearly Spaced Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="logspace.html">logspace</a></td>
+<td>Log-linearly Spaced Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="lsqnonlin.html">lsqcurvefit</a></td>
+<td>Nonlinear Least-Squares Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="lsqlin.html">lsqlin</a></td>
+<td>Linear Least-Squares Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="lsqlincon.html">lsqlincon</a></td>
+<td>Linear Least-Squares Fitting with linear constraints</td></tr>
+<tr><td style="width: 25%;"><a href="lsqnonlin.html">lsqnonlin</a></td>
+<td>Nonlinear Least-Squares Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="lsqnonlin.html">lsqnonneg</a></td>
+<td>Nonlinear Least-Squares Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="lsqnonlin.html">lsqsep</a></td>
+<td>Nonlinear Least-Squares Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="lu.html">lu</a></td>
+<td>LU Matrix Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="lu.html">lufact</a></td>
+<td>LU Matrix Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="lu.html">lusys</a></td>
+<td>LU Matrix Factorization</td></tr>
+<tr><td style="width: 25%;"><a href="lu.html">lu_crout</a></td>
+<td>LU Matrix Factorization</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="magic.html">magic</a></td>
+<td>Magic Square</td></tr>
+<tr><td style="width: 25%;"><a href="matlab.html">matlab</a></td>
+<td>Matlab Compatibility</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">mergeOrdered</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">mergeSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="meshgrid.html">meshgrid</a></td>
+<td>Generate a Mesh Grid</td></tr>
+<tr><td style="width: 25%;"><a href="mexpfit.html">mexpfit</a></td>
+<td>Multi-exponential Fitting</td></tr>
+<tr><td style="width: 25%;"><a href="midpoint.html">midpoint</a></td>
+<td>Bulirsch-Stoer Algorithm</td></tr>
+<tr><td style="width: 25%;"><a href="pp.html">mkpp</a></td>
+<td>Piecewise Polynomial Structures</td></tr>
+<tr><td style="width: 25%;"><a href="mldivide.html">mldivide</a></td>
+<td>Matlab backslash operator</td></tr>
+<tr><td style="width: 25%;"><a href="mod.html">mod</a></td>
+<td>Integer Division</td></tr>
+<tr><td style="width: 25%;"><a href="mode.html">Mode</a></td>
+<td>Mode function (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="moler.html">moler</a></td>
+<td>Moler Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="movavg.html">movavg</a></td>
+<td>Moving Average Filters</td></tr>
+<tr><td style="width: 25%;"><a href="mldivide.html">mrdivide</a></td>
+<td>Matlab backslash operator</td></tr>
+<tr><td style="width: 25%;"><a href="muller.html">muller</a></td>
+<td>Muller's Method</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="nchoosek.html">nchoosek</a></td>
+<td>Binomial Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="ndims.html">ndims</a></td>
+<td>Number of Dimensions</td></tr>
+<tr><td style="width: 25%;"><a href="nearest_spd.html">nearest_spd</a></td>
+<td>Nearest Symmetric Positive-definite Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="neldermead.html">nelder_mead</a></td>
+<td>Nelder-Mead Function Minimization Method</td></tr>
+<tr><td style="width: 25%;"><a href="neville.html">neville</a></td>
+<td>Neville's Method</td></tr>
+<tr><td style="width: 25%;"><a href="newmark.html">newmark</a></td>
+<td>Newmark Method</td></tr>
+<tr><td style="width: 25%;"><a href="newtonRaphson.html">newton</a></td>
+<td>Rootfinding through Newton-Raphson or Secant.</td></tr>
+<tr><td style="width: 25%;"><a href="newtonHorner.html">newtonHorner</a></td>
+<td>Newton's Root Finding Method for Polynomials.</td></tr>
+<tr><td style="width: 25%;"><a href="newtonInterp.html">newtonInterp</a></td>
+<td>Lagrange and Newtons Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="newtonRaphson.html">newtonRaphson</a></td>
+<td>Rootfinding through Newton-Raphson or Secant.</td></tr>
+<tr><td style="width: 25%;"><a href="newtonsys.html">newtonsys</a></td>
+<td>Newton Method for Nonlinear Systems</td></tr>
+<tr><td style="width: 25%;"><a href="nextpow2.html">nextpow2</a></td>
+<td>Next Power of 2</td></tr>
+<tr><td style="width: 25%;"><a href="nnz.html">nnz</a></td>
+<td>Nonzero Elements</td></tr>
+<tr><td style="width: 25%;"><a href="norm.html">Norm</a></td>
+<td>Vector Norm</td></tr>
+<tr><td style="width: 25%;"><a href="normest.html">normest</a></td>
+<td>Estimated Matrix Norm</td></tr>
+<tr><td style="width: 25%;"><a href="nthroot.html">nthroot</a></td>
+<td>Real nth Root</td></tr>
+<tr><td style="width: 25%;"><a href="nullspace.html">null</a></td>
+<td>Kernel or Nullspace</td></tr>
+<tr><td style="width: 25%;"><a href="nullspace.html">nullspace</a></td>
+<td>Kernel or Nullspace</td></tr>
+<tr><td style="width: 25%;"><a href="str2num.html">num2str</a></td>
+<td>Converting string to number (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="numderiv.html">numderiv</a></td>
+<td>Richardson's Numerical Derivative</td></tr>
+<tr><td style="width: 25%;"><a href="numderiv.html">numdiff</a></td>
+<td>Richardson's Numerical Derivative</td></tr>
+<tr><td style="width: 25%;"><a href="numel.html">numel</a></td>
+<td>Number of Elements</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="ode.html">ode23</a></td>
+<td>Non-stiff (and stiff) ODE solvers</td></tr>
+<tr><td style="width: 25%;"><a href="ode.html">ode23s</a></td>
+<td>Non-stiff (and stiff) ODE solvers</td></tr>
+<tr><td style="width: 25%;"><a href="ode.html">ode45</a></td>
+<td>Non-stiff (and stiff) ODE solvers</td></tr>
+<tr><td style="width: 25%;"><a href="ode.html">ode78</a></td>
+<td>Non-stiff (and stiff) ODE solvers</td></tr>
+<tr><td style="width: 25%;"><a href="odregress.html">odregress</a></td>
+<td>Orthogonal Distance Regression</td></tr>
+<tr><td style="width: 25%;"><a href="eye.html">ones</a></td>
+<td>Some Basic Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="andor.html">or</a></td>
+<td>Logical AND, OR (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="orth.html">orth</a></td>
+<td>Range Space</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pade.html">pade</a></td>
+<td>Pade Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="pascal.html">pascal</a></td>
+<td>Pascal Triangle</td></tr>
+<tr><td style="width: 25%;"><a href="pchip.html">pchip</a></td>
+<td>Hermitean Interpolation Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="pchip.html">pchipfun</a></td>
+<td>Hermitean Interpolation Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="distmat.html">pdist</a></td>
+<td>Distance Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="distmat.html">pdist2</a></td>
+<td>Distance Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="peaks.html">peaks</a></td>
+<td>Peaks Function (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="perms.html">perms</a></td>
+<td>Generate Permutations</td></tr>
+<tr><td style="width: 25%;"><a href="piecewise.html">piecewise</a></td>
+<td>Piecewise Linear Function</td></tr>
+<tr><td style="width: 25%;"><a href="pinv.html">pinv</a></td>
+<td>Pseudoinverse or Generalized Inverse</td></tr>
+<tr><td style="width: 25%;"><a href="plotyy.html">plotyy</a></td>
+<td>Plotting Two y-Axes</td></tr>
+<tr><td style="width: 25%;"><a href="poisson2disk.html">poisson2disk</a></td>
+<td>Poisson Disk Sampling</td></tr>
+<tr><td style="width: 25%;"><a href="cart2sph.html">pol2cart</a></td>
+<td>Coordinate Transformations</td></tr>
+<tr><td style="width: 25%;"><a href="polar.html">polar</a></td>
+<td>Polar Coordinate Plot (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="poly.html">Poly</a></td>
+<td>Define Polynomial by Roots</td></tr>
+<tr><td style="width: 25%;"><a href="poly2str.html">poly2str</a></td>
+<td>Print Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polyadd.html">polyadd</a></td>
+<td>Adding Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="polyApprox.html">polyApprox</a></td>
+<td>Polynomial Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="polyarea.html">polyarea</a></td>
+<td>Area of a Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="polyder.html">polyder</a></td>
+<td>Derivative of Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polymul.html">polydiv</a></td>
+<td>Multiplying and Dividing Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="polyfit.html">polyfit</a></td>
+<td>Fitting by Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polyfit.html">polyfix</a></td>
+<td>Fitting by Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polytrans.html">polygcf</a></td>
+<td>Polynomial Transformations</td></tr>
+<tr><td style="width: 25%;"><a href="polyint.html">polyint</a></td>
+<td>Anti-derivative of Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polylog.html">polylog</a></td>
+<td>Polylogarithm Function</td></tr>
+<tr><td style="width: 25%;"><a href="polymul.html">polymul</a></td>
+<td>Multiplying and Dividing Polynomials</td></tr>
+<tr><td style="width: 25%;"><a href="polypow.html">polypow</a></td>
+<td>Polynomial Powers</td></tr>
+<tr><td style="width: 25%;"><a href="roots.html">polyroots</a></td>
+<td>Polynomial Roots</td></tr>
+<tr><td style="width: 25%;"><a href="polytrans.html">polytrans</a></td>
+<td>Polynomial Transformations</td></tr>
+<tr><td style="width: 25%;"><a href="polyval.html">polyval</a></td>
+<td>Evaluating a Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polyval.html">polyvalm</a></td>
+<td>Evaluating a Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="polyarea.html">poly_center</a></td>
+<td>Area of a Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="polyarea.html">poly_crossings</a></td>
+<td>Area of a Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="polyarea.html">poly_length</a></td>
+<td>Area of a Polygon</td></tr>
+<tr><td style="width: 25%;"><a href="pow2.html">pow2</a></td>
+<td>Base 2 Power</td></tr>
+<tr><td style="width: 25%;"><a href="ppfit.html">ppfit</a></td>
+<td>Piecewise Polynomial Fit</td></tr>
+<tr><td style="width: 25%;"><a href="pp.html">ppval</a></td>
+<td>Piecewise Polynomial Structures</td></tr>
+<tr><td style="width: 25%;"><a href="pracma-package.html">pracma</a></td>
+<td>Practical Numerical Math Routines</td></tr>
+<tr><td style="width: 25%;"><a href="primes.html">primes</a></td>
+<td>Prime Numbers</td></tr>
+<tr><td style="width: 25%;"><a href="procrustes.html">procrustes</a></td>
+<td>Solving the Procrustes Problem</td></tr>
+<tr><td style="width: 25%;"><a href="psi.html">psi</a></td>
+<td>Psi (Polygamma) Function</td></tr>
+<tr><td style="width: 25%;"><a href="humps.html">psinc</a></td>
+<td>Matlab Test Functions</td></tr>
+<tr><td style="width: 25%;"><a href="cd.html">pwd</a></td>
+<td>Directory Functions (Matlab style)</td></tr>
+</table>
+
+<h2><a id="Q">-- Q --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="qpspecial.html">qpsolve</a></td>
+<td>Special Quadratic Programming Solver</td></tr>
+<tr><td style="width: 25%;"><a href="qpspecial.html">qpspecial</a></td>
+<td>Special Quadratic Programming Solver</td></tr>
+<tr><td style="width: 25%;"><a href="qrSolve.html">qrSolve</a></td>
+<td>LSE Solution</td></tr>
+<tr><td style="width: 25%;"><a href="quad.html">quad</a></td>
+<td>Adaptive Simpson Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="quad2d.html">quad2d</a></td>
+<td>2-d Gaussian Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="quadcc.html">quadcc</a></td>
+<td>Adaptive Clenshaw-Curtis Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="quadgk.html">quadgk</a></td>
+<td>Adaptive Gauss-Kronrod Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="quadgr.html">quadgr</a></td>
+<td>Gaussian Quadrature with Richardson Extrapolation</td></tr>
+<tr><td style="width: 25%;"><a href="quadinf.html">quadinf</a></td>
+<td>Infinite Integrals</td></tr>
+<tr><td style="width: 25%;"><a href="quadl.html">quadl</a></td>
+<td>Adaptive Lobatto Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="quadprog.html">quadprog</a></td>
+<td>Quadratic Programming</td></tr>
+<tr><td style="width: 25%;"><a href="quadv.html">quadv</a></td>
+<td>Vectorized Integration</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">quickSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">quickSortx</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="quiver.html">quiver</a></td>
+<td>Quiver or Velocity Plot</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="deg2rad.html">rad2deg</a></td>
+<td>Degrees to Radians</td></tr>
+<tr><td style="width: 25%;"><a href="rand.html">rand</a></td>
+<td>Create Random Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="randcomb.html">randcomb</a></td>
+<td>Random Combination</td></tr>
+<tr><td style="width: 25%;"><a href="rand.html">randi</a></td>
+<td>Create Random Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="rand.html">randn</a></td>
+<td>Create Random Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="randortho.html">randortho</a></td>
+<td>Generate Random Orthonormal or Unitary Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="rand.html">randp</a></td>
+<td>Create Random Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="randperm.html">randperm</a></td>
+<td>Random Permutation</td></tr>
+<tr><td style="width: 25%;"><a href="rand.html">rands</a></td>
+<td>Create Random Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="rand.html">randsample</a></td>
+<td>Create Random Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="rank.html">Rank</a></td>
+<td>Matrix Rank</td></tr>
+<tr><td style="width: 25%;"><a href="rat.html">rat</a></td>
+<td>Continuous Fractions (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="ratinterp.html">ratinterp</a></td>
+<td>Rational Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="rationalfit.html">rationalfit</a></td>
+<td>Rational Function Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="rat.html">rats</a></td>
+<td>Continuous Fractions (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="angle.html">Real</a></td>
+<td>Basic Complex Functions</td></tr>
+<tr><td style="width: 25%;"><a href="rectint.html">rectint</a></td>
+<td>Rectangle Intersection Areas</td></tr>
+<tr><td style="width: 25%;"><a href="refindall.html">refindall</a></td>
+<td>Find overlapping regular expression matches.</td></tr>
+<tr><td style="width: 25%;"><a href="regexp.html">regexp</a></td>
+<td>Match regular expression</td></tr>
+<tr><td style="width: 25%;"><a href="regexp.html">regexpi</a></td>
+<td>Match regular expression</td></tr>
+<tr><td style="width: 25%;"><a href="regexprep.html">regexprep</a></td>
+<td>Replace string using regular expression</td></tr>
+<tr><td style="width: 25%;"><a href="bisect.html">regulaFalsi</a></td>
+<td>Rootfinding Through Bisection or Secant Rule</td></tr>
+<tr><td style="width: 25%;"><a href="mod.html">rem</a></td>
+<td>Integer Division</td></tr>
+<tr><td style="width: 25%;"><a href="repmat.html">repmat</a></td>
+<td>Replicate Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="reshape.html">Reshape</a></td>
+<td>Reshape Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="ridders.html">ridders</a></td>
+<td>Ridders' Root Finding Method</td></tr>
+<tr><td style="width: 25%;"><a href="rk4.html">rk4</a></td>
+<td>Classical Runge-Kutta</td></tr>
+<tr><td style="width: 25%;"><a href="rk4.html">rk4sys</a></td>
+<td>Classical Runge-Kutta</td></tr>
+<tr><td style="width: 25%;"><a href="rkf54.html">rkf54</a></td>
+<td>Runge-Kutta-Fehlberg</td></tr>
+<tr><td style="width: 25%;"><a href="rmserr.html">rmserr</a></td>
+<td>Accuracy Measures</td></tr>
+<tr><td style="width: 25%;"><a href="romberg.html">romberg</a></td>
+<td>Romberg Integration</td></tr>
+<tr><td style="width: 25%;"><a href="sqrtm.html">rootm</a></td>
+<td>Matrix Square and p-th Roots</td></tr>
+<tr><td style="width: 25%;"><a href="roots.html">roots</a></td>
+<td>Polynomial Roots</td></tr>
+<tr><td style="width: 25%;"><a href="roots.html">rootsmult</a></td>
+<td>Polynomial Roots</td></tr>
+<tr><td style="width: 25%;"><a href="rosser.html">rosser</a></td>
+<td>Rosser Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="rot90.html">rot90</a></td>
+<td>Matrix Rotation</td></tr>
+<tr><td style="width: 25%;"><a href="rref.html">rref</a></td>
+<td>Reduced Row Echelon Form</td></tr>
+<tr><td style="width: 25%;"><a href="runge.html">runge</a></td>
+<td>Runge Function</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="entropy.html">sample_entropy</a></td>
+<td>Approximate and Sample Entropy</td></tr>
+<tr><td style="width: 25%;"><a href="savgol.html">savgol</a></td>
+<td>Savitzky-Golay Smoothing</td></tr>
+<tr><td style="width: 25%;"><a href="trigonometric.html">sec</a></td>
+<td>More Trigonometric Functions</td></tr>
+<tr><td style="width: 25%;"><a href="bisect.html">secant</a></td>
+<td>Rootfinding Through Bisection or Secant Rule</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">secd</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="hyperbolic.html">sech</a></td>
+<td>More Hyperbolic Functions</td></tr>
+<tr><td style="width: 25%;"><a href="segm_distance.html">segm_distance</a></td>
+<td>Segment Distance</td></tr>
+<tr><td style="width: 25%;"><a href="segm_intersect.html">segm_intersect</a></td>
+<td>Segment Intersection</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">selectionSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="semilog.html">semilogx</a></td>
+<td>Semi-logarithmic Plots (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="semilog.html">semilogy</a></td>
+<td>Semi-logarithmic Plots (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">shellSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="shooting.html">shooting</a></td>
+<td>Shooting Method</td></tr>
+<tr><td style="width: 25%;"><a href="shubert.html">shubert</a></td>
+<td>Shubert-Piyavskii Method</td></tr>
+<tr><td style="width: 25%;"><a href="sici.html">Si</a></td>
+<td>Sine and Cosine Integral Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sigmoid.html">sigmoid</a></td>
+<td>Sigmoid Function</td></tr>
+<tr><td style="width: 25%;"><a href="sqrtm.html">signm</a></td>
+<td>Matrix Square and p-th Roots</td></tr>
+<tr><td style="width: 25%;"><a href="simpadpt.html">simpadpt</a></td>
+<td>Adaptive Simpson Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="simpson.html">simpson</a></td>
+<td>Simpson Integration</td></tr>
+<tr><td style="width: 25%;"><a href="simpson2d.html">simpson2d</a></td>
+<td>Double Simpson Integration</td></tr>
+<tr><td style="width: 25%;"><a href="humps.html">sinc</a></td>
+<td>Matlab Test Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sind.html">sind</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="size.html">size</a></td>
+<td>Size of Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="softline.html">softline</a></td>
+<td>Soft (Inexact) Line Search</td></tr>
+<tr><td style="width: 25%;"><a href="sortrows.html">sortrows</a></td>
+<td>Sort Rows of a Matrix (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="cart2sph.html">sph2cart</a></td>
+<td>Coordinate Transformations</td></tr>
+<tr><td style="width: 25%;"><a href="spinterp.html">spinterp</a></td>
+<td>Monotone (Shape-Preserving) Interpolation</td></tr>
+<tr><td style="width: 25%;"><a href="sqrtm.html">sqrtm</a></td>
+<td>Matrix Square and p-th Roots</td></tr>
+<tr><td style="width: 25%;"><a href="squareform.html">squareform</a></td>
+<td>Format Distance Matrix (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="std.html">std</a></td>
+<td>Standard Deviation (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="std_err.html">std_err</a></td>
+<td>Standard Error</td></tr>
+<tr><td style="width: 25%;"><a href="steep_descent.html">steep_descent</a></td>
+<td>Steepest Descent Minimization</td></tr>
+<tr><td style="width: 25%;"><a href="stereographic.html">stereographic</a></td>
+<td>Stereographic Projection</td></tr>
+<tr><td style="width: 25%;"><a href="stereographic.html">stereographic_inv</a></td>
+<td>Stereographic Projection</td></tr>
+<tr><td style="width: 25%;"><a href="str2num.html">str2num</a></td>
+<td>Converting string to number (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="strcat.html">strcat</a></td>
+<td>String Concatenation</td></tr>
+<tr><td style="width: 25%;"><a href="strcmp.html">strcmp</a></td>
+<td>String Comparison</td></tr>
+<tr><td style="width: 25%;"><a href="strcmp.html">strcmpi</a></td>
+<td>String Comparison</td></tr>
+<tr><td style="width: 25%;"><a href="strfind.html">strfind</a></td>
+<td>Find Substrings</td></tr>
+<tr><td style="width: 25%;"><a href="strfind.html">strfindi</a></td>
+<td>Find Substrings</td></tr>
+<tr><td style="width: 25%;"><a href="strjust.html">strjust</a></td>
+<td>Justify character vector</td></tr>
+<tr><td style="width: 25%;"><a href="strrep.html">strRep</a></td>
+<td>Find and replace substring</td></tr>
+<tr><td style="width: 25%;"><a href="strtrim.html">strTrim</a></td>
+<td>Remove leading and trailing white space.</td></tr>
+<tr><td style="width: 25%;"><a href="subspace.html">subspace</a></td>
+<td>Angle between two subspaces</td></tr>
+<tr><td style="width: 25%;"><a href="sumalt.html">sumalt</a></td>
+<td>Alternating Series Acceleration</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="sind.html">tand</a></td>
+<td>Trigonometric Functions in Degrees</td></tr>
+<tr><td style="width: 25%;"><a href="taylor.html">taylor</a></td>
+<td>Taylor Series Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="sorting.html">testSort</a></td>
+<td>Sorting Routines</td></tr>
+<tr><td style="width: 25%;"><a href="tictoc.html">tic</a></td>
+<td>MATLAB timer functions</td></tr>
+<tr><td style="width: 25%;"><a href="titanium.html">titanium</a></td>
+<td>Titanium Test Data</td></tr>
+<tr><td style="width: 25%;"><a href="tictoc.html">toc</a></td>
+<td>MATLAB timer functions</td></tr>
+<tr><td style="width: 25%;"><a href="toeplitz.html">Toeplitz</a></td>
+<td>Toeplitz Matrix</td></tr>
+<tr><td style="width: 25%;"><a href="trace.html">Trace</a></td>
+<td>Matrix trace</td></tr>
+<tr><td style="width: 25%;"><a href="trapz.html">trapz</a></td>
+<td>Trapezoidal Integration</td></tr>
+<tr><td style="width: 25%;"><a href="trapz.html">trapzfun</a></td>
+<td>Trapezoidal Integration</td></tr>
+<tr><td style="width: 25%;"><a href="trigApprox.html">trigApprox</a></td>
+<td>Trigonometric Approximation</td></tr>
+<tr><td style="width: 25%;"><a href="trigPoly.html">trigPoly</a></td>
+<td>Trigonometric Polynomial</td></tr>
+<tr><td style="width: 25%;"><a href="tri.html">tril</a></td>
+<td>Triangular Matrices (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="mean.html">trimmean</a></td>
+<td>Geometric and Harmonic Mean (Matlab Style)</td></tr>
+<tr><td style="width: 25%;"><a href="dblquad.html">triplequad</a></td>
+<td>Double and Triple Integration</td></tr>
+<tr><td style="width: 25%;"><a href="triquad.html">triquad</a></td>
+<td>Gaussian Triangle Quadrature</td></tr>
+<tr><td style="width: 25%;"><a href="trisolve.html">trisolve</a></td>
+<td>Tridiagonal Linear System Solver</td></tr>
+<tr><td style="width: 25%;"><a href="tri.html">triu</a></td>
+<td>Triangular Matrices (Matlab Style)</td></tr>
+</table>
+
+<h2><a id="U">-- U --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="accumarray.html">uniq</a></td>
+<td>Accumulate Vector Elements</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="vander.html">vander</a></td>
+<td>Vandermonde matrix</td></tr>
+<tr><td style="width: 25%;"><a href="vectorfield.html">vectorfield</a></td>
+<td>Vector Field Plotting</td></tr>
+<tr><td style="width: 25%;"><a href="clear.html">ver</a></td>
+<td>Clear function (Matlab style)</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="cd.html">what</a></td>
+<td>Directory Functions (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="whittaker.html">whittaker</a></td>
+<td>Whittaker Smoothing</td></tr>
+<tr><td style="width: 25%;"><a href="clear.html">who</a></td>
+<td>Clear function (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="clear.html">whos</a></td>
+<td>Clear function (Matlab style)</td></tr>
+<tr><td style="width: 25%;"><a href="wilkinson.html">wilkinson</a></td>
+<td>wilkinson Matrix</td></tr>
+</table>
+
+<h2><a id="Z">-- Z --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="eye.html">zeros</a></td>
+<td>Some Basic Matrices</td></tr>
+<tr><td style="width: 25%;"><a href="zeta.html">zeta</a></td>
+<td>Riemann Zeta Function</td></tr>
+</table>
+</div></body></html>

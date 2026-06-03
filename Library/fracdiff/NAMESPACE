@@ -1,0 +1,31 @@
+useDynLib(fracdiff, .registration=TRUE)
+
+importFrom("stats",
+           AIC, arima, as.ts
+         , fft, nextn
+         , lm.fit
+         , coef, logLik, resid
+         , na.fail
+         , printCoefmat
+         , pnorm, qnorm, rnorm
+         , symnum
+         , tsp, "tsp<-"
+           )
+
+export("fracdiff", "fracdiff.sim", "fracdiff.var",
+       "diffseries",
+       "fdGPH", "fdSperio")
+
+###---- Methods ---- all documented but not exported
+
+S3method(coef, fracdiff)
+S3method(confint, fracdiff) ; export("confint.fracdiff")# has been advertized
+S3method(fitted, fracdiff)
+S3method(logLik, fracdiff)
+S3method(print, fracdiff)
+S3method(residuals, fracdiff)
+S3method(vcov, fracdiff)
+S3method(summary, fracdiff)
+
+S3method(print, summary.fracdiff)
+

@@ -1,0 +1,1416 @@
+2018-06-19 16:48  warnes
+
+	* DESCRIPTION, NAMESPACE: Update DESCRIPTION and NAMESPACE for
+	  gtools 3.8.0.
+
+2018-06-19 16:43  warnes
+
+	* R/split_path.R, man/split_path.Rd: Add spit_path() function.
+
+2018-06-19 16:43  warnes
+
+	* R/baseOf.R, man/baseOf.Rd: Improvements to baseOf() function.
+
+2017-08-23 23:03  warnes
+
+	* R/baseOf.R, man/baseOf.Rd: Add `baseOf` function and
+	  documentation to support updated `gplots::venn` function.
+	  (Provided by Steffen Möller.)
+
+2017-08-23 22:59  warnes
+
+	* R/roman2int.R, R/setTCPNoDelay.R: Use correct 'PACKAGE='
+	  parameter to '.C' calls.
+
+2017-06-14 19:44  warnes
+
+	* inst/ChangeLog, inst/NEWS: Update NEWS and ChangeLog
+
+2017-06-14 19:42  warnes
+
+	* DESCRIPTION, NAMESPACE, R/checkRVersion.R,
+	  R/newVersionAvailable.R, R/roman2int.R, R/setTCPNoDelay.R,
+	  man/combinations.Rd, man/defmacro.Rd, src/gtools.h,
+	  src/gtools_load.c, src/setTCPNoDelay.c,
+	  tests/test_setTCPNoDelay.R: Explicitly register C routines used
+	  by gtools
+
+2017-06-13 00:16  warnes
+
+	* man/combinations.Rd, man/defmacro.Rd: Update R News URLS
+
+2017-06-12 23:30  warnes
+
+	* man/capwords.Rd: Update link for taxise::taxize_capwords in
+	  gtools::capwords man page
+
+2017-06-12 23:28  warnes
+
+	* inst/ChangeLog: Fix typos
+
+2017-06-12 23:28  warnes
+
+	* man/capwords.Rd: Update link for taxise::taxize_capwords in
+	  gtools::capwords man page
+
+2017-06-12 23:21  warnes
+
+	* DESCRIPTION, NAMESPACE, inst/ChangeLog, inst/NEWS: Update meta
+	  files for gtools 3.7.0
+
+2017-06-12 22:53  warnes
+
+	* tests/smartbind_emptynames.R: Fix test for smartbind with empty
+	  column names
+
+2017-06-12 22:52  warnes
+
+	* man/setTCPNoDelay.Rd, tests/test_setTCPNoDelay.R: Add improved
+	  example to man page for setTCPnoDelat() and fix test function.
+
+2017-06-12 22:51  warnes
+
+	* man/ask.Rd: Add 'con' argument to ask() to allow specification of
+	  the connection to query for input.
+
+2017-06-12 22:49  warnes
+
+	* R/capwords.R, man/capwords.Rd: Add capwords() function to apply
+	  standard capitalization rules to a scharacter string.
+
+2017-05-23 15:55  warnes
+
+	* R/ask.R, R/quantcut.R, R/smartbind.R: - Integrate changes made by
+	  Mango Solutions at https://github.com/MangoTheCat/SASxport.
+	  - Remove functions duplicated from the Hmisc package.
+	  - Minor code cleanup.
+
+2016-08-24 19:48  warnes
+
+	* tests/test_setTCPNoDelay.R: Add more testing code.
+
+2016-08-15 19:17  warnes
+
+	* inst/ChangeLog: Update ChangeLog
+
+2016-08-15 19:16  warnes
+
+	* DESCRIPTION: Update version number and date
+
+2016-08-15 19:14  warnes
+
+	* tests/test_setTCPNoDelay.R: Add test code for setTCPNoDelay
+
+2016-08-15 19:14  warnes
+
+	* R/setTCPNoDelay.R: Modify setTCPNoDelay to work with current
+	  socket objects
+
+2016-08-15 19:13  warnes
+
+	* src/setTCPNoDelay.c: checkStatus() was not correctly getting the
+	  error message.
+
+2016-04-22 16:10  warnes
+
+	* NAMESPACE, R/capwords.R, man/capwords.Rd: Add capwords() function
+	  to properly capatilize strings for use in titles
+
+2016-04-22 16:08  warnes
+
+	* R/na.replace.R, man/na.replace.Rd: na.replace() now accepts a
+	  function providing the replcement value.
+
+2015-11-24 17:58  warnes
+
+	* R/smartbind.R: Correct error when column types don't match
+	  (reported by
+
+2015-10-15 21:15  warnes
+
+	* R/smartbind.R: smartbind() was not properly handling columsn that
+	  were numeric on one df and character in the other and other
+	  similar ctype conflicts. Fixed.
+
+2015-08-08 05:01  warnes
+
+	* tests/smartbind_emptynames.R: Add half-hearted test file
+
+2015-08-08 03:14  warnes
+
+	* R/smartbind.R: - Improve assignment of default names in
+	  smartbind.
+	  - Disambiguate 'list' into an object named 'list' and the
+	  function
+	  base::list() in smartbind().
+
+2015-08-08 01:47  warnes
+
+	* DESCRIPTION, man/smartbind.Rd: Add example of using 'list'
+	  argument to smartbind() man page.
+
+2015-08-08 01:44  warnes
+
+	* R/smartbind.R, man/smartbind.Rd: - smartbind() gets a new
+	  argument 'list' to pass a list of data
+	  frames, instead of/in addition to data frames as arguments.
+	  - Fix bug in smartbind's handling of factor levels.
+	  
+
+2015-07-14 21:19  warnes
+
+	* R/loadedPackages.R, man/loadedPackages.Rd: Modify
+	  loadedPackages() to return data silently so that the results
+	  don't get printed twice.
+
+2015-05-27 17:01  warnes
+
+	* data/badDend.rda, man/badDend.Rd, man/unByteCode.Rd: Create local
+	  dataset to use in the example code for unByteCode instead of
+	  relying on web access.
+
+2015-05-27 16:38  warnes
+
+	* R/trimws.R: Fix missing closing paren.
+
+2015-05-27 16:36  warnes
+
+	* R/keywords.R, R/roman2int.R, R/trim.R, R/trimws.R: Two functions
+	  in gtools need to use either gdata::trim() or
+	  base::trimws() (added in R 3.2.0). The previous solution was to
+	  include gdata/R/gdata/R/trim.R in gtools using a symbolic link.
+	  
+	  Unfortunately, Rforge doesn't seem to like the symbolic link when
+	  building packages, and generates an error.
+	  
+	  So, instead, create the file trimws.R, which creates trimws() if
+	  it
+	  isn't already available (e.g. via base::trimws), and modify
+	  keywords()
+	  and roman2int() to use trimws() instead of gdata::trim().
+
+2015-05-27 02:48  warnes
+
+	* man/roman2int.Rd: Add man page for roman2int().
+
+2015-05-27 02:29  warnes
+
+	* man/mixedsort.Rd: Remove extraneous closing paren.
+
+2015-05-27 02:26  warnes
+
+	* NAMESPACE: Add roman2int() to exported function list.
+
+2015-05-27 02:26  warnes
+
+	* R/asc.R: Looks like we also lost the change of argument name to
+	  chr(). Fixed.
+
+2015-05-27 02:23  warnes
+
+	* R/asc.R: Somehow lost 'simplify=TRUE' argument to asc. Fixed.
+
+2015-05-27 02:19  warnes
+
+	* DESCRIPTION: Update gtools version number to 3.5.0
+
+2015-05-27 02:17  warnes
+
+	* DESCRIPTION, inst/ChangeLog, inst/NEWS: Update DESCRIPTION,
+	  ChangeLog, NEWS
+
+2015-05-27 01:37  warnes
+
+	* R/mixedsort.R, man/mixedsort.Rd: Add roman numeral support to
+	  mixedorder() and mixedsort().
+
+2015-05-27 00:21  warnes
+
+	* man/asc.Rd: Add asc() and chr() functions for converting between
+	  characters and ASCII codes
+
+2015-05-27 00:20  warnes
+
+	* R/roman2int.R: roman2int() now returns NA for invalid roman
+	  numeral strings instead of generating an error.
+
+2015-05-27 00:19  warnes
+
+	* NAMESPACE: Add asc(), chr(), assignEdgewise(), unByteCode(), and
+	  unByteCodeAssign() to package NAMESPACE.
+
+2015-05-27 00:17  warnes
+
+	* R/asc.R: Add asc() and chr() functions for converting between
+	  characters and ASCII codes
+
+2015-05-26 16:22  warnes
+
+	* inst/ChangeLog: Add changelog to svn repository
+
+2015-05-25 14:30  warnes
+
+	* tests/test_ddirichlet.R: Add library call.
+
+2015-05-25 14:29  warnes
+
+	* man/unByteCode.Rd: Fix typo and add documentation for argument
+	  'name'.
+
+2015-05-25 14:29  warnes
+
+	* man/mixedsort.Rd: Fix typo.
+
+2015-05-25 14:16  warnes
+
+	* man/mixedsort.Rd: Add description of blanklast argument, fix
+	  typo.
+
+2015-05-25 14:13  warnes
+
+	* man/quantcut.Rd: Change usage to match actual definition.
+
+2015-05-25 14:10  warnes
+
+	* man/mixedsort.Rd: Note characters sorting ignores case.
+
+2015-05-25 14:08  warnes
+
+	* man/mixedsort.Rd: Remove '...' from arglist to match source code.
+
+2015-05-25 14:05  warnes
+
+	* man/mixedsort.Rd: Replace unicode quotes with \code{..}.
+
+2015-05-23 22:21  warnes
+
+	* tests/test_ddirichlet.R: Add regression test ddirichlet() bug for
+	  x[i]=0, alpha[i]=1:
+	  ddirichlet(x, alpha) was returning NA rather than 0.
+
+2015-05-23 22:12  warnes
+
+	* R/dirichlet.R: ddirichlet() was incorrectly returning NA when
+	  x[i]=0 and
+	  alpha[i]=1. In this case, the one calculation became (-Inf * 0),
+	  which R evaluates to NaN. The correction is to detect this case
+	  and
+	  substitute -Inf instead of NaN.
+
+2015-05-08 22:49  warnes
+
+	* R/mixedsort.R: Summary: Speed up mixedorder by moving
+	  suppressWarnings outside of
+	  lapply loops. (Suggestion by Henrik Bengtsson.)
+
+2015-05-02 17:38  warnes
+
+	* Rename 'trunk' to 'pkg' for compatibility with R-forge
+
+2015-05-02 13:50  warnes
+
+	* Minor layout change.
+
+2015-05-02 13:48  warnes
+
+	* Remove stray 'svn' that was inserted into the code.
+
+2015-05-02 13:47  warnes
+
+	* Add man page for unByteCode(), assignEdgeWise(), and
+	  unByteCodeAssign()
+
+2015-04-28 04:27  warnes
+
+	* Changes to mixedsort():
+	  - Hands off objects that are not character vectors to the default
+	  sort.
+	  - Add 'decreasing', 'na.last', and 'blank.last' arguments.
+
+2015-04-28 04:16  warnes
+
+	* Add private function 'checkReverseDependencies'.
+
+2015-04-23 21:53  warnes
+
+	* Update NEWS and ChangeLog
+
+2015-04-23 21:47  warnes
+
+	* - The 'q' argument to quantcut()'s 'q' now accept an integer
+	  indicating the number of equally spaced quantile groups to
+	  create. (Suggestion and patch submitted by Ryan C. Thompson.)
+
+2015-04-23 21:10  warnes
+
+	* Revers accidental text deletion:
+
+2015-04-23 21:09  warnes
+
+	* Update for gtools 3.4.3
+
+2015-04-23 21:06  warnes
+
+	* Remove debugging code and stray browser() call
+
+2015-04-14 19:39  warnes
+
+	* Fix typo
+
+2015-04-09 19:46  warnes
+
+	* Update gtools ChangeLog
+
+2015-04-09 19:45  warnes
+
+	* Move first()/last()/left()/right() to gdata.
+	  Add new functions na.replace() and loadedPackages().
+	  Add more text to package description.
+
+2015-04-08 19:55  warnes
+
+	* Move first/last/left/right to from gtools to gdata
+
+2015-04-06 22:09  warnes
+
+	* Correct URL
+
+2015-04-06 22:04  warnes
+
+	* Update NEWS and ChangeLog for gtools 3.5.0
+
+2015-04-06 21:52  warnes
+
+	* Add ChangeLog files to repository
+
+2015-04-06 21:44  warnes
+
+	* Implement fix to keywords() needed for R-3.4.1, as suggested by
+	  Kurt
+	  Hornik.
+
+2015-04-06 21:40  warnes
+
+	* - Export S3 methods for first(), last(), left() and right().
+	  - Ensure code matches man page for first(), last(), left(), and
+	  right().
+
+2014-10-09 18:56  warnes
+
+	* Update for 3.5.0 release of gtools
+
+2014-10-09 18:52  warnes
+
+	* Make right() and left() S3 methods for classes data.frame and
+	  matrix
+
+2014-08-27 00:44  warnes
+
+	* Fix man page
+
+2014-08-27 00:36  warnes
+
+	* Finish adding first(), last(), left(), and right().
+
+2014-08-27 00:12  warnes
+
+	* Add functions first(), last(), left(), and right().
+
+2014-05-28 00:24  warnes
+
+	* Update for gtools 3.4.1
+
+2014-05-28 00:18  warnes
+
+	* Add test to ensure smartbind() properly handles Date columns.
+
+2014-05-28 00:14  warnes
+
+	* smartbind: Convert non-native type columns (except factor) to
+	  character.
+
+2014-04-18 18:11  arnima
+
+	* Main arg is 'x' like showNonASCII(x), preformatted notes instead
+	  of verb
+
+2014-04-17 17:33  warnes
+
+	* Update ASCIIfy man page to match source code and add keywords
+
+2014-04-17 17:25  warnes
+
+	* Update NEWS for gtools 3.4.0
+
+2014-04-17 16:56  warnes
+
+	* Add ASCIIfy function posted to RDevel by Arni Magnusson
+
+2014-03-01 20:15  warnes
+
+	* Fix cut-and-paste error.
+
+2014-03-01 20:12  warnes
+
+	* Update files for gtools 3.3.1 release
+
+2014-03-01 20:02  warnes
+
+	* Fix bug in gtools::mixedorder regular expression for regognizing
+	  numbers. (Periods weren't escaped).
+
+2014-02-11 17:44  warnes
+
+	* Create and use locate copy of tools:::.split_op_version.
+
+2014-02-11 17:25  warnes
+
+	* Update for gtools 3.3.0.
+
+2014-02-11 17:19  warnes
+
+	* Fix arguments
+
+2014-02-11 17:17  warnes
+
+	* Update arguments to match code.
+
+2014-02-11 17:14  warnes
+
+	* Add getDependencies() function to return a list of package
+	  dependencies.
+
+2014-01-14 19:43  warnes
+
+	* Update for bug-fix release
+
+2014-01-14 19:37  warnes
+
+	* Add test file for binsearch() function.
+
+2014-01-14 15:56  warnes
+
+	* Fixed bug where binsearch() returned the wrong endpoint & value
+	  when the found value was at the upper endpoint.
+
+2014-01-13 18:16  warnes
+
+	* Fix typo
+
+2014-01-11 23:39  warnes
+
+	* Update for gtools release 3.2.0
+
+2014-01-11 23:38  warnes
+
+	* fixes for R CMD check
+
+2014-01-11 23:24  warnes
+
+	* Fixes for gtools release 3.2.0
+
+2013-12-23 18:48  warnes
+
+	* Extend the keywords() function to return keywords associated with
+	  a specified topic via 'keywords(topic)'.
+
+2013-12-23 16:08  warnes
+
+	* Add keyword.
+
+2013-12-23 16:04  warnes
+
+	* Add stars.pval() function to convert p-values into significance
+	  symbols.
+
+2013-11-26 14:38  warnes
+
+	* mixedorder() was failing to correctly handle numbers including
+	  decimals due to a faulty regular expression. Prior to the fix:
+	  
+	  > drr
+	  [1] "Dose 0.3 mg" "Dose 0.04 mg" "Dose 0.5 mg"
+	  > gtools::mixedsort(drr)
+	  [1] "Dose 0.3 mg" "Dose 0.04 mg" "Dose 0.5 mg"
+	  
+	  After the fix:
+	  
+	  > drr
+	  [1] "Dose 0.3 mg" "Dose 0.04 mg" "Dose 0.5 mg"
+	  > mixedsort(drr)
+	  [1] "Dose 0.04 mg" "Dose 0.3 mg" "Dose 0.5 mg"
+	  
+	  In addition, an optimization was added that checked if the input
+	  vector
+	  was numeric. If so, simply use the existing base::order function.
+
+2013-11-18 16:06  warnes
+
+	* Use ".Deprecated" instead of warning.
+
+2013-11-06 14:53  warnes
+
+	* Update files for gtools 3.1.1
+
+2013-11-06 14:51  warnes
+
+	* Fix problem with mixedorder/mixedsort when there is only zero or
+	  one elements in the vector.
+
+2013-09-23 15:46  warnes
+
+	* Comment out empty sections in gtools-deprecated.Rd
+
+2013-09-23 15:41  warnes
+
+	* Update files for gtools 3.1.0 release
+
+2013-09-23 15:37  warnes
+
+	* Make 'addLast()' defunct.
+
+2013-09-23 15:29  warnes
+
+	* Mark 'addLast()' as defunct and move 'lastAdd()' function to a
+	  separate file.
+
+2013-09-23 15:23  warnes
+
+	* Update for gtools 3.0.1 release
+
+2013-09-23 15:19  warnes
+
+	* Use 'suppressWarnings() instead of 'options(warn=-1)' in
+	  'mixedorder()'.
+
+2013-07-07 00:11  warnes
+
+	* Fix typo.
+
+2013-07-06 23:55  warnes
+
+	* Fix Rd warning.
+
+2013-07-06 23:49  warnes
+
+	* Include lastAdd in NAMESPACE
+
+2013-07-06 23:46  warnes
+
+	* Change assert from deprecated to defunct.
+
+2013-07-06 23:45  warnes
+
+	* Improve deprecation message
+
+2013-07-06 23:43  warnes
+
+	* Update for gtools 3.0.0
+
+2013-07-06 23:26  warnes
+
+	* Create new function lastAdd to replace addLast and mark addLast
+	  as deprecated.
+
+2013-07-05 23:48  warnes
+
+	* Point out that addLast() modifies the value of .Last in the
+	  global environment.
+
+2013-07-05 23:47  warnes
+
+	* Point out that addLast() modifies the value of .Last in the
+	  global environment.
+
+2013-07-05 23:34  warnes
+
+	* Update for gtools 2.7.2 mark 2
+
+2013-07-05 23:33  warnes
+
+	* Remove cross-reference to (obsolete?) moc package
+
+2013-07-05 17:31  warnes
+
+	* Update for gtools 2.7.2
+
+2013-07-05 17:29  warnes
+
+	* Update for R version 3.0.0 and later
+
+2013-03-17 02:21  warnes
+
+	* Fix error in smartbind: factor levels were not being handled if
+	  the factor column was not present in the first data frame.
+
+2012-06-19 19:00  warnes
+
+	* Update for gtools 2.7.0.
+
+2012-06-19 14:00  warnes
+
+	* Document new 'verbose' argument to smartbind().
+
+2012-06-19 13:56  warnes
+
+	* Clean up R CMD check warnings.
+
+2012-05-04 16:06  warnes
+
+	* smartbind(): Improve handling of factors and ordered factors.
+
+2011-10-05 17:05  warnes
+
+	* Update version number for release
+
+2011-10-05 16:53  warnes
+
+	* Add 'sep' argument to smartbind() to allow specification of
+	  character used to separate components of constructed names
+
+2011-09-28 22:56  warnes
+
+	* smartbind(): Prevent coersion to data frame from mangling column
+	  names.
+
+2011-09-28 22:53  warnes
+
+	* Add 'fill' argument to smartbind() to specify a value to use for
+	  missing entries.
+
+2011-09-28 22:53  warnes
+
+	* Add 'fill' argument to smartbind() to specify a value to use for
+	  missing entries.
+
+2010-08-14 19:28  warnes
+
+	* Modify mixedorder()/mixedsort() to better handle strings
+	  containing multiple periods, like version numbers (e.g 1.1.2,
+	  1.2.1. 1.1.1.1).
+
+2010-05-01 22:14  warnes
+
+	* Update version number for new release
+
+2010-05-01 22:03  warnes
+
+	* Change Greg's email address to greg@warnes.net
+
+2010-05-01 21:59  warnes
+
+	* Fix error in checkRVersion()
+
+2010-04-28 17:23  ggrothendieck2
+
+	* fixed problems with R CMD CHECK
+
+2009-05-09 03:35  warnes
+
+	* Escape $ in .Rd file to avoid latex issues
+
+2009-05-09 03:26  warnes
+
+	* Update NEWS and create softlinks for NEWS and ChangeLog in top
+	  level directory
+
+2009-05-09 03:15  warnes
+
+	* Move actual NEWS file into inst.
+
+2009-05-09 03:13  warnes
+
+	* Update Greg's email address and fix Rd syntax errors
+
+2009-02-16 15:34  warnes
+
+	* Correct windows make flags as suggested by Brian Ripley.
+
+2008-08-15 13:15  warnes
+
+	* Add keywords() function to show /doc/KEYWORDS file
+
+2008-05-29 23:19  warnes
+
+	* Add newVersionAvailable() function to compare running and latest
+	  available R versions
+
+2008-05-26 19:15  warnes
+
+	* Update license specification
+
+2008-05-26 15:04  warnes
+
+	* Remove 'assert' man page
+
+2008-05-22 16:40  warnes
+
+	* Finish rename of assert.R to assert-depricated.Rd
+
+2008-05-22 16:35  warnes
+
+	* Add checkRVersion.R file
+
+2008-05-22 16:34  warnes
+
+	* Rename again to get correct extension!
+
+2008-05-22 16:30  warnes
+
+	* Update NEWS for 2.5.0
+
+2008-05-22 16:17  warnes
+
+	* Add man page for checkRVersion
+
+2008-05-22 16:16  warnes
+
+	* Rename assert-deprecated.R to assert.R to meet R file name
+	  requirements.
+
+2008-05-22 16:15  warnes
+
+	* Add checkRVersion to NAMESPACE, and increment version in
+	  DESCRIPTION.
+
+2008-05-22 16:14  warnes
+
+	* Remove broken SEE LSO reference
+
+2008-04-12 19:42  warnes
+
+	* Improve text explanation of how defmacro() and strmacro() differ
+	  from
+	  function().
+
+2008-04-12 19:19  warnes
+
+	* assert() is now deprecated in favor of base::stopifnot()
+
+2008-04-12 19:19  warnes
+
+	* Rename 'assert.R' to 'deprecated.R'.
+
+2008-04-12 19:14  warnes
+
+	* Assert is now deprecated in favor of base::stopifnot(), so add
+	  call to
+	  .Deprecated() to inform the user.
+
+2007-11-30 18:05  warnes
+
+	* Update defnitions of odd() and even() to use modulus operator
+	  instead of division. Prettier, I think, :-D
+
+2007-08-08 13:52  warnes
+
+	* Fix bug identified by R-2.6's check routings in binsearch()
+
+2007-08-08 13:48  warnes
+
+	* Add the binsearch(), previously in the genetics package.
+
+2007-07-18 11:48  ggorjan
+
+	* typo fixed
+
+2007-04-12 21:16  warnes
+
+	* Add ask() function to prompt the user and collect a single
+	  response.
+
+2007-04-07 13:41  warnes
+
+	* Fix improper escapes in regexp detected by R 2.5.0 package check.
+
+2007-03-23 22:53  warnes
+
+	* Allow permutations for r>n provided repeats.allowed=TRUE
+
+2006-11-28 00:53  warnes
+
+	* Replace F with FALSE in smartbind example.
+
+2006-11-27 22:42  warnes
+
+	* Replace T with TRUE in smartbind example
+
+2006-11-27 21:40  warnes
+
+	* Temprary remove to reset binary flag
+
+2006-11-27 21:40  warnes
+
+	* Temprary remove to reset binary flag
+
+2006-11-27 21:34  warnes
+
+	* Add smartbind() to list of exported functions, and add
+	  corresponding
+	  documentation file.
+
+2006-11-27 20:52  warnes
+
+	* Update my email address
+
+2006-11-14 22:25  ggorjan
+
+	* Removed executable property
+
+2006-08-02 22:21  warnes
+
+	* Update my email address
+
+2006-05-05 18:13  nj7w
+
+	* Fixed minor typo - in {value} - n was replaced by r
+
+2006-05-05 16:55  nj7w
+
+	* Fixed minor typos
+
+2006-03-01 19:12  warnes
+
+	* Add smartbind function
+
+2006-01-18 16:28  warnes
+
+	* Add concept tags to make mixedsort easier to locate.
+
+2005-12-21 15:23  warnes
+
+	* Update version number and date
+
+2005-12-21 06:11  warnes
+
+	* Note changes for 2.2.3
+
+2005-12-21 06:08  warnes
+
+	* Should now work on Windows
+
+2005-12-20 20:25  warnes
+
+	* Temporary fix to allow setTCPNoDelay.c to compile on Windows. If
+	  compiled on windows calling setTCPNoDelay will just raise an
+	  error.
+
+2005-12-14 15:48  warnes
+
+	* Change C++ comment to standard comment
+
+2005-12-13 16:19  nj7w
+
+	* *** empty log message ***
+
+2005-12-13 16:18  nj7w
+
+	* Updated NEWS and removed ChangeLog
+
+2005-12-12 22:10  nj7w
+
+	* Updated version for CRAN release
+
+2005-12-08 20:21  warnes
+
+	* Add C source code for setTCPNoDelay.
+
+2005-12-01 16:54  nj7w
+
+	* Updated Greg's email address
+
+2005-11-29 22:30  warnes
+
+	* Add UseDynLib to NAMESPACE so the shared library gets properly
+	  loaded.
+
+2005-11-29 22:25  warnes
+
+	* - Remove debugging comments
+	  - Change return value on success to "Success".
+
+2005-11-22 22:54  warnes
+
+	* NAMESPACE
+
+2005-11-22 22:54  warnes
+
+	* Update news for 2.2.1 release.
+
+2005-11-22 22:51  warnes
+
+	* Fixes for R CMD check
+
+2005-11-22 22:31  warnes
+
+	* Add setTCPNoDelay() function and documentation
+
+2005-11-22 15:46  warnes
+
+	* New function 'addLast' that adds functions to R's .Last() so that
+	  they will be executed when R is terminating.
+
+2005-09-22 18:12  warnes
+
+	* More changes for strmacro(), also changes for 2.1.1 release
+
+2005-09-22 17:26  warnes
+
+	* Add strmaco() which defines functions that use strings for macro
+	  definition
+
+2005-09-21 18:51  warnes
+
+	* Add support for DOTS/... arguments to defmacro
+
+2005-09-12 15:44  nj7w
+
+	* Updated Greg's email
+
+2005-09-02 22:53  nj7w
+
+	* Exported assert
+
+2005-09-02 22:53  nj7w
+
+	* Updated the version number
+
+2005-09-02 22:52  nj7w
+
+	* Added NEWS
+
+2005-09-02 22:52  nj7w
+
+	* Added ChangeLog
+
+2005-09-02 22:51  nj7w
+
+	* Fixed syntax errors
+
+2005-09-02 16:43  warnes
+
+	* Add assert() and documentation
+
+2005-09-02 16:28  warnes
+
+	* Fix problem in defmacro.Rd file: don't use \code{} in the example
+	  section.
+
+2005-08-31 20:00  warnes
+
+	* Adding the defmacro() function, extracted from
+	  
+	  Lumley T. "Programmer's Niche: Macros in {R}", R News, 2001, Vol
+	  1,
+	  No. 3, pp 11--13, \url{http://CRAN.R-project.org/doc/Rnews/}
+
+2005-08-31 16:18  warnes
+
+	* Add stand-alone DESCRIPTION file and remove old DESCRIPTION.in
+	  file.
+
+2005-06-13 17:08  nj7w
+
+	* Fixed a bug in mixedsort - check if "which.na" and "which.blank"
+	  is numeric(0) before subsetting the datasets.
+
+2005-06-09 14:20  nj7w
+
+	* Updating the version number, and various help files to
+	  synchronize splitting of gregmisc bundle in 4 individual
+	  components.
+
+2005-05-10 22:05  warnes
+
+	* Fix handling of NA's in mixedorder. We were using a high UTF
+	  character to try
+	  to put NA's at the end of the sort order, but R 2.1.0 checks if
+	  characters
+	  are in the correct range. Instead, we explicitly force NA's to
+	  the end.
+
+2005-04-07 00:28  warnes
+
+	* - Add scat() function which writes its arguments to stderr and
+	  flushes so that output is immediately displayed, but only if
+	  'getOption("DEBUG")' is true.
+
+2005-04-02 04:19  warnes
+
+	* Move drop.levels() from gtools to gdata.
+
+2005-04-02 04:17  warnes
+
+	* Minor reordering of functions in file
+
+2005-04-02 04:14  warnes
+
+	* Move frameApply() to gdata package.
+
+2005-04-02 03:28  warnes
+
+	* Fix error if only one value passed to mixedorder.
+
+2005-04-02 02:37  warnes
+
+	* Add proper handling where more than one quantile obtains the same
+	  value
+
+2005-04-01 23:00  warnes
+
+	* Add CVS ID tag to file headers.
+
+2005-04-01 23:00  warnes
+
+	* Fixes from Jim Rogers for R CMD check problems in frameApply
+
+2005-03-31 19:03  warnes
+
+	* Updates to drop.levels() and frameApply() from Jim Rogers
+
+2005-03-31 19:01  warnes
+
+	* Add ELISA data set used by frameApply and drop.levels examples
+
+2005-02-25 23:02  warnes
+
+	* Replace 'T' with TRUE.
+
+2005-02-25 22:54  warnes
+
+	* Remove dependency on ELISA data set for the example.
+
+2005-02-25 21:00  warnes
+
+	* Add drop.levels, frameApply to namespace export.
+
+2005-02-15 00:41  warnes
+
+	* Add frameApply and drop.levels contributed by Jim Rogers.
+
+2005-01-12 20:50  warnes
+
+	* Add dependency on R 1.9.0+ to prevent poeple from installing on
+	  old
+	  versions of R which don't support namespaces.
+
+2004-09-27 21:01  warneg
+
+	* Updated to pass R CMD check.
+
+2004-09-03 17:27  warneg
+
+	* initial bundle checkin
+
+2004-09-02 17:14  warneg
+
+	* Initial revision
+
+2004-08-27 21:57  warnes
+
+	* Fixed bug in mixedsort, and modified reorder.factor to use
+	  mixedsort.
+
+2004-08-26 20:08  warnes
+
+	* - Fix bug pointed out by Jim Rogers.
+	  - Use a more distictive internal separator: $@$ instead of just $
+	  - Capitalization is now irrelevent for search order (unlike
+	  ASCII).
+
+2004-06-08 15:49  warnes
+
+	* Nitin Jain added by= parameter to allow specifying separation
+	  between groups.
+
+2004-05-26 13:40  warnes
+
+	* Escape underscores in email addresses so Latex is happy.
+
+2004-05-26 13:18  warnes
+
+	* Replace 'T' with 'TRUE' to pass R CMD check.
+
+2004-05-25 17:11  warnes
+
+	* Remove extraneous comments.
+
+2004-05-25 17:08  warnes
+
+	* Fix an error in the code when using repeats.allow=T and r>2. Bug
+	  report and fix both due to Elizabeth Purdom
+	  <epurdom@stanford.edu>.
+
+2004-05-24 17:36  warnes
+
+	* Check if argument is a vector before doing is.na to avoid
+	  generating a warning.
+
+2004-05-24 17:17  warnes
+
+	* Add invalid() function for testing if a parameter value is
+	  non-missing, non-NA,
+	  non-NULL.
+
+2004-04-27 14:33  warnes
+
+	* Replaced argument `as.list' with `simplify'. Updated
+	  documentation,
+	  and updated examples appropriately.
+
+2004-04-26 16:37  warnes
+
+	* Added as.list argument to return one list element per evaluation.
+
+2004-03-26 22:21  warnes
+
+	* Uncomment and fix large 'n' example.
+
+2004-03-26 22:19  warnes
+
+	* - Update to match changes in running()
+	  - Add examples to illustrate new arguments.
+	  - Modify running correlation plot example to be more clear.
+
+2004-03-26 22:12  warnes
+
+	* More of the same.
+
+2004-03-26 15:34  warnes
+
+	* Fix bug discovered by Sean Davis <sdavis2@mail.nih.gov>. The
+	  running
+	  function took an improper shortcut. When allow.fewer=FALSE it was
+	  still passing shorter lists of elements to the called function,
+	  and
+	  then overwriting the results for the shorter lists with NAs. The
+	  code
+	  now skips evaluation of the function on lists shorter than the
+	  specified length when allow.fewer=FALSE.
+
+2004-01-21 04:31  warnes
+
+	* - Mark sprint() as depreciated.
+	  - Replace references to sprint with capture.output()
+	  - Use match.arg for halign and valign arguments to
+	  textplot.default.
+	  - Fix textplot.character so that a vector of characters is
+	  properly
+	  displayed. Previouslt, character vectors were plotted on top of
+	  each
+	  other.
+
+2003-12-03 02:46  warnes
+
+	* - match function argument defaults with 'usage'
+
+2003-11-21 23:00  warnes
+
+	* Removed 'deqn' call that was confusing things.
+
+2003-11-21 20:54  warnes
+
+	* Add email address to author field
+
+2003-11-21 20:35  warnes
+
+	* - new files
+
+2003-11-21 19:54  warnes
+
+	* - Change 'T' to 'TRUE' in mixedsort.R
+	  - Add missing brace in mixedsort.Rd
+
+2003-11-20 15:56  warnes
+
+	* - Move 'odd' and 'even' functions to a separate file & provide
+	  documentation
+
+2003-11-18 22:47  warnes
+
+	* - Renamed smartsort to mixedsort and added documentation.
+
+2003-11-10 22:11  warnes
+
+	* - Add files contributed by Arni Magnusson
+	  <arnima@u.washington.edu>. As well as some of my own.
+
+2003-05-23 18:14  warnes
+
+	* - library() backported from 1.7-devel. This version of the
+	  function
+	  adds the "pos=" argument to specify where in the search path the
+	  library should be placed.
+	  
+	  - updated .First.lib to use library(...pos=3) for MASS to avoid
+	  the
+	  'genotype' data set in MASS from masking the genotype funciton in
+	  genetics when it loads gregmisc
+	  
+	  - Added logit() inv.logit() matchcols() function and
+	  corresponding docs
+
+2003-04-22 16:00  warnes
+
+	* - Fixed tpyo in example that allowed combinations(500,2) to run
+	  when
+	  it should have been ignred for testing..
+
+2003-04-10 16:22  warnes
+
+	* - Added note about the need to increase options("expressions") to
+	  use
+	  large values for 'n'. Prompted by bug report from Huan Huang
+	  <huan.huang@bnpparibas.com
+
+2003-04-04 13:58  warnes
+
+	* - Replace 'T' with 'TRUE'
+
+2003-04-04 13:49  warnes
+
+	* - Change occurences of 'T' to 'TRUE'
+
+2003-04-04 13:46  warnes
+
+	* - Allow optional arguments to sprint to be passed to print
+	  - Fix R CMD check errors
+
+2003-04-04 13:45  warnes
+
+	* - Allow optional arguments to sprint to be passed to print
+
+2003-04-03 13:20  warnes
+
+	* - Had mistyped 'sprint' as 'sprintf'.
+
+2003-04-03 13:18  warnes
+
+	* - Add help file for capture and sprintf.
+
+2003-04-02 22:28  warnes
+
+	* - Added file 'capture.R' containing capture() and sprint().
+
+2003-03-07 15:48  warnes
+
+	* - Minor changes to code to allow the package to be provided as an
+	  S-Plus chapter.
+
+2003-01-30 21:56  warnes
+
+	* - Fixed typo in email address.
+
+2003-01-02 15:42  warnes
+
+	* - Add nlevels function.
+
+2002-10-11 18:22  warnes
+
+	* - Add permute() function (wraper for sample) and man page
+
+2002-10-11 18:21  warnes
+
+	* - Escaped underscores in my email address that was causing a
+	  parse
+	  error in the {r,p}dirichlet man page.
+
+2002-09-30 20:43  warnes
+
+	* - Added rdirichlet() and ddirichlet() with accompaning help page
+	  and tests.
+
+2002-09-24 14:57  warnes
+
+	* - Fixed error where running was always calling running2 with
+	  'fun=mean', ignoring the specified funtion.
+
+2002-09-23 13:59  warnes
+
+	* - Modified all files to include CVS Id and Log tags.
+
+2002-09-23 13:38  warnes
+
+	* - Added CrossTable() and barplot2() code and docs contributed by
+	  Marc Schwartz.
+	  - Permit combinations() to be used when r>n provided
+	  repeat.allowed=TRUE
+	  - Bumped up version number
+
+2002-08-01 19:37  warnes
+
+	* - Corrected documentation mismatch for ci, ci.default.
+	  
+	  - Replaced all occurences of '_' for assignment with '<-'.
+	  
+	  - Replaced all occurences of 'T' or 'F' for 'TRUE' and 'FALSE'
+	  with
+	  the spelled out version.
+	  
+	  - Updaded version number and date.
+
+2002-04-09 00:51  warneg
+
+	* Checkin for version 0.5.3
+
+2002-03-26 14:49  warneg
+
+	* Initial Checkin
+
+2002-03-26 14:29  warneg
+
+	* Initial checkin.
+
+2002-03-20 03:44  warneg
+
+	* - Added definition of is.R function.
+	  
+	  - Added boxplot.formula
+
+2002-03-07 23:39  warneg
+
+	* - Added documentation and example for running2
+
+2002-03-07 23:38  warneg
+
+	* - Added "running2", which handles both univariate and bivariate
+	  cases
+	  - Modified "running" to call "running2"
+
+2002-02-05 02:20  warneg
+
+	* - Fix typo that caused code meant to run only under S-Plus to run
+	  under R, causing problems.
+
+2001-12-19 22:45  warneg
+
+	* - Added code for %in%.
+
+2001-09-18 14:15  warneg
+
+	* Release 0.3.2
+
+2001-09-01 19:19  warneg
+
+	* Initial checkin.
+
+2001-09-01 00:01  warneg
+
+	* Release 0.3.0
+
+2001-08-25 05:53  warneg
+
+	* Initial CVS checkin.
+
+2001-08-25 05:50  warneg
+
+	* Fixed a typo and a syntax error.
+
+2001-08-25 03:59  warneg
+
+	* Initial Checkin
+
+2001-06-29 13:24  warneg
+
+	* Initial revision.
+

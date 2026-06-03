@@ -1,0 +1,15 @@
+coef.fracdiff	fd-methods
+confint.fracdiff	confint.fracdiff
+diffseries	diffseries
+fdGPH	fdGPH
+fdSperio	fdSperio
+fitted.fracdiff	fd-methods
+fracdiff	fracdiff
+fracdiff.sim	fracdiff.sim
+fracdiff.var	fracdiff.var
+logLik.fracdiff	fd-methods
+print.fracdiff	fd-methods
+print.summary.fracdiff	fd-methods
+residuals.fracdiff	fd-methods
+summary.fracdiff	fd-methods
+vcov.fracdiff	fd-methods

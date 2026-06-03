@@ -1,0 +1,12 @@
+Package: RcppProgressArmadillo
+Type: Package
+Title: Example use of the RcppProgress package to reproduce a bug with RcppArmadillo
+Version: 0.2
+Date: 2014-11-25
+Author: Karl Forner <karl.forner@quartzbio.com>
+Maintainer: Karl Forner <karl.forner@quartzbio.com>
+Description: Example use of the RcppProgress package in a package,
+	cf http://lists.r-forge.r-project.org/pipermail/rcpp-devel/2013-August/006288.html
+License: GPL (>=3)
+Depends: Rcpp (>= 0.9.10), RcppProgress (>= 0.1)
+LinkingTo: Rcpp, RcppProgress, RcppArmadillo

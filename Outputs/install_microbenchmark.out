@@ -1,0 +1,51 @@
+* installing *source* package ‘microbenchmark’ ...
+** this is package ‘microbenchmark’ version ‘1.5.0’
+** package ‘microbenchmark’ successfully unpacked and MD5 sums checked
+** using staged installation
+checking for gcc... cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether cc accepts -g... yes
+checking for cc option to enable C11 features... none needed
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for stdint.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for sys/time.h... yes
+checking for uint64_t... yes
+checking for error_at_line... yes
+checking for mach_absolute_time... no
+checking for library containing clock_gettime... none required
+checking for best clockid_t to use with clock_gettime... CLOCK_MONOTONIC_RAW
+configure: creating ./config.status
+config.status: creating src/Makevars
+config.status: creating src/config.h
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+cc -I"/usr/share/R/include" -DNDEBUG -D_POSIX_C_SOURCE=200112L -DHAVE_CONFIG_H      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c do_nothing.c -o do_nothing.o
+cc -I"/usr/share/R/include" -DNDEBUG -D_POSIX_C_SOURCE=200112L -DHAVE_CONFIG_H      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c init.c -o init.o
+cc -I"/usr/share/R/include" -DNDEBUG -D_POSIX_C_SOURCE=200112L -DHAVE_CONFIG_H      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c nanotimer.c -o nanotimer.o
+cc -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o microbenchmark.so do_nothing.o init.o nanotimer.o -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-microbenchmark/00new/microbenchmark/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (microbenchmark)

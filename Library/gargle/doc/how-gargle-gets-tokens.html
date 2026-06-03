@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>How gargle gets tokens</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">How gargle gets tokens</h1>
+
+
+
+<p>This vignette explains the purpose and usage of
+<code>token_fetch()</code> and the functions it subsequently calls. The
+goal of <code>token_fetch()</code> is to secure a token for use in
+downstream requests.</p>
+<p>The target audience is someone who works directly with a Google API.
+These people roughly fall into two camps:</p>
+<ul>
+<li>The author of an R package that wraps a Google API.</li>
+<li>The useR who is writing a script or app, without using such a
+wrapper, either because the wrapper does not exist or there’s a reason
+to avoid the dependency.</li>
+</ul>
+<p>This vignette might also be useful to the user of a wrapper package
+who needs to influence the operations of <code>token_fetch()</code>,
+e.g. by telling it to try auth methods in a non-default order or to not
+try certain methods at all.</p>
+<p><code>token_fetch()</code> is aimed at whoever is going to manage the
+returned token, e.g., incorporate it into downstream requests. It can be
+very nice for users if wrapper packages assume this responsibility, as
+opposed to requiring users to explicitly acquire and manage their
+tokens. We give a few design suggestions here and cover this in more
+depth in <code>vignette(&quot;gargle-auth-in-client-package&quot;)</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(gargle)</span></code></pre></div>
+<div id="token_fetch" class="section level2">
+<h2><code>token_fetch()</code></h2>
+<p><code>token_fetch()</code> is a rather magical function for getting a
+token. The goal is to make auth relatively painless for users, while
+allowing developers and power users to take control when and if they
+need to. Most users will presumably interact with
+<code>token_fetch()</code> only in an indirect way, mediated through an
+API wrapper package. That is not because the interface of
+<code>token_fetch()</code> is unfriendly – it’s very flexible! The
+objective of <code>token_fetch()</code> is to allow package developers
+to take responsibility for <em>managing</em> the user’s token, without
+having to implement all the different ways of <em>obtaining</em> that
+token in the first place.</p>
+<p>The signature of <code>token_fetch()</code> is very simple and,
+therefore, not very informative:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">token_fetch</span>(scopes, ...)</span></code></pre></div>
+<p>Under the hood, <code>token_fetch()</code> calls a sequence of much
+more specific credential functions, each wrapped in a
+<code>tryCatch()</code> and returning <code>NULL</code> if unsuccessful.
+The only formal argument these functions have in common is
+<code>scopes</code>, with the rest being passed via
+<code>...</code>.</p>
+<p>This gives a sense of the credential functions and reflects the order
+in which they are called:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">names</span>(<span class="fu">cred_funs_list</span>()))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; credentials_byo_oauth2</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; credentials_service_account</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; credentials_external_account</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; credentials_app_default</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; credentials_gce</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; credentials_user_oauth2</span></span></code></pre></div>
+<p>It is possible to manipulate this registry of functions. The help for
+<code>cred_funs_list()</code> is a good place to learn more and we
+present a concrete example in the last section of this vignette.</p>
+<p>For now, however, we assume you’re working with the default registry
+that ships with gargle.</p>
+<p>Note also that these credential functions are exported and can be
+called directly.</p>
+</div>
+<div id="get-verbose-output" class="section level2">
+<h2>Get verbose output</h2>
+<p>To see more information about what gargle is up to, set the
+<code>&quot;gargle_verbosity&quot;</code> option to “debug”. Read more in the docs
+for <code>gargle_verbosity()</code>.</p>
+</div>
+<div id="credentials_byo_oauth2" class="section level2">
+<h2><code>credentials_byo_oauth2()</code></h2>
+<p>The first function tried is <code>credentials_byo_oauth2()</code>.
+Here’s how a call to <code>token_fetch()</code> might work:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">token =</span> <span class="sc">&lt;</span>TOKEN2<span class="fl">.0</span><span class="sc">&gt;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">credentials_byo_oauth2</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">token =</span> <span class="sc">&lt;</span>TOKEN2<span class="fl">.0</span><span class="sc">&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>credentials_byo_oauth2()</code> provides a back door for a
+“bring your own token” workflow. This function accounts for the scenario
+where an OAuth token has been obtained through external means and it’s
+convenient to be able to put it into force.</p>
+<p><code>credentials_byo_oauth2()</code> checks that <code>token</code>
+is of class <code>httr::Token2.0</code> and that it appears to be
+associated with Google. A <code>token</code> of class
+<code>request</code> is also acceptable, in which case the
+<code>auth_token</code> component is extracted and treated as the input.
+This is how a <code>Token2.0</code> object would present, if processed
+with <code>httr::config()</code>, as functions like
+<code>googledrive::drive_token()</code> and
+<code>bigrquery::bq_token()</code> do.</p>
+<p>If <code>token</code> is not provided or if it doesn’t satisfy these
+requirements, we fail and <code>token_fetch()</code>’s execution moves
+on to the next function in the registry.</p>
+</div>
+<div id="credentials_service_account" class="section level2">
+<h2><code>credentials_service_account()</code></h2>
+<p>The next function tried is
+<code>credentials_service_account()</code>. Here’s how a call to
+<code>token_fetch()</code> with service account inputs plays out:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>, <span class="at">path =</span> <span class="st">&quot;/path/to/your/service-account.json&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># credentials_byo_oauth2() fails because no `token`,</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># which leads to this call:</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">credentials_service_account</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">path =</span> <span class="st">&quot;/path/to/your/service-account.json&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
+<p>The <code>scopes</code> are often provided by the API wrapper
+function that is mediating the calls to <code>token_fetch()</code> and
+<code>credential_service_account()</code>. The <code>path</code>
+argument is presumably coming from the user. It is treated as a JSON
+representation of service account credentials, in any form that is
+acceptable to <code>jsonlite::fromJSON()</code>. In the above example,
+that is a file path, but it could also be a JSON string. If there is no
+named <code>path</code> argument or if it can’t be parsed as a service
+account credential, we fail and <code>token_fetch()</code>’s execution
+moves on to the next function in the registry.</p>
+<p>Here is some Google documentation about service accounts:</p>
+<ul>
+<li><a href="https://cloud.google.com/iam/docs/understanding-service-accounts">Cloud
+Identity and Access Management &gt; Understanding service
+accounts</a></li>
+</ul>
+<p>For R users, a service account is a great option for credentials that
+will be used in a script or application running remotely or in an
+unattended fashion. In particular, this is a better approach than trying
+to move OAuth2 credentials from one machine to another. For example, a
+service account is the preferred method of auth when testing and
+documenting a package on a continuous integration service.</p>
+<p>The JSON key file must be managed securely. In particular, it should
+not be kept in, e.g., a GitHub repository (unless it is encrypted). The
+encryption strategy used by gargle and other packages is described in
+the article <a href="https://gargle.r-lib.org/articles/articles/managing-tokens-securely.html">Managing
+tokens securely</a>.</p>
+<p>Note that fetching a token for a service account requires a
+reasonably accurate system clock. This is of particular importance for
+users running gargle inside a Docker container, as Docker for Windows
+has <a href="https://github.com/docker/for-win/issues/4526">intermittently seen
+problems with clock drift</a>. If your service account token requests
+fail with “Bad Request” inside a container, but succeed locally, check
+that the container’s system clock is accurate.</p>
+</div>
+<div id="credentials_external_account" class="section level2">
+<h2><code>credentials_external_account()</code></h2>
+<p>The next function tried is
+<code>credentials_external_account()</code>. Here’s how a call to
+<code>token_fetch()</code> with an external account inputs plays
+out:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>, <span class="at">path =</span> <span class="st">&quot;/path/to/your/external-account.json&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># credentials_byo_oauth2() fails because no `token`,</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># credentials_service_account() fails because the JSON provided via</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#   `path` is not of type &quot;service_account&quot;,</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># which leads to this call:</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="fu">credentials_external_account</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="at">path =</span> <span class="st">&quot;/path/to/your/external-account.json&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>credentials_external_account()</code> implements something
+called <em>workload identity federation</em> and is available to
+applications running on specific non-Google Cloud platforms. At the time
+of writing, gargle only supports AWS, but this could be expanded to
+other providers, such as Azure, if there is a documented need.</p>
+<p>Similar to <code>credentials_service_account()</code>, the
+<code>path</code> is treated as a JSON representation of the account’s
+configuration and it’s probably a file path. However, in contrast to
+<code>credentials_service_account()</code>, this JSON only contains
+non-sensitive metadata, which is, indeed, the main point of this flow.
+The secrets needed to complete auth are obtained “on-the-fly” from,
+e.g., the running EC2 instance.</p>
+<p><code>credentials_external_account()</code> will fail for many
+reasons: there is no named <code>path</code> argument, the JSON at
+<code>path</code> can’t be parsed as configuration for an external AWS
+account, we don’t appear to running on AWS, suggested packages for AWS
+functionality are not installed, or the workload identity pool is
+misconfigured. If any of that happens, we fail and
+<code>token_fetch()</code>’s execution moves on to the next function in
+the registry.</p>
+<p>Here is some Google documentation about workload identity federation
+and the specifics for AWS:</p>
+<ul>
+<li>Blog post: <a href="https://cloud.google.com/blog/products/identity-security/enable-keyless-access-to-gcp-with-workload-identity-federation/">Keyless
+API authentication — Better cloud security through workload identity
+federation, no service account keys necessary</a></li>
+<li>Documentation: <a href="https://cloud.google.com/iam/docs/configuring-workload-identity-federation">Configuring
+workload identity federation</a></li>
+</ul>
+</div>
+<div id="credentials_app_default" class="section level2">
+<h2><code>credentials_app_default()</code></h2>
+<p>The next function tried is <code>credentials_app_default()</code>.
+Here’s how a call to <code>token_fetch()</code> might work:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># credentials_byo_oauth2() fails because no `token`,</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># credentials_service_account() fails because no `path`,</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># credentials_external_account() fails because no `path`,</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co"># which leads to this call:</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="fu">credentials_app_default</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>credentials_app_default()</code> loads credentials from a file
+identified via a search strategy known as <a href="https://docs.cloud.google.com/docs/authentication">Application
+Default Credentials (ADC)</a>. The credentials themselves are
+conventional service account, external account, or user credentials that
+happen to be stored in a pre-ordained location and format.</p>
+<p>The hope is to make auth “just work” for someone working on
+Google-provided infrastructure or who has used Google tooling to get
+started, such as the <a href="https://docs.cloud.google.com/sdk/gcloud"><code>gcloud</code>
+command line tool</a>. A sequence of paths is consulted, which we
+describe here, with some abuse of notation. ALL_CAPS represents the
+value of an environment variable.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="sc">$</span>{GOOGLE_APPLICATION_CREDENTIALS}</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="sc">$</span>{CLOUDSDK_CONFIG}<span class="sc">/</span>application_default_credentials.json</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># on Windows:</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="sc">%APPDATA%</span>\gcloud\application_default_credentials.json</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="sc">%SystemDrive%</span>\gcloud\application_default_credentials.json</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>C<span class="sc">:</span>\gcloud\application_default_credentials.json</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co"># on not-Windows:</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="sc">~</span><span class="er">/</span>.config<span class="sc">/</span>gcloud<span class="sc">/</span>application_default_credentials.json</span></code></pre></div>
+<p>If the above search successfully identifies a JSON file, it is parsed
+and ingested either as a service account token, an external account
+configuration, or an OAuth2 user credential. In the case of an OAuth2
+credential, the requested <code>scopes</code> must also meet certain
+criteria. Note that this will NOT work for OAuth2 credentials initiated
+by gargle, which are stored on disk in <code>.rds</code> files. The
+storage of OAuth2 user credentials as JSON is unique to certain Google
+tools – possibly just the <a href="https://docs.cloud.google.com/sdk/gcloud"><code>gcloud</code>
+CLI</a> – and should probably be regarded as deprecated. It is
+recommended to use ADC with a service account or workload identity
+federation. If this quest is unsuccessful, we fail and
+<code>token_fetch()</code>’s execution moves on to the next function in
+the registry.</p>
+<p>The main takeaway lesson:</p>
+<ul>
+<li>You can make auth “just work” by storing the JSON for a service
+account or an external account at one of the filepaths listed above. It
+will be automagically discovered when <code>token_fetch()</code> is
+called with only the <code>scopes</code> argument specified.</li>
+</ul>
+<p>Again, remember that the JSON key file for a conventional service
+account must be managed securely and should NOT live in a directory that
+syncs to the cloud. The JSON configuration for an external account is
+not actually sensitive and this is one of the benefits of this flow, but
+it’s only available in a very narrow set of circumstances.</p>
+</div>
+<div id="credentials_gce" class="section level2">
+<h2><code>credentials_gce()</code></h2>
+<p>The next function tried is <code>credentials_gce()</code>. Here’s how
+a call to <code>token_fetch()</code> might work:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># or perhaps</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>, <span class="at">service_account =</span> <span class="sc">&lt;</span>SERVICE_ACCOUNT<span class="sc">&gt;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co"># credentials_byo_oauth2() fails because no `token`,</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># credentials_service_account() fails because no `path`,</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co"># credentials_external_account() fails because no `path`,</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># credentials_app_default() fails because no ADC found,</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co"># which leads to one of these calls:</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="fu">credentials_gce</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">service_account =</span> <span class="st">&quot;default&quot;</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>)</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co"># or</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="fu">credentials_gce</span>(</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">service_account =</span> <span class="sc">&lt;</span>SERVICE_ACCOUNT<span class="sc">&gt;</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>credentials_gce()</code> retrieves service account credentials
+from a metadata service that is specific to virtual machine instances
+running on Google Cloud Engine (GCE). Basically, if you have to ask what
+this is about, this is not the auth method for you. Let us move on.</p>
+<p>If this seems to happening to you and it’s not what you want, see the
+last section for how to remove this auth method.</p>
+</div>
+<div id="credentials_user_oauth2" class="section level2">
+<h2><code>credentials_user_oauth2()</code></h2>
+<p>The next and final function tried is
+<code>credentials_user_oauth2()</code>. Here’s how a call to
+<code>token_fetch()</code> might work:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">token_fetch</span>(<span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co"># credentials_byo_oauth2() fails because no `token`,</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># credentials_service_account() fails because no `path`,</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># credentials_external_account() fails because no `path`,</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co"># credentials_app_default() fails because no ADC found,</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co"># credentials_gce() fails because not on GCE,</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># which leads to this call:</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="fu">credentials_user_oauth2</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="at">scopes =</span> <span class="sc">&lt;</span>SCOPES<span class="sc">&gt;</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="at">app =</span> <span class="sc">&lt;</span>OAUTH_APP<span class="sc">&gt;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;&lt;PACKAGE&gt;&quot;</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>credentials_user_oauth2()</code> is where the vast majority of
+users will end up. This is the function that choreographs the
+traditional “OAuth dance” in the browser. User credentials are cached
+locally, at the user level, by default. Therefore, after first use,
+there are scenarios in which gargle can determine unequivocally that it
+already has a suitable token on hand and can load (and possibly refresh)
+it, without additional user intervention.</p>
+<p>The <code>scopes</code>, <code>app</code> (likely to be renamed
+<code>client</code> in a future version of gargle), and
+<code>package</code> are generally provided by the API wrapper function
+that is mediating the calls to <code>token_fetch()</code>. Do not
+“borrow” an OAuth client from gargle or any other package; always use
+credentials associated with your package or provided by your user. Per
+the Google User Data Policy <a href="https://developers.google.com/terms/api-services-user-data-policy" class="uri">https://developers.google.com/terms/api-services-user-data-policy</a>,
+your application must accurately represent itself when authenticating to
+Google API services.</p>
+<p>The wrapper package would presumably also declare itself as the
+package requesting a token (this is used in messages). So here’s how a
+call to <code>token_fetch()</code> and
+<code>credentials_user_oauth2()</code> might look when initiated from
+<code>THINGY_auth()</code>, a function in the fictional thingyr wrapper
+package:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># user initiates auth or does something that triggers it indirectly</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">THINGY_auth</span>()</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># which then calls</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>gargle<span class="sc">::</span><span class="fu">token_fetch</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">scopes  =</span> <span class="sc">&lt;</span>SCOPES_NEEDED_FOR_THE_THINGY_API<span class="sc">&gt;</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">app     =</span> <span class="fu">thingy_app</span>(),</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;thingyr&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co"># which leads to this call:</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="fu">credentials_user_oauth2</span>(</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  <span class="at">scopes  =</span> <span class="sc">&lt;</span>SCOPES_NEEDED_FOR_THE_THINGY_API<span class="sc">&gt;</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="at">app     =</span> <span class="fu">thingy_app</span>(),</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;thingyr&quot;</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>)</span></code></pre></div>
+<p>See <code>vignette(&quot;gargle-auth-in-client-package&quot;)</code> for design
+ideas for a function like <code>THINGY_auth()</code>.</p>
+<p>What happens tomorrow or next week? Do we make this user go through
+the browser dance again? How do we get to that happy place where we
+don’t bug them constantly about auth?</p>
+<p>First, we define “suitable”, i.e. what it means to find a matching
+token in the cache. <code>credentials_user_oauth2()</code> is a thin
+wrapper around <code>gargle2.0_token()</code> which is the constructor
+for the <code>gargle::Gargle2.0</code> class used to hold an OAuth2
+token. And that call might look something like this (simplified for
+communication purposes):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">gargle2.0_token</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">email   =</span> <span class="fu">gargle_oauth_email</span>(),</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">app     =</span> <span class="fu">thingy_app</span>(),</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">&quot;thingyr&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">scope   =</span> <span class="sc">&lt;</span>SCOPES_NEEDED_FOR_THE_THINGY_API<span class="sc">&gt;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">cache   =</span> <span class="fu">gargle_oauth_cache</span>()</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>)</span></code></pre></div>
+<p>gargle looks in the cache specified by
+<code>gargle_oauth_cache()</code> for a token that has these scopes,
+this client, and the Google identity specified by <code>email</code>. By
+default <code>email</code> is <code>NA</code>, so we might find one or
+more tokens that have the necessary scopes and client. In that case,
+gargle reveals the <code>email</code> associated with the matching
+token(s) and asks the user for explicit instructions about how to
+proceed. That looks something like this:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>The thingyr package is requesting access to your Google account.</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>Enter <span class="st">&#39;1&#39;</span> to start a new auth process or select a pre<span class="sc">-</span>authorized account.</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span> Send me to the browser <span class="cf">for</span> a new auth process.</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span> janedoe_personal<span class="sc">@</span>gmail.com</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span> janedoe<span class="sc">@</span>example.com</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span> janedoe_work<span class="sc">@</span>gmail.com</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>Selection<span class="sc">:</span></span></code></pre></div>
+<p>If none of the tokens has the right scopes and client (or if the user
+declines to use a pre-existing token), we head to the browser to
+initiate OAuth2 flow <em>de novo</em>.</p>
+<p>A user can reduce the need for interaction by passing the target
+<code>email</code> to <code>thingy_auth()</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">thingy_auth</span>(<span class="at">email =</span> <span class="st">&quot;janedoe_work@gmail.com&quot;</span>)</span></code></pre></div>
+<p>or by specifying same in the <code>&quot;gargle_oauth_email&quot;</code>
+option. A value of <code>email = TRUE</code>, passed directly or via the
+option, is an alternative strategy: <code>TRUE</code> means that gargle
+is allowed to use a matching token whenever there is exactly one
+match.</p>
+<p>The elevated status of <code>email</code> for
+<code>gargle::Gargle2.0</code> tokens is motivated by the fact that many
+of us have multiple Google identities and need them to be very prominent
+when working with Google APIs. This is one of the main motivations for
+<code>gargle::Gargle2.0</code>, which extends
+<code>httr::Token2.0</code>. The <code>gargle::Gargle2.0</code> class
+also defaults to a user-level token cache, as opposed to project-level.
+An overview of the current OAuth cache is available via
+<code>gargle_oauth_cache()</code> and the output looks something like
+this:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">gargle_oauth_sitrep</span>()</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; 14 tokens found in this gargle OAuth cache:</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; ~/Library/Caches/gargle</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&#39; email                         app         scopes                         hash...</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&#39; ----------------------------- ----------- ------------------------------ ----------</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&#39; abcdefghijklm@gmail.com       thingy      ...bigquery, ...cloud-platform 128f9cc...</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&#39; buzzy@example.org             gargle-demo                                15acf95...</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&#39; stella@example.org            gargle-demo ...drive                       4281945...</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&#39; abcdefghijklm@gmail.com       gargle-demo ...drive                       48e7e76...</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&#39; abcdefghijklm@gmail.com       tidyverse                                  69a7353...</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&#39; nopqr@ABCDEFG.com             tidyverse   ...spreadsheets.readonly       86a70b9...</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&#39; abcdefghijklm@gmail.com       tidyverse   ...drive                       d9443db...</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&#39; nopqr@HIJKLMN.com             tidyverse   ...drive                       d9443db...</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&#39; nopqr@ABCDEFG.com             tidyverse   ...drive                       d9443db...</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&#39; stuvwzyzabcd@gmail.com        tidyverse   ...drive                       d9443db...</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&#39; efghijklmnopqrtsuvw@gmail.com tidyverse   ...drive                       d9443db...</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&#39; abcdefghijklm@gmail.com       tidyverse   ...drive.readonly              ecd11fa...</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&#39; abcdefghijklm@gmail.com       tidyverse   ...bigquery, ...cloud-platform ece63f4...</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&#39; nopqr@ABCDEFG.com             tidyverse   ...spreadsheets                f178dd8...</span></span></code></pre></div>
+</div>
+<div id="manipulate-the-credential-function-registry" class="section level2">
+<h2>Manipulate the credential function registry</h2>
+<p>Recall that you can get an overview of the credential functions that
+<code>token_fetch()</code> works through like so:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">names</span>(<span class="fu">cred_funs_list</span>()))</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; credentials_byo_oauth2</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; credentials_service_account</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; credentials_external_account</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; credentials_app_default</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; credentials_gce</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; credentials_user_oauth2</span></span></code></pre></div>
+<p>Sometimes more than one of these auth methods “work”, but only one of
+them actually “works” and, sadly, it’s not the first one. In this case,
+gargle successfully gets a token, but then you experience token-related
+failure in downstream work.</p>
+<p>The most common example of this is someone who is working on Google
+Compute Engine (GCE), but they prefer to auth as a normal user, not as
+the default service account.</p>
+<p>Let’s say you want to prevent <code>token_fetch()</code> from even
+trying one specific auth method, clearing the way for it to
+automagically use the method you want. You can remove a specific
+credential function from the registry. Here’s how to do this for the
+scenario described above, where you want to skip GCE-specific auth:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>gargle<span class="sc">::</span><span class="fu">cred_funs_add</span>(<span class="at">credentials_gce =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p>Learn more in the docs for <code>cred_funs_list()</code>. You can
+even make narrowly scoped changes to the registry with
+<code>local_cred_funs()</code> and <code>with_cred_funs()</code>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

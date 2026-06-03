@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Hannah Owens, Cory Merow" />
+
+<meta name="date" content="2023-10-16" />
+
+<title>rangeModelMetaData with Multiple Species</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">rangeModelMetaData with Multiple
+Species</h1>
+<h4 class="author">Hannah Owens, Cory Merow</h4>
+<h4 class="date">2023-10-16</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#authorship" id="toc-authorship">Authorship</a></li>
+<li><a href="#data" id="toc-data">Data</a></li>
+<li><a href="#data-prep" id="toc-data-prep">Data prep</a></li>
+<li><a href="#model" id="toc-model">Model</a></li>
+<li><a href="#prediction" id="toc-prediction">Prediction</a></li>
+<li><a href="#assessment" id="toc-assessment">Assessment</a></li>
+<li><a href="#tidying-it-all-up" id="toc-tidying-it-all-up">Tidying it
+all up</a></li>
+</ul>
+</div>
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(rangeModelMetadata)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(terra)</span></code></pre></div>
+<div id="authorship" class="section level1">
+<h1>Authorship</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>rmm <span class="ot">&lt;-</span> <span class="fu">rmmTemplate</span>(<span class="at">family=</span><span class="fu">c</span>(<span class="st">&#39;base&#39;</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>rmm<span class="sc">$</span>authorship<span class="sc">$</span>rmmName <span class="ot">&lt;-</span> <span class="st">&#39;Owens_2015_Gadids&#39;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>rmm<span class="sc">$</span>authorship<span class="sc">$</span>names <span class="ot">&lt;-</span> <span class="st">&#39;Owens, Hannah&#39;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>rmm<span class="sc">$</span>authorship<span class="sc">$</span>contact <span class="ot">&lt;-</span> <span class="st">&#39;hannah.owens@gmail.com&#39;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>rmm<span class="sc">$</span>authorship<span class="sc">$</span>relatedReferences <span class="ot">&lt;-</span> <span class="st">&#39;@article{, title={Evolution of codﬁshes (Teleostei: Gadinae) in geographical and ecological space: evidence that physiological limits drove diversiﬁcation of subarctic ﬁshes},author={Owens, Hannah},journal={Journal of Biogeography}, year={2015}, publisher={Wiley-Blackwell}}&#39;</span></span></code></pre></div>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>occurrence<span class="sc">$</span>taxon <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Arctogadus borisovi&quot;</span>, <span class="st">&quot;Arcogadus glacialis&quot;</span>, <span class="st">&quot;Boreogadus saida&quot;</span>, <span class="st">&quot;Eleginus gracilis&quot;</span>, <span class="st">&quot;Gadus macrocephalus&quot;</span>, <span class="st">&quot;Gadus morhua&quot;</span>, <span class="st">&quot;Gadus ogac&quot;</span>, <span class="st">&quot;Melanogrammus aeglefinus&quot;</span>, <span class="st">&quot;Merlangius merlangus&quot;</span>, <span class="st">&quot;Microgadus proximus&quot;</span>, <span class="st">&quot;Microgadus tomcod&quot;</span>, <span class="st">&quot;Pollachius pollachius&quot;</span>, <span class="st">&quot;Pollachius virens&quot;</span>, <span class="st">&quot;Gadus chalcogrammus&quot;</span>, <span class="st">&quot;Trisopterus esmarkii&quot;</span>, <span class="st">&quot;Trisopterus luscus&quot;</span>, <span class="st">&quot;Trisopterus minutus&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>occurrence<span class="sc">$</span>dataType <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Presence only&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>occurrence<span class="sc">$</span>sources <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Global Biodiversity</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="st">Information Facility (GBIF)&quot;</span>, <span class="st">&quot;Ocean Biogeographic Information System (OBIS)&quot;</span>, <span class="st">&quot;Zoological Institute at the Russian Academy of Sciences (ZIN)&quot;</span>, <span class="st">&quot;Natural History Museum in London (NHMUK)&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>occurrence<span class="sc">$</span>presenceSampleSize <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">16</span>, <span class="dv">41</span>, <span class="dv">534</span>, <span class="dv">121</span>, <span class="dv">249</span>, <span class="dv">448</span>, <span class="dv">116</span>, <span class="dv">273</span>, <span class="dv">151</span>, <span class="dv">46</span>, <span class="dv">25</span>, <span class="dv">68</span>, <span class="dv">200</span>, <span class="dv">282</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">128</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>occurrence<span class="sc">$</span>backgroundSampleSizeSet <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>environment<span class="sc">$</span>variableNames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Minimum Sea Ice Concentration&quot;</span>, <span class="st">&quot;Maximum Sea Ice Concentration&quot;</span>, <span class="st">&quot;Mean Mixed Layer Depth&quot;</span>, <span class="st">&quot;Minimum Mixed Layer Depth&quot;</span>, <span class="st">&quot;Maximum Mixed Layer Depth&quot;</span>, <span class="st">&quot;Mean Bottom Salinity&quot;</span>, <span class="st">&quot;Minimum Bottom Salinity&quot;</span>, <span class="st">&quot;Maximum Bottom Salinity&quot;</span>, <span class="st">&quot;Mean Surface Salinity&quot;</span>, <span class="st">&quot;Minimum Surface Salinity&quot;</span>, <span class="st">&quot;Maximum Surface Salinity&quot;</span>, <span class="st">&quot;Mean Bottom Temperature&quot;</span>, <span class="st">&quot;Minimum Bottom Temperature&quot;</span>, <span class="st">&quot;Maximum Bottom Temperature&quot;</span>, <span class="st">&quot;Mean Surface Temperature&quot;</span>, <span class="st">&quot;Minimum Surface Temperature&quot;</span>, <span class="st">&quot;Maximum Surface Temperature&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#Getting and documenting extents</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># This code is provided as an example of how to extract extent information from rasters; below we manaully input the results so that we don&#39;t need to distribute these layers with this pacakge. </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># setwd(&quot;~/Dropbox/rmm/DataForGadidDocumentation/ProjectDirectory/MTrimmedLayers/&quot;)</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># trainingRegionList &lt;- list.files(pattern = &quot;etopo&quot;, recursive = T)</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># extVect &lt;- list()</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># for(n in trainingRegionList){</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#     tmp &lt;- rast(n)</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#     extVect[[length(extVect)+1]] &lt;- ext(tmp)</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co"># rmm$data$environment$extentSet &lt;- extVect</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># rm(trainingRegionList, tmp, extVect, n)</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co"># Manual alternative</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>environment<span class="sc">$</span>extentSet <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>,<span class="fl">50.06732</span>,<span class="fl">90.06732</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>,<span class="fl">54.77051</span>,<span class="fl">89.77051</span>), </span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>,<span class="fl">36.77808</span>,<span class="fl">89.77808</span>), </span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>,<span class="fl">39.46948</span>,<span class="fl">81.46948</span>), </span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>,<span class="fl">23.25928</span> ,<span class="fl">74.25928</span>), </span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">80.8255</span>,<span class="fl">52.1745</span>,<span class="fl">32.15668</span>,<span class="fl">84.15668</span>), </span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="fu">ext</span>( <span class="sc">-</span><span class="fl">169.2665</span>,<span class="sc">-</span><span class="fl">31.26648</span>,<span class="fl">35.74249</span>,<span class="fl">82.74249</span>), </span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">77.09869</span>,<span class="fl">56.90131</span>,<span class="fl">35.9895</span>,<span class="fl">82.9895</span>), </span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">27.11713</span>,<span class="fl">42.88287</span>,<span class="fl">29.41553</span> ,<span class="fl">72.41553</span>), </span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="sc">-</span><span class="dv">115</span>,<span class="fl">31.06689</span> ,<span class="fl">67.06689</span>), </span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">74.711</span>,<span class="sc">-</span><span class="fl">54.711</span>,<span class="fl">38.268</span>,<span class="fl">52.268</span>), </span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">25.20459</span>,<span class="fl">34.79541</span>,<span class="fl">41.92908</span>,<span class="fl">75.92908</span>), </span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">79.63971</span>,<span class="fl">33.36029</span>,<span class="fl">32.28247</span>,<span class="fl">84.28247</span>), </span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>,<span class="fl">28.88068</span>,<span class="fl">75.88068</span>),</span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">26.31464</span>,<span class="fl">28.68536</span>,<span class="fl">42.62609</span>,<span class="fl">79.62609</span>),</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">20.26068</span>,<span class="fl">26.73932</span>,<span class="fl">23.31372</span>,<span class="fl">64.31372</span>),</span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a>  <span class="fu">ext</span>(<span class="sc">-</span><span class="fl">20.40668</span>,<span class="fl">39.593</span>,<span class="fl">25.8183</span>,<span class="fl">71.8183</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>environment<span class="sc">$</span>resolution <span class="ot">&lt;-</span> <span class="st">&quot;1 X 1 degree&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>environment<span class="sc">$</span>sources <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;NOAA National Geophysical Data Center&quot;</span>, <span class="st">&quot;NOAA World Ocean Atlas&quot;</span>, <span class="st">&quot;NOAA National Snow and Ice Data Center&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># omitted for the vignette to avoid distributing the data</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># tmp &lt;- rast(&quot;../EnvProjectionData/etopo.asc&quot;)</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># rmm$data$transfer$environment1$extentSet &lt;- tmp |&gt; ext() |&gt; as.character()</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>transfer<span class="sc">$</span>environment1<span class="sc">$</span>resolution <span class="ot">&lt;-</span> <span class="st">&quot;1 X 1 degree&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>rmm<span class="sc">$</span>data<span class="sc">$</span>transfer<span class="sc">$</span>environment1<span class="sc">$</span>sources <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;NOAA National Geophysical Data Center&quot;</span>, <span class="st">&quot;NOAA World Ocean Atlas&quot;</span>, <span class="st">&quot;NOAA National Snow and Ice Data Center&quot;</span>)</span></code></pre></div>
+</div>
+<div id="data-prep" class="section level1">
+<h1>Data prep</h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>rmm<span class="sc">$</span>dataPrep<span class="sc">$</span>duplicateRemoval<span class="sc">$</span>rule <span class="ot">&lt;-</span> <span class="st">&quot;coordinate&quot;</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>rmm<span class="sc">$</span>dataPrep<span class="sc">$</span>questionablePointRemoval<span class="sc">$</span>notes <span class="ot">&lt;-</span> <span class="st">&quot;Points outside known distribution of species removed.&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>rmm<span class="sc">$</span>dataPrep<span class="sc">$</span>pointInPolygon<span class="sc">$</span>rule <span class="ot">&lt;-</span> <span class="st">&quot;Remove points outside training region of species.&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>rmm<span class="sc">$</span>dataPrep<span class="sc">$</span>spatialThin<span class="sc">$</span>rule <span class="ot">&lt;-</span> <span class="st">&quot;Reduced spatial resolution of points to match resolution of environmental data (1 X 1 resolution).&quot;</span></span></code></pre></div>
+</div>
+<div id="model" class="section level1">
+<h1>Model</h1>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>rmm<span class="sc">$</span>modelFit<span class="sc">$</span>algorithm <span class="ot">&lt;-</span> <span class="st">&quot;maxent&quot;</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>rmm<span class="sc">$</span>modelFit<span class="sc">$</span>algorithmCitation <span class="ot">&lt;-</span> <span class="st">&#39;@inproceedings{phillips2004maximum, title={A maximum entropy approach to species distribution modeling}, author={Phillips, Steven J and Dudik, Miroslav and Schapire, Robert E}, booktitle={Proceedings of the twenty-first international conference on Machine learning},pages={83},year={2004},organization={ACM}}&#39;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>rmm<span class="sc">$</span>modelFit<span class="sc">$</span>maxent<span class="sc">$</span>featureSet <span class="ot">&lt;-</span> <span class="st">&quot;LQP&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>rmm<span class="sc">$</span>modelFit<span class="sc">$</span>maxent<span class="sc">$</span>notes <span class="ot">&lt;-</span> <span class="st">&quot;Ten bootstrap replicates trained with 50% of occurrence points chosen using random seed, maximum of 10000 iterations&quot;</span></span></code></pre></div>
+</div>
+<div id="prediction" class="section level1">
+<h1>Prediction</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>rmm<span class="sc">$</span>prediction<span class="sc">$</span>continuous<span class="sc">$</span>units <span class="ot">&lt;-</span> <span class="st">&quot;absolute probability&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>rmm<span class="sc">$</span>prediction<span class="sc">$</span>transfer<span class="sc">$</span>environment1<span class="sc">$</span>units <span class="ot">&lt;-</span> <span class="st">&quot;absolute probability&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>rmm<span class="sc">$</span>prediction<span class="sc">$</span>transfer<span class="sc">$</span>environment1<span class="sc">$</span>extrapolation <span class="ot">&lt;-</span> <span class="st">&quot;No clamping or extrapolation&quot;</span></span></code></pre></div>
+</div>
+<div id="assessment" class="section level1">
+<h1>Assessment</h1>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>rmm<span class="sc">$</span>evaluation<span class="sc">$</span>notes <span class="ot">&lt;-</span> <span class="st">&quot;Inferred distribution congruent with known ranges for all species.&quot;</span></span></code></pre></div>
+</div>
+<div id="tidying-it-all-up" class="section level1">
+<h1>Tidying it all up</h1>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>rmmClean <span class="ot">&lt;-</span> <span class="fu">rmmCleanNULLs</span>(rmm)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">rmmCheckFinalize</span>(rmmClean)</span></code></pre></div>
+<pre><code>## </code></pre>
+<pre><code>## 
+##  Element name &#39;$modelFit$algorithmCitation&#39; not found in data dictionary!
+##  Did you mean: &#39;$model$algorithmCitation&#39;?</code></pre>
+<pre><code>## The following names are similar to suggested names, please verify:</code></pre>
+<pre><code>## $modelFit$algorithmCitation</code></pre>
+<pre><code>## 
+## Suggested alternatives include: 
+## $model$algorithmCitation</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## The following names are not similar to any suggested names, please verify that these are accurate:</code></pre>
+<pre><code>## $data$environment$extentSet[[1]]
+## $data$environment$extentSet[[2]]
+## $data$environment$extentSet[[3]]
+## $data$environment$extentSet[[4]]
+## $data$environment$extentSet[[5]]
+## $data$environment$extentSet[[6]]
+## $data$environment$extentSet[[7]]
+## $data$environment$extentSet[[8]]
+## $data$environment$extentSet[[9]]
+## $data$environment$extentSet[[10]]
+## $data$environment$extentSet[[11]]
+## $data$environment$extentSet[[12]]
+## $data$environment$extentSet[[13]]
+## $data$environment$extentSet[[14]]
+## $data$environment$extentSet[[15]]
+## $data$environment$extentSet[[16]]
+## $data$environment$extentSet[[17]]
+## $dataPrep$duplicateRemoval$rule
+## $dataPrep$questionablePointRemoval$notes
+## $dataPrep$pointInPolygon$rule
+## $dataPrep$spatialThin$rule
+## $code
+## $modelFit$maxent$featureSet
+## $modelFit$maxent$notes
+## $evaluation$notes</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## 
+## ==========================================</code></pre>
+<pre><code>## For the field rmm$data$occurrence$dataType</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## The following entries are similar to suggested values, please verify:</code></pre>
+<pre><code>## Presence only</code></pre>
+<pre><code>## 
+## 
+## Suggested alternatives include: 
+## presence only</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## 
+## ==========================================</code></pre>
+<pre><code>## For the field rmm$data$environment$variableNames</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## The following entries are not similar to any suggested values, please verify that these are accurate:</code></pre>
+<pre><code>## Minimum Sea Ice Concentration; Maximum Sea Ice Concentration; Mean Mixed Layer Depth; Minimum Mixed Layer Depth; Maximum Mixed Layer Depth; Mean Bottom Salinity; Minimum Bottom Salinity; Maximum Bottom Salinity; Mean Surface Salinity; Minimum Surface Salinity; Maximum Surface Salinity; Mean Bottom Temperature; Minimum Bottom Temperature; Maximum Bottom Temperature; Mean Surface Temperature; Minimum Surface Temperature; Maximum Surface Temperature</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## 
+## ==========================================</code></pre>
+<pre><code>## For the field rmm$prediction$continuous$units</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## The following entries appear accurate:</code></pre>
+<pre><code>## 
+##  absolute probability</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## 
+## ==========================================</code></pre>
+<pre><code>## For the field rmm$prediction$transfer$environment1$units</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## The following entries appear accurate:</code></pre>
+<pre><code>## 
+##  absolute probability</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## 
+## ==========================================</code></pre>
+<pre><code>## For the field rmm$prediction$transfer$environment1$extrapolation</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## The following entries are not similar to any suggested values, please verify that these are accurate:</code></pre>
+<pre><code>## No clamping or extrapolation</code></pre>
+<pre><code>## 
+## </code></pre>
+<pre><code>## ===================================
+## 
+## ===================================</code></pre>
+<pre><code>## All fields are populated.</code></pre>
+<pre><code>## </code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

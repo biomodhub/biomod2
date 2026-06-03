@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Spatial and Spatio-Temporal Geostatistical Modelling, Prediction
+and Simulation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body><div class="container">
+<h1> Spatial and Spatio-Temporal Geostatistical Modelling, Prediction
+and Simulation
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]">
+</h1>
+<hr>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]"></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]"></a>
+</div><h2>Documentation for package &lsquo;gstat&rsquo; version 2.1-6</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a></li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation</a></li>
+<li><a href="../demo">Code demos</a>.  Use <a href="../../utils/help/demo">demo()</a> to run them.</li>
+<li><a href="../NEWS.md">Package NEWS</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#J">J</a>
+<a href="#K">K</a>
+<a href="#M">M</a>
+<a href="#N">N</a>
+<a href="#O">O</a>
+<a href="#P">P</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#V">V</a>
+<a href="#W">W</a>
+<a href="#X">X</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="variogram.html">as.data.frame.variogramCloud</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="vgm.html">as.vgm.variomodel</a></td>
+<td>Generate, or Add to Variogram Model</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="tull.html">Chlorid92</a></td>
+<td>Südliche Tullnerfeld data set</td></tr>
+<tr><td style="width: 25%;"><a href="coalash.html">coalash</a></td>
+<td>Coal ash samples from a mine in Pennsylvania</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="sic97.html">demstd</a></td>
+<td>Spatial Interpolation Comparison 1997 data set: Swiss Rainfall</td></tr>
+<tr><td style="width: 25%;"><a href="DE_RB_2005.html">DE_RB_2005</a></td>
+<td>Spatio-temporal data set with rural background PM10 concentrations in Germany 2005</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="estiStAni.html">estiStAni</a></td>
+<td>Estimation of the spatio-temporal anisotropy</td></tr>
+<tr><td style="width: 25%;"><a href="extractPar.html">extractPar</a></td>
+<td>Extracting parameters and their names from a spatio-temporal variogram model</td></tr>
+<tr><td style="width: 25%;"><a href="extractPar.html">extractParNames</a></td>
+<td>Extracting parameters and their names from a spatio-temporal variogram model</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="fit.lmc.html">fit.lmc</a></td>
+<td>Fit a Linear Model of Coregionalization to a Multivariable Sample Variogram</td></tr>
+<tr><td style="width: 25%;"><a href="fit.StVariogram.html">fit.StVariogram</a></td>
+<td>Fit a spatio-temporal sample variogram to a sample variogram</td></tr>
+<tr><td style="width: 25%;"><a href="fit.variogram.html">fit.variogram</a></td>
+<td>Fit a Variogram Model to a Sample Variogram</td></tr>
+<tr><td style="width: 25%;"><a href="fit.variogram.gls.html">fit.variogram.gls</a></td>
+<td>GLS fitting of variogram parameters</td></tr>
+<tr><td style="width: 25%;"><a href="fit.variogram.reml.html">fit.variogram.reml</a></td>
+<td>REML Fit Direct Variogram Partial Sills to Data</td></tr>
+<tr><td style="width: 25%;"><a href="fulmar.html">fulmar</a></td>
+<td>Fulmaris glacialis data</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="get.contr.html">get.contr</a></td>
+<td>Calculate contrasts from multivariable predictions</td></tr>
+<tr><td style="width: 25%;"><a href="variogramLine.html">getGammas</a></td>
+<td>Semivariance Values For a Given Variogram Model</td></tr>
+<tr><td style="width: 25%;"><a href="progress.html">get_gstat_progress</a></td>
+<td>Get or set progress indicator</td></tr>
+<tr><td style="width: 25%;"><a href="gstat.html">gstat</a></td>
+<td>Create gstat objects, or subset it</td></tr>
+<tr><td style="width: 25%;"><a href="krige.cv.html">gstat.cv</a></td>
+<td>(co)kriging cross validation, n-fold or leave-one-out</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="hscat.html">hscat</a></td>
+<td>Produce h-scatterplot</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="krige.html">idw</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">idw-method</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">idw-methods</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">idw.locations</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">idw.spatial</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">idw0</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="image.html">image</a></td>
+<td>Image Gridded Coordinates in Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="image.html">image.data.frame</a></td>
+<td>Image Gridded Coordinates in Data Frame</td></tr>
+</table>
+
+<h2><a id="J">-- J --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="jura.html">jura</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="jura.html">jura.grid</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="jura.html">jura.pred</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="jura.html">jura.val</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="jura.html">juragrid.dat</a></td>
+<td>Jura data set</td></tr>
+</table>
+
+<h2><a id="K">-- K --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="krige.html">krige</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">krige-method</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krigeST.html">krige-method</a></td>
+<td>Ordinary global Spatio-Temporal Kriging</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">krige-methods</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.cv.html">krige.cv</a></td>
+<td>(co)kriging cross validation, n-fold or leave-one-out</td></tr>
+<tr><td style="width: 25%;"><a href="krige.cv.html">krige.cv-method</a></td>
+<td>(co)kriging cross validation, n-fold or leave-one-out</td></tr>
+<tr><td style="width: 25%;"><a href="krige.cv.html">krige.cv.locations</a></td>
+<td>(co)kriging cross validation, n-fold or leave-one-out</td></tr>
+<tr><td style="width: 25%;"><a href="krige.cv.html">krige.cv.spatial</a></td>
+<td>(co)kriging cross validation, n-fold or leave-one-out</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">krige.locations</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">krige.spatial</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krige.html">krige0</a></td>
+<td>Simple, Ordinary or Universal, global or local, Point or Block Kriging, or simulation.</td></tr>
+<tr><td style="width: 25%;"><a href="krigeSimCE.html">krigeSimCE</a></td>
+<td>Simulation based on circulant embedding</td></tr>
+<tr><td style="width: 25%;"><a href="krigeST.html">krigeST</a></td>
+<td>Ordinary global Spatio-Temporal Kriging</td></tr>
+<tr><td style="width: 25%;"><a href="krigeSTSimTB.html">krigeSTSimTB</a></td>
+<td>conditional/unconditional spatio-temporal simulation</td></tr>
+<tr><td style="width: 25%;"><a href="krigeST.html">krigeSTTg</a></td>
+<td>Ordinary global Spatio-Temporal Kriging</td></tr>
+<tr><td style="width: 25%;"><a href="krigeTg.html">krigeTg</a></td>
+<td>TransGaussian kriging using Box-Cox transforms</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="map.to.lev.html">map.to.lev</a></td>
+<td>rearrange data frame for plotting with levelplot</td></tr>
+<tr><td style="width: 25%;"><a href="meuse.all.html">meuse.all</a></td>
+<td>Meuse river data set - original, full data set</td></tr>
+<tr><td style="width: 25%;"><a href="meuse.alt.html">meuse.alt</a></td>
+<td>Meuse river altitude data set</td></tr>
+</table>
+
+<h2><a id="N">-- N --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="ncp.grid.html">ncp.grid</a></td>
+<td>Grid for the NCP, the Dutch part of the North Sea</td></tr>
+</table>
+
+<h2><a id="O">-- O --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="ossfim.html">ossfim</a></td>
+<td>Kriging standard errors as function of grid spacing and block size</td></tr>
+<tr><td style="width: 25%;"><a href="oxford.html">oxford</a></td>
+<td>Oxford soil samples</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="vgm.panel.html">panel.pointPairs</a></td>
+<td>panel functions for most of the variogram plots through lattice</td></tr>
+<tr><td style="width: 25%;"><a href="pcb.html">pcb</a></td>
+<td>PCB138 measurements in sediment at the NCP, the Dutch part of the North Sea</td></tr>
+<tr><td style="width: 25%;"><a href="plot.gstatVariogram.html">plot.gstatVariogram</a></td>
+<td>Plot a sample variogram, and possibly a fitted model</td></tr>
+<tr><td style="width: 25%;"><a href="plot.pointPairs.html">plot.pointPairs</a></td>
+<td>Plot a point pairs, identified from a variogram cloud</td></tr>
+<tr><td style="width: 25%;"><a href="plot.gstatVariogram.html">plot.StVariogram</a></td>
+<td>Plot a sample variogram, and possibly a fitted model</td></tr>
+<tr><td style="width: 25%;"><a href="plot.variogramCloud.html">plot.variogramCloud</a></td>
+<td>Plot and Identify Data Pairs on Sample Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="plot.gstatVariogram.html">plot.variogramMap</a></td>
+<td>Plot a sample variogram, and possibly a fitted model</td></tr>
+<tr><td style="width: 25%;"><a href="vgm.html">plot.variogramModel</a></td>
+<td>Generate, or Add to Variogram Model</td></tr>
+<tr><td style="width: 25%;"><a href="predict.gstat.html">predict</a></td>
+<td>Multivariable Geostatistical Prediction and Simulation</td></tr>
+<tr><td style="width: 25%;"><a href="predict.gstat.html">predict.gstat</a></td>
+<td>Multivariable Geostatistical Prediction and Simulation</td></tr>
+<tr><td style="width: 25%;"><a href="jura.html">prediction.dat</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="gstat.html">print.gstat</a></td>
+<td>Create gstat objects, or subset it</td></tr>
+<tr><td style="width: 25%;"><a href="variogram.html">print.gstatVariogram</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="variogram.html">print.variogramCloud</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="vgm.html">print.variogramModel</a></td>
+<td>Generate, or Add to Variogram Model</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="progress.html">set_gstat_progress</a></td>
+<td>Get or set progress indicator</td></tr>
+<tr><td style="width: 25%;"><a href="show.vgms.html">show.vgms</a></td>
+<td>Plot Variogram Model Functions</td></tr>
+<tr><td style="width: 25%;"><a href="sic2004.html">sic.grid</a></td>
+<td>Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity</td></tr>
+<tr><td style="width: 25%;"><a href="sic2004.html">sic.pred</a></td>
+<td>Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity</td></tr>
+<tr><td style="width: 25%;"><a href="sic2004.html">sic.test</a></td>
+<td>Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity</td></tr>
+<tr><td style="width: 25%;"><a href="sic2004.html">sic.train</a></td>
+<td>Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity</td></tr>
+<tr><td style="width: 25%;"><a href="sic2004.html">sic.val</a></td>
+<td>Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity</td></tr>
+<tr><td style="width: 25%;"><a href="sic2004.html">sic2004</a></td>
+<td>Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity</td></tr>
+<tr><td style="width: 25%;"><a href="sic97.html">sic_full</a></td>
+<td>Spatial Interpolation Comparison 1997 data set: Swiss Rainfall</td></tr>
+<tr><td style="width: 25%;"><a href="sic97.html">sic_obs</a></td>
+<td>Spatial Interpolation Comparison 1997 data set: Swiss Rainfall</td></tr>
+<tr><td style="width: 25%;"><a href="spplot.vcov.html">spplot.vcov</a></td>
+<td>Plot map matrix of prediction error variances and covariances</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="jura.html">transect.dat</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="tull.html">tull</a></td>
+<td>Südliche Tullnerfeld data set</td></tr>
+<tr><td style="width: 25%;"><a href="tull.html">tull36</a></td>
+<td>Südliche Tullnerfeld data set</td></tr>
+<tr><td style="width: 25%;"><a href="tull.html">TULLNREG</a></td>
+<td>Südliche Tullnerfeld data set</td></tr>
+</table>
+
+<h2><a id="V">-- V --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="jura.html">validation.dat</a></td>
+<td>Jura data set</td></tr>
+<tr><td style="width: 25%;"><a href="variogram.html">variogram</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="variogram.html">variogram.default</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="variogram.html">variogram.formula</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="variogram.html">variogram.gstat</a></td>
+<td>Calculate Sample or Residual Variogram or Variogram Cloud</td></tr>
+<tr><td style="width: 25%;"><a href="variogramLine.html">variogramLine</a></td>
+<td>Semivariance Values For a Given Variogram Model</td></tr>
+<tr><td style="width: 25%;"><a href="variogramST.html">variogramST</a></td>
+<td>Calculate Spatio-Temporal Sample Variogram</td></tr>
+<tr><td style="width: 25%;"><a href="variogramSurface.html">variogramSurface</a></td>
+<td>Semivariance values for a given spatio-temporal variogram model</td></tr>
+<tr><td style="width: 25%;"><a href="vgm.html">vgm</a></td>
+<td>Generate, or Add to Variogram Model</td></tr>
+<tr><td style="width: 25%;"><a href="vgm.panel.html">vgm.panel.xyplot</a></td>
+<td>panel functions for most of the variogram plots through lattice</td></tr>
+<tr><td style="width: 25%;"><a href="vgmArea.html">vgmArea</a></td>
+<td>point-point, point-area or area-area semivariance</td></tr>
+<tr><td style="width: 25%;"><a href="vgmAreaST.html">vgmAreaST</a></td>
+<td>Function that returns the covariances for areas</td></tr>
+<tr><td style="width: 25%;"><a href="vgmST.html">vgmST</a></td>
+<td>Constructing a spatio-temporal variogram</td></tr>
+<tr><td style="width: 25%;"><a href="vv.html">vv</a></td>
+<td>Precomputed variogram for PM10 in data set air</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="walker.html">walker</a></td>
+<td>Walker Lake sample and exhaustive data sets</td></tr>
+<tr><td style="width: 25%;"><a href="walker.html">walker.exh</a></td>
+<td>Walker Lake sample and exhaustive data sets</td></tr>
+<tr><td style="width: 25%;"><a href="wind.html">wind</a></td>
+<td>Ireland wind data, 1961-1978</td></tr>
+<tr><td style="width: 25%;"><a href="wind.html">wind.loc</a></td>
+<td>Ireland wind data, 1961-1978</td></tr>
+</table>
+
+<h2><a id="X">-- X --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="image.html">xyz2img</a></td>
+<td>Image Gridded Coordinates in Data Frame</td></tr>
+</table>
+
+<h2><a id="misc">-- misc --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="gstat.html">[.gstat</a></td>
+<td>Create gstat objects, or subset it</td></tr>
+</table>
+</div></body></html>

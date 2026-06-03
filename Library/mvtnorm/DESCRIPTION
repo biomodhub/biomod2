@@ -1,0 +1,41 @@
+Package: mvtnorm
+Title: Multivariate Normal and t Distributions
+Version: 1.3-7
+Date: 2026-04-14
+Authors@R: c(person("Alan", "Genz", role = "aut"),
+             person("Frank", "Bretz", role = "aut"),
+             person("Tetsuhisa", "Miwa", role = "aut"),
+             person("Xuefei", "Mi", role = "aut"),
+             person("Friedrich", "Leisch", role = "ctb"),
+             person("Fabian", "Scheipl", role = "ctb"),
+             person("Bjoern", "Bornkamp", role = "ctb", comment = c(ORCID = "0000-0002-6294-8185")),
+             person("Martin", "Maechler", role = "ctb", comment = c(ORCID = "0000-0002-8685-9910")),
+             person("Torsten", "Hothorn", role = c("aut", "cre"),
+                    email = "Torsten.Hothorn@R-project.org", comment = c(ORCID = "0000-0001-8301-0471")))
+Description: Computes multivariate normal and t probabilities, quantiles, random deviates, 
+  and densities. Log-likelihoods for multivariate Gaussian models and Gaussian copulae 
+  parameterised by Cholesky factors of covariance or precision matrices are implemented 
+  for interval-censored and exact data, or a mix thereof. Score functions for these 
+  log-likelihoods are available. A class representing multiple lower triangular matrices 
+  and corresponding methods are part of this package.
+Imports: stats
+Depends: R(>= 3.5.0)
+Suggests: qrng, numDeriv, bibtex
+License: GPL-2
+URL: http://mvtnorm.R-forge.R-project.org
+NeedsCompilation: yes
+Packaged: 2026-04-14 15:00:23 UTC; hothorn
+Author: Alan Genz [aut],
+  Frank Bretz [aut],
+  Tetsuhisa Miwa [aut],
+  Xuefei Mi [aut],
+  Friedrich Leisch [ctb],
+  Fabian Scheipl [ctb],
+  Bjoern Bornkamp [ctb] (ORCID: <https://orcid.org/0000-0002-6294-8185>),
+  Martin Maechler [ctb] (ORCID: <https://orcid.org/0000-0002-8685-9910>),
+  Torsten Hothorn [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-8301-0471>)
+Maintainer: Torsten Hothorn <Torsten.Hothorn@R-project.org>
+Repository: CRAN
+Date/Publication: 2026-04-15 07:10:13 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:39:14 UTC; unix

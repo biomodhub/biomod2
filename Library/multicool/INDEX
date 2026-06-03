@@ -1,0 +1,9 @@
+Bell                    Compute the Bell numbers
+Stirling2               Compute Stirling numbers of the second kind
+allPerm                 Generate and return all permutations of a
+                        multiset
+genComp                 Generate all, or a subset, of the integer
+                        partitions of an integer n.
+initMC                  Initialise the permutation object
+multinom                Calculate multinomial coefficients
+nextPerm                Return the next permutation of the multiset

@@ -1,0 +1,21 @@
+nstates 8;
+nstates nogaps;
+xread
+10 5
+&[num]
+	Tax_a 0000
+	Tax_b 0002
+	Tax_c 1000
+	Tax_d 1001
+	Tax_e 1010
+
+&[dna]
+	Tax_a           GGCCCG
+	Tax_b       GGTTA[A G]
+	Tax_c         ATACGT
+	Tax_d            ATATAT
+	Tax_e       TGTG?C
+
+;
+
+proc /;

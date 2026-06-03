@@ -1,0 +1,71 @@
+---
+title: "FAQ"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FAQ}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Here are answers to some common questions about **ade4** (more to come soon).
+
+## Installation
+
+### How to install the current version of `ade4`?
+The easiest way to install ade4 is to use `install.packages("ade4")` in your R session.
+
+### How to install the development version of `ade4`?
+To install the development version from github:
+
+```r
+remotes::install_github("adeverse/ade4")
+```
+
+### How do I know which `ade4` version I'm using?
+In your R session, type:
+
+```r
+packageDescription("ade4", field="Version")
+```
+
+## Graphics
+
+### What is `adegraphics`?
+The package `adegraphics` provides a complete reimplementation of graphical functionalities of `ade4`. It is based on `lattice` and provides a convenient way to manage graphics as objects. Moreover, it offers much more flexibility than `ade4` to customize your plots.
+
+### How to load `adegraphics`?
+As `adegraphics` provides a reimplementation of `ade4` graphical functions, many functions have the same name in the two packages. To be sure to use `adegraphics` functions, `adegraphics` should be loaded **after** `ade4`:
+
+```{r, message=FALSE}
+library(ade4)
+library(adegraphics)
+```
+
+An alternative it to explicitly specify the package in the call using the `::` operator:
+
+```{r, eval=FALSE}
+adegraphics::s.label()
+```
+
+
+### How to interpret ellipses plotted by `s.class` function?
+The ellipses represent the main variation for individuals of a given class. They are based on inertia statistics not on significance levels.
+
+## Simple Analysis
+### How to obtain coordinates for individuals?
+In simple analysis (e.g., `dudi.pca`), scores for individuals are stored in `$li` element of the returned object
+
+### How to obtain coordinates for variables?
+In simple analysis (e.g., `dudi.pca`), scores for variables are stored in `$co` element of the returned object
+
+### What are the `$l1` and `$c1` elements of a dudi ?
+In simple analysis (e.g., `dudi.pca`), the `$c1` element contains the principal axes (aka "loadings" of the variables) and the `$l1` element contains the principal components. The norm of these two elements is equal to 1, which makes them useful for drawing biplots (for example).
+

@@ -1,0 +1,182 @@
+---
+title: "Text formatters"
+author: "Max Gordon"
+date: "`r Sys.Date()`"
+VignetteBuilder: knitr, rmarkdown
+output:
+  rmarkdown::html_vignette:
+    css: custom.css
+    keep_md: true
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Text formatters}
+  %\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+Text formatters
+===============
+
+Bundled with this package are some text formatting functions. The purpose of these is to convert numeric values into character/text that is more pleasent in publication tables.
+
+txtRound
+--------
+
+While `base::round()` is an excellent function in most cases we often want a table to retain trailing 0:s. E.g.
+
+```{r message=FALSE}
+library(htmlTable)
+library(dplyr)
+library(magrittr)
+data("mtcars")
+
+mtcars %<>%
+  mutate(am = factor(am, levels = 0:1, labels = c("Automatic", "Manual")),
+         vs = factor(vs, levels = 0:1, labels = c("V-shaped", "straight")))
+
+mtcars %>% 
+  head(3) %>% 
+  select(Transmission = am, Gas = mpg, Weight = wt) %>% 
+  htmlTable()
+```
+
+doesn't look visually that great, instead we would prefer to have something like this:
+
+```{r}
+mtcars %>% 
+  head(3) %>% 
+  select(Transmission = am, Gas = mpg, Weight = wt) %>% 
+  txtRound(digits = 1) %>% 
+  htmlTable()
+```
+
+### Single/vector values
+
+At the core of the `txtRound` is the single/vector value conversion:
+
+```{r}
+txtRound(c(1, 1.1034), digits = 2)
+
+# Use a character to convert
+txtRound("1.2333", digits = 2)
+```
+
+If you have some values that need thousand separation you can also add `txtInt_args`.
+
+```{r}
+# Large numbers can be combined with the txtInt option
+txtRound(12345.12, digits = 1, txtInt_args = TRUE)
+
+txtRound(12345.12, digits = 1, txtInt_args = list(language = "se", html = FALSE))
+```
+
+### Data frames
+
+As seen in the introduction we can use data frames for input. We can here rename the converted columns:
+
+```{r}
+mtcars %>% 
+  head(3) %>% 
+  select(mpg, wt) %>% 
+  txtRound(mpg, wt_txt = wt, digits = 1)
+```
+
+And we can specify the number of decimals that we're interested in per column:
+
+```{r}
+mtcars %>% 
+  head(3) %>% 
+  select(mpg, qsec, wt) %>% 
+  txtRound(digits = list(wt = 2, .default = 1))
+```
+
+### Matrix
+
+We can also feed a matrix into the `txtRound`:
+
+```{r}
+mtcars_matrix <- mtcars %>% 
+  select(mpg, qsec, wt) %>% 
+  head(3) %>% 
+  as.matrix()
+
+mtcars_matrix %>% 
+  txtRound(digits = 1)
+```
+
+Here we have some options of excluding columns/rows using regular expressions:
+
+```{r}
+mtcars_matrix %>% 
+  txtRound(excl.cols = "^wt$",
+           excl.rows = "^Mazda RX4$",
+           digits = 1)
+```
+
+Similarly to the data.frame we can use the same syntax to pick column specific digits:
+
+```{r}
+mtcars_matrix %>% 
+  txtRound(digits = list(mpg = 0, wt = 2, .default = 1))
+```
+
+txtInt
+------
+
+While scientific format is useful if familiar with the syntax it can be difficult to grasp for scholars with a less mathematical background. Therefore the thousand separator style can be quite useful, also known as [digital grouping](https://en.wikipedia.org/wiki/Decimal_separator#Digit_grouping):
+
+```{r}
+txtInt(1e7)
+```
+
+As Swedish and many other languages rely on space (SI-standard) we can specify language as a parameter. Note that as we don't want to have line breaks within a digit we can use [non-breaking space](https://en.wikipedia.org/wiki/Non-breaking_space) for keeping the number intact (the html-code is `&nbsp;`):
+
+```{r}
+txtInt(1e7, language = "SI", html = FALSE)
+
+txtInt(1e7, language = "SI", html = TRUE)
+```
+
+Note that there are the option `htmlTable.language` and `htmlTable.html` that you can use for the input of these parameters.
+
+txtPval
+-------
+
+The p-value is perhaps the most controversial of statistical output, nevertheless it is still needed and used correctly it has it's use. P-values are frequently rounded as the decimals are not as important. The `txtPval` is a convenient function with some defaults that correspond to typical uses in medical publications.
+
+```{r}
+txtPval(c(0.1233213, 0.035, 0.001, 0.000001), html = FALSE)
+
+# The < sign is less-than in html code '&lt;'
+txtPval(c(0.05, 0.001, 0.000001), html = TRUE)
+```
+
+txtMergeLines
+-------------
+
+In html we indicate new line using *&lt;br /&gt;* while the latex style uses *hbox*. To help with these two there is the `txtMergeLines` that merges lines into one properly formatted unit:
+
+```{r}
+txtMergeLines("Line 1",
+              "Line 2",
+              "Line 3")
+```
+
+Note that you can also use a single multi-line string:
+
+```{r}
+txtMergeLines("Line 1
+               Line 2
+               Line 3")
+```
+
+
+```{r}
+txtMergeLines("Line 1
+               Line 2
+               Line 3",
+              html = FALSE)
+```
+

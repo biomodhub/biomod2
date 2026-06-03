@@ -1,0 +1,9 @@
+export( "readMps" )
+export( "solveLP" )
+export( "writeMps" )
+
+importFrom( "lpSolve", "lp" )
+
+S3method( "print", "solveLP" )
+S3method( "print", "summary.solveLP" )
+S3method( "summary", "solveLP" )

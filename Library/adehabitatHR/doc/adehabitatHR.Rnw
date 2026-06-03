@@ -1,0 +1,2741 @@
+\documentclass{article}
+% \VignetteIndexEntry{adehabitatHR: classes and methods for home range estimation}
+
+\usepackage{graphicx}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{Sweave}
+\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\let\pkg=\strong
+
+\title{ Home Range Estimation in R:\\
+the {\tt adehabitatHR} Package }
+\author{Clement Calenge,\\
+  Office national de la classe et de la faune
+  sauvage\\
+  Saint Benoist -- 78610 Auffargis -- France.}
+\date{Apr 2023}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+<<echo=FALSE>>=
+owidth <- getOption("width")
+options("width"=80)
+ow <- getOption("warn")
+options("warn"=-1)
+.PngNo <- 0
+wi <- 600
+pt <- 25
+@
+
+<<label=afig,echo=FALSE,eval=FALSE>>=
+.PngNo <- .PngNo + 1; file <- paste("Fig-bitmap-",
+          .PngNo, ".png", sep="")
+png(file=file, width = wi, height = wi, pointsize = pt)
+@
+
+<<label=zfig,echo=FALSE,eval=FALSE>>=
+dev.null <- dev.off()
+cat("\\includegraphics[height=7cm,width=7cm]{", file, "}\n\n", sep="")
+@
+
+<<label=zfigg,echo=FALSE,eval=FALSE>>=
+dev.null <- dev.off()
+cat("\\includegraphics[height=14cm,width=14cm]{", file, "}\n\n", sep="")
+@
+
+
+\section{History of the package adehabitatHR}
+
+The package {\tt adehabitatHR} contains functions dealing with home-range
+analysis that were originally available in the package {\tt
+  adehabitat} (Calenge, 2006).  The data used for such analysis are
+generally relocation data collected on animals monitored using VHF or
+GPS collars.\\
+
+I developped the package {\tt adehabitat} during my PhD (Calenge, 2005)
+to make easier the analysis of habitat selection by animals.  The
+package {\tt adehabitat} was designed to extend the capabilities of
+the package {\tt ade4} concerning studies of habitat selection by
+wildlife.\\
+
+Since its first submission to CRAN in September 2004, a lot of
+work has been done on the management and analysis of spatial data in
+R, and especially with the release of the package {\tt sp} (Pebesma
+and Bivand, 2005).  The package {\tt sp} provides classes of data that
+are really useful to deal with spatial data...\\
+
+In addition, with the increase of both the number (more than 250
+functions in Oct. 2008) and the diversity of the functions in the
+package \texttt{adehabitat}, it soon became apparent that a reshaping
+of the package was needed, to make its content clearer to the users.  I
+decided to ``split'' the package {\tt adehabitat} into four packages:\\
+
+\begin{itemize}
+\item {\tt adehabitatHR} package provides classes and methods for dealing
+  with home range analysis in R.
+\item {\tt adehabitatHS} package provides classes and methods for dealing
+  with habitat selection analysis in R.
+\item {\tt adehabitatLT} package provides classes and methods for dealing
+  with animals trajectory analysis in R.
+\item {\tt adehabitatMA} package provides classes and methods for dealing
+  with maps in R.\\
+\end{itemize}
+
+We consider in this document the use of the package {\tt adehabitatHR} to
+deal with home-range analysis.  All the methods available in
+\texttt{adehabitat} are also available in \texttt{adehabitatHR}, but the
+classes of data returned by the functions of \texttt{adehabitatHR} are
+completely different from the classes returned by the same functions
+in \texttt{adehabitat}.  Indeed, the classes of data returned by the
+functions of \texttt{adehabitatHR} have been designed to be compliant with
+the classes of data provided by the package \texttt{sp}.\\
+
+
+Package {\tt adehabitatHR} is loaded by
+<<echo=TRUE,print=FALSE>>=
+library(adehabitatHR)
+@
+
+<<echo=FALSE,print=FALSE>>=
+suppressWarnings(RNGversion("3.5.0"))
+set.seed(13431)
+@
+
+
+\section{Basic summary of the functions of the packages}
+
+The package \texttt{adehabitatHR} implements the following home range
+estimation methods:\\
+
+\begin{enumerate}
+\item The Minimum Convex Polygon (Mohr, 1947);
+\item Several kernel home range methods:
+  \begin{itemize}
+  \item The ``classical'' kernel method (Worton, 1989)
+  \item the Brownian bridge kernel method (Bullard, 1999, Horne et
+    al. 2007);
+  \item The Biased random bridge kernel method, also called
+    ``movement-based kernel estimation'' (Benhamou and Cornelis, 2010,
+    Benhamou, 2011);
+  \item the product kernel algorithm (Keating and Cherry, 2009).
+  \end{itemize}
+\item Several home-range estimation methods relying on the calculation
+  of convex hulls:
+  \begin{itemize}
+  \item The modification by Kenward et al. (2001) of the
+    single-linkage clustering algorithm;
+  \item The three LoCoH (Local Convex Hull) methods developed by Getz et
+    al. (2007)\\
+  \item The characteristic hull method of Downs and Horner (2009).
+  \end{itemize}
+\end{enumerate}
+
+I describe these functions in this vignette.
+
+
+\subsection{The classes of data required as input}
+
+The package \texttt{adehabitatHR}, as all the brother ``adehabitat''
+packages, relies on the classes of data provided by the
+package \texttt{sp}.  Two types of data can be accepted as input of
+the functions of the package \texttt{adehabitatHR}:\\
+
+\begin{itemize}
+\item objects of the class \texttt{SpatialPoints} (package
+  \texttt{sp}).  These objects are designed to store the coordinates
+  of points into space, and are especially well designed to store the
+  relocations of \textbf{one} animal monitored using radio-tracking.\\
+
+\item objects of the class \texttt{SpatialPointsDataFrame} (package
+  \texttt{sp}).  These objects are also designed to store the
+  coordinates of points into space, but also store additionnal
+  information concerning the points (attribute data).  This class of
+  data is especially well designed to store the relocations of several
+  animals monitored using radio-tracking.  In this case, the attribute
+  data should contain only one variable: a factor indicating the
+  identity of the animals.\\
+\end{itemize}
+
+All the home-range estimation methods included in the
+package can take an object belonging to one of these two classes as
+the argument \texttt{xy}.  For example, generate a sample of
+relocations uniformly distributed on the plane:
+
+<<>>=
+xy <- matrix(runif(60), ncol=2)
+head(xy)
+@
+
+The object \texttt{xy} is a matrix containing 30 relocations of a
+virtual animal.  Convert it into the class \texttt{SpatialPoints}:
+
+<<>>=
+xysp <- SpatialPoints(xy)
+@
+
+Consider the function \texttt{clusthr}, which implements the
+single-linkage clustering algorithm (see next sections).  Using the
+function \texttt{clusthr} on this object returns an object of class
+\texttt{SpatialPolygonsDataFrame}:
+
+<<>>=
+clu <- clusthr(xysp)
+class(clu)
+@
+
+Show the results:
+
+<<label=fig1,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(clu)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig1>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig1>>
+<<zfig>>
+@
+\end{center}
+
+
+Now, consider the relocations of another animal:
+
+<<>>=
+xy2 <- matrix(runif(60), ncol=2)
+@
+
+We can bind the two matrices together:
+
+<<>>=
+xyt <- rbind(xy, xy2)
+@
+
+and generate a vector containing the ID of the animals for each
+relocation of the object \texttt{xyt}:
+
+<<>>=
+id <- gl(2,30)
+@
+
+We can convert the object \texttt{id} into a
+\texttt{SpatialPointsDataFrame}:
+
+<<>>=
+idsp <- data.frame(id)
+coordinates(idsp) <- xyt
+class(idsp)
+@
+
+And we can use the same function \texttt{clusthr} on this new object:
+
+<<>>=
+clu2 <- clusthr(idsp)
+class(clu2)
+clu2
+@
+
+An object of the class \texttt{"MCHu"} is basically a list of objects
+of class \texttt{SpatialPolygonsDataFrame}, with one element per
+animal.  Thus:
+
+<<>>=
+length(clu2)
+class(clu2[[1]])
+class(clu2[[2]])
+@
+
+Although each \texttt{SpatialPolygonsDataFrame} of the list can be
+easily handled by the functions of the package \texttt{sp}, the
+package \texttt{adehabitatHR} also contains functions allowing to deal
+with such lists.  For example:
+
+<<label=fig2,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(clu2)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig2>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig2>>
+<<zfig>>
+@
+\end{center}
+
+
+Therefore, the same home-range estimating function can accept an
+object of class \texttt{SpatialPoints} (one animal) or
+\texttt{SpatialPointsDataFrame} (several animals).  This is the case of
+all home-range estimation methods in \texttt{adehabitatHR}.
+
+
+\subsection{Our example data set}
+
+I will illustrate the use of the functions in \texttt{adehabitatHR} using
+a subset of the data collected by Daniel Maillard (1996;
+\textit{Office national de la chasse et de la faune sauvage},
+Montpellier) on the wild boar at Puechabon (near Montpellier, South of
+France).  First load the dataset \texttt{puechabonsp}:
+
+<<>>=
+data(puechabonsp)
+names(puechabonsp)
+@
+
+This dataset is a list with two components: the component
+\texttt{relocs} is a \texttt{SpatialPointsDataFrame} containing the
+relocations of four wild boars monitored using radio-tracking.  The
+following variables are available for each relocations:
+
+<<>>=
+head(as.data.frame(puechabonsp$relocs))
+@
+
+The first variable is the identity of the animals, and we will use it
+in the estimation process.\\
+
+The component \texttt{map} is a \texttt{SpatialPixelsDataFrame}
+containing the maps of four environmental variables on the study area
+(Elevation, slope, aspect and herbaceous cover).  Have a look at the
+distribution of the relocations on an elevation map:
+
+<<label=fig3,echo=FALSE,fig=FALSE,eval=FALSE,keep.source=TRUE>>=
+## Map of the elevation
+image(puechabonsp$map, col=grey(c(1:10)/10))
+## map of the relocations
+plot(puechabonsp$relocs, add=TRUE,
+     col=as.data.frame(puechabonsp$relocs)[,1])
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE,keep.source=TRUE>>=
+<<fig3>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE,keep.source=TRUE>>=
+<<afig>>
+<<fig3>>
+<<zfig>>
+@
+\end{center}
+
+
+
+
+\section{The Minimum Convex Polygon (MCP)}
+
+\subsection{The method}
+
+The MCP is probably the most widely used estimation method.  This
+method consists in the calculation of the smallest convex polygon
+enclosing all the relocations of the animal.  This polygon is
+considered to be the home range of the animal.  Because
+the home range has been defined as the area traversed by the animal
+during its \textbf{normal} activities of foraging, mating and caring
+for young (Burt, 1943), a common operation consists to first remove a
+small percentage of the relocations farthest from the centroid of the
+cloud of relocations before the estimation.  Indeed, the animal may
+sometimes make occasionnal large moves to unusual places outside its
+home range, and this results into outliers that cannot be considered
+as ``normal activities''.\\
+
+\subsection{The function \texttt{mcp} and interaction with the package
+\texttt{sp}}
+\label{sec:mcpmeth}
+
+The function \texttt{mcp} allows the MCP estimation.  For example,
+using the \texttt{puechabonsp} dataset, we estimate here the MCP of
+the monitored wild boars (after the removal of 5\% of extreme
+points).  Remember that the first column of
+\texttt{puechabonsp\$relocs} is the identity of the animals:
+
+<<>>=
+data(puechabonsp)
+cp <- mcp(puechabonsp$relocs[,1], percent=95)
+@
+
+The results are stored in an object of class
+\texttt{SpatialPolygonsDataFrame}:
+
+<<>>=
+class(cp)
+@
+
+Therefore the functions available in the package \texttt{sp} and
+related packages (\texttt{sf}, etc.) are available to deal with
+these objects.  For example, the function \texttt{plot}:
+
+
+<<label=fig4,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(cp)
+plot(puechabonsp$relocs, add=TRUE)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig4>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig4>>
+<<zfig>>
+@
+\end{center}
+
+Similarly, the function \texttt{st\_write} from the package \texttt{sf}
+can be used to export the object \texttt{cp} to a shapefile (after
+conversion to the class sf), so that it can be read into a GIS:
+
+
+<<>>=
+library(sf)
+@
+
+<<eval=FALSE>>=
+st_write(st_as_sf(cp), "homerange.shp")
+@
+
+The resulting shapefils can be read in any GIS.
+
+\subsection{Overlay operations}
+
+The function \texttt{over} of the package \texttt{sp} allows to
+combine points (including grid of pixels) and polygons for
+points-in-polygon operations (see the help page of this function).
+For example, the element \texttt{map} of the dataset
+\texttt{puechabonsp} is a map of the study area according to four
+variables:
+
+<<>>=
+head(as.data.frame(puechabonsp$map))
+@
+
+This object is of the class \texttt{SpatialPixelsDataFrame}.
+We may identify the pixels of this map enclosed in each home range
+using the function \texttt{over} from the package \texttt{sp}.
+For example, to identify the pixels enclosed in the home range of the
+second animal:
+
+<<>>=
+enc <- over(puechabonsp$map, as(cp[2,],"SpatialPolygons"), fn=function(x) return(1))
+enc <- as.data.frame(enc)
+head(enc)
+@
+
+The result is a data.frame with one variable containing the value 1 if
+a pixel of the map is included in a home range, and NA if the pixel is
+outside the home-range.  We may transform this vector into a
+\texttt{SpatialPixelsDataFrame}, using the functions of the package
+\texttt{sp}:
+
+<<>>=
+coordinates(enc) <- coordinates(puechabonsp$map)
+gridded(enc) <- TRUE
+@
+
+The result is shown below, in black, on an elevation map:
+
+<<label=fig5,echo=FALSE,fig=FALSE,eval=FALSE>>=
+image(puechabonsp$map)
+image(enc, add=TRUE, col="black", useRasterImage=FALSE)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig5>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig5>>
+<<zfig>>
+@
+\end{center}
+
+However, because the rasterization of home ranges is a common
+operation, I included a function \texttt{hr.rast} to make this
+operation more straightforward:
+
+<<>>=
+cprast <- hr.rast(cp, puechabonsp$map)
+@
+
+The resulting object is a \texttt{SpatialPixelsDataFrame} with one
+column per animal:
+
+<<label=sldkslsd,echo=FALSE,fig=FALSE,eval=FALSE>>=
+par(mar=c(0,0,0,0))
+par(mfrow=c(2,2))
+for (i in 1:4) {
+    image(cprast[,i], useRasterImage=FALSE)
+    box()
+}
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<sldkslsd>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<sldkslsd>>
+<<zfig>>
+@
+\end{center}
+
+
+\subsection{Computation of the home-range size}
+
+The home range size is automatically computed by the function
+\texttt{mcp}.  Thus, coercing the object returned by the function to
+the class \texttt{data.frame} gives access to the home range size:
+
+<<>>=
+as.data.frame(cp)
+@
+
+The area is here expressed in hectares (the original units in the
+object \texttt{puechabonsp\$relocs} were expressed in metres).  The
+units of the results and of the original data are controlled by the
+arguments \texttt{unin} and \texttt{unout} of the function
+\texttt{mcp} (see the help page of the function \texttt{mcp}).  We did
+not change the units in our example estimation, as the default
+was a suitable choice.\\
+
+In this example, we have chosen to exclude 5\% of the mst extreme
+relocations, but we could have made another choice.  We may compute the
+home-range size for various choices of the number of extreme
+relocations to be excluded, using the function \texttt{mcp.area}:
+
+
+<<label=fig6,echo=FALSE,fig=FALSE,eval=FALSE>>=
+hrs <- mcp.area(puechabonsp$relocs[,1], percent=seq(50, 100, by = 5))
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig6>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig6>>
+<<zfig>>
+@
+\end{center}
+
+
+Here, except for Calou, the choice to exclude 5\% of the relocations
+seems a sensible one.  In the case of Calou, it is disputable
+to remove 20\% of the relocations to achieve an asymptote in the home
+range size decrease.  20\% of the time spent in an area is no longer an
+exceptionnal activity... and this area could be considered as part of
+the home range.  Under these conditions, the choice to compute the MCP
+with 95\% of the relocations for all animals seems a sensible one.\\
+
+Note that the results of the function \texttt{mcp.area} are stored in
+a data frame of class \texttt{"hrsize"} and can be used for further
+analysis:
+
+<<>>=
+hrs
+@
+
+This class of data is common in \texttt{adehabitatHR} and we will generate
+again such objects with other home range estimation methods.
+
+
+\section{The kernel estimation and the utilization distribution}
+
+\subsection{The utilization distribution}
+
+The MCP has met a large success in the ecological literature.  However,
+many authors have stressed that the definition of the home range which
+is commonly used in the literature was rather imprecise:
+``\textit{that area traversed by the animal during its normal
+  activities of food gathering, mating and caring for
+  young}'' (Burt, 1943).  Although this definition corresponds well to
+the feeling of many ecologists concerning what is the home range, it
+lacks formalism: what is an \textit{area traversed}? what is a
+\textit{normal activity}?\\
+
+Several authors have therefore proposed to replace this definition by
+a more formal model: the \textit{utilization distribution} (UD,
+van Winkle, 1975).  Under this model, we consider that the animals use
+of space can be described by a bivariate probability density function,
+the UD, which gives the probability density to relocate the animal at
+any place according to the coordinates (x, y) of this place.  The study
+of the space use by an animal could consist in the study of the
+properties of the utilization distribution.  The issue is therefore to
+estimate the utilization distribution from the relocation data:
+
+
+<<label=fig7,echo=FALSE,fig=FALSE,eval=FALSE>>=
+xy1 <- matrix(rnorm(200), ncol=2)
+xy2 <- matrix(rnorm(200, mean=3), ncol=2)
+xy <- rbind(xy1,xy2)
+xy <- SpatialPoints(xy)
+kud <- kernelUD(xy)
+par(mfrow=c(1,2))
+plot(xy)
+title("Input: Relocations")
+par(mar=c(0,0,2,0))
+xxyz <- as.image.SpatialGridDataFrame(kud)
+persp(xxyz, theta=30, phi=45, box=FALSE, shade=0.5, border=NA, ltheta=300)
+title("Output: the UD")
+@
+
+
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+.PngNo <- .PngNo + 1; file <- paste("Fig-bitmap-",
+          .PngNo, ".png", sep="")
+png(file=file, width = 2*wi, height = wi, pointsize = pt)
+<<fig7>>
+dev.null <- dev.off()
+cat("\\includegraphics[height=7cm,width=14cm]{", file, "}\n\n", sep="")
+@
+\end{center}
+
+
+The seminal paper of Worton (1989) proposed the use of the kernel
+method (Silverman, 1986; Wand and Jones, 1995) to estimate the UD
+using the relocation data.  The kernel method was probably the most
+frequently used function in the package \texttt{adehabitat}.  A lot of
+useful material and information on its use can be found on the website
+of the group Animove (\url{http://www.faunalia.it/animov/}).  I
+give here a summary of the discussion found on this site (they include
+answers to the most frequently asked questions).\\
+
+The basic principle of the method is the following: a bivariate
+\textit{kernel function} is placed over each relocation, and the
+values of these functions are averaged together.\\
+
+Many kernel functions $K$ can be used in the estimation process
+provided that:
+
+$$
+\int K(\mathbf{x}) = 1
+$$
+
+and
+
+$$
+K(\mathbf{x}) > 0 \mbox{~~~~}  \forall \mathbf{x}
+$$
+
+
+where $\mathbf{x}$ is a vector containing the coordinates of a point
+on the plane.  However, there are two common choices for the kernel
+functions: the bivariate normal kernel:
+
+$$
+K(\mathbf{x}) =  \frac{1}{2 \pi} \exp(- \frac{1}{2} \mathbf{x}^t
+\mathbf{x})
+$$
+
+and the Epanechnikov kernel:
+
+$$
+K(\mathbf{x}) =  \frac{3}{4} (1 - \mathbf{x}^t
+\mathbf{x}) \mbox{~~~~if~} x<1 \mbox{~or~0~otherwise}
+$$
+
+The choice of a kernel function does not greatly affect the
+estimates (Silverman, 1986; Wand and Jones, 1995).  Although the
+Epanechnikov kernel is slightly more efficient, the bivariate normal
+kernel is still a common choice (and is the default choice in
+\texttt{adehabitatHR}).\\
+
+Then, the kernel estimation of the UD at a given point \textbf{x} of
+the plane is obtained by:
+
+$$
+\hat f(\mathbf{x}) = \frac{1}{nh^2} \sum_{i=1}^n K \left \{\frac{1}{h}
+  (\mathbf{x} - \mathbf{X}_i) \right \}
+$$
+
+where $h$ is a smoothing parameter, $n$ is the number of relocations,
+and $\mathbf{X}_i$ is the i$^{th}$ relocation of the sample.\\
+
+The smoothing parameter $h$ controls the ``width'' of the kernel
+functions placed over each point.  On an example dataset:
+
+<<label=kdksks,echo=FALSE,fig=FALSE,eval=FALSE>>=
+par(mfrow=c(2,2))
+par(mar=c(0,0,2,0))
+image(kernelUD(xy, h=0.2))
+title("h = 0.2")
+par(mar=c(0,0,2,0))
+image(kernelUD(xy, h=0.5))
+title("h = 0.5")
+par(mar=c(0,0,2,0))
+image(kernelUD(xy, h=1))
+title("h = 1")
+par(mar=c(0,0,2,0))
+image(kernelUD(xy, h=2))
+title("h = 2")
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<kdksks>>
+<<zfig>>
+@
+\end{center}
+
+There has been a considerable amount of work on the correct choice of
+a smoothing parameter for home range estimation.  However, the two most
+common choices are the so-called ``reference bandwidth''.  When a
+bivariate normal kernel has been chosen, this ``reference bandwidth''
+is equal to:
+
+$$
+h = \sigma \times n^{-1/6}
+$$
+
+\noindent where
+
+$$
+\sigma = 0.5 \times (\sigma_x + \sigma_y)
+$$
+
+\noindent and $\sigma_x$ and $\sigma_x$ are the standard deviations of
+the x and y coordinates of the relocations respectively.  If an
+Epanechnikov kernel is used, this value is multiplied by 1.77
+(Silverman, 1986, p. 86).  The reference bandwidth supposes that the UD
+is a bivariate normal distribution, which is disputable in most
+ecological studies.  When the animals uses several centers of activity,
+the reference smoothing parameter is often too large, which results
+into a strong oversmoothing of the data (the estimated UD predicts the
+frequent presence of the animal in areas which are not actually
+used).\\
+
+Alternatively, the smoothing parameter $h$ may be computed by Least
+Square Cross Validation (LSCV).  The estimated value then minimizes
+the Mean Integrated Square Error (MISE), i.e. the difference in volume
+between the true UD and the estimated UD.\\
+
+Finally, a subjective visual choice for the smoothing parameter, based
+on successive trials, is often a sensible choice (Silverman, 1986;
+Wand and Jones, 1995).
+
+
+
+\subsection{The function \texttt{kernelUD}: estimating the utilization
+  distribution}
+\label{sec:refUD}
+
+The function \texttt{kernelUD} of the package \texttt{adehabitatHR}
+implements the method described above to estimate the UD.
+The UD is estimated in each pixel of a grid superposed to the
+relocations.  I describe in the next sections how the grid parameters
+can be controlled in the estimation.  Similarly to all the functions
+allowing the estimation of the home range, the functions may take as
+argument either a \texttt{SpatialPoints} object (estimation of the UD
+of one animal) or a \texttt{SpatialPointsDataFrame} object with one
+column corresponding to the identity of the animal (estimation of the
+UD of several animals).  The argument \texttt{h} controls the value of
+the smoothing parameter.  Thus, if \texttt{h = "href"}, the
+``reference'' bandwidth is used in the estimation.  If \texttt{h =
+  "LSCV"}, the ``LSCV'' bandwidth is used in the
+estimation.  Alternatively, it is possible to pass a numeric value for
+the smoothing parameter.\\
+
+I give below a short example of the use of \texttt{kernelUD}, using
+the \texttt{puechabonsp} dataset.  Remember that the first column of
+the component \texttt{relocs} of this dataset contains the identity of
+the animals:
+
+<<>>=
+data(puechabonsp)
+kud <- kernelUD(puechabonsp$relocs[,1], h="href")
+kud
+@
+
+The resulting object is a list of the class \texttt{"estUD"}.  This
+class extends the class \texttt{SpatialPixelsDataFrame} (it just
+contains an additional attribute storing the information about the
+smoothing parameter).  Display the results:
+
+<<label=fig8,echo=FALSE,fig=FALSE,eval=FALSE>>=
+image(kud)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig8>>
+@
+
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig8>>
+<<zfig>>
+@
+\end{center}
+
+The values of the smoothing parameters are stored in the slot
+\texttt{"h"} of each element of the list.  For example, to get the
+h-value for the first animal:
+
+<<>>=
+kud[[1]]@h
+@
+
+
+
+
+
+\subsection{The Least Square Cross Validation}
+
+Alternatively, we could have set the argument \texttt{h} equal to
+\texttt{"LSCV"}.  The LSCV algorithm searches for the optimum value of
+\textit{h} in the interval specified by the parameter
+\texttt{hlim}.  As an example, estimate the UD with a $h$ parameter
+chosen with the LSCV algorithm for the \texttt{puechabonsp} dataset:
+
+<<label=fig9,echo=FALSE,fig=FALSE,eval=FALSE>>=
+kudl <- kernelUD(puechabonsp$relocs[,1], h="LSCV")
+image(kudl)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig9>>
+@
+
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig9>>
+<<zfig>>
+@
+\end{center}
+
+The resulting UD fits the data more closely than the use of
+``href''.  However, note that the cross-validation criterion cannot be
+minimized in some cases.  According to Seaman and Powell (1998)
+"\textit{This is a difficult problem that has not been worked out by
+  statistical theoreticians, so no definitive response is available at
+  this time}".  Therefore, it is essential to look at the results of
+the LSCV minimization using the function \texttt{plotLSCV}:
+
+
+<<label=fig10,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plotLSCV(kudl)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig10>>
+@
+
+\begin{figure}[htbp]
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig10>>
+<<zfig>>
+@
+\end{center}
+\end{figure}
+
+Here, the minimization has been achieved in the specified
+interval.  When the algorithm does not converge toward a solution, the
+estimate should not be used in further analysis.  Solutions are
+discussed on the animove website
+(\url{http://www.faunalia.it/animov/}), and especially on the mailing
+list.  In particular, see the following messages:
+
+\begin{itemize}
+\item \url{http://www.faunalia.com/pipermail/animov/2006-May/000137.html}
+\item \url{http://www.faunalia.com/pipermail/animov/2006-May/000130.html}
+\item \url{http://www.faunalia.com/pipermail/animov/2006-May/000165.html}
+\end{itemize}
+
+
+Finally, the user may indicate a numeric value for the smoothing
+parameter.  Further discussion on the choice of h-values can be found
+on the animove website, at the URL:
+\url{https://www.faunalia.it/dokuwiki/doku.php?id=public:animove}.
+
+
+\subsection{Controlling the grid}
+
+The UD is estimated at the center of each pixel of a grid.  Although
+the size and resolution of the grid does not have a large effect on
+the estimates (see Silverman, 1986), it is sometimes useful to be
+able to control the parameters defining this grid.  This is done thanks
+to the parameter \texttt{grid} of the function \texttt{kernelUD}.
+
+
+\subsubsection{Passing a numeric value}
+
+When a numeric value is passed to the parameter \texttt{grid}, the
+function \texttt{kernelUD} automatically computes the grid for the
+estimation.  This grid is computed in the following way:\\
+
+\begin{itemize}
+\item the minimum and maximum coordinates ($X_{min}, X_{max}, Y_{min},
+  Y_{max}$) of the relocations are computed.\\
+
+\item the range of $X$ and $Y$ values is also computed (i.e., the
+  difference between the maximum and minimum value).  Let $R_x$ and
+  $R_Y$ be these ranges.\\
+
+\item The coverage of the grid is defined thanks to the parameter
+  \texttt{extent} of the function \texttt{kernelUD}.  Let $e$ be this
+  parameter.  The minimum and maximum X coordinates of the pixels of
+  the grid are equal to $X_{min} - e \times R_x$ and $X_{max} + e
+  \times R_x$ respectively.  Similarly, the minimum and maximum Y
+  coordinates of the pixels of the grid are equal to $Y_{min} - e
+  \times R_Y$ and $Y_{max} + e \times R_Y$ respectively.\\
+
+\item Finally, these extents are split into $g$ intervals, where $g$
+  is the value of the parameter \texttt{grid}.\\
+\end{itemize}
+
+Consequently, the parameter \texttt{grid} controls the resolution of
+the grid and the parameter \texttt{extent} controls its extent.  As an
+illustration, consider the estimate of the first animal:
+
+<<label=kskdkkds,echo=FALSE,fig=FALSE,eval=FALSE, keep.source=TRUE>>=
+## The relocations of "Brock"
+locs <- puechabonsp$relocs
+firs <- locs[as.data.frame(locs)[,1]=="Brock",]
+
+## Graphical parameters
+par(mar=c(0,0,2,0))
+par(mfrow=c(2,2))
+
+## Estimation of the UD with grid=20 and extent=0.2
+image(kernelUD(firs, grid=20, extent=0.2))
+title(main="grid=20, extent=0.2")
+
+## Estimation of the UD with grid=20 and extent=0.2
+image(kernelUD(firs, grid=80, extent=0.2))
+title(main="grid=80, extent=0.2")
+
+## Estimation of the UD with grid=20 and extent=0.2
+image(kernelUD(firs, grid=20, extent=3))
+title(main="grid=20, extent=3")
+
+## Estimation of the UD with grid=20 and extent=0.2
+image(kernelUD(firs, grid=80, extent=3))
+title(main="grid=80, extent=3")
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE, keep.source=TRUE>>=
+<<kskdkkds>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<kskdkkds>>
+<<zfig>>
+@
+\end{center}
+
+
+Note that the parameter \texttt{same4all} is an additional parameter
+allowing the control of the grid.  If it is equal to TRUE, the same
+grid is used for all animals, thus for example:
+
+<<label=kskkssqq,echo=FALSE,fig=FALSE,eval=FALSE>>=
+kus <- kernelUD(puechabonsp$relocs[,1], same4all=TRUE)
+image(kus)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<kskkssqq>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<kskkssqq>>
+<<zfig>>
+@
+\end{center}
+
+Because all the UD are estimated on the same grid, it is possible to
+coerce the resulting object as a \texttt{SpatialPixelsDataFrame}:
+
+<<>>=
+ii <- estUDm2spixdf(kus)
+class(ii)
+@
+
+This object can then be handed with the functions of the package
+\texttt{sp}.
+
+
+
+\subsubsection{Passing a \texttt{SpatialPixelsDataFrame}}
+
+It is sometimes useful to estimate the UD in each pixel of a raster
+map already available.  This can be useful in habitat selection
+studies, when the value of the UD is to be later related to the value
+of environmental variables.  In such cases, it is possible to pass a
+raster map to the parameter \texttt{grid} of the function.  For
+example, the dataset \texttt{puechabonsp} contains an object of class
+\texttt{SpatialPixelsDataFrame} storing the environmental information
+for this variable.  This map can be passed to the parameter
+\texttt{grid}:
+
+<<>>=
+kudm <- kernelUD(puechabonsp$relocs[,1], grid=puechabonsp$map)
+@
+
+And as in the previous section, the object can be coerced into a
+\texttt{SpatialPixelsDataFrame} using the function
+\texttt{estUDm2spixdf}.  Note also that it is possible to pass a list
+of \texttt{SpatialPixelsDataFrame} (with one element per animal) to
+the parameter \texttt{grid} (see the help page of the function
+\texttt{kernelUD}).
+
+
+\subsection{Estimating the home range from the UD}
+
+The UD gives the probability density to relocate the animal at a given
+place.  The home range deduced from the UD as the minimum area
+on which the probability to relocate the animal is equal to a
+specified value.  For example, the 95\% home range corresponds to the
+smallest area on which the probability to relocate the animal is equal
+to 0.95.  The functions \texttt{getvolumeUD} and \texttt{getverticeshr}
+provide utilities for home range estimation.
+
+\subsubsection{Home ranges in vector mode}
+
+The most useful function
+is the function \texttt{getverticeshr}.  For example, to deduce the
+90\% home range from the UD estimated using the LSCV algorithm:
+
+<<>>=
+homerange <- getverticeshr(kudl)
+class(homerange)
+@
+
+The resulting object is of the class
+\texttt{SpatialPolygonsDataFrame}.  Therefore, as for the MCP (see
+previous section), the functions of the package \texttt{sp} and
+\texttt{sf} are available to deal with this object, or to export
+it toward a GIS (see section 3.2 for examples).  Therefore, to display
+the home range:
+
+
+<<label=fig11,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(homerange, col=1:4)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<fig11>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig11>>
+<<zfig>>
+@
+\end{center}
+
+\subsubsection{Home ranges in raster mode}
+\label{sec:hrrm}
+
+However, the function \texttt{getverticeshr} returns an object of
+class \texttt{SpatialPolygonsDataFrame}, i.e. an object in mode
+vector.\\
+
+The function \texttt{getvolumeUD} may also be useful to estimate the
+home range in raster mode, from the UD.  Actually, this function
+modifies the UD component of the object passed as argument, so that
+the value of a pixel is equal to the percentage of the smallest home
+range containing this pixel:
+
+<<>>=
+vud <- getvolumeUD(kudl)
+vud
+@
+
+To make clear the differences between the output of \texttt{kernelUD}
+and \texttt{getvolumeUD} look at the values on the following
+contourplot:
+
+<<label=fig12,echo=FALSE,fig=FALSE,eval=FALSE,keep.source=TRUE>>=
+
+## Set up graphical parameters
+par(mfrow=c(2,1))
+par(mar=c(0,0,2,0))
+
+## The output of kernelUD for the first animal
+image(kudl[[1]])
+title("Output of kernelUD")
+
+## Convert into a suitable data structure for
+## the use of contour
+xyz <- as.image.SpatialGridDataFrame(kudl[[1]])
+contour(xyz, add=TRUE)
+
+
+## and similarly for the output of getvolumeUD
+par(mar=c(0,0,2,0))
+image(vud[[1]])
+title("Output of getvolumeUD")
+xyzv <- as.image.SpatialGridDataFrame(vud[[1]])
+contour(xyzv, add=TRUE)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE,keep.source=TRUE>>=
+<<fig12>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<fig12>>
+<<zfigg>>
+@
+\end{center}
+
+Whereas the output of \texttt{kernelUD} is the raw UD, the output of
+\texttt{getvolumeUD} can be used to compute the home range (the labels
+of the contour lines correspond to the home ranges computed with
+various probability levels).  For example, to get the rasterized 95\%
+home range of the first animal:
+
+
+<<label=kdkdkdk,echo=FALSE,fig=FALSE,eval=FALSE,keep.source=TRUE>>=
+## store the volume under the UD (as computed by getvolumeUD)
+## of the first animal in fud
+fud <- vud[[1]]
+
+## store the value of the volume under UD in a vector hr95
+hr95 <- as.data.frame(fud)[,1]
+
+## if hr95 is <= 95 then the pixel belongs to the home range
+## (takes the value 1, 0 otherwise)
+hr95 <- as.numeric(hr95 <= 95)
+
+## Converts into a data frame
+hr95 <- data.frame(hr95)
+
+## Converts to a SpatialPixelsDataFrame
+coordinates(hr95) <- coordinates(vud[[1]])
+gridded(hr95) <- TRUE
+
+## display the results
+image(hr95)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE,keep.source=TRUE>>=
+<<kdkdkdk>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<kdkdkdk>>
+<<zfig>>
+@
+\end{center}
+
+
+
+
+\subsection{The home range size}
+
+As for the MCP, the \texttt{SpatialPolygonsDataFrame} returned by the
+function \texttt{getverticeshr} contains a column named ``area'',
+which contains the area of the home ranges:
+
+<<>>=
+as.data.frame(homerange)
+@
+
+\noindent And, as for the MCP, the units of these areas are controlled
+by the parameters \texttt{unin} and \texttt{unout} of the function
+\texttt{getverticeshr}.\\
+
+I also considered that it would be useful to have a function which
+would compute the home-range size for several probability levels.  This
+is the aim of the function \texttt{kernel.area} which takes the UD as
+argument (here we use the UD estimated with the LSCV algorithm).
+
+<<>>=
+ii <- kernel.area(kudl, percent=seq(50, 95, by=5))
+ii
+@
+
+The resulting object is of the class \texttt{hrsize}, and can be
+plotted using the function \texttt{plot}.  Note that the home-range
+sizes returned by this function are slightly different from the
+home-range size stored in the \texttt{SpatialPolygonsDataFrame}
+returned by the function \texttt{getverticeshr}.  Indeed, while the
+former measures the area covered by the rasterized home range (area
+covered by the set of pixels of the grid included in the home range),
+the latter measures the area of the vector home range (with smoother
+contour).  However, note that the difference between the two estimates
+decrease as the resolution of the grid becomes finer.
+
+
+\subsection{Taking into account the presence of physical boundary over
+  the study area}
+
+In a recent paper, Benhamou and Cornelis (2010) proposed an
+interesting approach to take into account the presence of physical
+boundaries on the study area. They proposed to extend to 2 dimensions
+a method developed for one dimension by Silverman 1986. The principle
+of this approach is described below:
+
+<<label=figggf,echo=FALSE,fig=FALSE,eval=FALSE>>=
+par(mar=c(0,0,0,0))
+plot(c(0,1),asp=1, ty="n")
+bound <- structure(list(x = c(1.11651014886660, 1.31884344750132, 1.49071796999748,
+1.56686491034388, 1.65171435815844, 1.627782462621, 1.59079680588132,
+1.63648497008916), y = c(0.819277593991856, 0.797467606139553,
+0.740761637723568, 0.609901710609753, 0.417973817509493, 0.263122903758146,
+0.106090991221569, -0.00732094561040263)), .Names = c("x", "y"
+))
+pts <- structure(list(x = c(1.14479329813812, 1.20135959668116, 1.18395458174484,
+1.30143843256500, 1.29056029822980, 1.28620904449572, 1.31449219376724,
+1.46896170132708, 1.39063913411364, 1.50377173119972, 1.627782462621,
+1.57121616407796, 1.37758537291140, 1.21006210414932, 1.32537032810244,
+1.519001119269, 1.46678607446004, 1.32754595496948, 1.17960332801076,
+1.12303702946772, 1.19700834294708, 1.57121616407796, 1.57774304467908,
+1.30578968629908, 1.60167494021652, 1.62995808948804, 1.5625136566098,
+1.46896170132708, 1.43632729832148, 1.31449219376724), y = c(0.784381613428172,
+0.732037642582647, 0.605539713039293, 0.559738738549458, 0.67315067538143,
+0.749485632864488, 0.76257162557587, 0.714589652300805, 0.633892697247286,
+0.330733866100284, 0.417973817509493, 0.527023756771005, 0.548833744623307,
+0.378715839375349, 0.156253963281865, 0.287113890395679, 0.199873938986470,
+0.354724852737816, 0.39180183208673, 0.311104877033211, 0.20423593655693,
+0.106090991221569, 0.212959931697851, 0.780019615857712, 0.367810845449197,
+0.424516813865184, 0.518299761630084, 0.601177715468833, 0.712408653515574,
+0.703684658374653)), .Names = c("x", "y"))
+lines(bound)
+bound <- do.call("cbind",bound)
+Slo1 <- Line(bound)
+Sli1 <- Lines(list(Slo1), ID="frontier1")
+barrier <- SpatialLines(list(Sli1))
+
+points(pts, pch=16)
+pts <- as.data.frame(pts)
+coordinates(pts) <- c("x","y")
+ii <- adehabitatHR:::.boundaryk(pts, barrier, 0.04)
+points(ii, pch=3)
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<figggf>>
+<<zfig>>
+@
+\end{center}
+
+On this figure, the relocations are located near the lower left corner
+of the map. The line describes a physical boundary located on the
+study area (e.g. a cliff, a pond, etc.). The animal cannot cross the
+boundary. The use of the classical kernel estimation will not take
+into account this boundary when estimating the UD. A classical
+approach when such problem occur is to use the classical kernel
+approach and then to set to 0 the value of the UD on the other side of
+the boundary. However, this may lead to some bias in the estimation of
+the UD near the boundary (as the kernel estimation will ``smooth'' the
+use across the boundary, whereas one side of the boundary is used and
+the other unused).  Benhamou and Cornelis (2010) extended an approach
+developed for kernel estimation in one dimension: this approach
+consists in calculating the mirror image of the points located near
+the boundary, and adding these ``mirror points'' to the actual
+relocations before the kernel estimation (These mirror points
+correspond to the crosses on the figure). \textbf{Note that this
+  approach cannot be used for all boundaries}. There are two
+constraints that have to be satisfied:\\
+
+\begin{itemize}
+\item The boundary should be defined as the union of several segments,
+  \textit{and each segment length should at least be equal to $3\times
+    h$}, where $h$ is the smoothing parameter used for kernel
+  smoothing;\\
+
+\item The angle between two successive line segments should be greater
+  that $\pi/2$ or lower than $-\pi/2$.
+\end{itemize}
+
+\noindent Therefore, the boundary shape should be fairly simple, and
+not too tortuous.\\
+
+Now, let us consider the case of the wild boar monitored in
+Puechabon. Consider the map of the elevation on the study area:
+
+<<label=mapelev,echo=FALSE,fig=FALSE,eval=FALSE>>=
+image(puechabonsp$map)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<mapelev>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<mapelev>>
+<<zfig>>
+@
+\end{center}
+
+This area is traversed by the Herault gorges. As can be seen on this
+figure, the slopes of the gorges are very steep, and it is nearly
+impossible for the wild boars monitored to cross the river (although
+it is possible in other places). Therefore, the gorges are a boundary
+that cannot be crossed by the animal. Using the function
+\texttt{locator()}, we have defined the following boundary:
+
+
+<<label=figboundary,echo=FALSE,fig=FALSE,eval=FALSE>>=
+bound <- structure(list(x = c(701751.385381925, 701019.24105475,
+                        700739.303517889,
+                        700071.760160759, 699522.651915378,
+                        698887.40904327, 698510.570051342,
+                        698262.932999504, 697843.026694212,
+                        698058.363261028),
+                        y = c(3161824.03387414,
+                        3161824.03387414, 3161446.96718494,
+                        3161770.16720425, 3161479.28718687,
+                        3161231.50050539, 3161037.5804938,
+                        3160294.22044937, 3159389.26039528,
+                        3157482.3802813)), .Names = c("x", "y"))
+image(puechabonsp$map)
+lines(bound, lwd=3)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<figboundary>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<figboundary>>
+<<zfig>>
+@
+\end{center}
+
+
+We now convert this boundary as a SpatialLines object:
+
+<<>>=
+## We convert bound to SpatialLines:
+bound <- do.call("cbind",bound)
+Slo1 <- Line(bound)
+Sli1 <- Lines(list(Slo1), ID="frontier1")
+barrier <- SpatialLines(list(Sli1))
+@
+
+We can now set the parameter \texttt{boundary} of the function
+\texttt{kernelUD}, which indicates that we want to use this approach:
+
+<<label=imagekudbound,echo=FALSE,fig=FALSE,eval=FALSE>>=
+kud <- kernelUD(puechabonsp$relocs[,1], h=100, grid=100, boundary=barrier)
+image(kud)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<imagekudbound>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<imagekudbound>>
+<<zfigg>>
+@
+\end{center}
+
+The effect of the boundary correction is clear on the UD of Brock and
+Calou.
+
+
+\section{Taking into account the time dependence between relocation}
+
+\subsection{The Brownian bridge kernel method}
+
+\subsubsection{Description}
+
+Bullard (1999) proposed an extension of the kernel method taking into
+account the time dependence between successive relocations. Whereas
+the classical kernel method places a kernel function above each
+\textit{relocation}, the Brownian bridge kernel method places a kernel
+function above each \textit{step} of the trajectory (a step being the
+straight line connecting two successive relocations). This kernel
+function is a combination of two bivariate normal pdf (two ``bumps'')
+and a Brownian bridge pdf (see Bullard, 1991 and Horne et al. 2007 for
+additional details):
+
+<<label=brownbrid,echo=FALSE,fig=FALSE,eval=FALSE>>=
+par(mar=c(0,0,0,0))
+xx <- c(0,1)
+yy <- c(0,1)
+date <- c(0,1)
+class(date) <- c("POSIXt", "POSIXct")
+tr <- as.ltraj(data.frame(x = xx,y = yy), date, id="a")
+kba <- kernelbb(tr, 0.6, 0.2, extent=0.8, grid=50)
+kba <- as(kba, "SpatialPixelsDataFrame")
+fullgrid(kba) <- TRUE
+uu <- slot(kba, "data")[,1]
+uu <- matrix(uu, nrow=50)
+persp(uu, theta = 135, phi = 30, scale = FALSE,
+      ltheta = -120, shade = 0.75, border = NA, box = FALSE)
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<brownbrid>>
+<<zfig>>
+@
+\end{center}
+
+
+This method takes into account not only the position of the
+relocations, but also the path travelled by the animal between
+successive relocations. The following figure may help to understand
+the method:
+
+<<echo=FALSE>>=
+pt <- 16
+@
+
+<<label=tutorkbb,echo=FALSE,fig=FALSE,eval=FALSE>>=
+suppressWarnings(RNGversion("3.5.0"))
+set.seed(2098)
+pts1 <- data.frame(x = rnorm(25, mean = 4.5, sd = 0.05),
+                   y = rnorm(25, mean = 4.5, sd = 0.05))
+pts1b <- data.frame(x = rnorm(25, mean = 4.5, sd = 0.05),
+                    y = rnorm(25, mean = 4.5, sd = 0.05))
+pts2 <- data.frame(x = rnorm(25, mean = 4, sd = 0.05),
+                   y = rnorm(25, mean = 4, sd = 0.05))
+pts3 <- data.frame(x = rnorm(25, mean = 5, sd = 0.05),
+                   y = rnorm(25, mean = 4, sd = 0.05))
+pts3b <- data.frame(x = rnorm(25, mean = 5, sd = 0.05),
+                    y = rnorm(25, mean = 4, sd = 0.05))
+pts2b <- data.frame(x = rnorm(25, mean = 4, sd = 0.05),
+                    y = rnorm(25, mean = 4, sd = 0.05))
+pts <- do.call("rbind", lapply(1:25, function(i) {
+    rbind(pts1[i,], pts1b[i,], pts2[i,], pts3[i,],
+          pts3b[i,], pts2b[i,])
+}))
+dat <- 1:150
+class(dat) <- c("POSIXct","POSIXt")
+x <- as.ltraj(pts, date=dat, id = rep("A", 150))
+## Now, we suppose that there is a precision of 0.05
+## on the relocations
+sig2 <- 0.05
+## and that sig1=0.1
+sig1 <- 0.1
+## Now fits the brownian bridge home range
+kbb <- kernelbb(x, sig1 = sig1,
+                 sig2 = sig2, grid=60)
+## Now fits the classical kernel home range
+coordinates(pts) <- c("x","y")
+kud <- kernelUD(pts)
+###### The results
+opar <- par(mfrow=c(2,2), mar=c(0.1,0.1,2,0.1))
+plot(pts, pch=16)
+title(main="The relocation pattern")
+box()
+plot(x, axes=FALSE, main="The trajectory")
+box()
+image(kud)
+title(main="Classical kernel home range")
+plot(getverticeshr(kud, 95), add=TRUE)
+box()
+image(kbb)
+title(main="Brownian bridge kernel home range")
+plot(getverticeshr(kbb, 95), add=TRUE)
+box()
+@
+
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<tutorkbb>>
+<<zfigg>>
+@
+\end{center}
+
+<<echo=FALSE>>=
+pt <- 25
+@
+
+In this example, the relocations are located into three
+patches. However, the order of use of the patches is not random. Using
+the Brownian bridge method allows to identify that some areas between
+the patches are actually not used by the animal.\\
+
+The kernel Brownian bridge method is implemented in the function
+\texttt{kernelbb}. Two smoothing parameters need to be set:\\
+
+\begin{itemize}
+\item \texttt{sig1}: This parameter controls the width of the
+  ``bridge'' connecting successive relocations. The larger it is and
+  the larger the bridge is. This parameter is therefore
+  \textit{related} to the speed of the animal. But be careful: it is
+  not the speed of the animal. Horne et al. (2007) call
+  \texttt{sig1}$^2$ the ``Brownian motion variance parameter''. It is
+  even not the variance of the position, but a parameter used to
+  compute the variance (which is itself related to the speed). The
+  variance of the position of the animal between two relocations at
+  time $t$ is $S^2$ = \texttt{sig1}$^2 \times t \times (T-t) / T$,
+  where $T$ is the duration of the trajectory between the two
+  relocations and $t$ the time at the current position. Therefore,
+  \texttt{sig1} is related to the speed of the animal in a very
+  complex way, and its biological meaning is not that clear. The
+  definition of \texttt{sig1} can be done subjectively after visual
+  exploration of the result for different values, or using the
+  function \texttt{liker} that implements the maximum likelihood
+  approach developed by Horne et al. (2007);\\
+
+\item \texttt{sig2}: This parameter controls the width of the ``bumps''
+  added over the relocations (see Bullard, 1999; Horne et
+  al. 2007). It is similar to the smoothing
+  parameter $h$ of the classical kernel method, and is therefore
+  related to the imprecision of the relocations.\\
+\end{itemize}
+
+The following figure shows the kernel function placed over the step
+built by the two relocations (0,0) and (1,1), for different values of
+\texttt{sig1} and \texttt{sig2}:
+
+<<echo=FALSE>>=
+wi <- 800
+pt <- 18
+@
+
+<<label=ploth,echo=FALSE,fig=FALSE,eval=FALSE>>=
+xx <- c(0,1)
+yy <- c(0,1)
+date <- c(0,1)
+class(date) <- c("POSIXt", "POSIXct")
+tr <- as.ltraj(data.frame(x = xx,y = yy), date, id="a")
+
+## Use of different smoothing parameters
+sig1 <- c(0.05, 0.1, 0.2, 0.4, 0.6)
+sig2 <- c(0.05, 0.1, 0.2, 0.5, 0.7)
+
+y <- list()
+for (i in 1:5) {
+    for (j in 1:5) {
+        k <- paste("s1=", sig1[i], ", s2=", sig2[j], sep = "")
+        y[[k]]<-kernelbb(tr, sig1[i], sig2[j])
+    }
+}
+
+## Displays the results
+opar <- par(mar = c(0,0,2,0), mfrow = c(5,5))
+foo <- function(x)
+{
+    image(y[[x]])
+    title(main = names(y)[x])
+    points(tr[[1]][,c("x","y")], pch = 16)
+}
+tmp <- lapply(1:length(y), foo)
+
+@
+
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<ploth>>
+<<zfigg>>
+@
+\end{center}
+
+
+<<echo=FALSE>>=
+wi <- 600
+pt <- 25
+@
+
+\subsubsection{Example}
+\label{sec:ltrajj}
+
+The Brownian bridge kernel method is implemented in the function
+\texttt{kernelbb} of the package. This function takes as argument an
+object of class \texttt{ltraj}. This class has been developed in the
+brother package \texttt{adehabitatLT} to store animals trajectory
+sampled using GPS, radio-tracking, Argos data, etc. The interested
+reader should read the help page of the function \texttt{as.ltraj} as
+well as the vignette of the package \texttt{adehabitatLT}.\\
+
+First consider as an example the night monitoring (every 10 minutes)
+of one wild boar:
+
+<<>>=
+data(puechcirc)
+x <- puechcirc[1]
+x
+@
+
+Have a look at the trajectory of the animal:
+
+<<label=plotpuechcirc,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(x)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<plotpuechcirc>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<plotpuechcirc>>
+<<zfig>>
+@
+\end{center}
+
+
+A study has shown that the mean standard deviation of the relocations
+(relocations as a sample of the actual position of the animal) is
+equal to 58 meters on these data (Maillard, 1996, p. 63). Therefore,
+we set \texttt{sig2 = 58} metres. Then we use the function
+\texttt{liker} to find the maximum likelihood estimation of the
+parameter \texttt{sig1}. We search the optimum value in the range [10,
+100]:
+
+<<label=liker1,echo=FALSE,fig=FALSE,eval=FALSE>>=
+lik <- liker(x, sig2 = 58, rangesig1 = c(10, 100))
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<liker1>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<liker1>>
+<<zfig>>
+@
+\end{center}
+
+We expected a too large standard deviation... Let us try again, and
+search in the interval [1, 10]:
+
+<<label=liker2,echo=FALSE,fig=FALSE,eval=FALSE>>=
+lik2 <- liker(x, sig2 = 58, rangesig1 = c(1, 10))
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<liker2>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<liker2>>
+<<zfig>>
+@
+\end{center}
+
+Actually, the optimum value is 6.23:
+
+<<>>=
+lik2
+@
+
+We can now estimate the kernel Brownian bridge home range with the
+parameters \texttt{sig1=6.23} and \texttt{sig2=58}:
+
+<<>>=
+tata <- kernelbb(x, sig1 = 6.23, sig2 = 58, grid = 50)
+tata
+@
+
+The result is an object of class \texttt{estUD}, and can be managed as
+such (see section \ref{sec:refUD}). For example to see the utilization
+distribution and the 95\% home range:
+
+<<label=UDkbb,echo=FALSE,fig=FALSE,eval=FALSE>>=
+image(tata)
+plot(getverticeshr(tata, 95), add=TRUE, lwd=2)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<UDkbb>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<UDkbb>>
+<<zfig>>
+@
+\end{center}
+
+
+\subsection{The biased random bridge kernel method}
+
+\subsubsection{Description}
+
+Benhamou and Cornelis (2010) developed an approach similar to the
+Brownian bridge method for the analysis of trajectories. They called it ``movement
+based kernel estimation'' (MBKE). The principle of this method
+consists in dividing each step into several sub-steps, i.e. in adding
+new points at regular intervals on each step prior to a classical
+kernel estimation, that is:
+
+<<label=figexe1,echo=FALSE,fig=FALSE,eval=FALSE>>=
+par(mar=c(0,0,0,0))
+plot(c(0,1,2,3),c(0,1,0,1), pch=16, cex=4, xlim=c(-0.5, 3.5),
+ylim=c(-0.5, 1.5))
+segments(0,0,1,1)
+segments(2,0,3,1)
+points(seq(2,3,length=8), seq(0,1,length=8), pch=16, cex=2)
+arrows(1,0.5, 2, 0.5, lwd=5)
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<figexe1>>
+<<zfig>>
+@
+\end{center}
+
+Then a kernel estimation is carried out with the known (large points
+on the figure) and interpolated (small points) relocations, with a
+variable smoothing parameter (the smoothing parameter depends on the
+time spent between a known relocation and an interpolated relocation:
+it is minimum when the relocation is known and larger as the
+interpolated time between the known relocation and the
+interpolated location increases).\\
+
+In a later paper, Benhamou (2011) demonstrated that the movement-based
+kernel approach takes place in the framework of the
+biased random walk model. If we describe a trajectory as a succession
+of ``steps'', each being characterized by a speed and an angle with
+the east direction, the process generating the trajectory is a biased
+random walk when the probability density distribution of the angles is
+not an uniform distribution (i.e. there is a preferred direction of
+movement). The main quality of the biased random walk is that it does
+not suppose a purely diffusive movement (the brownian bridge method
+supposes only a diffusion), but takes into account an advection
+component in the trajectory (i.e. a ``drift'' between successive
+relocations). This model is therefore more realistic when animal
+movements are studied.\\
+
+Now, consider two successive relocations $\mathbf{r}_1 = (x_1, y_1)$
+and $\mathbf{r}_2 = (x_2, y_2)$, collected respectively at times $t_1$
+and $t_2$, and building a step of the trajectory.  Our aim is to
+estimate the function giving the probability density (pdf) that the
+animal was located at a given place $\mathbf{r}=(x,y)$ at time $t_i$ (with $t_1
+< t_i < t_2$), and \textit{given that the animal is moving according to a
+  biased random walk}. The movement generated by a biased random walk
+\textit{given} the start and end relocation is called a \textit{biased
+  random   bridge} (BRB). Benhamou (2011) noted that the BRB
+can be approximated by a bivariate normal distribution:
+
+\begin{equation}
+  \label{eq:brb}
+  f(\mathbf{r}, t_i | \mathbf{r}_1, \mathbf{r}_2) =
+  \frac{t_2-t_1}{4\pi D (t_2 - t_i)} \exp \left [ \frac{\mathbf{r}_m
+      \mathbf{D} \mathbf{r}_m}{4 p_i(t_2-t_i)} \right ]
+\end{equation}
+
+
+\noindent where the mean location corresponds to $\mathbf{r}_m = (x_1
++ p_i(x_2-x_1), y_1 + p_i(y_2-y_1))$, and $p_i =
+(t_i-t_1)/(t_2-t_1)$. The variance-covariance matrix $\mathbf{D}$ of
+this distribution usually cannot be estimated in practice (Benhamou,
+2011). Consequently, the biased random bridge is approximated by a
+random walk with a diffusion coefficient $D$ on which a drift
+$\mathbf{v}$ is appended. And, under this assumption, the required pdf
+can be approximated by a circular normal distribution fully
+independent of the drift, i.e. the matrix $\mathbf{D}$ in equation
+\ref{eq:brb} is supposed diagonal, with both diagonal elements
+corresponding to a \textit{diffusion coefficient} $D$. The figure
+below illustrates how the pdf of relocating the animal changes with
+the times $t_i$:
+
+<<label=figillustrbb,echo=FALSE,fig=FALSE,eval=FALSE>>=
+x1 <- c(0,0)
+x2 <- c(1,1)
+D <- 0.01
+tt <- 0.1
+foo <- function(x)
+{
+    m <- c(tt,tt)
+    xc <- x-m
+    (1/(4*pi*D*(1-tt)))*exp(-(sum(xc*xc/D))/(4*pi*tt*(1-tt)))
+}
+xy <- as.matrix(expand.grid(seq(-0.1, 1.1, length=100), seq(-0.1, 1.1, length=100)))
+den <- sapply(1:nrow(xy), function(i) foo(xy[i,]))
+df <- data.frame(x=xy[,1], y=xy[,2], den=den)
+coordinates(df) <- c("x","y")
+gridded(df) <- TRUE
+
+par(mfrow=c(1,2), mar=c(0.1,0.1,0.1,0.1))
+image(df)
+points(c(0,1), c(0,1), pch=16, cex=4)
+lines(c(0,1), c(0,1))
+points(tt,tt, pch=16)
+box()
+tt <- 0.5
+den <- sapply(1:nrow(xy), function(i) foo(xy[i,]))
+df <- data.frame(x=xy[,1], y=xy[,2], den=den)
+coordinates(df) <- c("x","y")
+gridded(df) <- TRUE
+image(df)
+points(c(0,1), c(0,1), pch=16, cex=4)
+lines(c(0,1), c(0,1))
+points(tt,tt, pch=16)
+box()
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<figillustrbb>>
+<<zfig>>
+@
+\end{center}
+
+We can see that the variance of this distribution is larger when the
+animal is far from the known relocations.\\
+
+Benhamou (2011) demonstrated that the MBKE can be used to estimate the
+UD of the animal under the hypothesis that the animal moves according
+to a biased random walk, with a drift allowed to change in strength
+and direction from one step to the next. However, it is supposed that
+the drift is constant during each step. For this reason, it is
+required to set an upper time threshold $T_{max}$. Steps characterized
+by a longer duration are not taken into account into the estimation of
+the UD. This upper threshold should be based on biological grounds.\\
+
+As for the Brownian bridge approach, this conditional pdf based on
+BRB takes an infinite value at times $t_i = t_1$ and
+$t_i = t_2$ (because, at these times, the relocation of the animal is
+known exactly). Benhamou (2011) proposed to circumvent this drawback
+by considering that the true relocation of the animal at times $t_1$ and
+$t_2$ is not known exactly. He noted: ``\textit{a GPS fix should be
+  considered a punctual sample of the possible locations at which the
+  animal may be observed at that time, given its current motivational
+  state and history. Even if the recording noise is low, the
+  relocation variance should therefore be large enough to encompass
+  potential locations occurring in the same habitat patch as the
+  recorded location}''. He proposed two ways to include this
+``relocation uncertainty'' component in the pdf: (i) either the
+relocation variance progressively merges with the movement
+component, (ii) or the relocation variance has a constant weight.\\
+
+In both cases, the minimum uncertainty over the relocation of an
+animal is observed for $t_i = t_1$ or $t_2$.  This minimum standard
+deviation corresponds to the parameter $h_{min}$. According to
+Benhamou and Cornelis (2010), ``\textit{$h_{min}$ must be at least
+  equal to the standard deviation of the localization errors and also
+  must integrate uncertainty of the habitat map when UDs are computed
+  for habitat preference analyses. Beyond these technical constraints,
+  $h_{min}$ also should incorporate a random component inherent to
+  animal behavior because any recorded location, even if accurately
+  recorded and plotted on a reliable map, is just a punctual sample of
+  possible locations at which the animal may be found at that time,
+  given its current motivational state and history. Consequently,
+  $h_{min}$ should be large enough to encompass potential locations
+  occurring in the same habitat patch as the recorded location}''.\\
+
+Therefore, the smoothing parameter used in the MKBE approach can be
+calculated with:
+
+$$
+h_i^2 = h_{min}^2 + 4 p_i(1-p_i)(h_{max}^2 - h_{min}^2)T_i/T_max
+$$
+
+\noindent where $h_{max}^2 = h_{min}^2 + D \times T_{max}/2$  if we
+suppose that the relocation variance has a constant weight or
+$h_{max}^2 = D \times T_{max}/2$ if we suppose that it progressively
+merges with the movement component.
+
+
+\subsubsection{Implementation}
+
+The BRB approach is implemented in the function \texttt{BRB} of {\tt
+  adehabitatHR}. We first load the dataset \texttt{buffalo} used by
+Benhamou (2011) to illustrate this approach:
+
+<<>>=
+data(buffalo)
+tr <- buffalo$traj
+tr
+@
+
+Note that this object has an infolocs component describing the
+proportion of time between relocation $i$ and relocation $i+1$ during
+which the animal was active. We show the trajectory of the animal below:
+
+<<label=trajbuff,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(tr, spixdf=buffalo$habitat)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<trajbuff>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<trajbuff>>
+<<zfig>>
+@
+\end{center}
+
+The first step of the analysis consists in the estimation of the
+diffusion coefficient $D$. We want to estimate one diffusion parameter
+for each habitat type. As Benhamou (2011), we set $T_{max} = 180$
+minutes and $L_{min} = 50$ metres (the smallest distance below which
+we consider that the animal is not moving). Because it is more
+sensible to consider the time of activity in the implementation of the
+method, we define the argument \texttt{activity} of the function as
+the name of the variable in the infolocs component storing this
+information:
+
+<<>>=
+vv <- BRB.D(tr, Tmax=180*60, Lmin=50, habitat=buffalo$habitat, activity="act")
+vv
+@
+
+The function \texttt{BRB.D} implements the estimation of the diffusion
+coefficient described in Benhamou (2011). Note that a maximum
+likelihood approach, similar to the approach used by Horne et
+al. (2007) is also available in the function \texttt{BRB.likD}.
+The values of the diffusion parameters are given in $m^2.s^{-1}$. Note
+that the number of steps in habitat 2 was to small to allow the
+calculation of a diffusion parameter for this habitat type. We can
+then use the function \texttt{BRB} to estimate the UD from these
+relocations. The parameter \texttt{tau} controls the time lag between
+interpolated relocations. Similarly to Benhamou (2011), we set $\tau =
+5$ min, and $h_{min} = 100$ metres:
+
+<<>>=
+ud <- BRB(tr, D = vv, Tmax = 180*60, tau = 300, Lmin = 50, hmin=100,
+          habitat = buffalo$habitat, activity = "act", grid = 100, b=0,
+          same4all=FALSE, extent=0.01)
+ud
+@
+
+The missing dispersion parameter for habitat 2 was replaced
+in the estimation by the global dispersion parameter.
+As for all kernel methods, this function returns an object of class
+\texttt{estUD} or \texttt{estUDm}, depending on the number of animals
+in the object of class \texttt{ltraj} passed as argument. We show the
+resulting UD:
+
+<<label=imagebrb,echo=FALSE,fig=FALSE,eval=FALSE>>=
+image(ud)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<imagebrb>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<imagebrb>>
+<<zfig>>
+@
+\end{center}
+
+Note that it
+is also possible to specify a physical boundary that cannot be crossed
+by the animals in this function.
+
+
+\subsubsection{Decomposing the use of space into intensity and recursion}
+
+Benhamou and Riotte-Lambert (2012) noted that, as a whole, the time
+spent at a given location by the animal can be seen as
+the product between the mean residence time per visit times the
+number of visits of the location. It may be interesting, biologically,
+to distinguish these two components, for example to identify the
+places that the animal often uses and the places that are used only
+once, but for a long time. The identification of such components can
+be useful to test hypotheses concerning the habitat selection by the
+animal. Thus, these authors indicate: ``Some areas, in particular
+those that are more profitable, tend to be  exploited more intensively
+during a given visit, involving a longer residence time. An initially
+profitable area may be avoided for a  while once depleted if the
+resources it encompasses renew very slowly, but should tend to be
+revisited quite often otherwise, or if it is depleted only partially
+at each visit''. \\
+
+These authors therefore proposed a modification of the BRB approach to
+allow the estimation of an intensity distribution (ID) reflecting this
+average residence time and of a recursion distribution (RD) reflecting
+the number of visits. This modification relies on the calculation of
+(i) the residence time associated to each relocation interpolated
+using the procedure described in the previous section (roughly, the
+residence time calculated on a given relocation corresponds to the
+time spent by the animal in a circle of radius $r$ centered on this
+relocation, see the vignette of the package adehabitatLT), and (ii)
+the number of visits associated to each relocation (i.e. the number of
+times that the animal performed in a circle of radius $r$ centered on
+the relocation).\\
+
+The function \texttt{BRB} allows to calculate the ID and RD thanks to
+its argument \texttt{type}. For example, consider again the dataset
+\texttt{buffalo} used in the previous section. To estimate the ID or
+the RD, we have to specify:\\
+
+\begin{itemize}
+\item The diffusion parameter $D$: based on the elements given in the
+  previous section, we assumed a parameter $D = 7.36$. For the sake of
+  conciseness, we define a unique diffusion parameter for all habitats;\\
+
+\item As in the previous section, we set \texttt{Tmax = 180} min and
+  \texttt{Lmin = 50} m, \texttt{hmin} = 100 m, and \texttt{tau =
+    300} seconds;\\
+
+\item The radius of the circle used to calculate the residence time
+  and the number of visits was set to \texttt{3*hmin} = 300 m, as in
+  Benhamou and Riotte-Lambert (2012);
+
+\item The time \texttt{maxt} used to calculate the residence time (see
+  the help page of this function in the package adehabitatLT, and the
+  vignette of this package) and the number of visits, i.e. the maximum
+  time threshold that the animal is allowed to spend outside the patch
+  before that we consider that the animal actually left the patch, was
+  set to 2 hours, as in Benhamou and Riotte-Lambert (2012).\\
+\end{itemize}
+
+We estimate the UD, ID and RD with these parameters below:
+
+<<label=figidrd,echo=FALSE,fig=FALSE,eval=FALSE>>=
+id <- BRB(buffalo$traj, D = 7.36, Tmax = 3*3600, Lmin = 50, type = "ID",
+          hmin=100, radius = 300, maxt = 2*3600, tau = 300,
+          grid = 100, extent=0.1)
+rd <- BRB(buffalo$traj, D = 7.36, Tmax = 3*3600, Lmin = 50, type = "RD",
+          hmin=100, radius = 300, maxt = 2*3600, tau = 300,
+          grid = 100, extent=0.1)
+ud <- BRB(buffalo$traj, D = 7.36, Tmax = 3*3600, Lmin = 50, type = "UD",
+          hmin=100, radius = 300, maxt = 2*3600, tau = 300,
+          grid = 100, extent=0.1)
+
+
+par(mfrow = c(2,2), mar=c(0,0,2,0))
+vid <- getvolumeUD(id)
+image(vid)
+contour(vid, add=TRUE, nlevels=1, levels=30,
+        lwd=3, drawlabels=FALSE)
+title("ID")
+
+vrd <- getvolumeUD(rd)
+image(vrd)
+contour(vrd, add=TRUE, nlevels=1, levels=30,
+        lwd=3, drawlabels=FALSE)
+title("RD")
+
+vud <- getvolumeUD(ud)
+image(vud)
+contour(vud, add=TRUE, nlevels=1, levels=95,
+        lwd=3, drawlabels=FALSE)
+title("UD")
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<figidrd>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<figidrd>>
+<<zfig>>
+@
+\end{center}
+
+Note that we used the function \texttt{getvolumeUD} for a clearer
+display of the results. Remember from section \ref{sec:hrrm} that this
+function modifies the UD component of the object passed as argument,
+so that the value of a pixel is equal to the percentage of the
+smallest home range containing this pixel. Here, we also display the
+30\% isopleth calculated from the ID and RD distributions, using the
+function \texttt{contour}, as well as the 95\% isopleth for the UD
+(following here the recommendations of Benhamou and Riotte-Lambert
+2012). In the case of the ID, the contour limits allow to identify
+those patches where the animal spent a long time in average, and in
+the case of the RD, those places that the animal visited often. A
+comparison of the environmental composition at these places and in the
+95\% home-range estimated from the UD would allow to identify the
+environmental characteristics that affect both the speed of the animal
+and the number of visits he performs in a patch (see the vignette of
+the package adehabitatHS for additionnal details about this kind of
+analysis).
+
+
+\subsection{The product kernel algorithm}
+
+\subsubsection{Description}
+
+Until now, we have only considered utilization distribution in
+space. However, Horne et al. (2007) noted that it could also be useful
+to explore utilization distributions in space and time. That is, to
+smooth the animals distribution not only in space, but also in
+time. This approach is done by placing a three dimensional kernel
+function (X and Y coordinates, and date) over each relocation, and
+then, by summing these kernel functions. The three-dimensional kernel
+function $K$ correspond to the combination of three one-dimensional
+kernel functions $K_j$:
+
+$$
+K(\mathbf{x}) = \frac{1}{h_xh_yh_t} \sum_{i=1}^n \left ( \prod_{j=1}^3
+  K_j \left ( \frac{x_j - X_{ij}}{h_j} \right ) \right )
+$$
+
+\noindent where $h_x, h_y, h_t$ are the smoothing parameters for the
+$X$, $Y$ and time dimension, $n$ is the number of relocations, and
+$X_{ij}$ is the coordinate of the $i^{th}$ relocation on the $j^{th}$
+dimension ($X, Y$ or time).\\
+
+This method is implemented in the function \texttt{kernelkc} of the
+package \texttt{adehabitatHR}. The univariate kernel functions
+associated to the spatial coordinates are the biweight kernel, that
+is:
+
+$$
+K(v_i) = \frac{15}{16} (1-v_i^2)^2
+$$
+
+when $v_i < 1$ and 0 otherwise. For the time, the user has the choice
+between two kernel functions. Either the time is considered to be a
+linear variable, and the biweight kernel is used, or the time is
+considered to be a circular variable (e.g. January 3$^{th}$ 2001 is
+considered to be the same date as January 3$^{th}$ 2002 and January
+3$^{th}$ 2003, etc.) and the wrapped Cauchy kernel is used. The
+wrapped Cauchy kernel is:
+
+$$
+K(v_i) = \frac{h \left (1 - (1-h)^2 \right )}{2 \pi \left (1+ (1-h)^2
+    - 2 (1-h) \cos (v_ih) \right )}
+$$
+
+\noindent where $0 < h < 1$.
+
+\subsubsection{Application}
+
+We now illustrate the product kernel algorithm on an example. We load
+the \texttt{bear} dataset. This dataset describes the trajectory of a
+brown bear monitored using GPS (from the package
+\texttt{adehabitatLT}):
+
+<<>>=
+data(bear)
+bear
+@
+
+The data are stored as an object of class \texttt{ltraj} (see section
+\ref{sec:ltrajj}). Let us compute the UD of this bear for the date
+2004-05-01. After a visual exploration, we noted that a smoothing
+parameter of 1000 meters for X and Y coordinates, and of 72 hours
+for the time returned interesting results. We can compute the UD with:
+
+<<>>=
+uu <- kernelkc(bear, h = c(1000,1000,72*3600),
+               tcalc= as.POSIXct("2004-05-01"), grid=50)
+uu
+@
+
+The result is an object of class \texttt{estUD}, and can be managed as
+such (see section \ref{sec:refUD}). For example to see both the trajectory and
+the UD, we type:
+
+<<label=plotuu,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(bear, spixdf=uu)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<plotuu>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<plotuu>>
+<<zfig>>
+@
+\end{center}
+
+
+To compute the 95\% home-range, there is a subtlety. Note that the
+UD integral over the whole plane is not equal to 1:
+
+<<>>=
+sum(slot(uu,"data")[,1])*(gridparameters(uu)[1,2]^2)
+@
+
+This is because the UD is defined in space \textit{and time}. That is,
+the integral over the $X,Y$ and time direction is equal to 1, and not
+the integral over the $X,Y$ direction at a given time $t$. Therefore,
+the 95\% home range at a given time $t$ relies on a
+``restandardization'':
+
+$$
+UD'(x,y |t_i) = \frac{UD(x,y, t_i)}{\int_{x',y'} UD(x', y', t_i) }
+$$
+
+This is done by setting to \texttt{TRUE} the argument
+\texttt{standardize} of the functions \texttt{getvolumeUD} or
+\texttt{getverticeshr}. Thus, to calculate the home range of the bear
+at this date, type:
+
+<<label=plotver,echo=FALSE,fig=FALSE,eval=FALSE>>=
+ver <- getverticeshr(uu, percent=95, standardize=TRUE)
+image(uu)
+plot(ver, add=TRUE)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<plotver>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<plotver>>
+<<zfig>>
+@
+\end{center}
+
+
+Note that it is possible to estimate the UD at a succession of $t_i$
+close in time, then to draw the images corresponding and save them in
+a file, and finally to combine these images into a movie. The movie
+can then be explored to identify patterns. For example, the following
+code can be used to generate image files (because it is very long, we
+do not execute it in this vignette:
+
+<<eval=FALSE>>=
+## compute the sequence of dates at which the UD is to be
+## estimated
+vv <- seq(min(bear[[1]]$date), max(bear[[1]]$date), length=50)
+head(vv)
+
+## estimates the UD at each time point
+re <- lapply(1:length(vv), function(i) {
+
+    ## estimate the UD. We choose a smoothing parameter of
+    ## 1000 meters for X and Y coordinates, and of 72 hours
+    ## for the time (after a visual exploration)
+    uu <- kernelkc(bear, h = c(1000,1000,72*3600),
+                   tcalc= vv[i], grid=50)
+
+    ## To save the result in a file, type
+    jpeg(paste("UD", i, ".jpg", sep=""))
+
+
+    ## draw the image
+    image(uu, col=grey(seq(1,0,length=10)))
+    title(main=vv[i])
+
+    ## highlight the 95 percent home range
+    ## we set standardize = TRUE because we want to estimate
+    ## the home range in space from a UD estimated in space and
+    ## time
+    plot(getverticeshr(uu, 95, standardize=TRUE), lwd=2,
+         border="red", add=TRUE)
+
+    ## close the device
+    dev.off()
+})
+@
+
+The images can then be combined using the program \texttt{mencoder}
+(Linux) or \texttt{ImageMagick} (Windows). For Linux users, the
+following command line can be used:\\
+
+\begin{scriptsize}
+\texttt{mencoder mf://*.jpg -mf w=320:h=240:fps=15:type=jpeg -ovc lavc -o UD.avi}
+\end{scriptsize}
+
+
+
+\subsubsection{Application with time considered as a circular variable}
+
+Now, consider the time as a circular variable. We consider a time
+cycle of 24 hour. We will estimate the UD at 03h00. We have to define
+the beginning of the cycle (argument \texttt{t0} of the function
+\texttt{kernelkc}). We consider that the time cycle begins at midnight
+(there is no particular reason, it is just to illustrate the
+function). We have to set, as the argument \texttt{t0}, any
+object of class POSIXct corresponding to a date at this hour, for
+example the 12/25/2012 at 00H00:
+
+<<>>=
+t0 <- as.POSIXct("2012-12-25 00:00")
+@
+
+We define $h=0.2$ for the time dimension (remember that $h$ should be
+comprised between 0 and 1). We can have a look at the amount of weight
+given to the neighbouring time points of the point 3h00:
+
+<<label=exwc,echo=FALSE,fig=FALSE,eval=FALSE>>=
+exwc(0.2)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<exwc>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<exwc>>
+<<zfig>>
+@
+\end{center}
+
+The function \texttt{exwc} draws a graph of the wrapped Cauchy
+distribution for the chosen h parameter (for circular time), so
+that it is possible to make one's mind concerning the weight that
+can be given to the neighbouring points of a given time point. Now use
+the function \texttt{kernelkc} to estimate the UD:
+
+<<label=imagekernelkc1,echo=FALSE,fig=FALSE,eval=FALSE>>=
+uu <- kernelkc(bear, h=c(1000,1000,0.2), cycle=24*3600,
+               tcalc=3*3600, t0=t0, circular=TRUE)
+image(uu)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<imagekernelkc1>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<imagekernelkc1>>
+<<zfig>>
+@
+\end{center}
+
+\noindent \textit{Remark}: In these examples, we have used the function
+\texttt{kernelkc} to estimate the UD at a given date, with an object
+of class \texttt{ltraj} as argument. However, note that the product
+kernel algorithm can be used on other kind of data. Thus,
+the function \texttt{kernelkcbase} accepts as argument a data frame
+with three columns (x, y and time). The example section on the help
+page of this function provides examples of use.
+
+
+\section{Convex hulls methods}
+
+Several methods relying on the calculation of multiple convex hulls
+have been developed to estimate the home range from relocation data.
+The package \texttt{adehabitatHR} implements three such methods.  I
+describe these three methods in this section.\\
+
+\noindent \textit{Remark:} note that the function
+\texttt{getverticeshr} is generic, and can be used for all
+home-range estimation methods of the package \texttt{adehabitatHR}
+(except for the minimum convex polygon).\\
+
+
+\subsection{The single linkage algorithm}
+
+\subsubsection{The method}
+
+Kenward et al. (2001) proposed a modification of the single-linkage
+cluster analysis for the estimation of the home range.   Whereas this
+method does not rely on a probabilistic definition of the home range
+(contrary to the kernel method), it can still be useful to identify
+the structure of the home range.\\
+
+The clustering process is the following (also described on the help
+page of the function \texttt{clusthr}): the three locations with the
+minimum mean of nearest-neighbour joining distances (NNJD) form the
+first cluster.  At each step of the clustering process, two distances
+are computed: (i) the minimum mean NNJD between three locations (which
+corresponds to the next potential cluster) and (ii) the minimum of the
+NNJD between a cluster "c" and the closest location.  If (i) is
+smaller that (ii), another cluster is defined with these three
+locations.  If (ii) is smaller than (i), the cluster "c" gains a new
+location.  If this new location belong to another cluster, the two
+cluster fuses.  The process stop when all relocations are assigned to
+the same cluster.\\
+
+At each step of the clustering process, the proportion of all
+relocations which are assigned to a cluster is computed (so that
+the home range can be defined to enclose a given proportion of the
+relocations at hand, i.e. to an uncomplete process).  At a given
+step, the home range is defined as the set of minimum convex
+polygons enclosing the relocations in the clusters.\\
+
+
+\subsubsection{The function \texttt{clusthr}}
+
+
+Take as example the \texttt{puechabonsp} dataset:
+
+<<>>=
+uu <- clusthr(puechabonsp$relocs[,1])
+class(uu)
+@
+
+The class \texttt{MCHu} is returned by all the home range estimation
+methods based on clustering methods (LoCoH and single linkage).
+The object \texttt{uu} is basically a list of
+\texttt{SpatialPolygonsDataFrame} objects (one per animal).  We can
+have a display of the home ranges by typing:
+
+<<label=kkkssssm,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(uu)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<kkkssssm>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<kkkssssm>>
+<<zfig>>
+@
+\end{center}
+
+The information stored in each \texttt{SpatialPolygonsDataFrame}
+object is the following (for example, for the third animal):
+
+<<>>=
+as.data.frame(uu[[3]])
+@
+
+From this data frame, it is possible to extract a home range
+corresponding to a particular percentage of relocations enclosed in
+the home range.  For example, the smallest home range enclosing 90\% of
+the relocations corresponds to the row 26 of this data frame:
+
+<<label=ksqkskq,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(uu[[3]][26,])
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<ksqkskq>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<ksqkskq>>
+<<zfig>>
+@
+\end{center}
+
+
+
+\subsubsection{Rasterizing an object of class \texttt{MCHu}}
+
+It is possible to rasterize the estimated home ranges using the
+function \texttt{MCHu.rast}.  For example, using the \texttt{map}
+component of the \texttt{puechabonsp} dataset:
+
+<<label=sldlsl,echo=FALSE,fig=FALSE,eval=FALSE>>=
+uur <- MCHu.rast(uu, puechabonsp$map, percent=90)
+image(uur, 3)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<sldlsl>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<sldlsl>>
+<<zfig>>
+@
+\end{center}
+
+
+\subsubsection{Computing the home-range size}
+
+We already noticed that the object of class \texttt{MCHu} returned by
+the function \texttt{clusthr} contains the area of each home
+range.  For example, for the first animal:
+
+<<>>=
+head(as.data.frame(uu[[1]]))
+@
+
+and as usual, the units of these areas are controlled by the
+parameters \texttt{unin} and \texttt{unout} of the function
+\texttt{clusthr}.  I also included a function \texttt{MCHu2hrsize},
+which generates an object of class \texttt{hrsize}, and makes easier
+the exploration of the relationship between the home range size and
+the percentage of relocations included in the home range:
+
+<<label=slqllqq,echo=FALSE,fig=FALSE,eval=FALSE>>=
+ii <- MCHu2hrsize(uu, percent=seq(50, 100, by=5))
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<slqllqq>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<slqllqq>>
+<<zfig>>
+@
+\end{center}
+
+Here, the choice of 90\% seems a good choice for the
+estimation, as the area-percentage relationship seems to reach a rough
+asymptote (no steep fall in the decrease below this value).
+
+
+
+\subsection{The LoCoH methods}
+
+The LoCoH (Local Convex Hulls) family of methods has been proposed by
+Getz et al. (2007) for locating Utilization Distributions from
+relocation data.  Three possible algorithms can be used: Fixed k
+LoCoH, Fixed r LoCoH, and Adaptive LoCoH.  The three algorithms are
+implemented in \texttt{adehabitatHR}.  All the algorithms work by constructing
+a small convex hull for each relocation and its neighbours, and then
+incrementally merging the hulls together from smallest to largest into
+isopleths.  The 10\% isopleth contains 10\% of the points and
+represents a higher utilization than the 100\% isopleth that contains
+all the points (as for the single linkage method).  I describe the
+three methods below (this description is also on the help page of the
+functions \texttt{LoCoH.k}, \texttt{LoCoH.r} and \texttt{LoCoH.a}):\\
+
+\begin{itemize}
+\item \textbf{Fixed k LoCoH}: Also known as k-NNCH, Fixed k LoCoH is
+  described in Getz and Willmers (2004).  The convex hull for each
+  point is constructed from the (k-1) nearest neighbors to that point.
+  Hulls are merged together from smallest to largest based on the area
+  of the hull.  This method is implemented in the function
+  \texttt{LoCoH.k};\\
+
+\item \textbf{Fixed r LoCoH}: In this case, hulls are created from all
+  points within $r$ distance of the root point.  When merging hulls,
+  the hulls are primarily sorted by the value of k generated for each
+  hull (the number of points contained in the hull), and secondly by
+  the area of the hull.  This method is implemented in the function
+  \texttt{LoCoH.r};\\
+
+\item \textbf{Adaptive LoCoH}:  Here, hulls are created out of the
+  maximum nearest neighbors such that the sum of the distances from
+  the nearest neighbors is less than or equal to d.  Use the same hull
+  sorting as Fixed r LoCoH.  This method is implemented in the
+  function \texttt{LoCoH.a};\\
+\end{itemize}
+
+All of these algorithms can take a significant amount of time.
+
+
+\subsection{Example with the Fixed k LoCoH method}
+
+We use the fixed k LoCoH method to estimate the home range of the wild
+boars monitored at Puechabon, for example with $k = 5$:
+
+<<eval=FALSE>>=
+res <- LoCoH.k(puechabonsp$relocs[,1], 10)
+@
+
+The object returned by the function is of the class \texttt{MCHu}, as
+the objects returned by the function \texttt{clusthr} (see previous
+section).  Consequently, all the functions developed for this class of
+objects can be used (including rasterization with \texttt{MCHu.rast},
+computation of home-range size with \texttt{MCHu2hrsize}, etc.).  A
+visual display of the home ranges can be obtained with:
+
+<<eval=FALSE, fig=TRUE>>=
+plot(res)
+@
+
+Note that the relationship between the home range size and the number
+of chosen neighbours can be investigated thanks to the function
+\texttt{LoCoH.k.area}:
+
+<<eval=FALSE>>=
+LoCoH.k.area(puechabonsp$relocs[,1], krange=seq(4, 15, length=5),
+             percent=100)
+@
+
+Just copy and paste the above code (it is not executed in this
+report).  An asymptote seems to be reached at about 10 neighbours,
+which justifies the choice of 10 neighbours for an home range
+estimated with 100\% of the relocations (a more stable home range
+size).
+
+
+\subsection{The characteristic hull method}
+
+Downs and Horner (2009) developed an interesting method for the home
+range estimation. This method relies on the calculation of the
+Delaunay triangulation of the set of relocations. Then, the triangles
+are ordered according to their area (and not their perimeter). The
+smallest triangles correspond to the areas the most intensively used
+by the animals. It is then possible to derive the home range estimated
+for a given percentage level.\\
+
+For example, consider the \texttt{puechabonsp} dataset.
+
+<<>>=
+res <- CharHull(puechabonsp$relocs[,1])
+class(res)
+@
+
+The object returned by the function is also of the class \texttt{MCHu}, as
+the objects returned by the functions \texttt{clusthr} and
+\texttt{LoCoH.*} (see previous sections).  Consequently, all the
+functions developed for this class of objects can be used (including
+rasterization with \texttt{MCHu.rast}, computation of home-range size
+with \texttt{MCHu2hrsize}, extraction of the home-range contour with
+\texttt{getverticeshr} etc.).  A visual display of the home ranges can
+be obtained with:
+
+<<label=plotcharhul,echo=FALSE,fig=FALSE,eval=FALSE>>=
+plot(res)
+@
+
+<<results=tex,echo=TRUE,fig=FALSE,eval=FALSE>>=
+<<plotcharhul>>
+@
+
+\begin{center}
+<<results=tex,echo=FALSE>>=
+<<afig>>
+<<plotcharhul>>
+<<zfig>>
+@
+\end{center}
+
+
+
+
+\section{Conclusion}
+
+I included in the package \texttt{adehabitatHR} several functions allowing
+the estimation of the home range and utilization distribution of
+animals using relocation data.  These concepts are extremely useful for
+the study of animal space use, but they consider the use of space from
+a purely spatial point of view.  In other words, time is not taken into
+account...\\
+
+The package \texttt{adehabitatLT} represents an attempt to shift our point
+of view on relocation data toward a more dynamic point of view.
+Indeed, with the increasing use of GPS collars, the time dimension of
+the monitoring becomes more and more important in studies of animals
+space use.  This package contains several functions developed for the
+analysis of trajectories.  The class \texttt{ltraj}, which is at the
+very core of this package, has been developped to make possible the
+analysis of animals trajectories.\\
+
+Another important aspect in the study of animals space use is the
+study of their relationships with the environment (i.e., habitat
+selection).  The package \texttt{adehabitatHS} proposes several methods
+allowing to explore this aspect of animals space use.  Several
+functions are implemented, relying on the study of the distribution of
+the time spent by the animals in the multidimensional space defined by
+the environmental variables.  In addition to common methods in the
+analysis of habitat selection (compositional analysis of habitat use,
+selection ratios, etc.), the package \texttt{adehabitatHS} proposes several
+exploratory tools useful to identify patterns in habitat
+selection.  The study of habitat selection by animals is possible
+through the interaction with the other brother packages (of the suite
+\texttt{adehabitat}), but also thanks to te tools provided by the
+package \texttt{sp}, which allow to handle raster and vector maps of
+environmental variables.  Note that the package \texttt{adehabitatMA}
+provides additionnal tools which can be useful in the
+particular field of habitat selection study.
+
+
+
+\section*{References}
+\begin{description}
+\item Bullard, F. 1999. Estimating the home range of an animal: a
+  Brownian bridge approach. Johns Hopkins University. Master thesis.
+\item Burt, W.H. 1943. Territoriality and home range concepts as
+  applied to mammals. Journal of Mammalogy, 24, 346-352.
+\item Benhamou, S. and Cornelis, D. 2010. Incorporating movement
+  behavior and barriers to improve kernel home range space use
+  estimates. Journal of Wildlife Management, 74, 1353--1360.
+\item Benhamou, S. and Riotte-Lambert, L. 2012. Beyond the Utilization
+  Distribution: Identifying home range areas that are intensively
+  exploited or repeatedly visited. Ecological Modelling, 227,
+  112-116.
+\item Benhamou, S. 2011. Dynamic approach to space and habitat use
+  based on biased random bridges. PLOS ONE, 6, 1--8.
+\item Calenge, C. 2005. Des outils statistiques pour l'analyse des
+  semis de points dans l'espace ecologique. Universite Claude Bernard
+  Lyon 1.
+\item Calenge, C. 2006. The package adehabitat for the R software: a
+  tool for the analysis of space and habitat use by
+  animals. Ecological modelling, 197, 516--519.
+\item Calenge, C., Dray, S. and Royer-Carenzi, M. 2009. The concept of
+  animals trajectories from a data analysis perspective. Ecological
+  Informatics, 4, 34-41.
+\item Downs, J.A. and Horner, M.W. 2009. A Characteristic-Hull Based
+  Method for Home Range Estimation. Transactions in GIS, 13: 527--537.
+\item Getz, W., Fortmann-Roe, S., Cross, P., Lyons, A., Ryan, S. and
+  Wilmers, C. 2007. LoCoH: Nonparameteric Kernel Methods for
+  Constructing Home Ranges and Utilization Distributions. PloS one, 2,
+  e207.
+\item Horne, J.S., Garton, E.O., Krone, S.M. and Lewis, J.S. 2007.
+  Analyzing animal movements using Brownian bridges. Ecology, 88,
+  2354--2353.
+\item Keating, K. and Cherry, S. 2009. Modeling utilization
+  distributions in space and time Ecology, 90, 1971-1980.
+\item Kenward, R., Clarke, R., Hodder, K. and Walls, S. 2001. Density
+  and linkage estimators of home range: nearest neighbor clustering
+  defines multinuclear cores. Ecology, 82, 1905--1920.
+\item Maillard, D. 1996. Occupation et utilisation de la garrigue et
+  du vignoble mediterraneens par le sanglier (Sus scrofa L.).
+  Universite de droit, d'economie et des sciences d'Aix-Marseille III,
+  PhD thesis.
+\item Mohr, C. 1947. Table of equivalent populations of North American
+  small mammals. American Midland Naturalist, 37, 223--249.
+\item Pebesma, E. and Bivand, R.S. 2005. Classes and Methods for
+  Spatial data in R. R News, 5, 9--13.
+\item Silverman, B. 1986. Density estimation for statistics and data
+  analysis. Chapman and Hall, London.
+\item van Winkle, W. (1975) Comparison of several probabilistic
+  home-range models. Journal of Wildlife Management, 39, 118--123.
+\item Wand, M. and Jones, M. 1995. Kernel smoothing. Chapman and
+  Hall/CRC.
+\item Worton, B. 1989. Kernel methods for estimating the utilization
+  distribution in home-range studies. Ecology, 70, 164--168.
+
+\end{description}
+
+\end{document}
+
+% vim:syntax=tex

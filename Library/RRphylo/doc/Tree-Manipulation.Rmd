@@ -1,0 +1,757 @@
+---
+title: "Phylogenetic tree manipulation"
+author: "Silvia Castiglione, Carmela Serio, Pasquale Raia"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tree-Manipulation}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+if (!requireNamespace("rmarkdown", quietly = TRUE) ||
+     !rmarkdown::pandoc_available()) {
+   warning(call. = FALSE, "Pandoc not found, the vignettes is not built")
+   knitr::knit_exit()
+}
+
+
+misspacks<-sapply(c("manipulate","scales","kableExtra"),requireNamespace,quietly=TRUE)
+if(any(!misspacks)){
+  warning(call. = FALSE,paste(names(misspacks)[which(!misspacks)],collapse=", "), "not found, the vignettes is not built")
+   knitr::knit_exit()
+}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+require(RRphylo)
+options(rmarkdown.html_vignette.check_title = FALSE)
+source("functions4vignettes.R")
+```
+
+## Index
+1. [tree.merger tool](#tree.merger)
+    a. [tree.merger basics](#basics)
+    b. [Input tree and data](#data)
+    c. [Attaching individual tips to the backbone tree](#individual)
+    d. [Attaching clades to the backbone tree](#clades)
+    e. [Building a new tree](#newtree)
+    f. [Guided examples](#examples)
+2. [scaleTree tool](#scaleTree)
+3. [move.lineage tool](#move.lineage)
+4. [cutPhylo tool](#cutPhylo)
+5. [fix.poly tool](#fix.poly)
+
+## tree.merger tool {#tree.merger}
+### tree.merger basics{#basics}
+The function `tree.merger` was created to merge phylogenetic information derived from different phylogenies into a single supertree. Given a backbone (`backbone`) and a source (`source.tree`) trees, `tree.merger` drops clades from the latter to attach them on the former according to the information provided in the dataset object `data`. Individual tips to add can be indicated in `data` as well. The function has been subsequently implemented to build phylogenetic trees from scratch by only using the `data` object. In both cases, once the supertree is assembled, tips and nodes' ages are calibrated based on user-specified values.
+
+### Merging trees: input tree and data{#data}
+The `backbone` phylogeny serves as the reference to locate where single tips or entire clades extracted from the `source.tree` have to be attached. The `backbone` is assumed to be correctly calibrated so that nodes and tips ages (including the age of the tree root) are left unchanged, unless the user specifies otherwise. The `source.tree` is the phylogeny from which the clades to add are extracted. For each clade attached to the `backbone`, the time distances between the most recent common ancestor of the clade and its descendant nodes are kept fixed, unless the ages for any of these nodes are indicated by the user. All the new tips added to the `backbone`, irrespective of whether they are attached as a clade or as individual tips, are placed at the maximum distance from the tree root, unless calibration ages are supplied by the user. The `data` object is a dataframe including information about "what" is attached, where and how. `data` must be made of three columns:
+
+* **bind**: the tips or clades to be attached;
+
+* **reference**: the tips or clades where **bind** will be attached;
+
+* **poly**: a logical indicating whether the **bind** and **reference** pair should form a polytomy.
+
+If different column names are supplied, `tree.merger` assumes they are ordered as described and eventually fails if this requirement is not met. Similarly, with duplicated **bind** supplied, the function stops and throws an error message. A clade, either to be bound or to be the reference, must be indicated by collating the names of the two phylogenetically furthest tips belonging to it, separated by the "-" symbol. Alternatively, if `backbone$node.label`/`source.tree$node.label` is not `NULL`, a **bind**/**reference** clade can be indicated as "Clade NAMEOFTHECLADE" when appropriate. Similarly, an entire genus on both the `backbone` and the `source.tree` can be indicated as "Genus NAMEOFTHEGENUS". If the "Genus NAMEOFTHEGENUS" mode is used for a species/clade belonging to one or more different genera, the function automatically sets as reference the clade including all the species belonging to the reference genus, whatever they are already on the `backbone` or binded. Regardless the way it was attached, any 'bound' tip can be used as a reference for another tip (individually or as an element for clade identification, i.e. in the "species1-species2" form). The order with which clades and tips to attach are supplied does not matter.
+
+Tips and nodes are calibrated within `tree.merger` by means of the function [`scaleTree`](#scaleTree). To this aim, named vectors of tips and nodes ages, meant as time distance from the youngest tips within the phylogeny, must be supplied. As for the `data` object, the nodes to be calibrated should be identified by collating the names of the two phylogenetically furthest tips it subtends to, separated by a "-".
+
+### Merging trees: Attaching individual tips to the backbone tree{#individual}
+If only individual tips are attached the `source.tree` can be left unspecified. Tips set to be attached to the same **reference** with **poly=FALSE** are considered to represent a polytomy. Tips set as **bind** which are already on the backbone tree are removed from the latter and placed according to the **reference**. In the example below, tips "genusE_1a" and "genusE_1b" are set to be attached to the same reference "genusE_1", creating a polytomy. The species "genusC_4" and "genusC_5", are both set to be bound to the entire "Genus genusC" (including "genusC_1", "genusC_2", and "genusC_3"), but only the latter is explicitly indicated to create a polytomous clade ("poly=TRUE"). Once "genusC_5" is attached, the most recent common ancestor (MRCA) of the entire genusC changes with respect to the MRCA on the `backbone`, hence the reference for "genusC_6" is identified by selecting the two phylogenetically furthest tips within the 'new' genusC, that is "genusC_1-genusC_5". This is unnecessary for "genusI_1" as the function recognizes it belongs to a different genus than "genusC" and therefore places it as sister to all the species in "genusC", regardless if they already are on the backbone or are attached. "genusB_3" belonging to the backbone is indicated to be moved, and "genusH_1" is added to the tree root thus changing the total height of the tree.
+
+```{r echo=FALSE,message=FALSE,warning=FALSE,fig.dim=c(8,6),out.width="98%",dpi=220}
+require(ape)
+require(phytools)
+
+set.seed(14)
+rtree(10,tip.label=c("genusB_1","genusD_1","genusB_2","genusA_1","genusC_1",
+                     "genusE_1","genusC_2","genusD_2","genusB_3","genusC_3"))->tree.back
+tree.back$node.label[6]<-"DC"
+
+par(mfrow=c(1,2))
+par(mar=c(2,2,1,2))
+plot(tree.back,edge.width=1.2)
+nodelabels(text=tree.back$node.label[6],node=Ntip(tree.back)+6,col="forestgreen",frame="n",adj=0)
+title("backbone tree")
+axisPhylo()
+
+data.frame(bind=c("genusE_1a","genusC_3a","genusB_1a","genusC_4","genusF_1",
+                  "genusG_1","genusH_1","genusC_5","genusC_6","genusB_3","genusE_1b","genusI_1"),
+           reference=c("genusE_1","genusC_3","genusB_1","Genus genusC","Clade DC",
+                       "genusF_1-genusB_2","genusE_1a-genusC_3","Genus genusC",
+                       "genusC_5-genusC_1",
+                       "genusB_2-genusB_1","genusE_1","Genus genusC"),
+           poly=c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE))->dato
+par(mar=c(2,0,1,0.5))
+plotTab(tab=dato,
+        text.cex=0.9,text.box=c(box="n"),
+        text.grid=data.frame(rown=1:nrow(dato),coln=rep(0,nrow(dato)),col="gray80"),
+        colN.highlight=c(col="gray97"),colN.box=list(box="c",col=c("black","gray97","gray80"),lwd=1),
+        colN.grid = "n",colN.font=2,colN.cex=0.9,
+        main="dato",main.font=2,main.cex=0.9,main.highlight =c(col="gray97"),main.box = list(box="7",col=c("black","gray97")))
+
+require(kableExtra)
+```
+
+```{r echo=1,results = "hide",message=FALSE,fig.dim=c(6,6),out.width="70%",dpi=220,fig.align='center'}
+tree.merger(backbone=tree.back,data=dato,plot=FALSE)
+
+suppressWarnings(tm(backbone=tree.back,data=dato,title="merged tree"))
+```
+
+As no `tip.ages` are supplied to `tree.merger`, all the new tips are placed at the maximum distance from the tree root. Since no age for the root of the merged tree is indicated, the function places it arbitrarly and produces a warning to inform the user about its position with respect to the youngest tip on the phylogeny.
+
+To calibrate the the ages of either tips or nodes within the merged tree, the arguments `tip.ages` and `node.ages` must be indicated. 
+```{r echo=7:8,message=FALSE}
+
+c(1,2,1.7,1.5,0.8,1.5,0.3,1.2,0.2)->ages.tip
+c("genusH_1","genusE_1a","genusE_1","genusE_1b","genusF_1","genusC_5","genusC_3a","genusG_1","genusB_1a")->names(ages.tip)
+c(2.2,2.9,3.5)->ages.node
+c("genusB_1-genusF_1","genusE_1a-genusE_1b","genusH_1-genusB_1")->names(ages.node)
+
+ages.tip
+ages.node
+```
+```{r echo=1,results="hide",message=FALSE,fig.dim=c(6,6),out.width="70%",dpi=220,fig.align='center'}
+tree.merger(backbone=tree.back,data=dato,tip.ages=ages.tip,node.ages = ages.node,plot=FALSE)
+
+suppressWarnings(tm(backbone=tree.back,data=dato,tip.ages=ages.tip,node.ages = ages.node,title="merged and calibrated tree"))
+```
+
+### Merging trees: Attaching clades to the backbone tree{#clades}
+When a clade is attached, the node subtending to it on `source.tree` is identified as the MRCA of the tip pair, the "Genus", or the "Clade" indicated in **bind**. In the example below, "Genus genusA" from the source is added as sister to "genusA_1" within the backbone. Then, "genusL_1" is bound to the newly created clade made of all the tips belonging to the "genusA", located by the two phylogenetically furthest tips within it.
+
+```{r echo=FALSE,warnings=FALSE,message=FALSE,fig.dim=c(8,4),out.width="98%",dpi=220}
+ set.seed(1)
+ rtree(13,tip.label=c("genusK_1","genusA_2","genusA_4","genusM_1","genusH_1","genusF_2","genusF_1",
+ "genusJ_1","genusI_1","genusB_5","genusA_3","genusN_1","genusG_1") )->tree.source
+ tree.source$node.labels[7]<-"HI"
+
+par(mfrow=c(1,2),mar=c(2,0,1,0))
+plot(tree.back,edge.width=1.8)
+nodelabels(text=tree.back$node.label[6],node=Ntip(tree.back)+6,col="forestgreen",frame="n",adj=0)
+title("backbone tree")
+axisPhylo()
+plot(tree.source,edge.width=1.8)
+nodelabels(text=tree.source$node.label[7],node=Ntip(tree.source)+7,col="forestgreen",frame="n",adj=0)
+title("source tree")
+axisPhylo()
+
+data.frame(bind=c("Genus genusA","genusG_1-genusF_2","Clade HI","genusL_1","genusB_4","genusM_1-genusN_1"),
+           reference=c("genusA_1","Clade DC","Genus genusB","Genus genusA","genusB_3","Genus genusB"),
+           poly=c(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE))->dato.clade
+
+knitr::kable(dato.clade,align="c") %>%
+  kable_styling(full_width = TRUE, position = "center") %>%
+  add_header_above(c("dato.clade" = 3)) 
+
+```
+```{r echo=1,results = "hide",message=FALSE,fig.dim=c(6,6),out.width="70%",dpi=220,fig.align='center'}
+tree.merger(backbone=tree.back,data=dato.clade,source.tree=tree.source,plot=FALSE)
+
+tm(backbone=tree.back,data=dato.clade,source.tree=tree.source,title="merged tree")
+
+```
+
+### Building a new tree{#newtree}
+The machinery described above works equally when `tree.merger` is used to build a new phylogenetic tree from scratch, with the only main difference that in this case the first row within `data` includes the first species pair to serve as *reference* for subsequent attachments. Additionally, since no a-priori information about species ages and tree height is available (unless provided), the function automatically produces an uncalibrated version of the tree where all the internal branch lengths equal 1 and all the species are placed at the maximum distance from the tree root.
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+dato.new<-data.frame(bind=c("sp_1","sp_3","sp_4","sp_5","sp_6","sp_7","sp_8"),
+           reference=c("sp_2","sp_1-sp_2","sp_3","sp_3-sp_4","sp_1-sp_4","sp_6","sp_1-sp_6"),
+           poly=rep(FALSE,7))
+```
+
+```{r echo=1,results = "hide",message=FALSE}
+tree.merger(data=dato.new,plot=FALSE)
+```
+```{r echo=FALSE,results = "hide",message=FALSE,fig.dim=c(6,4),out.width="99%",dpi=220,fig.align='center'}
+layout(matrix(c(1,0,2,2),ncol=2,nrow=2),width=c(3,7),height=c(6,4))
+par(mar=c(0,1,0,0))
+plotTab(tab=dato.new,
+        text.cex=0.9,text.box=c(box="n"),
+        text.grid=data.frame(rown=1:nrow(dato),coln=rep(0,nrow(dato)),col="gray80"),
+        colN.highlight=c(col="gray97"),colN.box=list(box="c",col=c("black","gray97","gray80"),lwd=1),
+        colN.grid = "n",colN.font=2,colN.cex=0.9,
+        main="dato.new",main.font=2,main.cex=0.9,main.highlight =c(col="gray97"),main.box = list(box="7",col=c("black","gray97")))
+suppressWarnings(tm(data=dato.new,title="new tree"))
+```
+
+### Guided examples {#examples}
+
+```{r echo=c(1:19),message=FALSE,fig.dim=c(6,6),out.width="98%",dpi=220,fig.align='center'}
+#### Merging phylogenetic information 
+### load the RRphylo example dataset including Cetaceans tree 
+data("DataCetaceans")
+DataCetaceans$treecet->treecet # phylogenetic tree
+treecet$node.label[(131-Ntip(treecet))]<-"Crown Mysticeti" # assigning node labels
+
+### Select two clades and some species to be removed
+tips(treecet,131)->crown.Mysticetes
+tips(treecet,193)->Delphininae
+c("Aetiocetus_weltoni","Saghacetus_osiris",
+  "Zygorhiza_kochii","Ambulocetus_natans",
+  "Kentriodon_pernix","Kentriodon_schneideri","Kentriodon_obscurus",
+  "Eurhinodelphis_cristatus","Eurhinodelphis_bossi")->extinct
+
+plot(treecet,show.tip.label = FALSE,no.margin=TRUE)
+nodelabels(frame="n",col="blue",font=2,node=c(131,193),text=c("crown\nMysticetes","Delphininae"))
+tiplabels(frame="circle",bg="red",cex=.3,text=rep("",length(c(crown.Mysticetes,Delphininae,extinct))),
+          tip=which(treecet$tip.label%in%c(crown.Mysticetes,Delphininae,extinct)))
+
+### Create the backbone and source trees
+drop.tip(treecet,c(crown.Mysticetes[-which(tips(treecet,131)%in%
+                                             c("Caperea_marginata","Eubalaena_australis"))],
+                   Delphininae[-which(tips(treecet,193)=="Tursiops_aduncus")],extinct))->backtree
+keep.tip(treecet,c(crown.Mysticetes,Delphininae,extinct))->sourcetree
+
+
+### Create the data object
+data.frame(bind=c("Clade Crown Mysticeti",
+                  "Aetiocetus_weltoni",
+                  "Saghacetus_osiris",
+                  "Zygorhiza_kochii",
+                  "Ambulocetus_natans",
+                  "Genus Kentriodon",
+                  "Sousa_chinensis-Delphinus_delphis",
+                  "Kogia_sima",
+                  "Eurhinodelphis_cristatus",
+                  "Grampus_griseus",
+                  "Eurhinodelphis_bossi"),
+           reference=c("Fucaia_buelli-Aetiocetus_weltoni",
+                       "Aetiocetus_cotylalveus",
+                       "Fucaia_buelli-Tursiops_truncatus",
+                       "Saghacetus_osiris-Fucaia_buelli",
+                       "Dalanistes_ahmedi-Fucaia_buelli",
+                       "Phocoena_phocoena-Delphinus_delphis",
+                       "Sotalia_fluviatilis",
+                       "Kogia_breviceps",
+                       "Eurhinodelphis_longirostris",
+                       "Globicephala_melas-Pseudorca_crassidens",
+                       "Eurhinodelphis_longirostris"),
+           poly=c(FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE))->dato
+
+knitr::kable(dato,align="c") %>%
+  kable_styling(full_width = TRUE, position = "center") %>%
+  add_header_above(c("dato" = 3)) 
+```
+
+```{r results="hide",message=FALSE}
+### Merge the backbone and the source trees according to dato without calibrating tip and node ages
+tree.merger(backbone = backtree,data=dato,source.tree = sourcetree,plot=FALSE)
+
+### Set tips and nodes calibration ages
+c(Aetiocetus_weltoni=28.0,
+  Saghacetus_osiris=33.9,
+  Zygorhiza_kochii=34.0,
+  Ambulocetus_natans=40.4,
+  Kentriodon_pernix=15.9,
+  Kentriodon_schneideri=11.61,
+  Kentriodon_obscurus=13.65,
+  Eurhinodelphis_bossi=13.65,
+  Eurhinodelphis_cristatus=5.33)->tipages
+c("Ambulocetus_natans-Fucaia_buelli"=52.6,
+  "Balaena_mysticetus-Caperea_marginata"=21.5)->nodeages
+
+### Merge the backbone and the source trees and calibrate tips and nodes ages
+tree.merger(backbone = backtree,data=dato,source.tree = sourcetree,
+            tip.ages=tipages,node.ages=nodeages,plot=FALSE)
+
+```
+
+```{r message=FALSE,results="hide"}
+#### Building a new phylogenetic tree: build the phylogenetic tree shown in 
+#### Pandolfi et al. 2020 - Figure 2 (see reference)
+
+### Create the data object
+data.frame(bind=c("Hippopotamus_lemerlei",
+                  "Hippopotamus_pentlandi",
+                  "Hippopotamus_amphibius",
+                  "Hippopotamus_antiquus",
+                  "Hippopotamus_gorgops",
+                  "Hippopotamus_afarensis",
+                  "Hexaprotodon_sivalensis",
+                  "Hexaprotodon_palaeindicus",
+                  "Archaeopotamus_harvardi",
+                  "Saotherium_mingoz",
+                  "Choeropsis_liberiensis"),
+           reference=c("Hippopotamus_madagascariensis",
+                       "Hippopotamus_madagascariensis-Hippopotamus_lemerlei",
+                       "Hippopotamus_pentlandi-Hippopotamus_madagascariensis",
+                       "Hippopotamus_amphibius-Hippopotamus_madagascariensis",
+                       "Hippopotamus_antiquus-Hippopotamus_madagascariensis",
+                       "Hippopotamus_gorgops-Hippopotamus_madagascariensis",
+                       "Genus Hippopotamus",
+                       "Hexaprotodon_sivalensis",
+                       "Hexaprotodon_sivalensis-Hippopotamus_madagascariensis",
+                       "Archaeopotamus_harvardi-Hippopotamus_madagascariensis",
+                       "Saotherium_mingoz-Hippopotamus_madagascariensis"),
+           poly=c(FALSE,
+                  TRUE,
+                  FALSE,
+                  FALSE,
+                  TRUE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE,
+                  FALSE))->dato
+```
+```{r echo=FALSE,message=FALSE}
+knitr::kable(dato,align="c") %>%
+  kable_styling(full_width = TRUE, position = "center")
+```
+```{r message=FALSE,results="hide"}
+### Build an uncalibrated version of the tree
+tree.merger(data=dato,plot=FALSE)->tree.uncal
+
+### Set tips and nodes calibration ages
+## Please note: the following ages are only used to show how to use the function
+## they are not assumed to be correct.
+c("Hippopotamus_lemerlei"=0.001,
+  "Hippopotamus_pentlandi"=0.45,
+  "Hippopotamus_amphibius"=0,
+  "Hippopotamus_antiquus"=0.5,
+  "Hippopotamus_gorgops"=0.4,
+  "Hippopotamus_afarensis"=0.75,
+  "Hexaprotodon_sivalensis"=1,
+  "Hexaprotodon_palaeindicus"=0.4,
+  "Archaeopotamus_harvardi"=5.2,
+  "Saotherium_mingoz"=4,
+  "Choeropsis_liberiensis"=0)->tip.ages
+c("Choeropsis_liberiensis-Hippopotamus_amphibius"=13,
+  "Archaeopotamus_harvardi-Hippopotamus_amphibius"=8.5,
+  "Hexaprotodon_sivalensis-Hexaprotodon_palaeindicus"=6)->node.ages
+
+
+### Build a calibrated version of the tree
+tree.merger(data=dato,tip.ages=tip.ages,node.ages=node.ages,plot=FALSE)->tree.cal
+```
+
+## scaleTree tool {#scaleTree}
+The function `scaleTree` is a useful tool to deal with phylogenetic age calibration written around Gene Hunt's scalePhylo function (https://naturalhistory.si.edu/staff/gene-hunt). It rescales branches and leaves of the tree according to species and/or nodes calibration ages (meant as distance from the youngest tip within the tree).
+
+If only species ages are supplied (argument `tip.ages`), the function changes leaves length, leaving node ages and internal branch lengths unaltered. When node ages are supplied (argument `node.ages`), the function shifts nodes position along their own branches while keeping other nodes and species positions unchanged.
+
+```{r echo=13, message=FALSE, warning=FALSE}
+library(ape)
+library(phytools)
+
+set.seed(14)
+DataFelids$treefel->tree
+tree$tip.label<-paste("t",seq(1:Ntip(tree)),sep="")
+
+max(nodeHeights(tree))->H
+sample(H-diag(vcv(tree)),8)->sp.ages
+sp.ages+tree$edge.length[match(match(names(sp.ages),tree$tip.label),tree$edge[,2])]/2->sp.ages
+sp.ages[c(3,7)]<-0
+
+sp.ages
+```
+```{r echo=c(1),results="hide"}
+scaleTree(tree,tip.ages=sp.ages)->treeS1
+```
+```{r echo=c(19), fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%'}
+edge.col<-rep("gray60",nrow(tree$edge))
+edge.col[which(treeS1$edge[,2]%in%match(names(sp.ages),tree$tip.label))]<-"blue"
+
+par(mfcol=c(1,2),mar=c(0.1,0.1,1,0.1))
+plot(tree,edge.color = edge.col,edge.width=1.5,show.tip.label=F)
+title("original",cex.main=1.2)
+plot(treeS1,edge.color = edge.col,edge.width=1.5,show.tip.label=F)
+title("species ages rescaled",cex.main=1.2)
+```
+```{r echo=10}
+set.seed(0)
+sample(seq((Ntip(tree)+2),(Nnode(tree)+Ntip(tree))),8)->nods
+H-dist.nodes(tree)[(Ntip(tree)+1),nods]->nod.ages
+
+sapply(1:length(nods),function(x) {
+H-dist.nodes(tree)[(Ntip(tree)+1),c(getMommy(tree,nods[x])[1],getDescendants(tree,nods[x])[1:2])]->par.ages
+nod.ages[x]+((min(abs(nod.ages[x]-par.ages))-0.2)*sample(c(-1,1),1))
+})->nod.ages
+
+nod.ages
+```
+```{r echo=c(1),results="hide", fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%'}
+scaleTree(tree,node.ages=nod.ages)->treeS2
+treeS2->treeS1
+unlist(lapply(1:length(nods), function(x) c(nods[x],getDescendants(tree,nods[x])[1:2])))->brcol
+edge.col<-rep("gray60",nrow(tree$edge))
+edge.col[which(treeS1$edge[,2]%in%brcol)]<-"red"
+
+#par(mfrow=c(2,1),mar=c(0.1,0.1,1,0.1))
+par(mfcol=c(1,2),mar=c(0.1,0.1,1,0.1))
+plot(tree,edge.color = edge.col,edge.width=1.5,show.tip.label=F)
+title("original",cex.main=1.2)
+plot(treeS1,edge.color = edge.col,edge.width=1.5,show.tip.label=F)
+title("node ages rescaled",cex.main=1.2)
+```
+
+It may happen that species and/or node ages to be calibrated are older than the age of their ancestors. In such cases, after moving the species (node) to its target age, the function reassembles the phylogeny above it by assigning the same branch length (set through the argument `min.branch`) to all the  branches along the species (node) path, so that the tree is well-conformed and ancestor-descendants relationships remain unchanged. In this way changes to the original tree topology only pertain to the path along the "calibrated" species.
+
+```{r echo=7, fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%',fig.align="center"}
+H-dist.nodes(tree)[(Nnode(tree)+1),91]->sp.ages
+names(sp.ages)<-tree$tip.label[1]
+
+H-dist.nodes(tree)[(Nnode(tree)+1),164]->nod.ages
+names(nod.ages)<-96
+
+c(sp.ages,nod.ages)
+```
+```{r echo=1,results="hide", fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%',fig.align="center"}
+scaleTree(tree,tip.ages = sp.ages,node.ages = nod.ages)->treeS
+
+par(mfrow=c(1,2))
+plot(tree,edge.color = "gray40",show.tip.label=F,no.margin = TRUE,edge.width=1.5)
+plotinfo <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+points(plotinfo$xx[1],plotinfo$yy[1],pch=16,col="blue",cex=1.2)
+points(plotinfo$xx[91],plotinfo$yy[1],pch=4,col="blue",cex=1.5,lwd=2)
+text("target age",x= plotinfo$xx[91]-1,y=plotinfo$yy[1],adj=1,col="blue",cex=0.8)
+points(plotinfo$xx[96],plotinfo$yy[96],pch=16,col="red",cex=1.2)
+points(plotinfo$xx[164],plotinfo$yy[96],pch=4,col="red",cex=1.5,lwd=2)
+text("target age",x= plotinfo$xx[164]-1,y=plotinfo$yy[96],adj=1,col="red",cex=0.8)
+
+edge.col<-rep("gray40",nrow(tree$edge))
+edge.col[which(treeS$edge[,2]%in%c(1,getMommy(tree,1)))]<-"blue"
+edge.col[which(treeS$edge[,2]%in%c(94,95,96))]<-"red"
+
+plot(treeS,edge.color = edge.col,show.tip.label=F,no.margin = TRUE,edge.width=1.5)
+plotinfo <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+points(plotinfo$xx[1],plotinfo$yy[1],pch=16,col="blue",cex=1.2)
+points(plotinfo$xx[96],plotinfo$yy[96],pch=16,col="red",cex=1.2)
+
+```
+
+### Guided examples
+```{r echo=c(1:16,26:37,50:56), fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%',fig.align="center",results="hide"}
+# load the RRphylo example dataset including Felids tree
+data("DataFelids")
+DataFelids$treefel->tree
+
+# get species and nodes ages 
+# (meant as distance from the youngest species, that is the Recent in this case)
+max(nodeHeights(tree))->H
+H-dist.nodes(tree)[(Ntip(tree)+1),(Ntip(tree)+1):(Ntip(tree)+Nnode(tree))]->age.nodes
+H-diag(vcv(tree))->age.tips
+
+# apply Pagel's lambda transformation to change node ages only
+rescaleRR(tree,lambda=0.8)->tree1
+
+# apply scaleTree to the transformed phylogeny, by setting
+# the original ages at nodes as node.ages
+scaleTree(tree1,node.ages=age.nodes)->treeS1
+
+par(mfrow=c(1,2),mar=c(1,0.1,1,0.1),mgp=c(3,0.1,0.05))
+plot(tree1,edge.color = "black",show.tip.label=F)
+axis(side=1,at=c(0,4,8,12,16,20,24,28,32),labels=rev(c(0,4,8,12,16,20,24,28,32)),tck=-0.02,cex.axis=0.8)
+title("lambda rescaled",cex.main=1.2)
+plot(treeS1,edge.color = "black",show.tip.label=F)
+axis(side=1,at=c(0,4,8,12,16,20,24,28,32),labels=rev(c(0,4,8,12,16,20,24,28,32)),tck=-0.02,cex.axis=0.8)
+title("scaleTree rescaled",cex.main=1.2)
+
+# change leaf length of 10 sampled species
+tree->tree2
+set.seed(14)
+sample(tree2$tip.label,10)->sam.sp
+age.tips[sam.sp]->age.sam
+age.sam[which(age.sam>0.1)]<-age.sam[which(age.sam>0.1)]-1.5
+age.sam[which(age.sam<0.1)]<-age.sam[which(age.sam<0.1)]+0.2
+tree2$edge.length[match(match(sam.sp,tree$tip.label),tree$edge[,2])]<-age.sam
+
+# apply scaleTree to the transformed phylogeny, by setting
+# the original ages at sampled tips as tip.ages
+scaleTree(tree2,tip.ages=age.tips[sam.sp])->treeS2
+
+edge.col<-rep("black",nrow(tree$edge))
+edge.col[which(treeS2$edge[,2]%in%match(sam.sp,tree$tip.label))]<-"red"
+
+par(mfrow=c(1,2),mar=c(1,0.1,1,0.1),mgp=c(3,0.1,0.05))
+plot(tree2,edge.color = edge.col,show.tip.label=F)
+axis(side=1,at=c(0,4,8,12,16,20,24,28,32),labels=rev(c(0,4,8,12,16,20,24,28,32)),tck=-0.02,cex.axis=0.8)
+title("leaves cut",cex.main=1.2)
+plot(treeS2,edge.color = edge.col,show.tip.label=F)
+axis(side=1,at=c(0,4,8,12,16,20,24,28,32),labels=rev(c(0,4,8,12,16,20,24,28,32)),tck=-0.02,cex.axis=0.8)
+title("scaleTree rescaled",cex.main=1.2)
+
+# apply Pagel's kappa transformation to change both species and node ages, 
+# including the age at the tree root
+rescaleRR(tree,kappa=0.5)->tree3
+
+# apply scaleTree to the transformed phylogeny, by setting
+# the original ages at nodes as node.ages
+scaleTree(tree1,tip.ages = age.tips,node.ages=age.nodes)->treeS3
+
+par(mfrow=c(1,2),mar=c(1,0.1,1,0.1),mgp=c(3,0.1,0.05))
+plot(tree3,edge.color = "black",show.tip.label=F)
+axisPhylo(tck=-0.02,cex.axis=0.8)
+title("kappa rescaled",cex.main=1.2)
+plot(treeS3,edge.color = "black",show.tip.label=F)
+axis(side=1,at=c(0,4,8,12,16,20,24,28,32),labels=rev(c(0,4,8,12,16,20,24,28,32)),tck=-0.02,cex.axis=0.8)
+title("scaleTree rescaled",cex.main=1.2)
+```
+
+
+## move.lineage tool {#move.lineage}
+As its name suggests, the function `move.lineage` allows moving a single tip or an entire clade to a different position within the tree. Similarly to `tree.merger`, the new position for the **focal** lineage is defined by using the **sister** as a reference. Both the **focal** and the **sister** can be specified as either tip names/numbers or node numbers. Additionally, exactly as with `tree.merger`, if `tree$node.label` is not `NULL`, a **focal**/**sister** clade can be indicated as "Clade NAMEOFTHECLADE"; similarly, an entire genus can be "Genus NAMEOFTHEGENUS".
+
+
+When moving clades, it can happen that the age of the **focal** clade (i.e. the age of its most recent common ancestor) is older than the age of its new ancestor (i.e. the node right above **sister**). In this case, the user can choose whether the **focal** clade must be rescaled on the height of the new ancestor (**rescale=TRUE**), or the topology of the tree must be modified to accommodate the height of **focal** as it is (**rescale=FALSE**) by mean of `scaleTree`. Finally, if **focal** is attached to the tree root, a new age the latter can be provided as `rootage`. 
+
+```{r results="hide"}
+require(phytools)
+DataCetaceans$tree->treecet
+###  Moving a single tip
+## sister to a tip
+move.lineage(treecet,focal="Orcinus_orca",sister="Balaenoptera_musculus")->mol1
+## sister to a clade
+move.lineage(treecet,focal="Orcinus_orca",sister=131)->mol2
+
+### Moving a clade
+## sister to a tip
+move.lineage(treecet,focal="Genus Mesoplodon",sister="Balaenoptera_musculus")->mol7
+## sister to a clade
+move.lineage(treecet,focal="Clade Delphinida",sister=131)->mol11
+## sister to a clade by using treecet$node.label
+move.lineage(treecet,focal="Clade Delphinida",sister="Clade Plicogulae")->mol14
+## sister to the tree root with and without rootage
+move.lineage(treecet,focal="Genus Mesoplodon",sister=117)->mol19
+move.lineage(treecet,focal="Clade Delphinida",
+            sister=117,rootage=max(diag(vcv(treecet))))->mol23
+
+```
+## cutPhylo tool {#cutPhylo}
+The function `cutPhylo` is meant to cut the phylogentic tree to remove all the tips and nodes younger than a reference (user-specified) age, which can also coincide with a specific node. When an entire clade is cut, the user can choose (by the argument `keep.lineage`) to keep its branch length as a tip of the new tree, or remove it completely.    
+```{r echo=FALSE,fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%'}
+DataFelids$treefel->tree
+max(nodeHeights(tree))->H
+
+par(mfrow=c(1,2),mar=c(1,0.1,1.2,0.1),mgp=c(3,0.1,0.05))
+plot(tree,show.tip.label=F)
+axis(side=1,at=seq(2,32,5),labels=rev(c(0,5,10,15,20,25,30)),tck=-0.02,cex.axis=0.8)
+abline(v=H-5,col="blue")
+title("original",cex.main=1.2)
+
+plot(tree,show.tip.label=F)
+axis(side=1,at=seq(2,32,5),labels=rev(c(0,5,10,15,20,25,30)),tck=-0.02,cex.axis=0.8)
+title("original",cex.main=1.2)
+points(plotinfo$xx[129],plotinfo$yy[129],pch=16,col="red",cex=1.2)
+```
+
+```{r eval=FALSE}
+cutPhylo(tree,age=5,keep.lineage = TRUE)
+cutPhylo(tree,age=5,keep.lineage = FALSE)
+```
+
+```{r echo=FALSE,fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%'}
+par(mfrow=c(1,2),mar=c(1,0.1,1.2,0.1),mgp=c(3,0.1,0.05))
+age<-5
+{
+  distNodes(tree,(Ntip(tree)+1))->dN
+  max(nodeHeights(tree))-age->cutT
+  dN[,2]->dd
+  dd[which(dd>=cutT)]->ddcut
+  names(ddcut)->cutter
+  
+  ### Tips only ###
+  tree->tt
+  if(all(cutter%in%tree$tip.label)){
+    tt$edge.length[match(match(names(ddcut),tt$tip.label),tt$edge[,2])]<-
+      tt$edge.length[match(match(names(ddcut),tt$tip.label),tt$edge[,2])]-(ddcut-cutT)
+    #}
+  }else{
+    ### Tips and nodes ###
+    as.numeric(cutter[which(suppressWarnings(as.numeric(cutter))>Ntip(tree))])->cutn
+    i=1
+    while(i<=length(cutn)){
+      if(any(cutn%in%getDescendants(tree,cutn[i]))) cutn[-which(cutn%in%getDescendants(tree,cutn[i]))]->cutn
+      i=i+1
+    }
+    
+    tree->tt
+    i=1
+    while(i<=length(cutn)){
+      getMRCA(tt,tips(tree,cutn[i]))->nn
+      drop.clade(tt,tips(tt,nn))->tt
+      tt$tip.label[which(tt$tip.label=="NA")]<-paste("l",i,sep="")
+      i=i+1
+    }
+    
+    diag(vcv(tt))->times
+    if(any(times>cutT)){
+      times[which(times>cutT)]->times
+      tt$edge.length[match(match(names(times),tt$tip.label),tt$edge[,2])]<-
+        tt$edge.length[match(match(names(times),tt$tip.label),tt$edge[,2])]-(times-cutT)
+    }
+    
+  }
+  
+  tt->tt.age
+  plot(tt,show.tip.label=FALSE)
+  tiplabels(frame="n",col="blue",cex=.6,offset=0.5,
+            tip=which(!tt$tip.label%in%tree$tip.label),
+            text=tt$tip.label[which(!tt$tip.label%in%tree$tip.label)])
+  
+  axis(side=1,at=seq(2,27,5),labels=rev(c(5,10,15,20,25,30)),tck=-0.02,cex.axis=0.8)
+  title("cut at 5: keeping lineages",cex.main=1.2)
+  
+   drop.tip(tt.age,which(!tt.age$tip.label%in%tree$tip.label))->tt.age
+   plot(tt.age,show.tip.label=FALSE)
+   axis(side=1,at=seq(2,27,5),labels=rev(c(5,10,15,20,25,30)),tck=-0.02,cex.axis=0.8)
+   title("cut at 5: removing lineages",cex.main=1.2)
+  
+}
+```
+
+```{r eval=FALSE}
+cutPhylo(tree,node=129,keep.lineage = TRUE)
+cutPhylo(tree,node=129,keep.lineage = FALSE)
+```
+
+```{r echo=FALSE,fig.dim=c(6,3), message=FALSE, warning=FALSE, dpi=200, out.width='98%'}
+node<-129
+{
+  distNodes(tree,(Ntip(tree)+1))->dN
+  dN[match(node,rownames(dN)),2]->cutT
+  dN[,2]->dd
+  dd[which(dd>=cutT)]->ddcut
+  names(ddcut)->cutter
+  
+  ### Tips only ###
+  tree->tt
+  if(all(cutter%in%tree$tip.label)){
+    tt$edge.length[match(match(names(ddcut),tt$tip.label),tt$edge[,2])]<-
+      tt$edge.length[match(match(names(ddcut),tt$tip.label),tt$edge[,2])]-(ddcut-cutT)
+    #}
+  }else{
+    ### Tips and nodes ###
+    as.numeric(cutter[which(suppressWarnings(as.numeric(cutter))>Ntip(tree))])->cutn
+    i=1
+    while(i<=length(cutn)){
+      if(any(cutn%in%getDescendants(tree,cutn[i]))) cutn[-which(cutn%in%getDescendants(tree,cutn[i]))]->cutn
+      i=i+1
+    }
+    
+    tree->tt
+    i=1
+    while(i<=length(cutn)){
+      getMRCA(tt,tips(tree,cutn[i]))->nn
+      drop.clade(tt,tips(tt,nn))->tt
+      tt$tip.label[which(tt$tip.label=="NA")]<-paste("l",i,sep="")
+      i=i+1
+    }
+    
+    diag(vcv(tt))->times
+    if(any(times>cutT)){
+      times[which(times>cutT)]->times
+      tt$edge.length[match(match(names(times),tt$tip.label),tt$edge[,2])]<-
+        tt$edge.length[match(match(names(times),tt$tip.label),tt$edge[,2])]-(times-cutT)
+    }
+    
+  }
+  
+  tt->tt.node
+  par(mfrow=c(1,2),mar=c(1,0.1,1.2,0.1),mgp=c(3,0.1,0.05))
+  plot(tt,show.tip.label=FALSE)
+  tiplabels(frame="n",col="red",cex=.6,offset=0.5,
+            tip=which(!tt$tip.label%in%tree$tip.label),
+            text=tt$tip.label[which(!tt$tip.label%in%tree$tip.label)])
+  
+  axis(side=1,at=seq(2,23.5,5),labels=rev(c(10,15,20,25,30)),tck=-0.02,cex.axis=0.8)
+  title("cut at node: keeping lineages",cex.main=1.2)
+  
+   drop.tip(tt.node,which(!tt.node$tip.label%in%tree$tip.label))->tt.node
+   plot(tt.node,show.tip.label=FALSE)
+   axis(side=1,at=seq(2,23.5,5),labels=rev(c(10,15,20,25,30)),tck=-0.02,cex.axis=0.8)
+   title("cut at node: removing lineages",cex.main=1.2)
+  
+}
+
+```
+
+## fix.poly tool {#fix.poly}
+The function `fix.poly` randomly resolves polytomies either at specified nodes or througout the tree (Castiglione et al. 2020). This latter feature works like ape's `multi2di`. However, contrary to the latter, polytomies are resolved to non-zero length branches, to provide credible partition of the evolutionary time among the nodes descending from the dichotomized node. This could be useful to gain realistic evolutionary rate estimates at applying `RRphylo.` Under the `type = collapse` specification the user is expected to indicate which `node`/s must be transformed into a multichotomus clade.
+```{r warnings=FALSE,message=FALSE,fig.dim=c(6,3),out.width="98%",dpi=220,results="hide"}
+ ### load the RRphylo example dataset including Cetaceans tree 
+ data("DataCetaceans")
+ DataCetaceans$treecet->treecet
+
+ ### Resolve all the polytomies within Cetaceans phylogeny
+ fix.poly(treecet,type="resolve")->treecet.fixed
+ 
+ ## Set branch colors
+ unlist(sapply(names(which(table(treecet$edge[,1])>2)),function(x) 
+   c(x,getDescendants(treecet,as.numeric(x)))))->tocolo
+ unlist(sapply(names(which(table(treecet$edge[,1])>2)),function(x) 
+   c(getMRCA(treecet.fixed,tips(treecet,x)),
+     getDescendants(treecet.fixed,as.numeric(getMRCA(treecet.fixed,tips(treecet,x)))))))->tocolo2
+ colo<-rep("gray60",nrow(treecet$edge))
+ names(colo)<-treecet$edge[,2]
+ colo2<-rep("gray60",nrow(treecet.fixed$edge))
+ names(colo2)<-treecet.fixed$edge[,2]
+ colo[match(tocolo,names(colo))]<-"red"
+ colo2[match(tocolo2,names(colo2))]<-"red"
+ 
+ par(mfrow=c(1,2))
+ plot(treecet,no.margin=TRUE,show.tip.label=FALSE,edge.color = colo,edge.width=1.3)
+ plot(treecet.fixed,no.margin=TRUE,show.tip.label=FALSE,edge.color = colo2,edge.width=1.3)
+
+ ### Resolve the polytomies pertaining the genus Kentriodon
+ fix.poly(treecet,type="resolve",node=221)->treecet.fixed2
+ 
+ ## Set branch colors
+ c(221,getDescendants(treecet,as.numeric(221)))->tocolo
+ c(getMRCA(treecet.fixed2,tips(treecet,221)),
+   getDescendants(treecet.fixed2,as.numeric(getMRCA(treecet.fixed2,tips(treecet,221)))))->tocolo2
+ colo<-rep("gray60",nrow(treecet$edge))
+ names(colo)<-treecet$edge[,2]
+ colo2<-rep("gray60",nrow(treecet.fixed2$edge))
+ names(colo2)<-treecet.fixed2$edge[,2]
+ colo[match(tocolo,names(colo))]<-"red"
+ colo2[match(tocolo2,names(colo2))]<-"red"
+ 
+ 
+ par(mfrow=c(1,2))
+ plot(treecet,no.margin=TRUE,show.tip.label=FALSE,edge.color = colo,edge.width=1.3)
+ plot(treecet.fixed2,no.margin=TRUE,show.tip.label=FALSE,edge.color = colo2,edge.width=1.3)
+
+ ### Collapse Delphinidae into a polytomous clade
+ fix.poly(treecet,type="collapse",node=179)->treecet.collapsed
+ 
+ # Set branch colors
+ c(179,getDescendants(treecet,as.numeric(179)))->tocolo
+ c(getMRCA(treecet.collapsed,tips(treecet,179)),
+   getDescendants(treecet.collapsed,as.numeric(getMRCA(treecet.collapsed,tips(treecet,179)))))->tocolo2
+ colo<-rep("gray60",nrow(treecet$edge))
+ names(colo)<-treecet$edge[,2]
+ colo2<-rep("gray60",nrow(treecet.collapsed$edge))
+ names(colo2)<-treecet.collapsed$edge[,2]
+ colo[match(tocolo,names(colo))]<-"red"
+ colo2[match(tocolo2,names(colo2))]<-"red"
+ 
+ par(mfrow=c(1,2))
+ plot(treecet,no.margin=TRUE,show.tip.label=FALSE,edge.color = colo,edge.width=1.3)
+ plot(treecet.collapsed,no.margin=TRUE,show.tip.label=FALSE,edge.color = colo2,edge.width=1.3)
+
+```
+
+## References
+Castiglione, S., Serio, C., Piccolo, M., Mondanaro, A., Melchionna, M., Di Febbraro, M., Sansalone, G., Wroe, S.,& Raia, P. (2020). The influence of domestication, insularity and sociality on the tempo and mode of brain size evolution in mammals. Biological Journal of the Linnean Society, 132: 221-231. 
+Pandolfi, L., Martino, R., Rook, L., & Piras, P. (2020). Investigating ecological and phylogenetic constraints in Hippopotaminae skull shape. Rivista Italiana di Paleontologia e Stratigrafia, 126: 37-49.

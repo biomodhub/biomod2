@@ -1,0 +1,24 @@
+Package: optimParallel
+Type: Package
+Title: Parallel Version of the L-BFGS-B Optimization Method
+Version: 1.0-2
+Date: 2021-02-10
+Authors@R: c(person("Florian", "Gerber", role = c("aut", "cre"),
+             email = "flora.fauna.gerber@gmail.com",
+             comment = c(ORCID = "0000-0001-8545-5263")))
+Maintainer: Florian Gerber <flora.fauna.gerber@gmail.com>
+Description: Provides a parallel version of the L-BFGS-B method of optim(). The main function of the package is optimParallel(), which has the same usage and output as optim(). Using optimParallel() can significantly reduce the optimization time.
+License: GPL (>= 2)
+URL: https://github.com/florafauna/optimParallel-R
+BugReports: https://github.com/florafauna/optimParallel-R/issues
+Depends: R (>= 3.5), stats, parallel
+Suggests: R.rsp, roxygen2, spam, microbenchmark, testthat, ggplot2,
+        numDeriv, lbfgsb3c
+VignetteBuilder: R.rsp
+RoxygenNote: 7.1.1
+NeedsCompilation: no
+Packaged: 2021-02-10 18:53:50 UTC; fl
+Author: Florian Gerber [aut, cre] (<https://orcid.org/0000-0001-8545-5263>)
+Repository: CRAN
+Date/Publication: 2021-02-11 16:00:06 UTC
+Built: R 4.6.0; ; 2026-05-22 08:29:37 UTC; unix

@@ -1,0 +1,3 @@
+useDynLib(geosphere, .registration = TRUE)
+import(methods, Rcpp)
+exportPattern("^[^\\.\\_]")

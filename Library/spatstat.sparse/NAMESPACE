@@ -1,0 +1,102 @@
+## spatstat.sparse NAMESPACE file
+
+## ................  Import packages ..................
+
+import(stats,graphics,grDevices,utils,methods)
+import(Matrix,abind,tensor)
+import(spatstat.utils)
+
+## ................ Load dynamic library ..............
+##      (native routines are registered in init.c)
+##      (entry points are symbols with prefix "SP_")
+
+useDynLib(spatstat.sparse, .registration=TRUE, .fixes="SP_")
+
+## //////////  DO NOT EDIT THE FOLLOWING  ///////////////
+## ////////  it is generated automatically  /////////////
+
+
+
+
+
+# .................................................. 
+# Automatically-generated list of documented objects 
+# .................................................. 
+export("anyNA.sparse3Darray")
+export("aperm.sparse3Darray")
+export("applySparseEntries")
+export("as.array.sparse3Darray")
+export("as.sparse3Darray")
+export("bilinearform")
+export("bind.sparse3Darray")
+export("check.anySparseVector")
+export("check.mat.mul")
+export("checksolve")
+export("Complex.sparse3Darray")
+export("dimnames.sparse3Darray")
+export("dimnames<-.sparse3Darray")
+export("dim.sparse3Darray")
+export("dim<-.sparse3Darray")
+export("EntriesToSparse")
+export("evalSparse3Dentrywise")
+export("expandSparse")
+export("gridadjacencymatrix")
+export("inside3Darray")
+export("isComplex")
+export("length.sparse3Darray")
+export("mapSparseEntries")
+export("marginSumsSparse")
+export("Math.sparse3Darray")
+export("matrixinvsqrt")
+export("matrixpower")
+export("matrixsqrt")
+export("Ops.sparse3Darray")
+export("print.sparse3Darray")
+export("quadform")
+export("rbindCompatibleDataFrames")
+export("representativeRows")
+export("runSparseMarkovChain")
+export("[.sparse3Darray")
+export("[<-.sparse3Darray")
+export("sparse3Darray")
+export("SparseEntries")
+export("SparseIndices")
+export("SparseMatrixEntries")
+export("SparseMatrixIndices")
+export("sparseVectorCumul")
+export("Summary.sparse3Darray")
+export("sumouter")
+export("sumsymouter")
+export("sumsymouterSparse")
+export("symmatrix")
+export("tensor1x1")
+export("tensorSparse")
+export("unionOfSparseIndices")
+
+# .......  Special cases ........... 
+S3method("Complex", "sparse3Darray")
+S3method("Math", "sparse3Darray")
+S3method("Ops", "sparse3Darray")
+S3method("Summary", "sparse3Darray")
+# .......  End of special cases  ... 
+
+# ......................................... 
+# Automatically generated list of S3 methods
+# ......................................... 
+ S3method("anyNA", "sparse3Darray")
+   S3method("aperm", "sparse3Darray")
+S3method("as.array", "sparse3Darray")
+ S3method("dimnames", "sparse3Darray")
+ S3method("dim", "sparse3Darray")
+ S3method("length", "sparse3Darray")
+ S3method("print", "sparse3Darray")
+  S3method("[", "sparse3Darray")
+# ......................................... 
+#      Assignment methods                   
+# ......................................... 
+ S3method("dimnames<-", "sparse3Darray")
+ S3method("dim<-", "sparse3Darray")
+  S3method("[<-", "sparse3Darray")
+# ......................................... 
+#      End of methods                       
+# ......................................... 

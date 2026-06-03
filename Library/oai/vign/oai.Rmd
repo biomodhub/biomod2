@@ -1,0 +1,108 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{oai introduction}
+%\VignetteEncoding{UTF-8}
+-->
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(
+	comment = "#>",
+	collapse = TRUE,
+	warning = FALSE,
+	message = FALSE
+)
+```
+
+oai introduction
+================
+
+A general purpose client to work with any 'OAI-PMH' service. 
+
+The 'OAI-PMH' protocol is described at <http://www.openarchives.org/OAI/openarchivesprotocol.html>.
+
+The main functions follow the OAI-PMH verbs:
+
+* `GetRecord`
+* `Identify`
+* `ListIdentifiers`
+* `ListMetadataFormats`
+* `ListRecords`
+* `ListSets`
+
+## Get oai
+
+Install from CRAN
+
+```{r install, eval=FALSE}
+install.packages("oai")
+```
+
+Or install the development version from GitHub
+
+```{r installgh, eval=FALSE}
+devtools::install_github("ropensci/oai")
+```
+
+Load `oai`
+
+```{r load}
+library("oai")
+```
+
+## Identify
+
+```{r}
+id("http://oai.datacite.org/oai")
+```
+
+## ListIdentifiers
+
+```{r}
+list_identifiers(from = '2018-05-01T', until = '2018-09-01T')
+```
+
+## Count Identifiers
+
+```{r eval=FALSE}
+count_identifiers()
+```
+
+## ListRecords
+
+```{r}
+list_records(from = '2018-05-01T', until = '2018-05-15T')
+```
+
+## GetRecords
+
+```{r}
+ids <- c("87832186-00ea-44dd-a6bf-c2896c4d09b4", "d981c07d-bc43-40a2-be1f-e786e25106ac")
+get_records(ids)
+```
+
+## List MetadataFormats
+
+```{r}
+list_metadataformats(id = "87832186-00ea-44dd-a6bf-c2896c4d09b4")
+```
+
+## List Sets
+
+```{r}
+list_sets("http://api.gbif.org/v1/oai-pmh/registry")
+```
+
+### Biodiversity Heritage Library
+
+Identify
+
+```{r}
+id("http://www.biodiversitylibrary.org/oai")
+```
+
+Get records
+
+```{r}
+get_records(c("oai:biodiversitylibrary.org:item/7", "oai:biodiversitylibrary.org:item/9"),
+            url = "http://www.biodiversitylibrary.org/oai")
+```

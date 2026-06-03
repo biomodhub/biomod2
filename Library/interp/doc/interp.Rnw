@@ -1,0 +1,697 @@
+%% -*- mode: Rnw; coding: utf-8; -*-
+%\VignetteIndexEntry{Interpolation}
+%\VignetteDepends{scatterplot3d,MASS}
+%\VignetteKeywords{nonparametric}
+%\VignettePackage{interp}
+
+\documentclass[nojss]{jss}
+\usepackage[utf8]{inputenc}
+%\usepackage{Sweave}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{flexisym}
+\usepackage{breqn}
+\usepackage{bm}
+\usepackage{graphicx}
+
+
+
+% put floats before next section:
+\usepackage[section]{placeins}
+
+% collect appendices as subsections
+\usepackage[toc,page]{appendix}
+
+% customize verbatim parts
+\usepackage{listings}
+\lstdefinestyle{Sstyle}{
+  basicstyle=\ttfamily\rsize,
+  columns=fixed,
+  breaklines=true, % sets automatic line breaking
+  breakatwhitespace=false,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+  fontadjust=true,
+  basewidth=0.5em,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate={‘}{{'}}1 {’}{{'}}1 % Zeichencodes für Ausgabe von lm() !
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+% switch to above defined style
+\lstset{style=Sstyle}
+
+% nice borders for code blocks
+\usepackage{tcolorbox}
+% enable boxes over several pages:
+\tcbuselibrary{breakable,skins}
+\tcbset{breakable,enhanced}
+
+\definecolor{grey2}{rgb}{0.6,0.6,0.6}
+\definecolor{grey1}{rgb}{0.8,0.8,0.8}
+
+
+
+% some abbreviations:
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\EV}{\mathbb{E}}
+\newcommand{\Vect}[1]{\underline{#1}}
+\newcommand{\Mat}[1]{\boldsymbol{#1}}
+\newcommand{\Var}{\mbox{Var}}
+\newcommand{\Cov}{\mbox{Cov}}
+% lstinline can break code across lines
+\def\cmd{\lstinline[basicstyle=\ttfamily,keywordstyle={},breaklines=true,breakatwhitespace=false]}
+% but lstinline generates ugly sectionnames in PDF TOC, so use \texttt there
+\newcommand{\cmdtxt}[1]{\texttt{#1}}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{
+  Albrecht Gebhardt\\ %Department of Statistics,
+  University Klagenfurt
+\And
+  Roger Bivand\\ %Department of Economics,
+  Norwegian School of Economics}
+
+\title{A Re-Implementation of Akima's Spline Interpolation for Scattered Data}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Albrecht Gebhardt, Roger Bivand} %% comma-separated
+\Plaintitle{A Reimplementation of Akima's Spline Interpolation for Scattered Data} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{
+This vignette presents the \proglang{R} package \pkg{interp}
+and focuses on interpolation of irregular spaced data.
+
+This is the second of planned three vignettes for this package (not yet finished).
+}
+\Keywords{interpolation, spline, \proglang{R} software}
+\Plainkeywords{interpolation, spline, R software}
+%% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+% \Volume{XX}
+%% \Issue{X}
+%% \Month{XXXXXXX}
+%% \Year{XXXX}
+%% \Submitdate{XXXX-XX-XX}
+%% \Acceptdate{XXXX-XX-XX}
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Albrecht Gebhardt\
+  Institut für Statistik\\
+  Universität Klagenfurt\
+  9020 Klagenfurt, Austria\\
+  E-mail: \email{albrecht.gebhardt@aau.at}\
+  %URL: \url{http://statmath.wu-wien.ac.at/~zeileis/}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% for Sinput to set font size of R input code:
+\newcommand\rsize{%
+   \fontsize{8.5pt}{9.1pt}\selectfont%
+}
+
+\begin{document}
+% undefine Sinput, Soutput, Scode to be able to redefine them as
+% \lstnewenvironment{Sinput}...
+\makeatletter
+\let\Sinput\@undefined
+\let\endSinput\@undefined
+\let\Soutput\@undefined
+\let\endSoutput\@undefined
+\let\Scode\@undefined
+\let\endScode\@undefined
+\makeatother
+
+\hypersetup{pdftitle={Interpolation},pdfauthor={Albrecht Gebhardt and Roger Bivand},
+  pdfborder=1 1 1 1 1}
+
+% Sweave stuff:
+% graphics dimension:
+\setkeys{Gin}{width=0.8\textwidth}
+%\setkeys{Gin}{width=1in}
+% all in- and output black:
+\definecolor{Sinput}{rgb}{0,0,0}
+\definecolor{Soutput}{rgb}{0,0,0}
+\definecolor{Scode}{rgb}{0,0,0}
+% redefine Sinput, Soutput, Scode, variant 1 use fancy verbatim
+%
+%\DefineVerbatimEnvironment{Sinput}{Verbatim}
+% gobble=0 !!! otherwise 2 characters of S lines are hidden !!!
+%{formatcom = {\color{Sinput}},fontsize=\rsize,xleftmargin=2em,gobble=0}
+%\DefineVerbatimEnvironment{Soutput}{Verbatim}
+%{formatcom = {\color{Soutput}},fontsize=\rsize,xleftmargin=2em,gobble=0}
+%\DefineVerbatimEnvironment{Scode}{Verbatim}
+%{formatcom = {\color{Scode}},fontsize=\rsize,xleftmargin=2em,gobble=0}
+%\fvset{listparameters={\setlength{\topsep}{0pt}}}
+%\renewenvironment{Schunk}{\vspace{\topsep}}{\vspace{\topsep}}
+%
+% redefine Sinput, Soutput, Scode, variant 2, use color boxes (tcb)
+\lstnewenvironment{Sinput}{\lstset{style=Sstyle}}{}%
+\lstnewenvironment{Soutput}{\lstset{style=Sstyle}}{}%
+\lstnewenvironment{Scode}{\lstset{style=Sstyle}}{}%
+\renewenvironment{Schunk}{\vspace{\topsep}\begin{tcolorbox}[breakable,colback=grey1]}{\end{tcolorbox}\vspace{\topsep}}
+% see http://www.stat.auckland.ac.nz/~ihaka/downloads/Sweave-customisation.pdf
+%
+
+% all in one line!!! setting for direct PDF output !
+\SweaveOpts{keep.source=TRUE,engine=R,eps=FALSE,pdf=TRUE,strip.white=all,prefix=TRUE,prefix.string=fig-,include=TRUE,concordance=FALSE,width=6,height=6.5}
+
+% Sweave initialization:
+% restrict line length of R output, no "+" for continued lines,
+% set plot margins:
+% initialize libraries and RNG if necessary
+<<label=init, echo=FALSE, results=hide>>=
+set.seed(42)
+options(width=80)
+options(continue=" ")
+options(SweaveHooks=list(fig=function()
+    par(mar=c(5.1, 4.1, 1.1, 2.1))))
+library(interp)
+@
+
+
+\section[Note]{Note}
+\label{sec:note}
+Notice: This is a preliminary and not yet complete version of this vignette.
+Finally three vignettes will be available for this package:
+\begin{enumerate}
+\item a first one related to partial derivatives estimation,
+\item this one describing interpolation related stuff
+\item and a third one dealing with triangulations and Voronoi mosaics.
+\end{enumerate}
+
+
+\section[Introduction]{Introduction}
+\label{sec:intro}
+The main aim of this \proglang{R} package is to provide interpolation
+algorithms for both regular and irregular data grids
+
+$$
+\{((x_{i},y_{i})^{\intercal},z_{i})|x_{i},y_{i},z_{i}\in\R \quad i=1,\ldots,n\}
+$$
+
+From the early days of \proglang{S} and \proglang{S-Plus} there was a
+function \cmd{interp()} which solved this task. It used Akima's spline
+interpolation algorithms available at
+\cmd{netlib}\footnote{\url{https://netlib.org/toms/526.gz}} twice:
+Once to determine a triangulation of the data which is needed for a
+piecewise linear interpolation. This is the default application case
+of this function and as shown in \citet{bivand:17} the most common use
+of it, especially in other R packages depending on it. Second to get
+the spline interpolation based an the same triangulation. These
+algorithms have been available since 1998 in \proglang{R} via the
+package \cmd{akima}. Unfortunately this package inherits a non-free
+license from the underlying \proglang{Fortran} code. So the need to
+rewrite the algorithms under a free license, encouraged by the CRAN
+team, appeared convincing to the authors of this package. This is now
+mostly done and package \cmd{interp} provides plugin capable
+replacement functions for the interpolations delivered in package \pkg{akima}.
+
+For both of these interpolations to work it has to be ensured that no
+duplicate points $(x_{i},y_{i})$ may exist in the given point set
+$\{(x_{i},y_{i})|i=1,\ldots,n\}$. This is reached via the argument
+\cmd{duplicate} of \cmd{interp::interp()}. It offers three options:
+\begin{itemize}
+\item \cmd{"error"}: Stop with an error, this is the default.
+\item \cmd{"strip"}: Completely remove points with duplicates, or
+\item \cmd{"mean"},\cmd{"median"},\cmd{"user"}: apply some function
+  to them. The Implementation provides \cmd{mean()}, \cmd{median()} or
+  a user supplied function (\cmd{"dupfun"}).
+\end{itemize}
+
+
+
+\section{Bivariate Linear Interpolation}
+\label{sec:linear}
+The default behaviour of the \cmd{interp::interp()} function is to
+produce a piecewise linear interpolation. This interpolation takes the
+triangles of the Delaunay triangulation as also returned by
+\cmd{tri.mesh()} and simply fits a plane to the three vertices
+$(x_{i},y_{i},z_{i}), i=1,2,3$ of those triangles. As a natural
+consequence it is not possible to extrapolate this interpolation
+beyond the convex hull of the given point set.
+
+First load the data set used by Akima in his initial work on irregular
+gridded data \citep{akima:78}, see figure \ref{fig:akima}.
+
+<<label=akima>>=
+data(akima)
+library(scatterplot3d)
+scatterplot3d(akima, type="h", angle=60, asp=0.2, lab=c(4,4,0))
+@
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in',height=3.5>>=
+<<akima>>
+@
+\caption{Akimas test data in \cite{akima:78}}
+\label{fig:akima}
+\end{figure}
+
+
+The next plot in figure \ref{fig:lininterp} shows the linear nature of the isolines of the
+interpolation generated within all triangles:
+
+<<label=lininterp>>=
+li <- interp(akima$x, akima$y, akima$z, nx=150, ny=150)
+MASS::eqscplot(akima$x, akima$y)
+contour(li, nlevels=30, add=TRUE)
+plot(tri.mesh(akima), add=TRUE)
+@
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in',height=3.5>>=
+<<lininterp>>
+@
+\caption{Piecewise linear interpolation}
+\label{fig:lininterp}
+\end{figure}
+
+
+In case the point data set resembles a regular rectangular grid it
+should be noted that no unique solution to the triangulation task
+exists. For each rectangle of this grid there are two possibilities to
+form triangles compatible with the main condition of a Delaunay
+triangulation: The interior of the circumcircle of each triangle does
+not contain any other point of the data set. Generally, as long as the
+data set contains more then 3 points on a common circumcircle which is
+otherwise empty of remaining points, it will lead to non uniqueness of
+the triangulation. This in turn means that a piece wise linear
+interpolation of rectangular gridded data is not unique. Nevertheless
+\cmd{interp::interp()} will always produce the same result as long as no
+jitter is applied to the data set. This can be done by explicitly via
+the argument \cmd{jitter} or it is applied automatically during the
+underlying triangulation, which applies this in some cases of
+collinear points to avoid error conditions.
+
+\section{Bivariate Spline Interpolation}
+\label{sec:spline}
+
+
+Akimas spline interpolator 'with the accuracy of a bicubic polynomial'
+\citep{akima:78a} for irregular gridded data is given
+by the following polynomial in $x$ and $y$:
+
+\begin{equation}
+  \label{eq:akima}
+p(x,y)=\sum_{i=0}^{5}\sum_{j=0}^{5-i}p_{i,j}x^{i}y^{j}
+\end{equation}
+
+with 21 coefficients $p_{i,j}$, $0\le i\le j\le 5$. This polynomial is
+determined within each triangle $(v_{1},v_{2},v_{3})$ with vertexes
+$v_{i}\in\R^{2}, i=1,2,3$ of the Delaunay triangulation. The solution
+has to fulfill the following restrictions:
+
+\begin{enumerate}
+\item The interpolation itself (condition $(i)$ in \citep{akima:74})
+  results in 3 conditions.
+\item  First and second order partial derivatives of $p(x,y)$
+  have to match estimated derivatives at the triangle vertices (Akima
+  denotes them as condition $(ii)$). This makes up for 15 conditions.
+\item Finally the last three equations (condition $(iii)$) involve the
+  directional derivatives along the normal vectors of the triangle
+  sides. As the spline polynomial is of degree 5 these derivatives
+  generally will be polynomials of degree 4. Now the condition demands
+  that they are polynomials of degree 3 in that variable that is
+  describing the position of that normal vector along the triangle
+  side (later denoted as $s$ in a $(s,t)$ coordinate system), thus
+  setting its highest degree coefficient to zero. This can be
+  expressed by setting the appropriate 4th derivative of this
+  directional derivative to zero.
+\end{enumerate}
+The same conditions are also used in an improved algorithm described
+in \citep{akima:96}, but e.g. the estimation of the partial
+derivatives is different to the old algorithm and a better
+triangulation based on the \cmd{TRIPACK} Fortran package has been used
+\citep{renka:96}.
+
+Next we will formulate the conditions at the triangle vertices
+$\Vect{v_{i}}=(x_i,y_i)^{\intercal}, i=1,2,3$ and for the normal
+vectors $\Vect{n}_{ij}=
+\begin{bmatrix}
+  0&1\\-1&0
+\end{bmatrix}
+\Vect{t}_{ij} $ of the triangle sides
+$\Vect{t}_{ij}=(x_j,y_j)^{\intercal}-(x_i,y_i)^{\intercal}$
+$(i,j)\in\{(1,3),(3,2),(2,1)\}$.
+\begin{equation}
+\label{eq:iiiiii}
+  \begin{array}{lrclrclrcl}
+(i) & p(x_i,y_i)&=&z_i,&\multicolumn{6}{l}{i=1,2,3}\\
+(ii)&\frac{\partial}{\partial x}p(x_i,y_i)&=&z_{x,i},&
+\frac{\partial}{\partial y}p(x_i,y_i)&=&z_{y,i},&\multicolumn{3}{l}{i=1,2,3}\\
+&\frac{\partial^2}{\partial x\partial y}p(x_i,y_i)&=&z_{xy,i},&
+\frac{\partial^2}{\partial x^2}p(x_i,y_i)&=&z_{xx,i},&
+\frac{\partial^2}{\partial y^2}p(x_i,y_i)&=&z_{yy,i}\\
+(iii)&\frac{\partial^{4}}{\partial s^{4}} \Vect{n}_{ij}\nabla p(x,y)&=&0&\multicolumn{6}{l}{(i,j)\in\{(1,3),(3,2),(2,1)\}}
+\end{array}
+\end{equation}
+where $z_{i}$ are the values to interpolate in
+$\Vect{v}_{i}=(x_{i},y_{i})^{\intercal}, i=1,2,3$ and
+$z_{x,i}=\frac{\partial}{\partial x}p(x_{i},y_{i})$,
+$z_{y,i}=\frac{\partial}{\partial y}p(x_{i},y_{i})$,
+$z_{xx,i}=\frac{\partial^{2}}{\partial x^{2}}p(x_{i},y_{i})$,
+$z_{xy,i}=\frac{\partial^{2}}{\partial x\partial y}p(x_{i},y_{i})$
+and $z_{yy,i}=\frac{\partial^{2}}{\partial^{2} y}p(x_{i},y_{i})$
+denote the estimates for partial derivatives at $\Vect{v}_{i}$. Note
+that the scalar product $\Vect{n}_{ij}\nabla p(x,y)$ represents the
+directional derivative mentioned above expressed in coordinates $s$
+and $t$.
+
+All these conditions together ensure that the resulting spline
+interpolates the given data and the interpolating function is
+continuous and differentiable across the borders of all triangles.
+
+We now illustrate this with the same data set as above in figure \ref{fig:splinterp}.
+
+<<label=splinterp>>=
+si <- interp(akima$x, akima$y, akima$z, method="akima", nx=150, ny=150)
+MASS::eqscplot(akima$x, akima$y)
+contour(si, nlevels=30, add=TRUE)
+plot(tri.mesh(akima), add=TRUE)
+@
+
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in',height=3.5>>=
+<<splinterp>>
+@
+\caption{Bivariate Spline Interpolation}
+\label{fig:splinterp}
+\end{figure}
+
+
+
+\section{Implementation details}
+\label{sec:impl}
+
+The call to \cmd{interp::interp()} follows this form:
+
+\begin{Schunk}
+  \begin{Sinput}
+interp(x, y = NULL, z, xo = seq(min(x), max(x), length = nx),
+       yo = seq(min(y), max(y), length = ny),
+       linear = (method == "linear"), extrap = FALSE,
+       duplicate = "error", dupfun = NULL,
+       nx = 40, ny = 40, input="points", output = "grid",
+       method = "linear", deltri = "shull", h=0,
+       kernel="gaussian", solver="QR", degree=3,
+       baryweight=TRUE, autodegree=FALSE, adtol=0.1,
+       smoothpde=FALSE, akimaweight=TRUE, nweight=25)
+    
+  \end{Sinput}
+\end{Schunk}
+
+The arguments \cmd{duplicate} and \cmd{dupfun} have been introduced
+above, as well as \cmd{method} with its currently two available options
+\cmd{"linear"} and \cmd{"akima"}.
+
+Generally the input will be given as three vectors \cmd{x}, \cmd{y}
+and \cmd{z} of equal length. Omitting \cmd{y} implicates that \cmd{x}
+consist of a two column matrix or dataframe containing $x$ and $y$
+entries. Additionally the argument \cmd{input} has to be set to
+\cmd{"points"} (which it is by default). If \cmd{input="grid"} is
+given, \cmd{z} is treated as a matrix of $z$ values containing
+$z_{i,j}$ for the $x$ and $y$ values given in the argument vectors
+\cmd{x} and \cmd{y} both of a length matching the dimensions of
+\cmd{z}. A similar scheme is applied to the output: If
+\cmd{output="grid"} is set (default) a matrix with rows and columns
+according to the output defining vectors \cmd{xo} and \cmd{yo} is
+returned. The output grid can also be specified by setting its
+dimension to \cmd{nx} times \cmd{ny}, it will then be chosen to cover the
+range of the input data.  With \cmd{output="points"} \cmd{xo} and
+\cmd{yo} have to be of equal length and only a vector of $z$ values of
+the same length is returned. Extrapolation (\cmd{extrap=TRUE}) is only
+possible for spline interpolation but is disabled by default. The
+remaining parameters control several aspects of the algorithm and are
+at least partially explained later.
+
+
+Both methods are implemented via the \cmd{Rcpp} interface
+\citep{rcpp}.  As mentioned before, step 1 of these interpolation
+methods is the Delaunay triangulation, described in another vignette
+(\cmd{vignette("tri")}) which is based on the sweep hull algorithm described in
+\citep{sinclair:16}. The access to the triangulation code is done
+internally via \proglang{C++}, not via the R function \cmd{interp::tri.mesh()}.
+
+In the second step the needed estimates for the partial derivatives up
+to degree 2 in all data points are determined. This is based on a
+local polynomial regression approach implemented in
+\proglang{C++}. These intermediate results are also available via
+\cmd{interp::locpoly()} described in a separate vignette
+(\cmd{vignette("partDeriv")}). All options of the related
+\cmd{interp::locpoly()} function are also available in
+\cmd{interp::interp()}, e.g. argument \cmd{kernel} specifies the
+kernel used. In contrast to Akima's interpolation we use a gaussian
+kernel by default and not a uniform one. Argument \cmd{h} contains the
+bandwidth, either as a scaler, or a vector of length 2. The first
+setting gives a percentage of the data set used for a local nearest
+neigbour bendwidth approach. If two bandwidths as a vector are given
+then two global bandwidths for $x$ and $y$ are chosen as the given
+percentage of their data range. If \cmd{h=0} then a minimum local
+bandwidth resulting in 10 nearest neigbours are choosen to be able to
+determine the 10 parameters of a \cmd{degree=3} polynomial.  It is
+possible to choose different numerical solutions of the weighted least
+squares method behind the local regression via the argument
+\cmd{solver} (default is \cmd{"QR"}, but also \cmd{"LLT"},
+\cmd{"SVD"}, \cmd{"Eigen"} and \cmd{"CPivQR"} are available) to be
+used in the local regression step, compare \cmd{fastLm()} in
+\citep{rcppeigen}.
+
+The third step performs the real interpolation. First the estimated
+derivatives are (optionally) smoothed according to the smoothing
+scheme detailed in \citep{akima:78}. Then the system of equations
+(\ref{eq:iiiiii}) is solved per triangle and the results are
+determined via
+\begin{dmath}
+  p(x,y)=y\,\left(y\,\left(y\,\left(y\,\left(p_{0,5}\,y+p_{1,4}\,x+p_{0,4}\right)+x\,\left(p_{2,3}\,x+p_{1,3}\right)+p_{0,3}\right)+x\,\left(x\,\left(p_{3,2}\,x+p_{2,2}\right)+p_{1,2}\right)+p_{0,2}\right)+x\,\left(x\,\left(x\,\left(p_{4,1}\,x+p_{3,1}\right)+p_{2,1}\right)+p_{1,1}\right)+p_{0,1}\right)+x\,\left(x\,\left(x\,\left(x\,\left(p_{5,0}\,x+p_{4,0}\right)+p_{3,0}\right)+p_{2,0}\right)+p_{1,0}\right)+p_{0,0}
+  \label{eq:poly}
+\end{dmath}
+which is equivalent to (\ref{eq:akima}) but numerically more stable.
+
+Optionally some methods to improve the results can be applied. They
+are choosen via the following arguments:
+
+\begin{itemize}
+\item \cmd{akimaweight}: As mentioned above, this sort of averaging is
+  also done in Akimas original algorithms. It takes by default 25
+  (parameter \cmd{nweight}) estimates of that specific partial
+  derivative and builds a weighted sum of them with the weights beeing
+  constructed out of normal densities with mean and standard
+  deviations of the according estmation errors.
+\item \cmd{baryweight}: The system of equations (\ref{eq:iiiiii}) is
+  solved after transforming each triangle into a standardized triangle
+  with vertices $(0,0)^{\intercal}, (1,0)^{\intercal}, (0,1)^{\intercal}$. So one of the three
+  vertices of a triangle gets transformed into
+  $(0,0)^{\intercal}$. During the development of the code it became
+  apperent that the numerical errors for points near to this vertices are
+  minimal and increase for the two other vertices. This weighting
+  scheme repeats the interpolation for all three possibilities to
+  transform a vertex into $(0,0)^{\intercal}$ and then merges the results using
+  the barycentric coordinates (see \ref{sec:baryc-coord}) of the
+  prediction points. That way results generated from a vertex mapped to
+  $(0,0)^{\intercal}$ always dominate and all three vertices can benefit from
+  the reduced numerical errors near $(0,0)^{\intercal}$ after transformation.
+  Clearly this triples the computing time. But nevertheless this
+  option is used by default. As motivation a result with barycentric weighting
+  turned off is given below in figure \ref{fig:splinterpnobw}.
+
+
+<<label=splinterpnobw>>=
+si.nobw <- interp(akima$x, akima$y, akima$z, method="akima", nx=150, ny=150,
+                  baryweight=FALSE)
+MASS::eqscplot(akima$x, akima$y)
+contour(si.nobw, nlevels=30, add=TRUE)
+plot(tri.mesh(akima), add=TRUE)
+@
+
+The plot clearly shows (e.g. in the center of the upper left quadrant)
+the numerical problems of disconnected isolines across the triangle
+borders. Note, that these errors occur only on one triangle edge. It
+turned out this is opposite to the vertex mapped internally by the algorithm to
+$(0,0)^{\intercal}$. So we encourage to use this option even dispite the tripled computing time. Only if
+acurracy does not really matter one could reduce the computing time by
+turning it off.
+
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in',height=3.5>>=
+<<splinterpnobw>>
+@
+\caption{Bivariate Spline Interpolation (Without barycentric weighting)}
+\label{fig:splinterpnobw}
+\end{figure}
+
+\item \cmd{smoothpde}: If \cmd{TRUE} smoothing of partial derivative estimates, if
+  \cmd{akimaweight==TRUE} then Akimas weighting scheme is applied,
+  otherwise a simple arithmetic mean is returned. Note that it is
+  disabled by default which in turn means that also no Akima weighting
+  is applied. If it is enabled then Akima weighting is used by default
+  and a simple arithmetic mean if \cmd{akimaweight=FALSE} is given.
+\item \cmd{autodegree}: If the variability of the interpolates is
+  above \cmd{adtol} then reduce the degree of the polynomial to get a
+  smoother result. This is also disabled by default.
+\end{itemize}
+
+If \cmd{interp::interp()} is called with regular gridded data as input, it
+uses the same irregular grid based algorithm. This is in contrast to
+the old package \cmd{akima}, this also contained Akimas code for regular
+gridded data, based on \citep{akima:74} and \citep{akima:96a}. Maybe a
+future version of package \cmd{interp} will also contain a
+re-implementation of this old code.
+
+This package also implements bilinear interpolation for rectangular
+grids. Given a rectangle
+$\{(x_{1},y_{1})^{\intercal},(x_{2},y_{2})^{\intercal},(x_{3},y_{3})^{\intercal},(x_{4},y_{4})^{\intercal}\}$
+and $y_{1}=y_{2}$, $y_{3}=y_{4}$, $x_{1}=x_{4}$ and $x_{2}=x_{3}$
+(this makes it axis parallel) with counter clockwise indexed vertexes
+and according $z$ values $z_{1},z_{2},z_{3},z_{4},$ this algorithm can
+be described as follows: For a location $(x_{0},y_{0})^{\intercal}$
+contained in this rectangle the interpolation is determined via:
+\begin{enumerate}
+% \item Calculate intermediate vertexes
+%   $$(x_{12},y_{12})^{\intercal}=\frac{x_{0}-x_{1}}{x_{2}-x_{1}}((x_{2},y_{2})^{\intercal}+(x_{2},y_{2})^{\intercal})
+% \quad\mbox{and}\quad
+% (x_{34},y_{34})^{\intercal}=\frac{x_{0}-x_{1}}{x_{2}-x_{1}}((x_{3},y_{3})^{\intercal}+(x_{4},y_{4})^{\intercal}).$$
+ \item 
+Determine intermediate $z$ values for $(x_{0},y_{1})^{\intercal}$ and $(x_{0},y_{3})^{\intercal}$ as
+$$z_{01}=\frac{x_{0}-x_{1}}{x_{2}-x_{1}}(z_{1}+z_{2})
+\quad\mbox{and}\quad z_{03}=\frac{x_{0}-x_{1}}{x_{2}-x_{1}}(z_{3}+z_{4}).$$
+\item Now get $$z_{0}=\frac{y_{0}-y_{1}}{y_{4}-y_{1}}(z_{01}+z_{03}).$$
+\end{enumerate}
+This results in a polynomial of degree 2 which is continuous but not
+differentiable at the borders of the rectangle.
+
+We use Franke function 1 \citep{franke:82} on a regular grid for the
+demonstration, see figure \ref{fig:bilinear}.
+
+<<label=bilinear>>=
+nx <- 8; ny <- 8
+xg<-seq(0,1,length=nx)
+yg<-seq(0,1,length=ny)
+xyg<-expand.grid(xg,yg)
+fg <- outer(xg,yg,function(x,y)franke.fn(x,y,1))
+# not yet implemented this way:
+# bil <- interp(xg,yg,fg,input="grid",output="grid",method="bilinear")
+bil <- bilinear.grid(xg, yg, fg, dx=0.01, dy=0.01)
+MASS::eqscplot(xyg[,1], xyg[,2])
+contour(bil, add=TRUE)
+@
+
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in',height=3.5>>=
+<<bilinear>>
+@
+\caption{Bilinear interpolation of regularly gridded data}
+\label{fig:bilinear}
+\end{figure}
+
+
+% FIXME: index bug in \cmd{BiLinear}:
+% <<fig=TRUE,height=4>>=
+% bil <- BiLinear.grid(xg, yg, fg, dx=0.01, dy=0.01)
+% MASS::eqscplot(xyg[,1], xyg[,2])
+% contour(bil, add=TRUE)
+% @
+\section{One-Dimensional Data}
+\label{sec:1d}
+Akima also implemented algorithms for one-dimensional spline
+interpolation, see \citep{akima:72}. So it was a natural choice to
+include these algorithms also in the package \pkg{akima}. The
+functions \cmd{aspline()} and \cmd{aSpline()} are freely licensed
+re-implementations of this algorithm in \proglang{Fortran} and
+\proglang{C++}. It comes in two versions, one as described in
+\citep{akima:72} and an improved version as described in
+\citep{akima:91}, the newer algorithm also allows for higher degrees
+of the polynomial, not only degree 3, compare figure \ref{fig:aspline}
+
+<<label=aspline>>=
+x <- c(-3, -2, -1, 0,  1,  2, 2.5, 3)
+y <- c( 0,  0,  0, 0, -1, -1, 0,   2)
+MASS::eqscplot(x, y, ylim=c(-2, 3))
+lines(aspline(x, y, n=200, method="original"), col="red")
+lines(aspline(x, y, n=200, method="improved"), col="black", lty="dotted")
+lines(aspline(x, y, n=200, method="improved", degree=10), col="green", lty="dashed")
+@
+
+\begin{figure}[htb]
+\centering
+<<fig=TRUE,echo=FALSE,out.width='6in',height=3.5>>=
+<<aspline>>
+@
+\caption{Spline interpolation of onedimensional data}
+\label{fig:aspline}
+\end{figure}
+
+\section{Appendix}
+\label{sec:appendix}
+
+\subsection{Barycentric Coordinates}
+\label{sec:baryc-coord}
+
+Points within a triangle can be expressed in barycentric coordinates as follows:
+
+Given a triangle with vertices
+$\Vect{v}_{i}=(x_i,y_i)^{\intercal}, i=1,2,3$ any interior point
+$\Vect{v}_{0}=(x_0,y_0)^{\intercal}$ of this triangle can be expressed
+as a convex linear combination 
+$$
+\Vect{v}_{0}=a\cdot\Vect{v}_{1}+b\cdot\Vect{v}_{2}+c\cdot\Vect{v}_{3}
+$$
+with $a,b,c\in [0,1]$ and $a+b+c=1$ (notation: $[a:b:c]$). The
+vertices itself carry the representation $[1:0:0]$ , $[0:1:0]$ and
+$[0:0:1]$.
+
+In section \ref{sec:impl} we used these coordinates to build a
+weighted sum of three interpolation results. Component $a$ of the
+barycentric coordinates of a point near vertex $\Vect{v_1}$ will be
+close to 1 and so the interpolation result with the lowest numerical
+error (where vertex $\Vect{v}_{1}$ had been transformed to
+$(0,0)^{\intercal}$) will dominate the barycentric weighted sum
+mentioned above. Using this approach we cherry pick the numerically
+best portions of these three interpolation results.
+
+
+\bibliography{lit}
+
+%\addcontentsline{toc}{section}{Tables}
+%\listoftables
+\addcontentsline{toc}{section}{Figures}
+\listoffigures
+
+\end{document}

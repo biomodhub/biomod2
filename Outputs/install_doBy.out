@@ -1,0 +1,19 @@
+* installing *source* package ‘doBy’ ...
+** this is package ‘doBy’ version ‘4.7.1’
+** package ‘doBy’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+Note: ... may be used in an incorrect context 
+Note: ... may be used in an incorrect context 
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (doBy)

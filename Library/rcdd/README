@@ -1,0 +1,13 @@
+This package requires one library
+
+    the GNU Multiple Precision arithmetic library (libgmp)
+
+Obtain from http://gmplib.org/ or from your operating system vendor.
+This is a standard GNU package and comes with many Linux distributions
+and may be found at the web sites of other vendors that distribute free
+software.
+
+The licence is LGPL and source is available at http://gmplib.org/#DOWNLOAD
+
+If that doesn't work the source for GMP version 4.2.2 is available at
+http://www.stat.umn.edu/geyer/rcdd/gmp-4.2.2.tar.gz.

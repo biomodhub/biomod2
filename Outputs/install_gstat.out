@@ -1,0 +1,50 @@
+* installing *source* package ‘gstat’ ...
+** this is package ‘gstat’ version ‘2.1-6’
+** package ‘gstat’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c block.c -o block.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c data.c -o data.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c direct.c -o direct.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c fit.c -o fit.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gcdist.c -o gcdist.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c getest.c -o getest.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c gls.c -o gls.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c glvars.c -o glvars.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c init.c -o init.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c lm.c -o lm.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c mapio.c -o mapio.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c msim.c -o msim.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c mtrx.c -o mtrx.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c nsearch.c -o nsearch.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c pqueue.c -o pqueue.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c reml.c -o reml.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c s.c -o s.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c select.c -o select.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c sem.c -o sem.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c sim.c -o sim.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c userio.c -o userio.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c utils.c -o utils.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c vario.c -o vario.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c vario_fn.c -o vario_fn.o
+cc -I"/usr/share/R/include" -DNDEBUG -DR_NO_REMAP      -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c vario_io.c -o vario_io.o
+cc -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o gstat.so block.o data.o direct.o fit.o gcdist.o getest.o gls.o glvars.o init.o lm.o mapio.o msim.o mtrx.o nsearch.o pqueue.o reml.o s.o select.o sem.o sim.o userio.o utils.o vario.o vario_fn.o vario_io.o -llapack -lblas -lgfortran -lm -lquadmath -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-gstat/00new/gstat/libs
+** R
+** data
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+dans la méthode pour ‘krige’ avec la signature ‘"formula","sf"’ : aucune définition de la classe “sf” n'est trouvée
+dans la méthode pour ‘idw’ avec la signature ‘"formula","sf"’ : aucune définition de la classe “sf” n'est trouvée
+dans la méthode pour ‘krige.cv’ avec la signature ‘"formula","sf"’ : aucune définition de la classe “sf” n'est trouvée
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (gstat)

@@ -1,0 +1,169 @@
+---
+title: Media API Demo
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Media API Demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+resource_files:
+  - vignettes/jpgs_idigbio/0000b146-6fd2-4a6a-bf78-9e709cc995e9.jpg       
+---
+
+Code here written by [Erica Krimmel](https://orcid.org/0000-0003-3192-0080).
+
+## General Overview
+
+In this demo we will cover how to:
+
+1.  Write a query to search for specimens using `idig_search_media`
+2.  Download media records
+
+## Load Packages
+
+```{r message=FALSE}
+# Load core libraries; install these packages if you have not already
+library(ridigbio)
+library(tidyverse)
+
+# Load library for making nice HTML output
+library(kableExtra)
+```
+
+```{r echo = FALSE}
+verify_records <- FALSE
+
+#Test that examples will run
+tryCatch({
+    # Your code that might throw an error
+    verify_records <- records <- idig_search_media(rq = list(genus = "acer", country = "united states"), 
+  fields = c("uuid",
+             "accessuri",
+             "rights",
+             "format",
+             "records"),
+           limit = 10)
+}, error = function(e) {
+    # Code to run if an error occurs
+  cat("An error occurred during the idig_search_records call: ", e$message, "\n")
+  cat("Vignettes will not be fully generated. Please try again after resolving the issue.")
+    # Optionally, you can return NULL or an empty dataframe
+  verify_records <- FALSE
+})
+```
+
+## Write a query to search for specimen records
+
+First, you need to find all the media records for which you are interested in downloading media files. Do this using the `idig_search_media` function from the ridigbio package, which allows you to search for media records based on data contained in linked specimen records, like species or collecting locality. You can learn more about this function from the [iDigBio API documentation](https://github.com/iDigBio/idigbio-search-api/wiki) and [ridigbio documentation](https://cran.r-project.org/package=ridigbio/ridigbio.pdf). In this example, we want to search for images of herbarium specimens of species in the genus *Acer* that were collected in the United States.
+
+```{r eval=verify_records}
+# Edit the fields (e.g. `genus`) and values (e.g. "manis") in `list()` 
+# to adjust your query and the fields (e.g. `uuid`) in `fields` to adjust the
+# columns returned in your results; edit the number after `limit` to adjust the
+# number of records you will retrieve images for
+records <- idig_search_media(rq =
+  list(genus = "acer",
+       country = "united states"), 
+       fields = c("uuid",
+                  "accessuri",
+                  "rights",
+                  "format",
+                  "records"),
+                limit = 10)
+
+records$accessuri <- if_else(grepl("^http://", records$accessuri),
+  gsub("^http://", "", records$accessuri),
+  records$accessuri
+)
+records$accessuri <- if_else(grepl("https://mam.ansp.org", records$accessuri),
+  gsub("https://mam.ansp.org", "mam.ansp.org", records$accessuri),
+  records$accessuri
+)
+records$accessuri <- if_else(grepl("https://ibss-images.calacademy.org", records$accessuri),
+  gsub("https://ibss-images.calacademy.org", "ibss-images.calacademy.org", records$accessuri),
+  records$accessuri
+)
+```
+
+The result of the code above is a data frame called `records`:
+
+```{r eval=verify_records, echo = FALSE, results = 'asis'}
+knitr::kable(records) %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(width = "100%")
+```
+
+## Generate a list of URLs
+
+Now that we know what media records are of interest to us, we need to isolate the URLs that link to the actual media files so that we can download them. In this example, we will demonstrate how to download files that are cached on the iDigBio server, as well as the original files hosted externally by the data provider. You likely do not need to download two sets of images, so can choose to comment out the steps related to either "\_iDigBio" or "\_external" depending on your preference.
+
+```{r eval=verify_records}
+# Assemble a vector of iDigBio server download URLs from `records`
+mediaurl_idigbio <- records %>% 
+  mutate(mediaURL = paste("https://api.idigbio.org/v2/media/", uuid, sep = "")) %>% 
+  select(mediaURL) %>% 
+  pull()
+
+# Assemble a vector of external server download URLs from `records`
+mediaurl_external <- records$accessuri %>% 
+  str_replace("\\?size=fullsize", "")
+```
+
+These vectors look like this:
+
+```{r eval=verify_records}
+mediaurl_idigbio
+```
+
+```{r eval=verify_records}
+mediaurl_external
+```
+
+## Download media
+
+We can use the download URLs that we assembled in the step above to go and download each media file. For clarity, we will place files in two different folders, based on whether we downloaded them from the iDigBio server or an external server. We will name each file based on its unique identifier.
+
+```{r eval=FALSE, include=TRUE}
+# Create new directories to save media files in
+dir.create("jpgs_idigbio")
+dir.create("jpgs_external")
+
+# Assemble another vector of file paths to use when saving media downloaded 
+# from iDigBio
+mediapath_idigbio <- paste("jpgs_idigbio/", records$uuid, ".jpg", sep = "")
+
+# Assemble another vector of file paths to use when saving media downloaded
+# from external servers; please note that it's probably not a great idea to
+# assume these files are all jpgs, as we're doing here...
+mediapath_external <- paste("jpgs_external/", records$uuid, ".jpg", sep = "")
+
+# Add a check to deal with URLs that are broken links
+possibly_download.file = purrr::possibly(download.file, 
+                                         otherwise = "cannot download")
+
+#"mode" argument (="wb") in the walk function to download.file. 
+
+# Iterate through the action of downloading whatever file is at each
+# iDigBio URL
+purrr::walk2(.x = mediaurl_idigbio,
+             .y = mediapath_idigbio, possibly_download.file)
+
+# Iterate through the action of downloading whatever file is at each
+# external URL
+purrr::walk2(.x = mediaurl_external,
+             .y = mediapath_external, possibly_download.file)
+```
+
+You should now have two folders, each with ten images downloaded from iDigBio and external servers, respectively. Note that we only downloaded ten images here for brevity's sake, but you can increase this using the `limit` argument in the first step. Here is an example of one of the images we downloaded:
+
+```{r eval=verify_records, echo = FALSE, results = 'asis'}
+exampleimgpath <- paste("jpgs_idigbio/",records$uuid[1],".jpg", sep = "")
+
+image_markdown <- "No image available."
+
+if(file.exists(exampleimgpath))
+{
+  image_markdown <- paste0("![Herbarium specimen of an _Acer_ species collected in the United States](", exampleimgpath, ")")
+}
+
+image_markdown
+```

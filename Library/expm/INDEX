@@ -1,0 +1,11 @@
+balance                 Balance a Square Matrix via LAPACK's DGEBAL
+expAtv                  Compute Matrix Exponential exp(A t) * v
+                        directly
+expm                    Matrix Exponential
+expm.Higham08           Matrix Exponential [Higham 2008]
+expmCond                Exponential Condition Number of a Matrix
+expmFrechet             Frechet Derivative of the Matrix Exponential
+logm                    Matrix Logarithm
+matStig                 Stig's "infamous" Example Matrix
+matpow                  Matrix Power
+sqrtm                   Matrix Square Root

@@ -1,0 +1,2 @@
+export(polyclip,polyoffset,polylineoffset,polysimplify,polyminkowski,pointinpolygon)
+useDynLib(polyclip, .registration=TRUE, .fixes="e")

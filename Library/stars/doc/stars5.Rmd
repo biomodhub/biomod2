@@ -1,0 +1,155 @@
+---
+title: "5. vector-raster conversions, reprojection, warping"
+author: "Edzer Pebesma"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5. vector-raster conversions, reprojection, warping}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+**For a better version of the stars vignettes see** https://r-spatial.github.io/stars/articles/
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, dev = "png")
+suppressPackageStartupMessages(library(sf))
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.width = 6)
+ev = TRUE
+```
+
+This vignette shows how `stars` object can be moved from vector
+and raster representations.
+
+# Rasterizing an `sf` vector object
+
+```{r}
+library(stars)
+system.file("gpkg/nc.gpkg", package = "sf") |>
+  read_sf() |>
+  st_transform(32119) -> nc
+nc$dens = nc$BIR79 / units::set_units(st_area(nc), km^2)
+(nc.st = st_rasterize(nc["dens"], dx = 5000, dy = 5000))
+plot(nc.st)
+```
+
+The algorithm used is the GDAL `rasterize` utility, all options of
+this utility can be passed to `st_rasterize`. The geometry of the
+final raster can be controlled by passing a target bounding box and
+either the raster dimensions `nx` and `ny`, or pixel size by the
+`dx` and `dy` parameters.
+
+# Vectorizing a raster object to an `sf` object
+
+`stars` objects can be converted into an `sf` object using
+`st_as_sf`.  It has a number of options, depending on whether
+pixels represent the point value at the pixel center, or small
+square polygons with a single value.
+
+We will work again with the landsat-7 6-band image, but will select
+the first band and round the values:
+```{r}
+tif = system.file("tif/L7_ETMs.tif", package = "stars")
+x = read_stars(tif)[, 1:50, 1:50, 1:2]
+x[[1]] = round(x[[1]]/5)
+```
+
+## Polygonizing
+
+In case raster cells reflect point values and we want to get
+a vector representation of the whole field, we can draw contour
+lines and export the contour sets (only available when the 
+GDAL version is at least 2.4.0):
+```{r eval=ev}
+l =  st_contour(x, contour_lines = TRUE, breaks = 11:15)
+plot(l[1], key.pos = 1, pal = sf.colors, lwd = 2, key.length = 0.8)
+```
+
+## Exporting to points
+
+Alternatively, we can simply export all the pixels as points, and
+get them either as a wide table with all bands per point, and no
+replicated `POINT` geometries:
+```{r}
+st_as_sf(x, as_points = TRUE, merge = FALSE)
+```
+or as a long table with a single attribute and all points replicated:
+```{r}
+st_as_sf(x, as_points = TRUE, merge = FALSE, long = TRUE)
+```
+as we can see, an additional attribute `band` now indicates which band is concerned.
+
+## Exporting to polygons
+
+Alternatively, we can export to polygons and either get a single polygon per
+pixel, as in
+```{r}
+st_as_sf(x[1], as_points = FALSE, merge = FALSE)
+```
+or merge polygons that have identical pixel values;
+```{r}
+p = st_as_sf(x, as_points = FALSE, merge = TRUE)
+```
+When plotted with boundaries, we see the resolved boundaries of areas with the
+same pixel value:
+```{r}
+plot(p)
+```
+
+A further option `connect8` can be set to `TRUE` to use 8
+connectedness, rather than the default 4 connectedness algorithm.
+In both cases, the polygons returned will often be invalid according
+to the simple feature standard, but can be made valid using
+`lwgeom::st_make_valid`.
+
+# Switching between vector and raster in `stars` objects
+
+We can convert a raster dimension to a vector dimension while keeping other dimensions as they are in a `stars` object by
+```{r}
+x.sf = st_xy2sfc(x, as_points = TRUE)
+x.sf
+```
+which also requires setting the `as_points` arguments as in `st_as_sf`.
+
+# Reprojecting a raster
+
+If we accept that curvilinear rasters are rasters too, and that
+regular and rectilinear grids are special cases of curvilinear grids,
+reprojecting a raster is no longer a "problem", it just recomputes
+new coordinates for every raster cell, and generally results in a
+curvilinear grid (that sometimes can be brought back to a regular
+or rectilinear grid). If curvilinear grid cells are represented
+by coordinates of the cell center, the actual shape of a grid cell
+gets lost, and this may be a larger effect if grid cells are large
+or if the transformation is stronger non-linear.
+
+An example of the reprojection of the grid created above is
+```{r}
+nc.st |> st_transform("+proj=laea +lat_0=34 +lon_0=-60") -> nc.curv
+nc.curv
+plot(nc.curv, border = NA, graticule = TRUE)
+```
+
+where it should be noted that the dimensionality of the grid didn't
+change: the same set of raster cells has been replotted in the new
+CRS, but now in a curvilinear grid.
+
+# Warping a raster
+
+Warping a raster means creating a new _regular_ grid in a new CRS,
+based on a (usually regular) grid in another CRS. We can do the
+transformation of the previous section by first creating a target
+grid:
+```{r}
+nc |> st_transform("+proj=laea +lat_0=34 +lon_0=-60") |> st_bbox() |>
+	st_as_stars() -> newgrid
+```
+and then warping the old raster to the new
+```{r}
+nc.st |> st_warp(newgrid) -> nc.new
+nc.new 
+plot(nc.new)
+```
+
+This new object has a regular grid in the new CRS, aligned with
+the new x- and y-axes.

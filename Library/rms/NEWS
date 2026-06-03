@@ -1,0 +1,814 @@
+Changes in version 8.1-1 (2026-02-17)
+   * infoMxop: look for intercepts attribute in info if info matrix is not a 3-element list; don't look for a, b, ab if same pertains
+   * lrm.fit, : add intercepts attribute to info.matrix if not a 3-element list; fixes bug with vcov when transx=TRUE
+   * lrtest: corrected to use fit$stats['d.f.'] first
+   * Help file importexport.Rd: changed possible values of type argument to match survival 3.8-5
+   * prModFit as used by print.Gls: removed quote=FALSE passed to print as nlme::print correlation summary does this already; cleaned up some code; see https://github.com/harrelfe/rms/issues/166
+   * ordParallel: fixed issue with wrong argument to GiniMd; see https://github.com/harrelfe/rms/issues/168
+   * vcov.orm (also serves lrm): fixed issue with not utilizing full covariance matrix produced by robcov etc.; see https://github.com/harrelfe/rms/issues/167
+   * inst/tests/ordinal-robcov.r: new test for above
+   * inst/tests/Survival-orm-km.r: new test for agreement of ordinal and Kaplan-Meier survival estimates
+   * Ocens2ord: added return value named ranges containing 3 vectors of ranges (overall, uncensored points, censored points), and if there is right censoring, an object rt_cens_beyond with elements newlevel and range
+   * orm.fit, orm: also returns rt_cens_beyond
+   * Survival.orm: reworked logic for right censoring to guarantee agreement with survival::survfit when there are no covariates
+
+Changes in version 8.1-0 (2025-10-14)
+   * ggplot.npsurv, plotIntercepts: better log axes
+   * adapt_orm: new function
+   * intCalibration: added ordsurv option
+   * predab.resample, calibrate.* and validate.*: added approximate bootstrap confidence intervals for overfitting-corrected predictive performance measures using the method of Harrell (2025) detailed at https:fharrell.com/post/bootcal
+   * validate.lrm: moved computation of Emax to inside bootstrap loop so can get approximate confidence limits
+   * Gls: complete "apVar" fix (see GH issue 157)
+   * Olinks: added gradtol argument to pass to orm.fit
+   * lrm.residuals score.binary: added method='loess' to geom_smooth.  Thanks: Aruneek Biswas
+   * calibrate.*: implemented ABCLOC confidence bands for overfitting-corrected calibration curves
+   * lrtest: correct for error in glm deviance with family=gaussian() by using the logLik function instead of deviance values stored in fit objects
+
+Changes in version 8.0-0 (2025-04-04)
+   * orm, orm.fit: implemented left, right, and interval censoring; added Dxy to orm.fit
+   * Ocens: changed to use -Inf, Inf as limits for left or right censored observations, converted to using Turnbull intervals computed by the icenReg package, and added two interval consolidation procedures using icenReg to prevent zero probabilities in likelihood calculations with `orm.fit`
+   * contrast.rms: fixed bug regarding vcov for simultaneous intervals (thanks: Antonio Eleuteri)
+   * ordESS: new function to describe the effective sample size contributed by censored Y for orm fits
+   * DESCRIPTION: added icenReg to SUGGESTS; needed by orm for interval censoring
+   * residuals.lrm, predict.lrm: changed to use famfunctions function expressions for cumprob and deriv
+   * orm.fit: new argument mscore to store score matrix with fit; Fortran code ormll.f90 extended to compute its elements
+   * Survival.orm: new function; streamlined a lot of the code in Exprob.orm and returns a data.frame in non-simple cases
+   * survest.orm: new function for easy estimation of survival probabilities and confidence limits
+   * survplot.rms: enhanced to plot survival curves estimated by orm
+   * survplot.orm: put this in a separate function, and to use ggplot2R
+   * survplot.rms: added argument ggplot; if TRUE calls survplot.orm; intended for psm fits
+   * ggplot.npsurv: new function; uses ggplot2 and gives prettier output than survplot.rms for npsurv objects, but does not handle n.risk
+   * ordParallel: new function for checking parallelism assumption for orm mo
+   * addded scales package to IMPORTS
+   * val.surv: changed two of the plots to use ggplot2; removed NAs in group for plotting to keep group in parallel with other variables that may have NAs
+   * residuals.lrm, orm: recognize mscore in fit for score residuals for censored Y; for type='fitted.ind' get levels from object$yunique, use ggplot2 instead of box plots for score.binary, generalized score.binary to account for censoring
+   * orm.fit: allowed -2LL to get worse by eps/10 and still not do step-halving
+   * survfit.cph: added censor argument
+   * cph with surv=TRUE: passed censor=FALSE to survfit.cph to keep censoring times and associated surv estimates out of result when surv=TRUE
+   * predab.resample: allow for Ocens objects for y
+   * Olinks: new function to compute deviance statistics for links other than the one used in the given model
+   * intCalibration: new function for checking internal calibration of model fits
+   * Punits: new internal function for easy preparation of units of measurement strings for plotting
+   * Gls: removed &&FALSE by apVar; thanks to Arianna Cascone; see https://github.com/harrelfe/rms/issues/157
+
+Changes in version 7.0-0 (2025-01-15)
+   * orm.fit: complete re-write making use of ultra-compact sparse represention of pure intercept part of Hessian, and splitting returned information matrix into 3 submatrices
+   * this involved writing a new Fortran subroutine ormll; all the link-related calculations were moved into ormll
+   * orm: removed support for user-supplied link functions; stayed with 5 hard-coded cumulative probability distributions and these must now be regular character string values
+   * add Matrix to imports
+   * orm, orm.fit: added weights and penalties
+   * lrm, lrmll.f90: changed to use Matrix package sparse representation of Hessian/information matrix.  This allows lrm to have as many intercepts as orm.
+   * lrm, orm: removed $var in fit object; use vcov() to extract the variance-covariance matrix.
+   * Added intercepts argument to print.lrm and by default intercepts are not printed if there are more than 10
+   * infoMxop: new function to take either an ordinary information matrix or a list containing information submatrices (one of them being a symmetric band diagonal sparse representation), and either returns the assembled sparse matrix, its inverse, or selected rows/columns of the inverse.  Used by functions such as orm, anova.rms, Mean.lrm, Quantile.orm, ExProb.orm to do efficient calculations on the variance-covariance matrix.
+   * vcov.orm: changed to use infoMxop, and improved logic for handling fit$var
+   * vcov.lrm: changed to just use vcov.orm
+   * Changed rms service routines to deal with lrm, orm fits not containing $var but allowing for old fit objects that do
+   * Mean.lrm, Quantile.orm, ExProb.orm: more efficient matrix operations using infoMxop
+   * anova.rms: change default tol from 1e-13 to 1e-14
+   * lm.pfit: change default tol from 1e-7 to 1e-14
+   * contrast.rms: added profile likelihood confidence intervals and likelihood ratio chi-square tests for contrasts
+   * bootcov: removed rms fitter construction and replaced with quickRefit
+   * bootcov: changed arguments to fitting functions to be passed via ...; for lrm.fit and orm.fit added compstats=FALSE, compvar=FALSE for speed
+   * bootcov: removed logic to fill in intercepts for non-sampled Y values and instead used linear interpolation/extrapolation to estimate missing intercepts from sampled Y values; also added ytarget argument to just keep one intercept per bootstrap fit.  Results will be different from the "flat carry forward" method that was used before version 7.0.
+   * plotIntercepts: new function to plot step function representing the intercepts in lrm or orm
+   * lrm: fixed bug in Dxy calculation
+   * lrm.fit, orm.fit: added Levenberg-Marquardt optimization, changed gradient comvergence criterion for this and Newton-Raphson to be gradtol * n / 1000, which is also used in the new orm.fit
+   * groupkm, val.prob: use the new Hmisc cutGn function in place of cut2 for m=
+   * LRchunktest: removed; anova.rms now uses quickRefit
+   * Re-factored quick rms fitters to function quickRefit, modified LRchunktest to use it
+   * getDeviance: new internal function for rms fits; converts loglik to deviance for some models
+   * survreg.fit2: passed offset argument
+   * Glm and other code using glm.fit: glm.fit was storing a weight variable that is not the original given by the user when fitting the model; this hurt quickRefit and perhaps other routines.  Change all glm.fit calls to store the original weights as fit object component oweights
+   * contrast.rms: use middle intercept for lrm
+   * Ocens: moved from rmsb to rms
+   * Various: changed default tol for solve() to .Machine$double.eps
+   * validate.lrm: curtail x to [-40,40] in L01 calculation; fixes infinite value problem for U and Q
+   * removeFormulaTerms: dispensed with R warning by pasting together multiple line formulas
+   * require Hmisc 5.2-2 or later
+   * start conceptualizing a road map for future developments for lrm and orm:
+     + orm will be the place for extending the model (censoring and constrained partial PO model), and lrm will handle multiple optimization methods
+     + orm will be the one supporting multiple link functions
+     + orm will ultimately support left, right, and interval-censoring but with the Hessian less sparse when any obs. are interval-censored
+     + orm with the log-log link will provide a full-likelihood Cox PH model; will need to write survplot and other routines to support it
+
+Changes in version 6.9-0 (2024-12-11)
+   * replaced Ratfor code for robcovf and ormuv with Fortran 2018 with lots of nice vectorization for ormuv thanks to ChatGPT
+   * added new test robcovf.r for robcov by comparing with sandwich package
+   * wrote Fortran 2018 lrmll routine to efficiently compute log-likelihood, score vector, and Hessian matrix for binary and proportional odds penalized or unpenalized logistic models
+   * completely re-wrote lrm.fit: optionally orthogonalized X matrix using qr decomposition, used lrmll with an array of optimization options in the R stats package, removed code to compute rank correlation indexes with binning, instead doing exact calculations using the survival package's concordance.fit function.  Extensive details are at https://fharrell.com/post/mle/.
+   * modified lrm to use the new lrm.fit
+   * removed lrm.fit.bare function since the new lrm.fit handles this
+   * removed lrm.fit.strat, stratification no longer supported for lrm (strata.penalty argument dropped, and strata.coefs in print.lrm)
+   * remove score statistics from lrm
+   * pentrace: added ... argument passed to fitter, changed default tol from 1e-7 to 1e-13 and maxit from 12 to 20
+   * bootcov, validate.lrm, anova.rms: passed extra arguments to lrm.fit
+   * predab.resample: stop() instead of return() in case original fit failed
+   * validate.lrm: changed calibration intercept and slope to NA if a model has no predictors; deprecated Dxy.method
+   * validate.lrm, validate.orm: removed maxit= internally, use default value in lrm.fit, orm.fit
+   * orm.fit: changed defaults for eps, maxit and tol
+   * inst/tests/lrm3.r: new test related to reverse dependency check problem
+   * recode2integer: new function from Cole Beck, took out corresponding code from orm.fit
+   * added call to recode2integer in lrm.fit (and orm.fit) so the y values will only be considered unique to within a default of 7 decimal places to the right
+
+Changes in version 6.8-2 (2024-08-22)
+   * added dependency on the latest version of R at the time
+   * fixed use of concordancefit to return to negative Dxy for Cox models (Thanks Svetlana Eden)
+
+Changes in version 6.8-1 (2024-05-25)
+   * anova(test='LR'): passed tol to LRchunktest for lrm, orm
+   * replaced uses of survival::survConcordance with concordancefit
+   * removeFormulaTerms for some reason quit removing offset() terms when called by Predict/predictrms; wrote new version of removeFormulaTerms
+
+Changes in version 6.8-0 (2024-03-11)
+   * rexVar: new function for general measures of relative explained variation for each predictor in an rms or rmsb model fit
+   * poma: added minfreq argument thanks to Yonghao Pua
+   * orm.fit:  Non-downward-compatible change but one that makes results more likely to be identical across different hardware platforms by rounding numeric Y-values that are not integers after multiplying by 10^7 (the 7 can be modified by the new y.precision argument).  Thanks to Cole Beck, Cathy Jenkins, and Shawn Garbett.  See https://github.com/harrelfe/rms/pull/133 and https://hbiostat.org/R/rms/unique-float.html
+   * Xcontrast: added Zmatrix argument to suppress non-prop.odds Z matrix
+
+Changes in version 6.7-1 (2023-09-09)
+   * rcs, pol: use getOption for default nknots, issue message if default is used
+   * prModfit: fixed rowlabel problem with htmlTable, changed html output to include <p> in text when not centering, added quote=FALSE to type='print' output
+   * Xcontrast: compute design matrices from incomplete model fit objects and predictor settings, used for rmsb::blrm pcontrast argument
+
+Changes in version 6.7-0 (2023-05-08)
+   * kableExtra has been moved from Imports: to Suggests: and is used conditionally (Thanks: Dirk Eddelbuettel)
+   * added full likelihood ratio tests in anova() for the commonly used rms models
+   * reListclean: added dec attribute to better handle decimal places in case of removal of NULL or NA elements being printed; changed all model print methods accordingly
+   * print.ols: get n from stats, require stats to be non-empty (done for fit.mult.impute with stacking)
+   * LRupdate: new function to update LR test-related stats after processMI is run
+   * processMI.fit.mult.impute: added processing of anova result from fit.mult.impute(..., lrt=TRUE)
+   * print.anova.rms: added prmi argument and by default prints missing information-related parameters if anova table was created by processMI.fit.mult.impute
+   * prmiInfo: new function to print (or html) inputation parameters on the result of processMI(..., 'anova')
+   * plot.anova.rms with options(grType='plotly') in effect: fixed bug in calling plotlyParm
+   * added oos.loglik.* to NAMESPACE
+
+Changes in version 6.6-0 (2023-04-08)
+   * latex.* for model fits: fixed case for file not blank, fixed bugs in latex.cph
+   * Import knitr::kable and kableExtra::kable_styling and used these in latex.cph so that math notation can appear in html tables of survival probabilities
+   * val.surv.Rd, calibrate.Rd: changed installed.packages to requireNamespace for speed
+   * impactPO: automatically call new Hmisc::combine.levels to combine adjacent levels of Y until minimum Y-level frequency >= minfreq
+   * processMI: new function to process Hmisc::fit.mult.impute objects, especially for averaging model validations over multiple imputations
+   * Removed package dependencies except for Hmisc
+   * Exported survival::Surv function so users will not have to load the survival package just to access Surv; likewise for ggplot so it's easy to do ggplot(Predict(fit))
+   * npsurv: re-wrote to recognize that survfit is imported, not attached
+   * html.na.print.delete: changed from using plotly to using Hmisc::dotchart3 converted to base64 image so that will render correctly in Quarto reports
+   * predab.resample: respected prmodelsel in not printing title
+   * residuals.lrm, orm: Chun Li greatly improved calculation speed for Li-Shepherd residuals
+   * fixed bug in Hmisc::dotchartp that made plot.anova.rms not work with changes in R in handling of matrix[NULL,]
+
+Changes in version 6.5-0 (2023-02-06)
+   * modelData: preserved row.names so that fitted values, residuals will have them
+   * ols.influence: added row names back to dfbetas (makes which.influence work)
+   * latexrms: changed to return a character vector if file != ''
+	 * latex.*: changed to use knitr::asis_output if options(prType=x} is in effect where x is not 'plain', and if file is not ''.  This will result in correct rendering in documents no matter which chunk options are in effect, i.e., you no longer need results='asis' in a chunk header to get the LaTeX math form of fitted models.
+   * print.*: likewise for printing model fits, anova, summary, validate
+   * latex.anova.rms: added which= for html and LaTeX
+
+Changes in version 6.4-1 (2023-01-22)
+   * latex methods: changed \text to \mathrm; was getting a mathjax syntax error in Quarto
+   * residuals.ols: added type="studentized"
+   * poma: merged https://github.com/harrelfe/rms/pull/123 with thanks to Yonghao Pua
+
+Changes in version 6.4-0 (2023-01-12)
+   * bootcov: added seed argument; need to change old uses to use this; affects usage of the boot package
+   * html. and latex.anova.rms: added fontsize argument
+   * plot.summary.rms: added declim argument
+   * ggplot.Predict, plotp.Predict, plot.summary.rms: override plotly height and width if options(plotlyauto=TRUE) is set
+   * html.validate: fixed call to htmlTable to not add special css as was getting an html error
+   * latexrms: for inline use array environment with double backslash as line break
+   * latex.lrm, latex.orm: changed to used standard LaTeX probability notation
+   * poma: fixed by Michał Krassowski - https://github.com/harrelfe/rms/pull/116
+   * html.naprint.delete: added <br> for heading for html output
+   * impactPO: fixed printing for case where not all models are run
+   * latex.cph: use standard probability notation and $$
+   * latexrms: changed from eqnarray* to array, changed math notation back to $ for spline and indicator notation
+   * all latex methods: changed to output markup as we go, $$ for display math
+   * residuals.Glm: new function, adds type='score' for use with robcov
+   * makepredictcall.rms: new function that makes rms transformation functions like rcs, lsp, gTrans give proper predicted values when non-rms fitting functions are used and standard predict methods are implemented for thos functions.  Thanks: Terry Therneau
+   * orm: new example in help file for plotting different exceedance probabilities from a fit
+   * impactPO: fixed for case where bootstrap is requested, by changing data to data frame if an environment
+
+Changes in version 6.3-0 (2022-04-12)
+   * gTrans, Design, set.atr, latexrms: For latex(fit) to work when there is a gTrans() predictor
+   * survreg.fit2: fixed bug in computing loglik transformation correction factor which ruined validate.psm R^2 and other loglik-related indexes (made them NaN)
+   * residuals.lrm, residuals.orm, predab.resample: fixed bug where x=TRUE in fit without y=TRUE may find another y object; thanks: Chun Li
+   * plot.summary.rms: for options(grType='plotly') changed height calculation to use heightDotchartb instead of heightDotchart
+   * residuals.ols: added type='influence.measures'
+   * added nnet to suggests
+   * added impactPO function
+   * added new adjusted Maddala-Cox-Snell adjusted R2 using new Hmisc function R2Measures; affects prModFit, orm, lrm, psm, cph
+   * adapted reListclean in rmsMisc to handle special element namesFrom and named vector elements
+
+Changes in version 6.2-0 (2021-03-17)
+   * plotp.Predict: fixed bug when conf.int=FALSE was given to Predict()
+   * gTrans: new general transformation function; example: linear spline with discontinuities
+   * validate.cph: surrounded survival::survConcordance with suppressWarnings
+   * fixed how matrx predictors were being handled
+   * contrast.rms: added better ggplot2 examples for odds ratios
+
+Changes in version 6.1-1 (2021-02-06)
+   * Design, Getlim: allowed datadist option to actually contain the datadist (used by Hmisc::estSeqMarkovOrd)
+
+Changes in version 6.1-0 (2020-11-28)
+   * stackMI: removed and moved to rmsb package
+   * Predict: changed name of first argument from x to object
+   * Changed email address
+   * modelData: fixed dropping of unused factor levels
+   * contrast,summary,Predict: changed interface with rmsb::blrm to use more of rmsb::predict.blrm and made summary.rms and contrast.rms handle contrained partial PO models and added ycut argument
+   * poma: new function by Yong Hao Pua <puayonghao@gmail.com> for examining the proportional odds assumption
+   * Mean.lrm, Mean.orm, Quantile.orm: improved by Shengxin Tu to compute confidence limits using the delta method
+   * prModFit: added subtitle
+   * lrm.fit.bare: new minimalistic lrm fitting function
+   * ExProb: new version from Shengxin Tu that implements confidence intervals using the delta method
+   * Quantile: improved further by Shengxin Tu to provide two methods for computing quantiles (matters most when there are many ties)
+
+Changes in version 6.0-1 (2020-07-15)
+   * cph: workaround for R bug where name of weights variable was set to ..1 when dtrans was used with fit.mult.impute and dtrans contained weights (thanks: Trevor Thompson)
+   * cph: changed as.name('model.frame') to quote(stats::model.frame)
+   * blrm: subset was not working; reworked data setup for the two formulas
+   * modelData: new service function that allows us to do away with model.frame and let Design() directly process the data frame; tiny change to Design()
+   * as.data.frame.rms: added so that modified Design will work
+   * lrm, Rq, psm, Glm, bj, orm, ols: changed to use modelData instead of model.frame
+   * predictrms: prevented structure(NULL, ...)
+   * ggplot.Predict: fixed bug relating to histSpikeg and vnames
+   * survplotp: removed blank levels and : in legend
+   * contrast: added y argument to allow y-specific odds ratios to be computed for a constrained partial prorportional odds model
+   * blrm: moved to new rmsb package
+   * Dropped Mean and Quantile since it is already in Hmisc
+   * Fixed bug in modelData when formula2 was not the same as formula
+   * Predict: added calling environment argument to eval() to allow calling Predict from within a function
+
+Changes in version 6.0-0 (2020-06-04)
+   * orm.fit: changed to result in a fail=TRUE fit if NA, NaN element of variance matrix (Thanks: Thomas Dupont)
+   * prModFit: changed default in catl function to center=FALSE
+   * residuals.psm: added transformation of survival time when computing censored normalized residuals
+   * added SUGGESTS for rstan
+   * added utility functions for rstan: stanDx, stanGet, coef.rmsb, vcov.rmsb, print.rmsb, stanCompile (fetches Stan code from github.com/harrelfe/stan and compiles it to a central place on your machine)
+   * new function blrm for Bayesian binary and ordinal logistic regression along the lines of rms::lrm
+   * new function blrmStats to compute posterior distributions and credible intervals for several predictive accuracy measures for blrm including Dxy (which is easily translated to c-index (= AUROC in binary Y case), Brier score, and measures of explained variation; print method print.blrmStats also added
+   * modified predictrms and contrast.rms for Bayesian calculations, adding new argument posterior.summary for predictrms and Predict
+   * enhanced anova.rms for approximate relative explained variation measures for Bayesian models
+   * extended Function.rms to use posterior mean/median coefficients
+   * new function PostF to generate an R function that computes posterior probabilities of assertions
+   * added stanDxplot and plot methods for Bayesian fits
+   * extended nomogram to use posterior mean or median parameter values
+   * extended Design() to deal with time() variables (for blrm)
+   * extended blrm to use Ben Goodrich's AR(1) model
+   * HPDint: new function, adopted from the coda package
+   * distSym: new function: symmetry measure for a distribution
+   * stackMI: new function: Bayesian fitting with multiple imputation by posterior stacking
+   * import MASS::kde2d and bandwidth.nrd and cluster::ellipsoidhull for 2-d posterior density estimation
+   * pdensityContour: new function
+   * plot.contrast.rms: new function for Bayesian posterior densities and 2-d densities
+   * made dependent on survival >= 3.1-12
+   * fixed bug related to changes in survival which no longer stores $y matrix as transformed; affects val.surv.s, calibrate.psm.s, validate.psm.s, psm.s.  Thanks: Aida Eslami <Aida.Eslami@fmed.ulaval.ca>
+   * which.influence: fixed bug when model has more than one intercept (thanks: Yuwei Zhu)
+   * blrm: added partial proportional odds model
+   * stanQr: new function
+   * predict.blrm: new function
+   * Mean.blrm, Quantile.blrm, ExProb.blrm: new functions
+   * residuals.lrm: implemented score residuals for all link functions using code from Yuqi Tian
+   * contrast.rms: added fun= for Bayesian models for getting posterior distributions of differences of nonlinearly transformed estimates; enhanceds plot.contrast.rms and print.contrast.rms to handle this
+   * fitIF, fitLoad, fitSave: removed (rejected by CRAN since fitIf assigned to global environment)
+
+Changes in version 5.1-4 (2019-11-16)
+   * anova.rms: added which LaTeX packages are needed in help page
+	 * survplot.npsurv: added use of fun for conf type bars.  Thanks: Joonas Lehto
+   * made rms dependent on Hisc 4.2-0 or later
+   * help files using set.seed: added suppressWarnings because of change in R base random number generators.  Thanks: Brian Ripley
+   * calibrate.cph: subset cuts to unique values.  Thanks: Eduwin Pakpahan <epakpahan@gmail.com>
+   * psm: stored original Y if y=TRUE
+   * residuals.psm: implemented type='score' (used by robcov)
+   * depend on survival >= 3.1-6 and use survival's new coding of reference (censoring) event for competing risk models
+
+Changes in version 5.1-3 (2019-01-27)
+   * lrm: when lrm.fit fails, don't stop altogether but print warning and return fit with fail=TRUE
+   * summary.orm: stopped negating linear predictor before computing hazard ratio for orm fit with log-log family (confidence limits never attempted to do this).  See https://github.com/harrelfe/rms/issues/56
+   * Design: stop with error message any any design matrix column name is duplicated as with a predictor X1 with factor level 2 (forming name X12 in model.matrix) and a numeric predictor named X12.  See https://github.com/harrelfe/rms/issues/55
+   * contrast.rms: for conf.type='simultaneous' shortened fit$coefficients to only have one intercept so will work with multcomp::glht.  Thanks: Matthew Shun-Shin
+   * orm: changed label for Unique Y to Distinct Y
+   * survplotp: fixed bug in legends
+   * predab.resample: handled case where fitter doesn't include fail=FALSE
+   * orm.fit: fixed problem with omission of name of fam argument with offset is present, and bug where initial had the wrong length.  Thanks: Tamas Ferenci
+   * inst/tests/cph4.r: commented out line that caused failure
+   * plotp: moved generic to Hmisc
+   * Design: gave better error message re:ordered factors
+   * predictrms: remembered to run scored() when producing design matrix
+   * Design: allowed for = in value labels in mmnames.  See github.com/harrelfe/rms/issues/29#issuecomment-417901353
+   * plot.calibrate.default: added cex.subtitles, riskdist options and changed default for scat1d.opts
+   * inst/tests/calibrate.r: new test
+
+Changes in version 5.1-2 (2018-01-06)
+   * plot.pentrace: corrected lty for AIC if ! add, interchanged lty for AIC and BIC.  Thanks: Ferenci Tamas
+   * removeFormulaTerms: added width.cutoff=500 to deparse call to avoid problems with long variable names.  Thanks: Ferenci Tamas
+   * removeFormulaTerms: changed above fix to use paste collapse instead (Thanks: Tamas)
+   * Design: mmnames function: escaped <= like >= already escaped.  See https://github.com/harrelfe/rms/issues/29#issuecomment-303423887
+   * groupkm: speed improvement (helps calibrate*; thanks Cole Beck)
+   * fastbw: improved messages for rule and type
+   * prModFit: changed to have htmlSpecial, htmlTranslate do all the html special character coding, allowing default to unicode
+   * lrm, lrm.fit: for rank correlation measures, made more accurate by binning probabilities into bins of width 0.0002 instead of 0.002
+   * ggplot.Predict: fixed case of empty labels when defining pmlabel
+   * vcov.orm: fixed bug when intercepts longer than 1
+   * lrm.fit, orm.fit: diag(1 / sd) not returning matrix if sd is a matrix and not a vector
+   * ols: respected data in terms call, for case where formula is .
+   * robcov: removed warning in help file about printed standard errors (Thanks: Ferenci Tamás)
+   * anova, rmsMisc, survplotp.npsurv: changed nbsp to htmlSpecial version
+   * prModStat, anova, latex.cph, latex.rms, summary, validate.ols: added escape.html=FALSE to htmlTable
+   * print.summary.rms: for html returned HTML object instead of invisible
+   * validate.ols, calibrate.default: fixed fitter so that NA coefficient results in fail=TRUE
+   * Gls: fixed major bug where correlation pattern was being ignored if not corAR1,corCAR1,corCompSymm.  Thanks: Tamas Ferenci
+   * latex.cph.s: changed to use latex instead of latex.default
+   * ggplot.Predict: added conflinetype parameter (thanks: jphdotam; https://github.com/harrelfe/rms/pull/54)
+
+Changes in version 5.1-1 (2017-05-01)
+   * latex.anova.rms: if table.env is FALSE but caption is specified, passes caption as insert.top argument to latex.default; when options(prType='latex') you can do print(anova(), caption=) to use this
+   * prModFit: fixed one latex to lang=='latex' bug
+   * print.anova.rms, print.summary.rms: added table.env argument
+   * psm: fixed bug in storage of g and gr that made output for them invalid
+   * calibrate.cph,calibrate.psm,Function.rms,plot.Predict,predab.resample,Predict,rms.trans,summary.rms,which.influence:fixed preservation of options()
+   * lrm.fit,orm.fit:fixed bug in scale=TRUE when design matrix has 1 column
+   * Design:quit running structure(ia, dimnames=NULL) if ia empty
+   * Fortran calls: registered all Fortran functions, removed package name and quotes in first argument in .Fortran(), added F_ to entry point name in those calls, changed useDynLib call in NAMESPACE, added \alias{} for all F_ entries
+
+Changes in version 5.1-0 (2017-01-01)
+   * anova.rms, survplotp.npsurv: use Hmisc htmlGreek to encode Greek letters
+	 * plotp.Predict: new function for direct plotly graphics for Predict
+	 * rbind.Predict: carry adjust object
+
+Changes in version 5.0-1 (2016-12-04)
+   * latex.anova.rms: fixed problem with conversion of * to $\times$
+	 * prModStats: fixed problem with print.ols residuals
+	 * print.summary.rms: made it respect options(prType), and default latex to no table environment
+	 * plot.summary.rms, survplot.npsurv: height and width moved from plotly::layout to plot_ly due to changes in plotly 4.5.6
+	 * plot.summary.rms, survplotp.npsurv: added data= to plot::add_* because plotly was evaluating using the wrong copy of x,y, etc.
+	 * ggplot.Predict: used new labs(caption=) feature for ggplot2 instead of title
+	 * prModFit: fixed translation of * to \times, fixed \textgreater and \textless for row and column names for latex, fixed all model print methods to use options(prType=...)
+	 * latexrms: remove md argument, use options(prType='html')
+	 * latex methods for model fits: change default file to console
+	 * latex.anova.rms: remove html argument, use options(prType)
+	 * print.anova.rms: use options(prType) to automatically use LateX or html printing to console
+	 * cph: fixed bug when method="exact" related to type vs ytype
+	 * latex.cph: fixed bug where using strata used data not levels
+
+Changes in version 5.0-0 (2016-10-31)
+   * plot.summary.rms: implemented plotly interactive plots if options(grType='plotly') in effect
+	 * plot.anova.rms: implemented plotly interactive plots if options(grType='plotly') in effect; remove psmall argument; changed margin default to chisq and P
+	 * ggplot.Predict: implemented plotly interactive plots if options(grType='plotly') in effect
+	 * print(fit, md=TRUE), prModFit, prStats: added latex/html methods using htmlTable package and MathJax for latex math
+	 * html.anova.rms, html.validate, html.summary.rms: new functions for use with html and MathJax/knitr/RStudio
+	 * latex methods for model fits: added md=TRUE argument to produce MathJax-compatible latex and html code for fitted models when using R Markdown
+	 * html: new methods for model fit objects for use with R Markdown
+	 * formatNP: fixed error when digits=NA
+	 * latex.anova.rms: fixed error in not rounding enough columns doe to using all.is.numeric intead of is.numeric
+	 * catg: corrected bug that disallowed explicit catg() in formulas
+	 * ggplot.Predict: added height and width for plotly
+	 * survplot: respected xlim with diffbands.  Thanks: Toni G
+	 * reVector: changed to reListclean and stored model stats components as lists so can handle mixture of numeric and character, e.g., name of clustering variable
+	 * survplotp.npsurv: new function for interactive survival curve graphs using plotly
+	 * anova, summary, latex, print for model fits: use options(grType='html') or 'latex' to set output type, output htmltools::HTML marked html so that chunk header doesn't need results='asis'
+	 * latex methods - set file default to ''
+	 * GiniMd: moved to Hmisc package
+	 * plot.nomogram: fixed bug where abbreviations were being ignored.  Thanks: Zongheng Zhang
+	 * nomogram: improved examples in help file
+	 * survplot.npsurv: fixed n.risk when competing risks
+	 * survest.cph, survfit.cph, others: fixed large problems due to incompatibility with survival 2.39-5 for survival predictions; changed object Strata to strata in cph to be compatible with survival package
+	 * new test survest.r to more comprehensively check survfit.cph and survest.cph
+	 * ggplot.Predict: quit ignoring xlim; suppress confidence bands if two group bariables because ggplot2 geom_ribbon doesn't support multiple aesthetics
+	 * predictrms: set contrasts for ordered factors to contr.treatment instead of contr.poly
+	 * val.prob: changed line of identity to use wide grayscale line instead of dashed line
+
+Changes in version 4.5-1 (2016-06-01)
+   * ggplot.Predict: fixed bug related to .predictor. vs. .Predictor. which resulted in double plotting of some anova annotations
+   * tests/ggplot3: new tests related to above
+   * tests/survplot2.r: new test
+   * ggplot.Predict: fixed bug when legend.label=FALSE and didn't enclose empty string in quotes for later parsing
+   * validate.rpart: extended to handle survival models (exponential distribution)
+   * print.validate.rpart: finally added method in NAMESPACE
+   * val.prob: make riskdist="predicted" the default; added E90 and Eavg to plotted output; for E measures changed to loess calibration instead of linear logistic calibration
+   * fastbw: corrected error in help file regarding aics argument
+   * NAMESPACE: added graphics::grconvertX grconvertY
+	 * latex.naprint.delete: fixed width algorithm for dot chart
+	 * survplot.npsurv, survplotp.npsurv: changed $prev to $pstate for competing risk estimation due to change in survival package 2.40-0
+	 * rbind.Predict: removed varying .x.; can't figure out what it was doing and cause a bug
+
+Changes in version 4.5-0 (2016-04-02)
+   * val.prob: fixed longstanding error: U was always -2/n because used wrong deviance.  Thanks: Kai Chen
+	 * survplot*: implemented y.n.risk='auto' to place numbers at risk below the x-axis by 1/3 the range of ylim
+	 * survplot*: added mylim argument to force inclusion of ranges in computed limits
+	 * bootplot: added what='box' for box plots to check for wild bootstrap coefficients
+	 * ggplot.Predict: old workaround for expression labels for facet_grid quit work; changed to new labeller capabilities just added to ggplot2
+	 * survplot.*, survdiffplot: added cex.xlab, cex.ylab arguments
+	 * Design: fixed bug where one-column matrices as predictors did not compute column names correctly
+	 * predictrms: fixed bug in trying to retrieve offsets; now offsets set to zero (so are ignored)
+	 * tests: several updated, all run, several bugs fixed as result
+
+Changes in version 4.4-2 (2016-02-20)
+   * tests: added test mice.r exposing problem with complete function in mice
+	 * ols: passed tol argument to lm.fit, lm.wfit
+	 * contrast: fixed major bug for orm fits - column was shifted because added 1 col to X instead of num intercepts.  Changed to choose only one intercept in coef
+	 * ols: workaround - fitting functions are adding a class of integer for labelled Y
+	 * Gls: updated to be consistent with changes in nlme, DEPENDS on latest nlme
+	 * ggplot.Predict: changed show_guide to show.legend (thanks: John Woodill)
+	 * tests/ggplot2b.r: new test
+	 * tests/orm4.r: new test for small sample 2-way ANOVA
+	 * tests/orm-profile.r: new test to time profile orm
+	 * cph: fixed bug in se.fit when surv='summary'
+	 * cph: added arguments linear.predictors, residuals, nonames
+
+Changes in version 4.4-1 (2015-12-21)
+   * contrast, residuals.lrm, survreg.distributions, val.prob, validate.ols: changed 1 - pnorm(z) to pnorm(-z) and 1 - pt(z) to pt(-z) to increase precision; thanks: Alexander Ploner
+	 * tests/anova-ols-mult-impute.r: helps to understand sigma and sums of squares when ols is used with fit.mult.impute
+	 * survplot.npsurv: added support for competing risk cumulative incidence plots - see the new state argument
+	 * ols: fixed bug in which df.residual was n-1 when the fit was penalized.  Thanks: Mark Seeto
+	 * %ia%: returned attribute iaspecial which TRUE when the interactions involved a categorical variable with exactly 2 levels and a variable that was not passed through lsp, rcs, pol
+	 * Design: if an %ia% object has iaspecial TRUE modifies how mmcolnames is created for that model term to account for an inconsistency in R whereby a categorical variable involved in %ia% when there are only two levels does not generate the usual variable=non-reference value in the column names.
+	 * bj, cph, Glm, lrm, ols, orm: changed to subset model.matrix result on mmcolnames to rigorously require expected design matrix column names to be what model.matrix actually constructed
+	 * npsurv: add numevents and exposure objects to fit object so will have number of events by cause in case of competing risks (summary.survfit does not compute this) as well as with ordinary right-censored single events
+	 * ggplot.Predict: inserted mapping and environment arguments to comply with ggplot generic
+	 * legend.nomabbrev: fixed bug info$Abbrev (note A; thanks: Alvin Jeffery)
+	 * Design: fixed bug, was not handling logical predictors correctly in mmcolnames.  Thanks: Max Gordon
+
+Changes in version 4.4-0 (2015-09-28)
+   * contrast.rms: made SE a vector not a matrix, added 4 list logic for nvary, added new test from JoAnn Alvarez
+	 * plot.summary.rms: correct bug where pch was ignored.  Thanks: Tamas Ferenci
+	 * prModFit: fix print(fit, latex=FALSE) when fit is result of robcov, bootcov
+	 * NAMESPACE: added imports for base functions used to avoid warnings with R CMD CHECK; new test rcs.r
+	 * prModFit: added rmarkdown argument.  All print.* methods can pass this argument.
+	 * All print methods for fit objects: left result as prModFit instead of invisible() so that rmarkdown will work
+	 * demo/all.R: updated for plot and ggplot methods, npsurv
+	 * cph, predictrms, rms, rms.trans, rmsMisc: changed Design function to return new objects sformula (formula without cluster()) and mmcolnames which provides a new way to get rid of strat() main effects and interactions involving non-reference cells; handle offsets in cph and predict() (not yet in Predict); new internal function removeFormulaTerms that does character manipulation to remove terms like cluster() or offset() or the dependent variable(s).  This gets around the problem with [.terms messing up offset terms when you subset on non-offset terms
+	 * Glm, ols: fixed offset
+	 * bj, Gls, lrm, orm, psm, Rq: change to new offset method and sformula
+	 * Predict: added offset=list(offsetvariable=value)
+	 * several: made temporary function names unique to avoid warnings with R CMD CHECK
+	 * ggplot.Predict: changed facet_wrap_labeller to not mess with class of returned object from ggplotGrob
+	 * Design: fixed column names for matrix predictors
+	 * Design, cph: handled special case where model is fit on a fit$x matrix
+	 * dxy.cens: exported
+	 * cph: added debug argument
+	 * tests/cph4.r: new tests for various predictor types
+	 * rms: changed warning to error if an ordered factor appears in the model and options(contrasts) is not set properly
+	 * rms transformation functions: made more robust by checking ! length instead of is.null
+
+Changes in version 4.3-1 (2015-04-20)
+   * NAMESPACE: removed reference to gridExtra, in DESCRIPTION moved gridExtra from Depends to Suggests
+   * ggplot.Predict: re-worked generation of ggplot function call construction to use character strings with evaluation at the very end; added colfill argument
+   * bplot: fixed so will find panel function with lattice::
+   * orm.fit: trapped negative cell prob due to updated intercepts out of order
+   * ggplot.Predict: fixed bug in expch when x=NULL
+   * lrm.fit: fixed but with wrong dimension array given to Fortran if offset used
+   * predict.Rq: fixed bug causing intercept to be ignored
+   * survplot.npsurv: override conf='diffbands' to 'bands' when one stratum; added aehaz and times arguments
+   * ggplot.Predict: call new function in Hmisc: arrGrob, remove gridExtra from depends
+   * lrm.fit: changed any(duplicated()) to anyDuplicated()
+
+Changes in version 4.3-0 (2015-02-15)
+   * contrast.rms: added 3rd and 4th list of predictor settings to allow for double-difference (interaction) contrasts
+   * predictrms: don't call vcov if no covariates present (e.g. cph strata only)
+   * print.summary.rms, latex.summary.rms: print more significant digits for effect-related columns
+   * robcov, bootcov: added new object clusterInfo in the fit object
+   * all fitting functions: print method prints clusterInfo
+   * residuals.lrm: negated Li-Shepherd residuals to make them correct
+   * residuals.orm: put in namespace and added examples from Qi Liu
+   * plot.calibrate: added par.corrected so user can specify graphics parameters for plotting overfitting-corrected estimates
+   * robcov: dropped unused levels from cluster so that clusterInfo is correct
+   * plot.Predict: added example in help file for how to set lattice graphics parameters
+   * datadist: quit rounding quantiles to integers if raw data were integer
+   * predictrms, Predict: fixed bug with ref.zero=TRUE and with handling Cox models; added new test code in tests/cph3.r
+   * cph, dxy.cens: fixed bug - Dxy was negative of what it should have been for cph.  Thanks: Irantzu Barrio
+   * ggplot.Predict: new function for ggplot2 graphics for Predict objects
+   * contrast.rms: added ... for print method (e.g., to allow digits=4)
+   * survplot: raredd fixed bug with 1 observation per group - see http://stackoverflow.com/questions/24459078/error-message-when-ploting-subjects-at-risk-with-survplot
+   * latex.rms: changed notation for indicator variables from {} to [] a la Knuth
+   * latex.anova.rms: stopped putting d.f. and Partial SS in math mode
+   * npsurv: neatened help file
+   * residuals.orm: fixed bug for score residuals.  This fixed robcov.
+   * orm-residuals.r: new test code
+   * vcov.orm: handled case where fit was run through robcov
+   * print: for LaTeX fixed prStats to translate clustering variable to LaTeX
+   * vcov.orm: handled case where fit was run through bootcov
+   * bootcov: for orm stored intercepts attribute in var
+   * tests: new test for orm bootcov
+   * contrast, vcov.orm: made to work if fit run through robcov, bootcov
+   * print.anova.rms: fixed bug with subscripts,names,dots
+
+Changes in version 4.2-1 (2014-09-18)
+   * plot.summary.rms: allowed a vector for lwd, and passed lwd to confbar.  Thanks: Michael Friendly
+   * gendata: Starting in R 3.1.0, as.data.frame.labelled or as.data.frame.list quit working when length vary; workaround
+   * predictrms, ols: handle offset in formula.  Thanks: Max Gordon
+   * pentrace: neatened code, added new argument noaddzero if user wants to prevent unpenalized model from being tried; add new test script in tests
+   * bplot: fixed bug whereby xlabrot was ignored.  Thanks: Sven Krackow <sven.krackow@gmail.com>; new test for bplot in tests directory
+   * plot.Predict: fixed bug in which 2nd argument to perim was not correct
+   * validate.ols: Shane McIntosh fixed the passing of the tolerance argument to predab.resample
+   * predictrms: computed offset earlier so always defined no matter the value of type
+   * plot.Predict: added scaletrans argument, fixed use of subscripts in pan
+   * lrm, lrm.fit: added scale argument
+   * orm, orm.fit: added scale argument
+   * vcov.orm: accounted for scale when extracting covariance matrix
+   * npsurv: was not passing type argument
+   * npsurv: start storing all classes created by survfit.formula
+   * logLik.Gls: added.  Makes AIC(Gls object) work.
+   * NAMESPACE: several changes
+
+Changes in version 4.2-0 (2014-04-13)
+   * Deprecated survfit.formula so would not overlap with function in survival
+   * Added function npsurv, survplot.npsurv
+   * REMOVED survfit.formula
+   * Used new type argument to label.Surv for fitting functions
+   * cph: added weights argument to residuals.coxph (Thanks: Thomas Lumley)
+   * survfit.cph: fixed bug in using wrong type variable.  Thanks: Zhiyuan Sun
+   * cph: added weighted=TRUE in call to residuals.coxph (Thanks: T Lumley)
+   * orm.fit: improved ormfit to not try to deal with NaN in V, assuming that step-halving will happen
+
+Changes in version 4.1-3 (2014-03-02)
+   * num.intercepts: removed (is in Hmisc)
+	 * survfit.formula, cph, psm: changed to use inputAttributes attribute of Surv objects (introduced earlier in survival package so that rms could drop its customized Surv function)
+   * Exported survfit.formula
+   * Changed survival fitting functions and residuals to use units.Surv
+
+Changes in version 4.1-2 (2014-02-28)
+   * psm: Fixed bug to allow computation of Dxy with left censoring
+   * val.prob: Fixed recently introduced bug that made calibration intercept and slope always 0,1.  Thanks: Lars.Engerstrom@lio.se
+   * plot.Predict: added between to leave space between panels
+   * orm.fit: fixed error in kmid calculation when heavy ties at first level of y.  Thanks: Yuwei Zhu
+   * setPb: changed default to now use tktcl to show progress bars for simulations
+   * predictrms: fixed bug with type='terms'
+   * val.surv: handle case where survival estimates=0 or 1 when using log-log transform
+
+Changes in version 4.1-1 (2014-01-22)
+   * Removed use of under.unix in anova.rms, latex.summary, plot.nomogram
+   * Removed use of oldUnclass, oldClass, is.category
+   * Fixed class of Rq object; had failed with bootcov.  Thanks: Max Gordon
+   * survplot: preserved par()
+   * Srv: removed, changed all uses to Surv() for new survival package that preserves attributes for Surv inputs
+   * survplot.survfit, survdiffplot: added conf='diffbands'
+   * predictrms: fixed num. intercepts calculation order
+   * survplot, survdiffplot: used original standard error for survdiffplot, and fun
+   * dyx.cens: allow left-censoring
+
+Changes in version 4.1-0 (2013-12-05)
+   * Fixed orm.fit to not create penalty matrix if not needed (penalties are not yet implemented anyway)
+   * Added yscale argument to plot.Predict
+   * Added Wald test simulation to orm help file
+   * Added example in help file for plot.anova.rms of adding a line combining the effects of two predictors in dot chart
+   * Fixed grid interpretation error in survplot.survfit
+   * Changed plot.anova.rms to use dotchart3 instead of dotchart2
+   * Fixed bug in summary.rms - was taking reciprocal of effect ratio with orm even if not loglog family (thanks: Yong Hao Pua <puayonghao@gmail.com>
+   * Removed link to print.lm, summary.lm in ols.Rd
+   * Added ntrans argument to plot.anova.rms
+   * Fixed handling of intercepts in Rq, validate.Rq
+   * Removed residuals.Glm, residuals.rms (also from Rd, NAMESPACE)
+   * Removed other .rms methods and other remnants from fooling S+ dispatcher
+   * Fixed bug in lm.pfit when penalty used (thanks: Yong Hao Pua <puayonghao@gmail.com>)
+   * Fixed bug in calibrate.default for ols (thanks: Andy Bush)
+   * Change print.contrast.rms to insert NA for SE if fun is not the identity function
+   * Added margin argument to plot.anova.rms to print selected stats in right margin of dot chart
+   * Added anova argument to plot.Predict to allow overall association test statistics to be added to panels
+   * Fixed bug in val.prob in which the logistic model was re-fitted instead of fixing coefficients at 0,1.  This resulted in model statistics (including c-index) to always be favorable even when predictions were worse than random.  Thanks: Kirsen Van Hoorde <Kirsten.VanHoorde@esat.kuleuven.be>
+   * Fixed bug in survdiffplot where conf.int was always overridden by value from survfit.  Thanks: Kamil Fijorek <kamilfijorek@gmail.com>
+   * Fixed bug in grid= for survplot.* and survdiffplot.  Thanks: Kamil Fijorek
+   * Fixed rms.s to account for possible offset in names(nmiss).  Thanks: Larry Hunsicker
+   * Fixed psm.s to not compute Dxy if simple right censoring is not in effect.  Thanks: I.M. Nolte
+   * rcs: respect system option fractied, passed to rcspline.eval; can be used to get old behavior
+   * Gls: as nlme 3.1-113 exports more functions, removed nlme:::
+
+Changes in version 4.0-0 (2013-07-10)
+   * Cleaned up label logic in Surv, made it work with interval2 (thanks:Chris Andrews)
+   * Fixed bug in val.prob - wrong denominator for Brier score if obs removed for logistic calibration
+   * Fixed inconsistency in predictrms where predict() for Cox models used a design matrix that was centered on medians and modes rather than means (thanks: David van Klaveren <d.vanklaveren.1@erasmusmc.nl>)
+   * Added mean absolute prediction error to Rq output
+   * Made pr argument passed to predab.resample more encompassing
+   * Fixed logLik method for ols
+   * Made contrast.rms and summary.rms automatically compute bootstrap nonparametric confidence limits if fit was run through bootcov
+   * Fixed bug in Predict where conf.type='simultaneous' was being ignored if bootstrap coefficients were present
+   * For plot.Predict made default gray scale shaded confidence bands darker
+   * For bootcov exposed eps argument to fitters and default to lower value
+   * Fixed bug in plot.pentrace regarding effective.df plotting
+   * Added setPb function for pop-up progress bars for simulations; turn off using options(showprogress=FALSE) or options(showprogress='console')
+   * Added progress bars for predab.resample (for validate, calibrate) and bootcov
+   * Added bootBCa function
+   * Added seed to bootcov object
+   * Added boot.type='bca' to Predict, contrast.rms, summary.rms
+   * Improved summary.rms to use t critical values if df.residual defined
+   * Added simultaneous contrasts to summary.rms
+   * Fixed calculation of Brier score, g, gp in lrm.fit by handling special case of computing linear predictor when there are no predictors in the model
+   * Fixed bug in prModFit preventing successful latex'ing of penalized lrms
+   * Removed \synopsis from two Rd files
+   * Added prmodsel argument to predab.resample
+   * Correct Rd files to change Design to rms
+   * Restricted NAMESPACE to functions expected to be called by users
+   * Improved Fortran code to use better dimensions for array declarations
+   * Added the basic bootstrap for confidence limits for bootBCa, contrast, Predict, summary
+   * Fixed bug in latex.pphsm, neatened pphsm code
+   * Neatened code in rms.s
+   * Improved code for bootstrapping ranks of variables in anova.rms help file
+   * Fixed bug in Function.rms - undefined Nam[[i]] if strat.  Thanks: douglaswilkins@yahoo.com
+   * Made quantreg be loaded at end of search list in Rq so it doesn't override latex generic in Hmisc
+   * Improved plot.summary.rms to use blue of varying transparency instead of polygons to show confidence intervals, and to use only three confidence levels by default: 0.9 0.95 0.99
+   * Changed Surv to Srv; use of Surv in fitting functions will result in lack of time labels and assumption of Day as time unit; no longer override Surv in survival
+   * Changed calculation of Dxy (and c-index) to use survival package survConcordance service function when analyzing (censored) survival time; very fast
+   * Changed default dxy to TRUE in validate.cph, validate.psm
+   * Dxy is now negated if correlating Cox model log relative hazard with survival time
+   * Removed dxy argument from validate.bj as it always computed
+   * Added Dxy to standard output of cph, psm
+   * Added help file for Srv
+   * Removed reference to ps.slide from survplot help page
+   * Added the general ordinal regression fitting function orm (and orm.fit) which efficiently handles thousands of intercepts because of sparse matrix representation of the information matrix; implements 5 distribution families
+   * Added associated functions print.orm, vcov.orm, predict.orm, Mean.orm, Quantile.orm, latex.orm, validate.orm
+   * Changed predab.resample to allow number of intercepts from resample to resample
+   * Fixed bug in Mean.cph (thanks: Komal Kapoor <komal.bitsgoa@gmail.com>)
+   * Removed incl.non.slopes and non.slopes arguments from all predict methods
+   * Changed all functions to expect predict(..., type='x') to not return intercept columns, and all fitting functions to not store column of ones if x=TRUE
+   * Changed nomogram argument intercept to kint, used default as fit$interceptRef
+   * Made bootcov behave in a special way for orm, to use linear interpolation to select a single intercept targeted at median Y
+   * Revamped all of rms to never store intercepts in design matrices in fit objects and to add intercepts on demand inside predictrms
+   * Added new function generator ExProb to compute exceedance probabilities from orm fits
+
+Changes in version 3.6-3 (2013-01-11)
+   * Added Li-Shepherd residuals in residuals.lrm.s, become new default (same as ordinary residuals for binary models)
+   * Remove glm null fit usage as this is no longer in R
+
+Changes in version 3.6-2 (2012-12-09)
+   * bootcov, predab.resample: captured errors in all fits (to ignore bootstrap rep) using tryCatch.  Thanks: Max Gordon <max@gforge.se>
+   * predab.resample: made as.matrix(y) conditional to handle change in the survival package whereby the "type" attribute did not exist for a matrix
+   * anova.rms: added new parameter vnames to allow use of variable labels instead of names in anova table; added vinfo attribute
+   * residuals.lrm: removed intercept from partial residuals for binary models
+   * moved comprehensive examples in rmsOverview to ~/rms/demo/all.R; greatly speeds up package checking but demo needs to be run separately for better checking, using demo(all, 'rms')
+   * Fixed survfit.formula to not use .Global environment
+
+Changes in version 3.6-1 (2012-11-05)
+   * bootcov: set loglik to default to FALSE and added code to fill in missing intercepts in coef vector for prop. odds model when levels of Y not resampled; see coef.reps to default to TRUE
+   * Predict: implemented fun='mean' to get proper penalty for estimating the mean function for proportional odds models
+   * Added usebootcov argument to Predict to allow the user to force the use of bootstrap covariance matrix even when coef.reps=TRUE was in effect for bootcov
+
+Changes in version 3.6-0 (2012-10-26)
+   * Gls: Updated optimization calls - had become inconsistent with gls and failed if > 1 correlation parameter (thanks: Mark Seeto <markseeto@gmail.com>); removed opmeth argument
+   * print.fastbw: added argument: estimates
+   * survplot.survfit: handled fact that survival:::summary.survfit may not preserve order of strata levels.  Also fixed survit.cph and cph; Thanks: William.Fulp@moffitt.org
+   * plot.Predict: added example showing how to rename variables in plot
+   * print(fit object, latex=TRUE): added latex.naprint.delete, used new Hmisc latexDotchart function to make a dot chart of number of NAs due to each model variable if at least 4 variables have NAs
+   * added trans argument to plot.anova.rms to allow transformed scales
+   * Corrected cph to use model.offset(); thanks: Simon Thornley <s.thornley@auckland.ac.nz>
+   * Changed latex.anova.rms to use REGRESSION instead of TOTAL label
+   * Changed gendata, contrast.rms to allow expand=FALSE to prevent expand.grid from being called to generate all combinations of predictors
+   * Added type= to plot.Predict to allow user to specify a different default line/point type (especially useful when x is categorical)
+   * Corrected bug in offset in psm - made default offset the length of X
+   * Corrected bug in calibrate.psm (fixed -> parms)
+   * predab.resample, calibrate.cph, calibrate.default, calibrate.psm: stopped putting results from overall initial fit into .Global and instead had predab.resample put them in attribute keepinfo, obtained from measure()
+
+Changes in version 3.5-0 (2012-03-24)
+   * contrast.rms: saved conf.type and conf.int in returned object, added to print method
+   * Added debug= to predab.resample so user can see all the training and test sample subscripts
+   * Added validate.Rq function
+   * Fixed bug in Rq that caused 2 copies of fitted.values to be in fit object, which caused fit.mult.impute to double fitted.values
+   * Added how to reorder predictors if using plot(Predict(fit))
+   * Added new function perlcode written by Jeremy Stephens and Thomas Dupont; converts result of Function to Perl code
+   * Fixed partial argument matches in many functions to pass new R checks
+   * Changed matrx and DesignAssign to allow validate.Rq to consider null models; neatened code
+
+Changes in version 3.4-0 (2012-01-17)
+   * psm: fixed logcorrect logic (thanks: Rob Kushler)
+   * Added suggested package multcomp (required for simultaneous CLs)
+   * Implemented simultaneous confidence intervals in Predict, predictrms, contrast.rms, all specific model predict methods
+   * Add multiplicity adjustment for individual confidence limits computed by contrast.rms, to preserve family-wise coverage using multcomp package
+   * Improved rbind.Predict to preserve order of groups as presented, as levels of .set.
+   * Added example for plot.Predict showing how to suppress predictions for certain intervals/groups from being plotted
+   * Added example in plot.Predict help file for graphing multiple types of confidence bands simultaneously
+
+Changes in version 3.3-3 (2011-12-06)
+   * robcov: used vcov to get var-cov matrix
+   * vcov.Glm: gave precedence to $var object in fit
+   * Added residuals.Glm to force call to residuals.glm, and make robcov fail as type="score" is not implemented for glm
+   * Fixed bootcov for Glm to sense NA in coefficients and skip that iteration
+   * Fixed digit -> digits error in latex.rms
+   * Fixed f$coef error in pentrace; thanks christopher.hane@optum.com
+   * Added new feature for Predict() to plot bootstrap nonparametric confidence limits if fit was run through bootcov with coef.reps=TRUE
+   * Added ylim argument to plot.residuals.lrm
+
+Changes in version 3.3-2 (2011-11-09)
+   * calibrate.default: add var-cov matrix to ols objects
+   * print.lrtest: discarded two formula attributes before printing
+   * Added digits, size, and after arguments for latex methods for model fits, made before argument work with inline=TRUE, changed \needspace to \Needspace in latex.validate and prModFit
+   * latex: fixed to consider digits for main effects
+   * plot.xmean.ordinaly: added new argument cex.points
+   * print.lrm: improved printing of -2 LL overall penalty
+   * plot.calibrate.default: invisibly return prediction errors
+   * plot.Predict: added cex.axis argument to pass to x scales; added subdata
+   * print.pentrace: neatened up output
+   * added title as an argument to all high-level function print methods
+   * prModFit: fixed bug where Score chi2 was not translated to LaTeX
+   * prModFit: changed to use LaTeX longtable style for coefficients etc.
+   * prModFit: added arguments long and needspace
+   * prModFit: suppressed title if title=""
+   * rmsMisc: added nobs.rms and added nobs to object returned by logLik.rms
+   * Added new argument cex.points to plot.xmean.ordinaly
+   * Changed example in anova.rms to use reorder instead of reorder.factor
+
+Changes in version 3.3-1 (2011-06-01)
+   * Added new example for anova.rms for making dot plots of partial R^2 of predictors
+   * Defined logLik.ols (calls logLik.lm)
+   * Fixed and cleaned up logLik.rms, AIC.rms
+   * Fixed residuals.psm to allow other type= values used by residuals.survreg
+   * Fixed Predict and survplot.rms to allow for case where no covariates present
+   * Fixed bug in val.prob where Eavg wasn't being defined if pl=FALSE (thanks: Ben Haller)
+   * Fixed bug in Predict so that it could get a list or vector from predictrms
+   * Fixed latex.rms to not treat * as a wild card in various contexts (may be interaction)
+   * Fixed predictrms to temporarily get std.err if conf.int requested even it std.err not; omitted std.err in returned object if not wanted
+   * Enhanced plot.Predict to allow plots for different predictors to be combined, after running rbind.Predict (varypred argument)
+   * Also enhanced to allow groups= and cond= when varying the predictors
+   * Corrected bug where sometimes would try to plot confidence limits when conf.int=FALSE was given to Predict
+   * Added india, indnl arguments to anova.rms to suppress printing individual tests of interaction/nonlinearity
+   * Changed anova.rms so that if all non-summary terms have (Factor+Higher Order Factor) in their labels, this part of the labels is suppressed (useful with india and indnl)
+
+Changes in version 3.3-0 (2011-02-28)
+   * In survplot.rms, fixed bug (curves were undefined if conf='bands' and labelc was FALSE)
+   * In survfit.cph, fixed bug by which n wasn't always defined
+   * In cph, put survival::: on exact fit call
+   * Quit ignoring zlim argument in bplot; added xlabrot argument
+   * Added caption argument for latex.anova.rms
+   * Changed predab to not print summaries of variables selected if bw=TRUE
+   * Changed predab to pass force argument to fastbw
+   * fastbw: implemented force argument
+   * Added force argument to validate.lrm, validate.bj, calibrate.default, calibrate.cph, calibrate.psm, validate.bj, validate.cph, validate.ols
+   * print.validate: added B argument to limit how many resamples are printed summarizing variables selected if BW=TRUE
+   * print.calibrate, print.calibrate.default: added B argument
+   * Added latex method for results produced by validate functions
+   * Fixed survest.cph to convert summary.survfit std.err to log S(t) scale
+   * Fixed val.surv by pulling surv object from survest result
+   * Clarified in predict.lrm help file that doesn't always use the first intercept
+   * lrm.fit, lrm: linear predictor stored in fit object now uses first intercept and not middle one (NOT DOWNWARD COMPATIBLE but makes predict work when using stored linear.predictors)
+   * Fixed argument consistency with validate methods
+
+Changes in version 3.2-0 (2011-02-14)
+   * Changed to be compatible with survival 2.36-3 which is now required
+   * Added logLik.rms and AIC.rms functions to be compatible with standard R
+   * Fixed oos.loglik.Glm
+   * Fixed bootcov related to nfit='Glm'
+   * Fixed (probably) old bug in latexrms with strat predictors
+
+Changes in version 3.1-0 (2010-09-12)
+   * Fixed gIndex to not use scale for labeling unless character
+   * Changed default na.action in Gls to na.omit and added a note in the help file that na.delete does not work with Gls
+   * Added terms component to Gls fit object (latex was not working)
+   * Added examples in robcov help file testing sandwich covariance estimator
+   * Added reference related to the effects package under help file for plot.Predict
+   * Added more examples and simulations to gIndex
+   * Fixed ancient bug in lrm.fit Fortran code to handle case where initial estimates are nearly perfect (was trying to step halve); thanks: Dan Hogan
+   * Changed survdiffplot to use gray(.85) for bands instead of gray(.95)
+   * Fixed formatting problem in print.psm
+   * Added prStats and reVector functions to rmsMisc.s
+   * Changed formatting of all print.* functions for model fits to use new prStats function
+   * Added latex=TRUE option to all model fit print methods; requires LaTeX package needspace
+   * Re-wrote printing routines to make use of more general model
+   * Removed long and scale options from cph printing-related routines
+   * Prepare for version 2.36-1 of survival package by adding censor=FALSE argument to survfit.coxph
+   * Added type="ccterms" to various predict methods
+   * Made type="ccterms" the default for partial g-indexes in gIndex, i.e., combine all indirectly related (through interactions) terms
+   * Added Spiegelhalter calibration test to val.prob
+   * Added a check in cph to trigger an error if strata() is used in formula
+   * Fixed drawing of polygon for shaded confidence bands for survplot.survfit (thanks to Patrick Breheny <patrick.breheny@uky.edu>)
+   * Changed default adjust.subtitle in bplot to depend on ref.zero, thanks to David Winsemius <dwinsemius@comcast.net>
+   * Used a namespace and simplified referenced to a few survival package functions that survival actually exports
+
+Changes in version 3.0-0 (2010-05-16)
+   * Made Gls not store data label() in residuals object, instead storing a label of 'Residuals'
+   * Fixed handling of na.action and check for presence of offsets in Glm
+   * Added type="cterms" to predict methods; computes combined terms for main effects + any interaction terms involving that main effect; in preparation for new geffects function
+   * Added GiniMd and gIndex functions
+   * Change lrm (lrm.fit) to use the middle intercept in computing Brier score
+   * Added 3 g-indexes to lrm fits
+   * Added 1 g-index to ols, Rq, Glm, Gls fits
+   * Added 2 g-indexes to cph, psm fits
+   * Added g to validate.ols, .lrm, .cph, .psm, but not to validate.bj
+   * Added print.validate to set default digits to 4
+   * Changed validate.lrm to compute 3 indexes even on ordinal response data
+
+Changes in version 2.2-0 (2010-02-23)
+   * Added levels.only option to survplot.* to remove variablename= from curve labels
+   * Added digits argument to calibrate.default
+   * Added new ref in val.prob help page
+   * Corrected location of dataset in residuals.lrm help page (thanks frederic.holzwarth@bgc-jena.mpg.de)
+   * Fixed latex.rms to latex-escape percent signs inside value labels
+   * Added scat1d.opts to plot.Predict
+   * Changed method of specifying variables to vary by not requiring an equals sign and a dot after the variable name, for Predict, summary, nomogram, gendata, survplot.rms
+   * Added factors argument to Predict to handle the above for survplot
+   * Made gendata a non-generic function, changed the order of its arguments, removed editor options, relying on R de function always
+   * Thanks to Kevin Thorpe <kevin.thorpe@utoronto.ca> to make latex.summary.rms and latex.anova.rms respect the table.env argument
+   * Fixed bug in calibrate.default related to digits argument
+   * Re-wrote bplot to use lattice graphics (e.g., levelplot contourplot wireframe), allowing for multiple panels for 3-d plots
+   * Changed all Rd files to use {arg1,arg2,...} instead of having empty {}
+
+Changes in version 2.1-0 (2009-09-30)
+   * Made Predict not return invisibly if predictors not specified
+   * New option nlines for plot.Predict for getting line plots with 2 categorical predictors
+   * Added rename option to rbind.Predict to handle case where predictor name has changed between models
+   * Added ties=mean to approx( ) calls that did not have ties= specified
+   * Added nlevels argument to bplot to pass to contour
+   * Added par argument to iLegend - list to pass to par().
+   * Redirected ... argument to iLegend to image( ).
+   * Fixed groupkm - was printing warning messages wrongly
+   * Added new semiparametric survival prediction calibration curve method in val.surv for external validation; this is the first implementation of smooth calibration curves for survival probability validation with right-censored data
+   * Fixed calibrate confidence limits from groupkm
+   * Added smooth calibration curve using hare (polspline package) for calibrate.cph and calibrate.psm
+   * Added display of predicted risks for cph and psm models even for the stratified KM method (old default)

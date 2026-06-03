@@ -1,0 +1,25 @@
+Package: adehabitatHS
+Version: 0.3.18
+Date: 2024-09-05
+Depends: R (>= 3.0.1), sp, methods, ade4, adehabitatMA, adehabitatHR
+Suggests: tkrplot, MASS
+Imports: graphics, grDevices, stats
+Title: Analysis of Habitat Selection by Animals
+Authors@R: c(person(given = "Clement",
+                    family = "Calenge",
+                    role = c("aut", "cre"),
+		    email = "clement.calenge@ofb.gouv.fr"),
+		    person(given = "Mathieu",
+		           family = "Basille",
+			   role = "ctb"))
+Author: Clement Calenge [aut, cre],
+  Mathieu Basille [ctb]
+Maintainer: Clement Calenge <clement.calenge@ofb.gouv.fr>
+Description: A collection of tools for the analysis of habitat selection.
+VignetteBuilder: utils
+License: GPL (>= 2)
+NeedsCompilation: yes
+Packaged: 2024-09-06 10:45:11 UTC; calenge
+Repository: CRAN
+Date/Publication: 2024-09-06 13:40:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 09:39:45 UTC; unix

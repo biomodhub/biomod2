@@ -1,0 +1,18 @@
+
+# Export everything
+exportPattern("*")
+S3method(plot,deldir)
+S3method(plot,tile.list)
+S3method(plot,triang.list)
+S3method("[",tile.list)
+S3method("[",triang.list)
+S3method(divchain,default)
+S3method(divchain,deldir)
+S3method(plot,divchain)
+S3method(print,tileInfo)
+S3method(print,deldir)
+importFrom("grDevices", "col2rgb", "rgb")
+importFrom("graphics", "axis", "box", "par", "plot", "points",
+             "polygon", "rect", "segments", "text", "title")
+importFrom("utils","packageVersion")
+useDynLib(deldir)

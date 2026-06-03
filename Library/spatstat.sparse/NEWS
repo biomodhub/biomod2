@@ -1,0 +1,336 @@
+
+        CHANGES IN spatstat.sparse VERSION 3.2-0
+
+OVERVIEW
+
+    o Simulate a Markov chain with sparse transition matrix.
+
+    o Recreate a symmetric matrix from its lower triangular entries.
+
+    o Weighted sum of outer products in a 3D array or sparse array.
+
+    o Minor improvements and bug fixes
+
+NEW FUNCTIONS
+
+    o runSparseMarkovChain
+    Generate simulated realisations of a Markov chain
+    using a sparse matrix representation of the transition probability matrix.
+
+    o symmatrix
+    Recreate a symmetric matrix from a vector containing its lower triangular
+    (or upper triangular) entries.
+
+    o length.sparse3Darray
+    Method for 'length' for sparse 3D arrays.
+
+    o sumsymouter
+    Weighted sum of outer products in a 3D array or sparse array
+
+BUG FIXES
+
+   o numerous calculations with sparse matrices
+   Results were sometimes incorrect for symmetric sparse matrices
+   inheriting class "symmetricMatrix".
+   Fixed.
+
+        CHANGES IN spatstat.sparse VERSION 3.1-0
+
+OVERVIEW
+
+    o Internal improvements.
+
+
+        CHANGES IN spatstat.sparse VERSION 3.0-3
+
+OVERVIEW
+
+    o Minor improvements.
+
+        CHANGES IN spatstat.sparse VERSION 3.0-2
+
+OVERVIEW
+
+    o We thank Joey Arthur for contributions.
+    
+    o Bug fix.
+
+BUG FIXES
+
+    o marginSumsSparse
+    If the result of marginSumsSparse was a one-dimensional sparse vector,
+    the entries were incorrectly rearranged so that the non-zero entries
+    were all at the beginning of the vector.
+    [Spotted by Joey Arthur.]
+    Fixed.
+
+        CHANGES IN spatstat.sparse VERSION 3.0-1
+
+OVERVIEW
+
+    o Minor changes to package information.
+
+
+        CHANGES IN spatstat.sparse VERSION 3.0-0
+
+OVERVIEW
+
+    o Minor internal changes.
+
+        CHANGES IN spatstat.sparse VERSION 2.1-1
+
+OVERVIEW
+
+    o Bug fix.
+    
+BUG FIXES
+
+    o matrixsqrt, matrixinvsqrt, matrixpower
+    If the result was a complex-valued matrix,
+    the values were completely incorrect.
+    Fixed.
+
+        CHANGES IN spatstat.sparse VERSION 2.1-0
+
+OVERVIEW
+
+    o Join two sparse arrays.
+    
+    o Minor improvements and bug fixes.
+
+NEW FUNCTIONS
+
+    o bind.sparse3Darray
+    Join two sparse three-dimensional arrays along a specified dimension
+    (analogously to 'rbind', 'cbind' or 'abind') to make another
+    sparse three-dimensional array.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o quadform
+    Argument 'v=NULL' is now accepted, and interpreted as the identity matrix.
+
+    o bilinearform
+    Argument 'v=NULL' is now accepted, and interpreted as the identity matrix.
+
+BUG FIXES
+
+    o quadform
+    Crashed if 'v' was missing.
+    Fixed.
+
+        CHANGES IN spatstat.sparse VERSION 2.0-0
+
+OVERVIEW
+
+    o Package adjusted to conform to the spatstat family.
+    
+    o New function 'gridadjacencymatrix'.
+
+NEW FUNCTIONS
+
+    o gridadjacencymatrix
+    Given the dimensions of a rectangular grid of points,
+    create the adjacency matrix for the corresponding neighbourhood
+    graph, whose vertices are the grid points, and whose edges are the
+    joins between neighbouring grid points. The result is a sparse matrix.
+
+        CHANGES IN spatstat.sparse VERSION 1.3-1
+
+OVERVIEW
+
+    o Internal adjustments.
+
+        CHANGES IN spatstat.sparse VERSION 1.3-0
+
+OVERVIEW
+
+    o Some code has been transferred to spatstat.utils.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o RelevantNA, RelevantZero, RelevantEmpty, grokIndexVector
+    These functions have been moved to the package 'spatstat.utils'.
+    
+        CHANGES IN spatstat.sparse VERSION 1.2-1
+
+OVERVIEW
+
+    o Internal bug fix.
+
+
+        CHANGES IN spatstat.sparse VERSION 1.2-0
+
+OVERVIEW
+
+    o Efficiency improvement
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o spatstat.sparse
+    Code should run faster; we have reduced the overheads in executing C code.
+
+        CHANGES IN spatstat.sparse VERSION 1.1-1
+
+OVERVIEW
+
+    o Internal code improvements.
+
+
+        CHANGES IN spatstat.sparse VERSION 1.1-0
+
+OVERVIEW
+
+    o Internal code improvements.
+
+
+        CHANGES IN spatstat.sparse VERSION 1.0-9
+
+OVERVIEW
+
+    o Internal code improvements.
+
+
+        CHANGES IN spatstat.sparse VERSION 1.0-8
+
+OVERVIEW
+
+    o Internal code improvements.
+
+BUG FIXES
+
+    o sumouter
+    Crashed if 'w' contained NA values.
+    Fixed.
+
+        CHANGES IN spatstat.sparse VERSION 1.0-7
+
+OVERVIEW
+
+    o Internal code tweaks.
+
+
+        CHANGES IN spatstat.sparse VERSION 1.0-6
+
+OVERVIEW
+
+    o More documentation.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o marginSumsSparse
+    This function is now documented.
+
+        CHANGES IN spatstat.sparse VERSION 1.0-5
+
+OVERVIEW
+
+    o More support for complex values
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o sumouter, quadform, bilinearform
+    These functions now handle complex-valued matrices and vectors.
+
+    o marginSumsSparse
+    This function now handles complex-valued sparse arrays.
+    
+        CHANGES IN spatstat.sparse VERSION 1.0-4
+
+OVERVIEW
+
+    o spatstat.sparse now 'requires' the Matrix package.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o spatstat.sparse package
+    spatstat.sparse now 'requires' the Matrix package, so that
+    Matrix is loaded when spatstat.sparse is loaded.
+
+        CHANGES IN spatstat.sparse VERSION 1.0-3
+
+OVERVIEW
+
+    o More documentation.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o "[.sparse3Darray"
+    The subset extraction operator is now documented.
+
+    o "[<-.sparse3Darray"
+    The subset assignment operator is now documented.
+
+    o as.array.sparse3Darray
+    This method is now documented.
+
+    o anyNA.sparse3Darray
+    This method is now documented.
+
+    o dim.sparse3Darray, "dim<-.sparse3Darray"
+    These methods are now documented.
+
+    o dimnames.sparse3Darray, "dimnames<-.sparse3Darray"
+    These methods are now documented.
+    
+    o sumouter
+    A mathematical statement in the help file has been corrected.
+    
+        CHANGES IN spatstat.sparse VERSION 1.0-2
+
+OVERVIEW
+
+    o More documentation
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o sparse3Darray
+    This function is now documented.
+    
+    o aperm.sparse3Darray
+    This function is now documented.
+    
+    o as.sparse3Darray
+    This function is now documented.
+    
+    o tensorSparse
+    This function is now documented.
+    
+    o Math.sparse3Darray, Ops.sparse3Darray, Complex.sparse3Darray,
+    Summary.sparse3Darray
+    The methods for the group generics are now documented.
+
+
+        CHANGES IN spatstat.sparse VERSION 1.0-1
+
+OVERVIEW
+
+    o Corrections to the internal structure.
+
+    o Bug fixes.
+
+    o More functions are documented
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o sumsymouter
+    New argument 'distinct'.
+
+BUG FIXES
+
+    o sumsymouter
+    Results were incorrect for sparse arrays in some cases:
+    some contributions to the sum were omitted.
+    Fixed.
+
+        CHANGES IN spatstat.sparse VERSION 1.0-0
+
+OVERVIEW
+
+    o This new package has been created from
+    code removed from the spatstat package.
+    
+
+

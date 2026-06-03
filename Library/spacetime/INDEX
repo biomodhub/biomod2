@@ -1,0 +1,29 @@
+EOF                     Compute spatial or temporal empirical
+                        orthogonal function (EOF)
+ST-class                Class "ST"
+STFDF-class             Class "STFDF"
+STIDF-class             Class "STIDF"
+STSDF-class             Class "STSDF"
+STTDF-class             Class "STTDF"
+air                     Air quality data, rural background PM10 in
+                        Germany, daily averages 1998-2009
+delta                   find default time interval end points when
+                        intervals are regular
+fires                   Northern Los Angeles County Fires
+mnf                     Generic mnf method
+na.locf                 replace NA attribute values; disaggregation
+                        time series
+nbMult                  convert a spatial nb object to a matching STF
+                        object
+over                    consistent spatio-temporal overlay for objects
+                        inheriting from ST
+read.tgrass             read or write tgrass (time-enabled grass) files
+stConstruct             create ST* objects from long or wide tables
+stInteraction           subtract marginal (spatial and temporal) means
+                        from observations
+stbox                   obtain ranges of space and time coordinates
+stplot                  produce trellis plot for STxDF object
+timeIsInterval          retrieve, or set, information whether time
+                        reflects instance (FALSE) or intervals (TRUE)
+timeMatch               match two (time) sequences
+unstack.STFDF           write STFDF to table forms

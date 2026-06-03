@@ -1,0 +1,61 @@
+Package: vroom
+Title: Read and Write Rectangular Text Data Quickly
+Version: 1.7.1
+Authors@R: c(
+    person("Jim", "Hester", role = "aut",
+           comment = c(ORCID = "0000-0002-2739-7082")),
+    person("Hadley", "Wickham", , "hadley@posit.co", role = "aut",
+           comment = c(ORCID = "0000-0003-4757-117X")),
+    person("Jennifer", "Bryan", , "jenny@posit.co", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6983-2759")),
+    person("Shelby", "Bearrows", role = "ctb"),
+    person("https://github.com/mandreyel/", role = "cph",
+           comment = "mio library"),
+    person("Jukka", "Jylänki", role = "cph",
+           comment = "grisu3 implementation"),
+    person("Mikkel", "Jørgensen", role = "cph",
+           comment = "grisu3 implementation"),
+    person("Posit Software, PBC", role = c("cph", "fnd"), comment = c(ROR = "03wc8by49"))
+  )
+Description: The goal of 'vroom' is to read and write data (like 'csv',
+    'tsv' and 'fwf') quickly. When reading it uses a quick initial
+    indexing step, then reads the values lazily , so only the data you
+    actually use needs to be read.  The writer formats the data in
+    parallel and writes to disk asynchronously from formatting.
+License: MIT + file LICENSE
+URL: https://vroom.tidyverse.org, https://github.com/tidyverse/vroom
+BugReports: https://github.com/tidyverse/vroom/issues
+Depends: R (>= 4.1)
+Imports: bit64, cli (>= 3.2.0), crayon, glue, hms, lifecycle (>=
+        1.0.3), methods, rlang (>= 1.1.0), stats, tibble (>= 2.0.0),
+        tidyselect, tzdb (>= 0.1.1), vctrs (>= 0.2.0), withr
+Suggests: archive, bench (>= 1.1.0), covr, curl, dplyr, forcats, fs,
+        ggplot2, knitr, patchwork, prettyunits, purrr, rmarkdown,
+        rstudioapi, scales, spelling, testthat (>= 2.1.0), tidyr,
+        utils, waldo, xml2
+LinkingTo: cpp11 (>= 0.2.0), progress (>= 1.2.3), tzdb (>= 0.1.1)
+VignetteBuilder: knitr
+Config/Needs/website: nycflights13, tidyverse/tidytemplate
+Config/testthat/edition: 3
+Config/testthat/parallel: false
+Config/usethis/last-upkeep: 2025-11-25
+Copyright: file COPYRIGHTS
+Encoding: UTF-8
+Language: en-US
+RoxygenNote: 7.3.3
+Config/build/compilation-database: true
+NeedsCompilation: yes
+Packaged: 2026-03-30 20:25:37 UTC; jenny
+Author: Jim Hester [aut] (ORCID: <https://orcid.org/0000-0002-2739-7082>),
+  Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>),
+  Jennifer Bryan [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-6983-2759>),
+  Shelby Bearrows [ctb],
+  https://github.com/mandreyel/ [cph] (mio library),
+  Jukka Jylänki [cph] (grisu3 implementation),
+  Mikkel Jørgensen [cph] (grisu3 implementation),
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
+Maintainer: Jennifer Bryan <jenny@posit.co>
+Repository: CRAN
+Date/Publication: 2026-03-31 05:10:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:22:25 UTC; unix

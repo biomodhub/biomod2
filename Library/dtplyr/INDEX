@@ -1,0 +1,40 @@
+arrange.dtplyr_step     Arrange rows by column values
+collect.dtplyr_step     Force computation of a lazy data.table
+complete.dtplyr_step    Complete a data frame with missing combinations
+                        of data
+count.dtplyr_step       Count observations by group
+distinct.dtplyr_step    Subset distinct/unique rows
+drop_na.dtplyr_step     Drop rows containing missing values
+expand.dtplyr_step      Expand data frame to include all possible
+                        combinations of values.
+fill.dtplyr_step        Fill in missing values with previous or next
+                        value
+filter.dtplyr_step      Subset rows using column values
+group_by.dtplyr_step    Group and ungroup
+group_modify.dtplyr_step
+                        Apply a function to each group
+head.dtplyr_step        Subset first or last rows
+intersect.dtplyr_step   Set operations
+lazy_dt                 Create a "lazy" data.table for use with dplyr
+                        verbs
+left_join.dtplyr_step   Join data tables
+mutate.dtplyr_step      Create and modify columns
+nest.dtplyr_step        Nest
+pivot_longer.dtplyr_step
+                        Pivot data from wide to long
+pivot_wider.dtplyr_step
+                        Pivot data from long to wide
+reframe.dtplyr_step     Summarise each group to one row
+relocate.dtplyr_step    Relocate variables using their names
+rename.dtplyr_step      Rename columns using their names
+replace_na.dtplyr_step
+                        Replace NAs with specified values
+select.dtplyr_step      Subset columns using their names
+separate.dtplyr_step    Separate a character column into multiple
+                        columns with a regular expression or numeric
+                        locations
+slice.dtplyr_step       Subset rows using their positions
+summarise.dtplyr_step   Summarise each group to one row
+transmute.dtplyr_step   Create new columns, dropping old
+unite.dtplyr_step       Unite multiple columns into one by pasting
+                        strings together.

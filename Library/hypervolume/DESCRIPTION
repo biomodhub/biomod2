@@ -1,0 +1,59 @@
+Package: hypervolume
+Type: Package
+Title: High Dimensional Geometry, Set Operations, Projection, and
+        Inference Using Kernel Density Estimation, Support Vector
+        Machines, and Convex Hulls
+Version: 3.1.6
+Date: 2025-06-15
+Authors@R: c(person(given = "Benjamin",
+                    family = "Blonder",
+                    role = c("aut", "cre"),
+                    email = "benjamin.blonder@berkeley.edu"),
+             person(given = c("Cecina", "Babich"),
+                    family = "Morrow",
+                    role = "aut"),
+             person(given = "Stuart",
+                    family = "Brown",
+                    role = "aut"),
+             person(given = "Gregoire",
+                    family = "Butruille",
+                    role = "aut"),
+             person(given = "Daniel",
+                    family = "Chen",
+                    role = "aut"),
+             person(given = "Alex",
+                    family = "Laini",
+                    role = "aut"),
+             person(given = c("David", "J."),
+                    family = "Harris",
+                    role = "aut"),
+             person(given = "Clement",
+                    family = "Violet",
+                    role = "aut"))
+Description: Estimates the shape and volume of high-dimensional datasets and performs set operations: intersection / overlap, union, unique components, inclusion test, and hole detection. Uses stochastic geometry approach to high-dimensional kernel density estimation, support vector machine delineation, and convex hull generation. Applications include modeling trait and niche hypervolumes and species distribution modeling.
+License: GPL-3
+Depends: Rcpp, methods, R (>= 3.5.0)
+LinkingTo: Rcpp, RcppArmadillo, progress
+Imports: raster, maps, MASS, geometry, ks, hitandrun, pdist,
+        fastcluster, compiler, e1071, progress, mvtnorm, data.table,
+        terra, sp, foreach, doParallel, parallel, ggplot2, pbapply,
+        palmerpenguins, purrr, dplyr, caret
+Suggests: rgl, magick, alphahull, knitr, rmarkdown, gridExtra
+NeedsCompilation: yes
+RoxygenNote: 7.1.1
+URL: https://github.com/bblonder/hypervolume
+BugReports: https://github.com/bblonder/hypervolume/issues
+VignetteBuilder: knitr
+Packaged: 2025-06-15 18:37:49 UTC; benjaminblonder
+Author: Benjamin Blonder [aut, cre],
+  Cecina Babich Morrow [aut],
+  Stuart Brown [aut],
+  Gregoire Butruille [aut],
+  Daniel Chen [aut],
+  Alex Laini [aut],
+  David J. Harris [aut],
+  Clement Violet [aut]
+Maintainer: Benjamin Blonder <benjamin.blonder@berkeley.edu>
+Repository: CRAN
+Date/Publication: 2025-06-15 19:20:02 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 09:31:45 UTC; unix

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2026-04-03" />
+
+<title>Lazyeval: a new approach to NSE</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Lazyeval: a new approach to NSE</h1>
+<h4 class="date">2026-04-03</h4>
+
+
+
+<p>This document outlines my previous approach to non-standard
+evaluation (NSE). You should avoid it unless you are working with an
+older version of dplyr or tidyr.</p>
+<p>There are three key ideas:</p>
+<ul>
+<li><p>Instead of using <code>substitute()</code>, use
+<code>lazyeval::lazy()</code> to capture both expression and
+environment. (Or use <code>lazyeval::lazy_dots(...)</code> to capture
+promises in <code>...</code>)</p></li>
+<li><p>Every function that uses NSE should have a standard evaluation
+(SE) escape hatch that does the actual computation. The SE-function name
+should end with <code>_</code>.</p></li>
+<li><p>The SE-function has a flexible input specification to make it
+easy for people to program with.</p></li>
+</ul>
+<div id="lazy" class="section level2">
+<h2><code>lazy()</code></h2>
+<p>The key tool that makes this approach possible is
+<code>lazy()</code>, an equivalent to <code>substitute()</code> that
+captures both expression and environment associated with a function
+argument:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(lazyeval)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">x =</span> a <span class="sc">-</span> b) {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">lazy</span>(x)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">f</span>()</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; &lt;lazy&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;   expr: a - b</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt;   env:  &lt;environment: 0x8b36f4f58&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">f</span>(a <span class="sc">+</span> b)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; &lt;lazy&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;   expr: a + b</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt;   env:  &lt;environment: R_GlobalEnv&gt;</span></span></code></pre></div>
+<p>As a complement to <code>eval()</code>, the lazy package provides
+<code>lazy_eval()</code> that uses the environment associated with the
+lazy object:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="fu">f</span>())</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; [1] 9</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="fu">f</span>(a <span class="sc">+</span> b))</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span></code></pre></div>
+<p>The second argument to lazy eval is a list or data frame where names
+should be looked up first:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="fu">f</span>(), <span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; [1] 0</span></span></code></pre></div>
+<p><code>lazy_eval()</code> also works with formulas, since they contain
+the same information as a lazy object: an expression (only the RHS is
+used by convention) and an environment:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="sc">~</span> a <span class="sc">+</span> b)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>(i) {</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="sc">~</span> <span class="dv">10</span> <span class="sc">+</span> i</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>}</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="fu">h</span>(<span class="dv">1</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span></code></pre></div>
+</div>
+<div id="standard-evaluation" class="section level2">
+<h2>Standard evaluation</h2>
+<p>Whenever we need a function that does non-standard evaluation, always
+write the standard evaluation version first. For example, let’s
+implement our own version of <code>subset()</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>subset2_ <span class="ot">&lt;-</span> <span class="cf">function</span>(df, condition) {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">lazy_eval</span>(condition, df)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  r <span class="ot">&lt;-</span> r <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(r)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  df[r, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>} </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="fu">subset2_</span>(mtcars, <span class="fu">lazy</span>(mpg <span class="sc">&gt;</span> <span class="dv">31</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span></code></pre></div>
+<p><code>lazy_eval()</code> will always coerce it’s first argument into
+a lazy object, so a variety of specifications will work:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">subset2_</span>(mtcars, <span class="sc">~</span>mpg <span class="sc">&gt;</span> <span class="dv">31</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="fu">subset2_</span>(mtcars, <span class="fu">quote</span>(mpg <span class="sc">&gt;</span> <span class="dv">31</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="fu">subset2_</span>(mtcars, <span class="st">&quot;mpg &gt; 31&quot;</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span></code></pre></div>
+<p>Note that quoted called and strings don’t have environments
+associated with them, so <code>as.lazy()</code> defaults to using
+<code>baseenv()</code>. This will work if the expression is
+self-contained (i.e. doesn’t contain any references to variables in the
+local environment), and will otherwise fail quickly and robustly.</p>
+</div>
+<div id="non-standard-evaluation" class="section level2">
+<h2>Non-standard evaluation</h2>
+<p>With the SE version in hand, writing the NSE version is easy. We just
+use <code>lazy()</code> to capture the unevaluated expression and
+corresponding environment:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>subset2 <span class="ot">&lt;-</span> <span class="cf">function</span>(df, condition) {</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">subset2_</span>(df, <span class="fu">lazy</span>(condition))</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>}</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">subset2</span>(mtcars, mpg <span class="sc">&gt;</span> <span class="dv">31</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span></code></pre></div>
+<p>This standard evaluation escape hatch is very important because it
+allows us to implement different NSE approaches. For example, we could
+create a subsetting function that finds all rows where a variable is
+above a threshold:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>above_threshold <span class="ot">&lt;-</span> <span class="cf">function</span>(df, var, threshold) {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  cond <span class="ot">&lt;-</span> <span class="fu">interp</span>(<span class="sc">~</span> var <span class="sc">&gt;</span> x, <span class="at">var =</span> <span class="fu">lazy</span>(var), <span class="at">x =</span> threshold)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">subset2_</span>(df, cond)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">above_threshold</span>(mtcars, mpg, <span class="dv">31</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span></code></pre></div>
+<p>Here we’re using <code>interp()</code> to modify a formula. We use
+the value of <code>threshold</code> and the expression in by
+<code>var</code>.</p>
+</div>
+<div id="scoping" class="section level2">
+<h2>Scoping</h2>
+<p>Because <code>lazy()</code> captures the environment associated with
+the function argument, we automatically avoid a subtle scoping bug
+present in <code>subset()</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">31</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">subset</span>(mtcars, ...)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>}</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co"># Uses 30 instead of 31</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="fu">f1</span>(mpg <span class="sc">&gt;</span> x)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp  hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7  66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; 19 30.4   4 75.7  52 4.93 1.615 18.52  1  1    4    2</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1  65 4.22 1.835 19.90  1  1    4    1</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 28 30.4   4 95.1 113 3.77 1.513 16.90  1  1    5    2</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="fu">subset2</span>(mtcars, ...)</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>}</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co"># Correctly uses 31</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="fu">f2</span>(mpg <span class="sc">&gt;</span> x)</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span></code></pre></div>
+<p><code>lazy()</code> has another advantage over
+<code>substitute()</code> - by default, it follows promises across
+function invocations. This simplifies the casual use of NSE.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">31</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="cf">function</span>(comp) {</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">subset</span>(mtcars, comp)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">g1</span>(mpg <span class="sc">&gt;</span> x)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;mpg&#39; not found</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="cf">function</span>(comp) {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">subset2</span>(mtcars, comp)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>}</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">g2</span>(mpg <span class="sc">&gt;</span> x)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt;     mpg cyl disp hp drat    wt  qsec vs am gear carb</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt; 18 32.4   4 78.7 66 4.08 2.200 19.47  1  1    4    1</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; 20 33.9   4 71.1 65 4.22 1.835 19.90  1  1    4    1</span></span></code></pre></div>
+<p>Note that <code>g2()</code> doesn’t have a standard-evaluation escape
+hatch, so it’s not suitable for programming with in the same way that
+<code>subset2_()</code> is.</p>
+</div>
+<div id="chained-promises" class="section level2">
+<h2>Chained promises</h2>
+<p>Take the following example:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(lazyeval)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">lazy</span>(x)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="cf">function</span>(y) <span class="fu">f1</span>(y)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">g1</span>(a <span class="sc">+</span> b)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; &lt;lazy&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt;   expr: a + b</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt;   env:  &lt;environment: R_GlobalEnv&gt;</span></span></code></pre></div>
+<p><code>lazy()</code> returns <code>a + b</code> because it always
+tries to find the top-level promise.</p>
+<p>In this case the process looks like this:</p>
+<ol style="list-style-type: decimal">
+<li>Find the object that <code>x</code> is bound to.</li>
+<li>It’s a promise, so find the expr it’s bound to (<code>y</code>, a
+symbol) and the environment in which it should be evaluated (the
+environment of <code>g()</code>).</li>
+<li>Since <code>x</code> is bound to a symbol, look up its value: it’s
+bound to a promise.</li>
+<li>That promise has expression <code>a + b</code> and should be
+evaluated in the global environment.</li>
+<li>The expression is not a symbol, so stop.</li>
+</ol>
+<p>Occasionally, you want to avoid this recursive behaviour, so you can
+use <code>follow_symbol = FALSE</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">lazy</span>(x, <span class="at">.follow_symbols =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="cf">function</span>(y) <span class="fu">f2</span>(y)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">g2</span>(a <span class="sc">+</span> b)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; &lt;lazy&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;   expr: x</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;   env:  &lt;environment: 0x8b0915d58&gt;</span></span></code></pre></div>
+<p>Either way, if you evaluate the lazy expression you’ll get the same
+result:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="fu">g1</span>(a <span class="sc">+</span> b))</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="fu">lazy_eval</span>(<span class="fu">g2</span>(a <span class="sc">+</span> b))</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span></code></pre></div>
+<p>Note that the resolution of chained promises only works with
+unevaluated objects. This is because R deletes the information about the
+environment associated with a promise when it has been forced, so that
+the garbage collector is allowed to remove the environment from memory
+in case it is no longer used. <code>lazy()</code> will fail with an
+error in such situations.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>var <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="fu">force</span>(x)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="fu">lazy</span>(x)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>}</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="fu">f3</span>(var)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; Error in `lazy()`:</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; ! Promise has already been forced</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

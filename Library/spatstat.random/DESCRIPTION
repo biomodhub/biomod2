@@ -1,0 +1,76 @@
+Package: spatstat.random
+Version: 3.4-5
+Date: 2026-03-22
+Title: Random Generation Functionality for the 'spatstat' Family
+Authors@R: c(person("Adrian", "Baddeley", 
+                    role = c("aut", "cre", "cph"),
+       	            email = "Adrian.Baddeley@curtin.edu.au",
+		    comment = c(ORCID="0000-0001-9499-8382")),
+	     person("Rolf", "Turner", 
+                    role = c("aut", "cph"),
+ 	            email="rolfturner@posteo.net",
+		    comment=c(ORCID="0000-0001-5521-5218")),
+	     person("Ege",   "Rubak", 
+                    role = c("aut", "cph"),
+		    email = "rubak@math.aau.dk",
+		    comment=c(ORCID="0000-0002-6675-533X")),
+	     person("Tilman", "Davies",
+	            role = c("aut", "cph"),
+		    comment=c(ORCID="0000-0003-0565-1825")),
+	     person("Kasper", "Klitgaard Berthelsen",
+	            role = c("ctb", "cph")),
+	     person("David", "Bryant",
+	            role = c("ctb", "cph")),
+	     person("Ya-Mei", "Chang",
+	            role = c("ctb", "cph"),
+		    email = "yamei628@gmail.com"),
+	     person("Ute", "Hahn",
+	            role = "ctb"),
+	     person("Abdollah", "Jalilian", 
+	            role = "ctb"),
+	     person("Dominic", "Schuhmacher",
+	            role = c("ctb", "cph")),
+	     person("Rasmus", "Plenge Waagepetersen",
+	            role = c("ctb", "cph")))
+Maintainer: Adrian Baddeley <Adrian.Baddeley@curtin.edu.au>
+Depends: R (>= 3.5.0), spatstat.data (>= 3.1-9), spatstat.univar (>=
+        3.1-6), spatstat.geom (>= 3.7-0), stats, utils, methods,
+        grDevices
+Imports: spatstat.utils (>= 3.2-2)
+Suggests: spatial, spatstat.linnet (>= 3.4), spatstat.explore,
+        spatstat.model, spatstat (>= 3.5), gsl
+Description: Functionality for random generation of spatial data in the 'spatstat' family of packages.
+	     Generates random spatial patterns of points according to many simple rules (complete spatial randomness,
+	     Poisson, binomial, random grid, systematic, cell), randomised alteration of patterns
+	     (thinning, random shift, jittering),  simulated realisations of random point processes including
+	     simple sequential inhibition, Matern inhibition models, Neyman-Scott cluster processes
+	     (using direct, Brix-Kendall, or hybrid algorithms),
+	     log-Gaussian Cox processes, product shot noise cluster processes
+	     and Gibbs point processes (using Metropolis-Hastings birth-death-shift algorithm,
+	     alternating Gibbs sampler, or coupling-from-the-past perfect simulation).
+	     Also generates random spatial patterns of line segments,
+	     random tessellations, and random images (random noise, random mosaics).
+	     Excludes random generation on a linear network,
+	     which is covered by the separate package 'spatstat.linnet'.
+License: GPL (>= 2)
+URL: http://spatstat.org/
+NeedsCompilation: yes
+ByteCompile: true
+BugReports: https://github.com/spatstat/spatstat.random/issues
+Packaged: 2026-03-22 01:35:55 UTC; adrian
+Author: Adrian Baddeley [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0001-9499-8382>),
+  Rolf Turner [aut, cph] (ORCID: <https://orcid.org/0000-0001-5521-5218>),
+  Ege Rubak [aut, cph] (ORCID: <https://orcid.org/0000-0002-6675-533X>),
+  Tilman Davies [aut, cph] (ORCID:
+    <https://orcid.org/0000-0003-0565-1825>),
+  Kasper Klitgaard Berthelsen [ctb, cph],
+  David Bryant [ctb, cph],
+  Ya-Mei Chang [ctb, cph],
+  Ute Hahn [ctb],
+  Abdollah Jalilian [ctb],
+  Dominic Schuhmacher [ctb, cph],
+  Rasmus Plenge Waagepetersen [ctb, cph]
+Repository: CRAN
+Date/Publication: 2026-03-22 06:10:03 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 09:33:14 UTC; unix

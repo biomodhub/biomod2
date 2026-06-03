@@ -1,0 +1,295 @@
+---
+title: "A quick tour of mclust"
+author: "Luca Scrucca"
+date: "`r format(Sys.time(), '%d %b %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+    css: "vignette.css"
+vignette: >
+  %\VignetteIndexEntry{A quick tour of mclust}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(fig.align = "center", 
+               out.width = "90%",
+               fig.width = 6, fig.height = 5,
+               dev.args = list(pointsize=10),
+               par = TRUE, # needed for setting hook 
+               collapse = TRUE, # collapse input & output code in chunks
+               warning = FALSE)
+
+knit_hooks$set(par = function(before, options, envir)
+  { if(before && options$fig.show != "none") 
+       par(family = "sans", mar=c(4.1,4.1,1.1,1.1), mgp=c(3,1,0), tcl=-0.5)
+})
+set.seed(1) # for exact reproducibility
+```
+       
+# Introduction
+
+**mclust** is a contributed R package for model-based clustering, classification, and density estimation based on finite normal mixture modelling. It provides functions for parameter estimation via the EM algorithm for normal mixture models with a variety of covariance structures, and functions for simulation from these models. Also included are functions that combine model-based hierarchical clustering, EM for mixture estimation and the Bayesian Information Criterion (BIC) in comprehensive strategies for clustering, density estimation and discriminant analysis. Additional functionalities are available for displaying and visualizing fitted models along with clustering, classification, and density estimation results.
+
+This document gives a quick tour of **mclust** (version `r packageVersion("mclust")`) functionalities. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. 
+See `help(package="mclust")` for further details and references provided by `citation("mclust")`.
+
+```{r, message = FALSE, echo=-2}
+library(mclust)
+cat(mclust:::mclustStartupMessage(), sep="")
+```
+
+# Clustering
+
+```{r}
+data(diabetes)
+#-- data corrections (see help("diabetes", package = "mclust")) --#
+names(diabetes) <- c("class", "fpg", "glucose", "insulin")
+diabetes$glucose[104] <- 455
+#-----------------------------------------------------------------#
+class <- diabetes$class
+table(class)
+X <- diabetes[,-1]
+head(X)
+clPairs(X, class)
+
+BIC <- mclustBIC(X)
+plot(BIC)
+summary(BIC)
+
+mod1 <- Mclust(X, x = BIC)
+summary(mod1, parameters = TRUE)
+
+plot(mod1, what = "classification")
+table(class, mod1$classification)
+
+plot(mod1, what = "uncertainty")
+
+ICL <- mclustICL(X)
+summary(ICL)
+plot(ICL)
+
+LRT <- mclustBootstrapLRT(X, modelName = "VVV")
+LRT
+```
+
+## Initialisation
+
+EM algorithm is used by **mclust** for maximum likelihood estimation. Initialisation of EM is performed using the partitions obtained from agglomerative hierarchical clustering. For details see `help(mclustBIC)` or `help(Mclust)`, and `help(hc)`.
+
+```{r}
+(hc1 <- hc(X, modelName = "VVV", use = "SVD"))
+BIC1 <- mclustBIC(X, initialization = list(hcPairs = hc1)) # default 
+summary(BIC1)
+
+(hc2 <- hc(X, modelName = "VVV", use = "VARS"))
+BIC2 <- mclustBIC(X, initialization = list(hcPairs = hc2))
+summary(BIC2)
+
+(hc3 <- hc(X, modelName = "EEE", use = "SVD"))
+BIC3 <- mclustBIC(X, initialization = list(hcPairs = hc3))
+summary(BIC3)
+```
+
+Update BIC by merging the best results:
+```{r}
+BIC <- mclustBICupdate(BIC1, BIC2, BIC3)
+summary(BIC)
+plot(BIC)
+```
+
+<br>
+
+Univariate fit using random starting points obtained by creating random agglomerations (see `help(hcRandomPairs)`) and merging best results:
+```{r, echo=-1}
+set.seed(20181116)
+data(galaxies, package = "MASS") 
+galaxies <- galaxies / 1000
+BIC <- NULL
+for(j in 1:20)
+{
+  rBIC <- mclustBIC(galaxies, verbose = FALSE,
+                    initialization = list(hcPairs = hcRandomPairs(galaxies)))
+  BIC <- mclustBICupdate(BIC, rBIC)
+}
+summary(BIC)
+plot(BIC)
+mod <- Mclust(galaxies, x = BIC)
+summary(mod)
+```
+
+# Classification
+
+## EDDA
+
+```{r}
+data(iris)
+class <- iris$Species
+table(class)
+X <- iris[,1:4]
+head(X)
+mod2 <- MclustDA(X, class, modelType = "EDDA")
+summary(mod2)
+plot(mod2, what = "scatterplot")
+plot(mod2, what = "classification")
+```
+
+## MclustDA
+
+```{r}
+data(banknote)
+class <- banknote$Status
+table(class)
+X <- banknote[,-1]
+head(X)
+mod3 <- MclustDA(X, class)
+summary(mod3)
+plot(mod3, what = "scatterplot")
+plot(mod3, what = "classification")
+```
+
+## Cross-validation error
+
+```{r}
+cv <- cvMclustDA(mod2, nfold = 10)
+str(cv)
+unlist(cv[3:6])
+cv <- cvMclustDA(mod3, nfold = 10)
+str(cv)
+unlist(cv[3:6])
+```
+
+# Density estimation
+
+## Univariate
+
+```{r}
+data(acidity)
+mod4 <- densityMclust(acidity)
+summary(mod4)
+plot(mod4, what = "BIC")
+plot(mod4, what = "density", data = acidity, breaks = 15)
+plot(mod4, what = "diagnostic", type = "cdf")
+plot(mod4, what = "diagnostic", type = "qq")
+```
+
+## Multivariate
+
+```{r}
+data(faithful)
+mod5 <- densityMclust(faithful)
+summary(mod5)
+plot(mod5, what = "BIC")
+plot(mod5, what = "density", type = "hdr", data = faithful, points.cex = 0.5)
+plot(mod5, what = "density", type = "persp")
+```
+
+# Bootstrap inference
+
+```{r}
+boot1 <- MclustBootstrap(mod1, nboot = 999, type = "bs")
+summary(boot1, what = "se")
+summary(boot1, what = "ci")
+```
+
+```{r, echo=-1, fig.width=6, fig.height=7}
+par(mfrow=c(4,3))
+plot(boot1, what = "pro")
+plot(boot1, what = "mean")
+```
+
+```{r}
+boot4 <- MclustBootstrap(mod4, nboot = 999, type = "bs")
+summary(boot4, what = "se")
+summary(boot4, what = "ci")
+```
+
+```{r, echo=-1}
+par(mfrow=c(2,2))
+plot(boot4, what = "pro")
+plot(boot4, what = "mean")
+```
+
+# Dimension reduction 
+
+## Clustering
+
+```{r}
+mod1dr <- MclustDR(mod1)
+summary(mod1dr)
+plot(mod1dr, what = "pairs")
+plot(mod1dr, what = "boundaries", ngrid = 200)
+
+mod1dr <- MclustDR(mod1, lambda = 1)
+summary(mod1dr)
+plot(mod1dr, what = "scatterplot")
+plot(mod1dr, what = "boundaries", ngrid = 200)
+```
+
+## Classification
+
+```{r}
+mod2dr <- MclustDR(mod2)
+summary(mod2dr)
+plot(mod2dr, what = "scatterplot")
+plot(mod2dr, what = "boundaries", ngrid = 200)
+
+mod3dr <- MclustDR(mod3)
+summary(mod3dr)
+plot(mod3dr, what = "scatterplot")
+plot(mod3dr, what = "boundaries", ngrid = 200)
+```
+
+<br>
+
+# Using colorblind-friendly palettes
+
+Most of the graphs produced by **mclust** use colors that by default are defined in the following options:  
+```{r}
+mclust.options("bicPlotColors")
+mclust.options("classPlotColors")
+```
+The first option controls colors used for plotting BIC, ICL, etc. curves, whereas the second option is used to assign colors for indicating clusters or classes when plotting data.
+
+Starting with R version 4.0, the function \code{palette.colors()} can be used for retrieving colors from some pre-defined palettes. For instance
+```{r, eval=FALSE}
+palette.colors(palette = "Okabe-Ito")
+```
+returns a color-blind-friendly palette for individuals suffering from protanopia or deuteranopia, the two most common forms of inherited color blindness. For earlier versions of R such palette can be defined as:
+```{r}
+cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", 
+"#D55E00", "#CC79A7", "#999999")
+```
+and then assigned to the **mclust** options as follows:
+```{r}
+bicPlotColors <- mclust.options("bicPlotColors")
+bicPlotColors[1:14] <- c(cbPalette, cbPalette[1:5])
+mclust.options("bicPlotColors" = bicPlotColors)
+mclust.options("classPlotColors" = cbPalette[-1])
+
+clPairs(iris[,-5], iris$Species)
+mod <- Mclust(iris[,-5])
+plot(mod, what = "BIC")
+plot(mod, what = "classification")
+```
+
+If needed, users can easily define their own palettes following the same procedure outlined above.
+
+<br><br>
+
+# References
+
+Scrucca L., Fraley C., Murphy T. B. and Raftery A. E. (2023) *Model-Based Clustering, Classification, and Density Estimation Using mclust in R*. Chapman & Hall/CRC, ISBN: 978-1032234953, https://mclust-org.github.io/book/
+
+Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and density estimation using Gaussian finite mixture models, *The R Journal*, 8/1, pp. 205-233. https://journal.r-project.org/articles/RJ-2016-021/RJ-2016-021.pdf
+        
+Fraley C. and Raftery A. E. (2002) Model-based clustering, discriminant analysis and density estimation, *Journal of the American Statistical Association*, 97/458, pp. 611-631.
+
+----
+
+```{r}
+sessionInfo()
+```

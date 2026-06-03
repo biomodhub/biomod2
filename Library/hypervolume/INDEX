@@ -1,0 +1,118 @@
+Hypervolume-class       Class '"Hypervolume"'
+HypervolumeList-class   Class '"HypervolumeList"'
+acacia_pinus            Data for Acacia and Pinus tree distributions
+circles                 Circles simulated dataset
+copy_param_hypervolume
+                        Generate hypervolumes using pre-existing
+                        parameters
+estimate_bandwidth      Kernel bandwidth estimators for hypervolumes
+expectation_ball        Hypersphere expectation
+expectation_box         Hyperbox expectation
+expectation_convex      Convex expectation
+expectation_maximal     Maximal expectation
+find_optimal_occupancy_thin
+                        Find optimal parameters to calculate occupancy
+get_centroid            Get centroid of hypervolume or hypervolume list
+get_centroid_weighted   Get weighted centroid of hypervolume or
+                        hypervolume list
+get_occupancy_intersection_bootstrap
+                        Volume of the intersection of a bootstrapped
+                        occupancy object
+get_occupancy_stats     Stats from occupancy objects
+get_occupancy_unshared_bootstrap
+                        Volume of the unshared fraction of a
+                        bootstrapped occupancy object
+get_occupancy_volume_bootstrap
+                        Extract the volume from occupancy bootstrap
+                        objects
+get_relative_volume     Extract the relative volume
+get_volume              Extract volume
+hypervolume             Hypervolume construction methods
+hypervolume-package     High Dimensional Geometry, Set Operations,
+                        Projection, and Inference Using Kernel Density
+                        Estimation, Support Vector Machines, and Convex
+                        Hulls
+hypervolume_box         Hypervolume construction via hyperbox kernel
+                        density estimation
+hypervolume_distance    Distance between two hypervolumes
+hypervolume_distance_point
+                        Distance from a point to the margin of a
+                        hypervolume.
+hypervolume_estimate_probability
+                        Estimate probability a given location
+hypervolume_funnel      Hypervolumes at different sample sizes
+hypervolume_gaussian    Hypervolume construction via Gaussian kernel
+                        density estimation
+hypervolume_general_model
+                        Generates hypervolume by sampling from
+                        arbitrary model object.
+hypervolume_holes       Hole detection
+hypervolume_inclusion_test
+                        Inclusion test
+hypervolume_join        Concatenate hypervolumes
+hypervolume_n_occupancy
+                        Operations for groups of hypervolumes
+hypervolume_n_occupancy_permute
+                        Hypervolumes through permuting labels of n
+                        pairwise groups of hypervolumes
+hypervolume_n_occupancy_test
+                        Significance of random points occupancy
+hypervolume_n_resample
+                        Bootstrap n hypervolumes
+hypervolume_overlap_confidence
+                        Confidence intervals for overlap statistics
+hypervolume_overlap_statistics
+                        Overlap statistics for set operations
+                        (Sorensen, Jaccard, etc.)
+hypervolume_overlap_test
+                        Null distribution for overlap statistics
+hypervolume_permute     Hypervolumes through permuting data of two
+                        hypervolumes
+hypervolume_project     Geographical projection of hypervolume for
+                        species distribution modeling, using the
+                        hypervolume as the environmental niche model.
+hypervolume_prune       Removes small hypervolumes from a
+                        HypervolumeList
+hypervolume_redundancy
+                        Redundancy of a point in a hypervolume
+hypervolume_resample    Hypervolume resampling methods
+hypervolume_save_animated_gif
+                        Saves animated GIF of three-dimensional
+                        hypervolume plot.
+hypervolume_segment     Segments a hypervolume into multiple separate
+                        hypervolumes.
+hypervolume_set         Set operations (intersection / union / unique
+                        components)
+hypervolume_set_n_intersection
+                        Multi-way set intersection
+hypervolume_set_n_union
+                        Multi-way set union
+hypervolume_svm         Hypervolume construction via one-class support
+                        vector machine (SVM) learning model
+hypervolume_thin        Reduces the number of random points in a
+                        hypervolume
+hypervolume_threshold   Thresholds hypervolume and calculates volume
+                        quantile statistics (empirical cumulative
+                        distribution function)
+hypervolume_to_data_frame
+                        Convert hypervolumes to 'data.frame'
+hypervolume_variable_importance
+                        Hypervolume variable importance
+morphSnodgrassHeller    Morphological data for Darwin's finches
+occupancy_bootstrap_gof
+                        Goodness of fit metrics for bootstrapped
+                        occupancy objects
+occupancy_filter        Subset occupancy hypervolumes
+occupancy_to_intersection
+                        Get the intersection of an occupancy object
+occupancy_to_union      Union of hypervolumes from an occupancy object
+occupancy_to_unshared   Unshared fraction from an occupancy object
+padded_range            Generates axis-wise range limits with padding
+plot.HypervolumeList    Plot a hypervolume or list of hypervolumes
+print.Hypervolume       Print summary of hypervolume
+quercus                 Data and demo for Quercus (oak) tree
+                        distributions
+summary.Hypervolume     Summary of hypervolume
+to_hv_list              Read hypervolumes from directory
+weight_data             Abundance weighting and prior of data for
+                        hypervolume input

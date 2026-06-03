@@ -1,0 +1,171 @@
+Version 0.7-7
+    o   Replace Calloc and Free with R_Calloc and R_Free, respectively, to conform STRICT.
+
+Version 0.7-6
+    o   Fix bugs found by warnings and suppress other nonsesical warnings
+    o   Fix partial match warning #132
+    o   exclude dropped column from column listing #130
+
+Version 0.7-5
+
+    o   Adhere to coding standards.
+
+Version 0.6-2
+
+    o   dbGetQuery do not return NULL.
+    o   use registration mechanism to call native routines.
+
+Version 0.5-3
+
+    o   Update the libpq library so that the package can be compiled in new versions of R and macOS.
+
+Version 0.5-2
+
+    o   Support dbBegin() API
+
+version 0.5-1 --2014-02-08
+
+    o   Remove segmentationfault when NULL is passed as host argument.
+
+    o   Conversion routine for raw in R and bytea in PostgreSQL
+
+    o   Use accompanied libpq when either of libpq and header is not found on darwin
+
+
+Version 0.5 -- 2013-10-12
+
+    o   postgresqlWriteTable: send column names at COPY
+
+    o   System library header search path for OS X 10.9 (Mavericks)
+
+    o   Memory leak was reduced
+    o   Close the socket on failure
+
+Version 0.4 -- 2013-03-27
+
+    o   Initial implementation of prepared statement
+
+    o   Use system libpq library when available on OS X (darwin)
+
+    o   Force ISO datestyle for PostgreSQL-R communication by default
+
+    o   Time zone aware Timestamp POSIXct conversion
+
+Version 0.3-3 -- 2012-10-05
+
+    o   Bugfix on dbColumnInfo and others reproducible by gctorture(TRUE)
+
+    o   Do not implicitly make new connections, which interfere with transaction.
+
+    o   Change the notation of the LICENSE
+
+Version 0.3-2 -- 2012-01-10
+
+    o   Adapt to the new windows toolchain.
+
+    o   Do not make libpq.dll on windows but just make libpq.a and link it,
+        so that libpq.dll need not copied anymore.
+
+Version 0.3-1 -- 2011-12-31
+
+    o   Remove GNU make dependency.
+
+Version 0.3-0 -- 2011-12-29
+
+    o   The bundled libpq source codes are used under darwin as well.
+
+    o   More compatibility to other database drivers under DBI and sqldf.
+        dbBeginTransaction, safe.write, make.db.names are removed.
+        dbBuildTableDefinition is renamed to postgresqlBuildTableDefinition.
+        isIdCurrent is renamed to isPostgresqlIdCurrent.
+        row.names is now integer.
+
+Version 0.2-1 -- 2011-11-16
+
+    o   libpq source codes are bundled for Windows.
+	In other envirionment, this code is not used and existence of libpq as 
+	specified by PG_HOME is still required.
+
+Version 0.2-0 -- 2011-10-04
+
+    o   Error check for dbWriteTable
+
+    o   dbWriteTable does not write a temporary file.
+        Control characters in strings are properly escaped for dbWriteTable.
+
+    o   Remove warning for enum and arrays etc.  The value are still transferred
+        as string and not converted to arrays etc.
+
+    o   use c('schema', 'table') to specify schema
+
+    o   Integer is mapped to integer in postgresql rather than bigint.
+
+Version 0.1-7 -- 2010-10-17
+
+    o   Several potential buffer overruns were fixed
+
+    o   dbWriteTable now writes a data.frame to database through a network
+        connection rather than a temporary file. Note that row_names may be
+        changed in future releases.  Also, passing in filenames instead of
+        data.frame is not supported at this time. 
+
+    o   When no host is specified, a connection to the PostgreSQL server 
+        is made via UNIX domain socket (just like psql does)
+
+    o   Table and column names are case sensitive, and identifiers are escaped
+        or quoted appropriately, so that any form of table/column names can be
+        created, searched, or removed, including upper-, lower- and mixed-case.
+
+    o   nullOk in dbColumnInfo has a return value of NA when the column does
+        not correspond to a column in the table. The utility of nullOk is
+        doubtful but not removed at this time.
+
+    o   Correct Windows getpid() declaration (with thanks to Brian D. Ripley)
+
+    o   A call of as.POSIXct() with a time format string wrongly passed to TZ
+        has been corrected; this should help with intra-day timestamps (with
+        thanks to Steve Eick)
+
+    o   Usage of tmpdir has been improved on similarly to Linux (with thanks
+        to Robert McGehee)
+
+Version 0.1-6 -- 2009-10-19
+
+    o   Added missing paste() call to dbGetQuery() for dbListTables
+
+Version 0.1-5 -- 2009-10-13
+
+    o   Four issues reported at the Issue tracker at the Google Code site
+        are addressed, two more are feature requests and one cannot be
+        replicated
+
+    o   A number of other small fixes and enhancements to code and
+        documentation as detailed in the ChangeLog file
+
+Version 0.1-4 -- 2009-01-26
+   
+    o   Fix to one of the documentation files
+
+Version 0.1-3 -- 2008-12-12
+
+    o   Fixed a memory leak detected by Valgrind with thanks to Jeff Horner
+        who applied a similar fix to RMySQL
+
+Version 0.1-2 -- 2008-11-02
+
+    o   Some fixes to the regression tests and configuration
+
+Version 0.1-1 -- 2008-10-28
+
+    o	DESCRIPTION: Correct Url: field by adding http:// parts. Thanks to
+        Gabor for the hint.
+
+Version 0.1-0 -- 2008-10-21
+
+    o	First Release
+
+    o   This 'RPostgreSQL' package was developed as a part of Google Summer of
+     	Code 2008 program.
+
+    o   Its implements all the features in the DBI (and a few extra like those
+        related to transaction management)

@@ -1,0 +1,27 @@
+citHeader("To cite package gstat in publications use:")
+
+bibentry(bibtype="Article",
+	title = "Multivariable geostatistics in {S}: the gstat package",
+	author = "Edzer J. Pebesma",
+	journal = "Computers & Geosciences",
+	year	 = 2004,
+	volume = 30,
+	pages	= "683-691",
+	url = "https://doi.org/10.1016/j.cageo.2004.03.012",
+	textVersion = 
+	paste("Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.",
+	"Computers & Geosciences, 30: 683-691.")
+)
+bibentry(bibtype="Article",
+	title = "Spatio-Temporal Interpolation using gstat",
+	author = "Benedikt Gräler and Edzer Pebesma and Gerard Heuvelink",
+	year = 2016,
+	journal = "The R Journal",
+	volume = 8,
+	issue = 1,
+	pages = "204-218",
+	url = "https://journal.r-project.org/articles/RJ-2016-014/index.html",
+	textVersion = 
+	paste("Benedikt Gräler, Edzer Pebesma and Gerard Heuvelink, 2016.",
+		"Spatio-Temporal Interpolation using gstat.  The R Journal 8(1), 204-218")
+)

@@ -1,0 +1,97 @@
+
+VERSION 0.3-4
+
+o add "CPoptim" algorithm (convex partition)
+
+o fixed "plinear-brute-force" error
+
+VERSION 0.3-3
+
+o fix bug that occurred when using "port"
+
+VERSION 0.3-2
+
+o fix bug in 0.3-0 related not being able to access data= in some situations
+
+VERSION 0.3-0
+
+o add lhs (Latin Hypercube Sampling) and plinear-lhs sampling algorithms
+
+o if all iterations fail return NULL
+
+o add README file
+
+o add INSTALL file
+
+o fix Example 5 in help file and change it to use plinear-lhs
+
+o fix number of iterations.  Previously 1 iteration could display incorrectly.
+
+o fix weights. Do not ignore weights (includes contribution by Ben Bolker)
+
+o fix subset. Do not ignore subset argument.  Note that if subset is specified 
+  then data must be specified as a data.frame.
+
+o add caveat to help file regarding start argument not supporting the nls
+  grouped data list of vector format
+
+VERSION 0.2-1
+
+o bug fix for case of only one parameter
+
+o start may now also be any object with a coef method
+
+VERSION 0.2-0
+
+o algoirthm can be "plinear-brute" or "plinear-random"
+
+o corrected one nls2 example
+
+o trace is now used by nls2 to control printing.  Previously it was only used
+  to pass to nls.
+
+VERSION 0.1-5
+
+o corce formula argument to a formula if its not already a formula
+
+VERSION 0.1-4 
+
+o NAMESPACE file added
+
+o as.lm removed
+
+VERSION 0.1-3
+
+o as.lm and as.lm.nls can be used to convert an "nls" object to an 
+  "lm" object which is tangent to the nls object.  Untested.
+
+o as.lm.nls uses proto package hence new dependency
+
+o added algorithm = "random" which samples maxiter rows from start if
+  start is a data frame with more than 2 rows whereas if start is a data
+  frame with exactly 2 rows it will take maxiter random points from the
+  rectangle whose boundary is defined by the rows.
+
+o if nls exits with an error nls2 uses NA as the return value of that nls
+  call instead of stopping with an error
+
+VERSION 0.1-2
+
+o fixed problem with update not working with objects produced by nls2.
+
+o fixed number of iterations and tolerance displayed when using
+  algorithm = "brute-force".
+
+o if there are exactly two rows in start= then a grid of starting values
+  is formed so that there are at least maxiter points on the grid.
+
+o start can be an nls object in which case coef(nls) is used.
+
+VERSION 0.1-1
+
+o documentation and DESCRIPTION file tweaks.
+
+VERSION 0.1-0
+
+o initial release.
+

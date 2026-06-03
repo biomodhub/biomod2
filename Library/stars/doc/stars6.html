@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Sébastien Rochette, Adriano Fantini, Edzer Pebesma" />
+
+
+<title>6. How raster functions map to stars functions</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">6. How <code>raster</code> functions map to
+<code>stars</code> functions</h1>
+<h4 class="author">Sébastien Rochette, Adriano Fantini, Edzer
+Pebesma</h4>
+
+
+
+<p><strong>For a better version of the stars vignettes see</strong> <a href="https://r-spatial.github.io/stars/articles/" class="uri">https://r-spatial.github.io/stars/articles/</a></p>
+<p>Here’s an attempt at the table describing how <code>raster</code>
+functions map to <code>stars</code> functions, discussed in <a href="https://github.com/r-spatial/stars/issues/122">issue #122</a>.
+This table uses the functionality of the <code>raster</code> package as
+a template; it may be incomplete, imprecise or plain wrong, so take it
+with a pinch of salt. Any comment or correction is hugely appreciated,
+please contribute!</p>
+<p>Some of the functions (<code>filter</code>, <code>slice</code>,
+<code>mutate</code>, <code>select</code>, <code>pull</code>, …) are
+provided via <code>dplyr</code>, which must be loaded. See
+<code>?stars::dplyr</code>.</p>
+<div id="comment-legend" class="section level2">
+<h2>COMMENT LEGEND</h2>
+<p>? = Not sure / unknown</p>
+<p>* = Not present, low priority</p>
+<p># = Not present, high priority</p>
+<p>NA = Not available by design</p>
+</div>
+<div id="creating-objects" class="section level2">
+<h2>Creating objects</h2>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="45%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">{raster, stack, brick} (read)</td>
+<td align="left">read_stars or read_stars(along = …)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">{stack, brick} (concatenate layers)</td>
+<td align="left">c or c(along = …)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">subset</td>
+<td align="left">{[ ] , slice, filter}</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">addLayer</td>
+<td align="left">c() or c(along = …)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">dropLayer</td>
+<td align="left">{[ ] , slice, filter}</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">unstack</td>
+<td align="left">combine lapply and {[ ] , slice, filter}</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="changing-spatial-extent-andor-resolution-of-objects" class="section level2">
+<h2>Changing spatial extent and/or resolution of objects</h2>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="20%" />
+<col width="66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">merge</td>
+<td align="left">c</td>
+<td align="left">#, currently only works for adjacent objects</td>
+</tr>
+<tr class="even">
+<td align="left">mosaic</td>
+<td align="left">st_mosaic</td>
+<td align="left">these are not identical, read the docs carefully</td>
+</tr>
+<tr class="odd">
+<td align="left">crop</td>
+<td align="left">filter, st_crop</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">setExtent</td>
+<td align="left"></td>
+<td align="left"># maybe use st_warp?</td>
+</tr>
+<tr class="odd">
+<td align="left">trim</td>
+<td align="left"></td>
+<td align="left">#</td>
+</tr>
+<tr class="even">
+<td align="left">aggregate</td>
+<td align="left">aggregate</td>
+<td align="left">WIP; raster’s aggregate with fact=2 will not work, use
+st_warp in that case?</td>
+</tr>
+<tr class="odd">
+<td align="left">disaggregate</td>
+<td align="left"></td>
+<td align="left"># use st_warp(use_gdal = TRUE)?</td>
+</tr>
+<tr class="even">
+<td align="left">resample</td>
+<td align="left">{st_transform, st_warp}</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">projectRaster</td>
+<td align="left">{st_transform, st_warp}</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">shift</td>
+<td align="left"></td>
+<td align="left">#, now use st_set_dimensions</td>
+</tr>
+<tr class="odd">
+<td align="left">flip</td>
+<td align="left">[] with reversed index</td>
+<td align="left">#</td>
+</tr>
+<tr class="even">
+<td align="left">rotate</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">t</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cell-based-computation" class="section level2">
+<h2>Cell based computation</h2>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="48%" />
+<col width="37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">calc</td>
+<td align="left">st_apply</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">overlay</td>
+<td align="left">c(along = , …) |&gt; st_apply(…)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">cover</td>
+<td align="left">[ ] &lt;-</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">mask</td>
+<td align="left">[ ], st_crop</td>
+<td align="left">when using an sf polygon as mask</td>
+</tr>
+<tr class="odd">
+<td align="left">mask</td>
+<td align="left">[ ]&lt;- NA</td>
+<td align="left">when using a stars object to mask</td>
+</tr>
+<tr class="even">
+<td align="left">cut</td>
+<td align="left">cut</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">subs</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">reclassify</td>
+<td align="left">mutate with case_when</td>
+<td align="left">or forcats::fct_recode ?</td>
+</tr>
+<tr class="odd">
+<td align="left">reclassify</td>
+<td align="left">cut</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">init</td>
+<td align="left">[ ] &lt;-</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">stackApply</td>
+<td align="left">{[ ] , slice, filter} |&gt; st_apply(…)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">stackSelect</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="spatial-contextual-computation" class="section level2">
+<h2>Spatial contextual computation</h2>
+<table>
+<colgroup>
+<col width="16%" />
+<col width="44%" />
+<col width="38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">distance</td>
+<td align="left"></td>
+<td align="left">#</td>
+</tr>
+<tr class="even">
+<td align="left">gridDistance</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">distanceFromPoints</td>
+<td align="left"></td>
+<td align="left">#</td>
+</tr>
+<tr class="even">
+<td align="left">direction</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">focal</td>
+<td align="left">f = st_apply(x1, 3, foc, w = matrix(1, 3, 3))</td>
+<td align="left">See. <a href="https://github.com/r-spatial/stars/issues/176">issue 176</a></td>
+</tr>
+<tr class="even">
+<td align="left">localFun</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">boundaries</td>
+<td align="left">st_as_sf(as_points=FALSE, merge=TRUE,
+connect8=TRUE)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">clump</td>
+<td align="left">st_as_sf(r, merge = TRUE)</td>
+<td align="left"><code>st_as_sf</code> returns polygons,
+<code>clump</code> a raster</td>
+</tr>
+<tr class="odd">
+<td align="left">adjacent</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">area</td>
+<td align="left">st_area</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">terrain</td>
+<td align="left"></td>
+<td align="left">#</td>
+</tr>
+<tr class="even">
+<td align="left">Moran</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="model-predictions" class="section level2">
+<h2>Model predictions</h2>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="26%" />
+<col width="60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">predict</td>
+<td align="left">predict</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">interpolate</td>
+<td align="left">gstat::idw, gstat::krige</td>
+<td align="left"><code>st_warp</code> has raster-raster interpolations
+of <code>gdalwarp</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="data-type-conversion" class="section level2">
+<h2>Data type conversion</h2>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="53%" />
+<col width="26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">rasterize</td>
+<td align="left">st_as_stars</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">rasterToPoints</td>
+<td align="left">st_as_sf(as_points=TRUE)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">rasterToPolygons</td>
+<td align="left">st_as_sf(as_points=FALSE, …), st_polygonize</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">rasterToContour</td>
+<td align="left">st_contour</td>
+<td align="left">requires GDAL &gt;= 2.4.0</td>
+</tr>
+<tr class="odd">
+<td align="left">rasterFromXYZ</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">rasterFromCells</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="summarizing" class="section level2">
+<h2>Summarizing</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cellStats</td>
+<td align="left">st_apply</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">summary</td>
+<td align="left">print, summary(as.vector(. |&gt; pull()))</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">freq</td>
+<td align="left">table</td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">crosstab</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">unique</td>
+<td align="left">unique(as.vector(. |&gt; pull()))</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">zonal</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="accessing-values-of-objects" class="section level2">
+<h2>Accessing values of objects</h2>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="53%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">getValues</td>
+<td align="left">{pull, [[ ]]}</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">getValuesBlock</td>
+<td align="left">{[ ] , slice, filter} |&gt; pull()</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">getValuesFocal</td>
+<td align="left">{[ ] , slice, filter} |&gt; pull()</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">as.matrix</td>
+<td align="left">[[ ]]</td>
+<td align="left">currently behaves somewhat unexpectedly *</td>
+</tr>
+<tr class="odd">
+<td align="left">as.array</td>
+<td align="left">[[ ]]</td>
+<td align="left">currently behaves somewhat unexpectedly *</td>
+</tr>
+<tr class="even">
+<td align="left">extract (by cell)</td>
+<td align="left">{[ ] , slice, filter}</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">extract (by polygon)</td>
+<td align="left">x[sf_object]</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">extract (by point)</td>
+<td align="left">aggregate(stars_object, sf_object, function(x) x[1],
+as_points = FALSE)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">sampleRandom</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">sampleRegular</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">minValue</td>
+<td align="left">purrr::map(x, min)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">maxValue</td>
+<td align="left">purrr::map(x, max)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">setMinMax</td>
+<td align="left"></td>
+<td align="left">,</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plotting" class="section level2">
+<h2>Plotting</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">plot</td>
+<td align="left">plot, geom_stars</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">plotRGB</td>
+<td align="left">plot(x, rgb =…)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">spplot</td>
+<td align="left">-</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">image</td>
+<td align="left">image</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">persp</td>
+<td align="left">-</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">contour</td>
+<td align="left">(st_contour, then sf::plot)</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">filledContour</td>
+<td align="left">(same)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">text</td>
+<td align="left">text</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>hist</code></td>
+<td align="left"><code>hist(x[[1]])</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">barplot</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">density</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">pairs</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">boxplot</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="getting-and-setting-dimensions" class="section level2">
+<h2>Getting and setting dimensions</h2>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="33%" />
+<col width="56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ncol</td>
+<td align="left">dim(x)[1]</td>
+<td align="left">or use name instead of 1; cols may be the second
+dimension!</td>
+</tr>
+<tr class="even">
+<td align="left">nrow</td>
+<td align="left">dim(x)[2]</td>
+<td align="left">or use name instead of 2; rows may be the first
+dimension!</td>
+</tr>
+<tr class="odd">
+<td align="left">ncell</td>
+<td align="left">prod(dim(x))</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">res</td>
+<td align="left">st_dimensions</td>
+<td align="left">can also not be a constant in case of rectilinear or
+curvilinear grids</td>
+</tr>
+<tr class="odd">
+<td align="left">nlayers</td>
+<td align="left">-</td>
+<td align="left">there is no concept of layers in stars</td>
+</tr>
+<tr class="even">
+<td align="left">names</td>
+<td align="left">names</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">xres</td>
+<td align="left">st_res(x)[1]</td>
+<td align="left">may not be a constant in case of rectilinear or
+curvilinear grids</td>
+</tr>
+<tr class="even">
+<td align="left">yres</td>
+<td align="left">st_res(x)[2]</td>
+<td align="left">may not be a constant in case of rectilinear or
+curvilinear grids</td>
+</tr>
+<tr class="odd">
+<td align="left">xmin</td>
+<td align="left">st_bbox(x)[1]</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">xmax</td>
+<td align="left">st_bbox(x)[3]</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ymin</td>
+<td align="left">st_bbox(x)[2]</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ymax</td>
+<td align="left">st_bbox(x)[4]</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">extent</td>
+<td align="left">st_bbox(x)</td>
+<td align="left">different ordering of numbers</td>
+</tr>
+<tr class="even">
+<td align="left">origin</td>
+<td align="left">-</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">projection</td>
+<td align="left">st_crs(x)</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">isLonLat</td>
+<td align="left">st_is_longlat(st_crs(x))</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">filename</td>
+<td align="left"></td>
+<td align="left">stars_proxy objects carry file names where otherwise
+the array data is</td>
+</tr>
+<tr class="even">
+<td align="left">bandnr</td>
+<td align="left"></td>
+<td align="left">stars has no general concept of bands</td>
+</tr>
+<tr class="odd">
+<td align="left">nbands</td>
+<td align="left">dim(x)[3]</td>
+<td align="left">may also be time; bands may also be in another
+dimension, or have another name</td>
+</tr>
+<tr class="even">
+<td align="left">compareRaster</td>
+<td align="left">all.equal(st_dimensions(x), st_dimensions(y))</td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">NAvalue</td>
+<td align="left"></td>
+<td align="left">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="computing-row-column-cell-numbers-and-coordinates" class="section level2">
+<h2>Computing row, column, cell numbers and coordinates</h2>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="43%" />
+<col width="45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">raster</th>
+<th align="left">stars</th>
+<th align="left">Note/comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">xFromCol</td>
+<td align="left">st_get_dimension_values(., ‘x’)[col]</td>
+<td align="left">I am not sure how to generally get the x dimension name
+- here it is x</td>
+</tr>
+<tr class="even">
+<td align="left">yFromRow</td>
+<td align="left">st_get_dimension_values(., ‘y’)[row]</td>
+<td align="left">I am not sure how to generally get the y dimension name
+- here it is y</td>
+</tr>
+<tr class="odd">
+<td align="left">xFromCell</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">yFromCell</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">xyFromCell</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">colFromX</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">rowFromY</td>
+<td align="left"></td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">rowColFromCell</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">cellFromXY</td>
+<td align="left">st_cells()</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">cellFromRowCol</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">cellsFromExtent</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">coordinates</td>
+<td align="left">st_coordinates</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">validCell</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">validCol</td>
+<td align="left">col |&gt; between(st_dimensions(.)<span class="math inline">\(x\)</span>from, st_dimensions(.)<span class="math inline">\(x\)</span>to)</td>
+<td align="left">raster columns are not always named ‘x’</td>
+</tr>
+<tr class="odd">
+<td align="left">validRow</td>
+<td align="left">row |&gt; between(st_dimensions(.)<span class="math inline">\(y\)</span>from, st_dimensions(.)<span class="math inline">\(y\)</span>to)</td>
+<td align="left">raster columns are not always named ‘y’</td>
+</tr>
+<tr class="even">
+<td align="left">setValues</td>
+<td align="left">[ ] &lt;-</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">writeRaster</td>
+<td align="left">write_stars</td>
+<td align="left">currently uses GDAL, somewhat limited</td>
+</tr>
+<tr class="even">
+<td align="left">KML</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p>The format of this table follows the <code>raster-package</code>
+entry in the raster manual, found at
+<code>https://cran.r-project.org/web/packages/raster/raster.pdf</code>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

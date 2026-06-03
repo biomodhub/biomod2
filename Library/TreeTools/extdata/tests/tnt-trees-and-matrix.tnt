@@ -1,0 +1,29 @@
+nsta 32 ;
+xread
+'Test
+  0 1 23 456 78' 7 6
+a 0 - -- ---
+b 0 - -- ---
+c 1 0 0- 100
+d 1 0 0- 101
+e 1 0 10 110
+f 1 0 11 0--
+;
+cname
+{0 sup_tail absent present ;
+   {1 sub_tail_color red blue ;
+   {2 sub_tail_sup_knob absent present ;
+      {3 sub_knob_cover scaly smooth hairy ;
+   {4 sub_tail_sup_apophysis absent present ;
+      {5 sub_apophysis_texture rigid flexible ;
+      {6 sub_apophysis_color black white ;
+
+smat & ;
+tread 'test trees'
+(0 (1 (2 (5 (3 4 )))))*
+(0 
+((1 2 )(
+(3 (4 5 )))))*
+(0 (1 (2 (3 (4 5 )))));
+tread (0 (1 (2 (4 3 5))));
+proc/;

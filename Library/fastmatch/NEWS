@@ -1,0 +1,131 @@
+ NEWS for fastmatch
+--------------------
+
+1.1-8	2025-01-18
+    o	fix protection bug in safe mode
+
+    o	remove index slicing since we don't pass the index
+
+
+1.1-7	2025-01-17
+    o	adjust to API changes up to R 4.6.0
+
+    o	add .SAFE argument to ctapply() which determines whether the
+	index and value vectors are cached between calls to FUN
+	(.SAFE=FALSE) or if a clean set of vectors is allocated for
+	each call (.SAFE=TRUE). The latter is now the default, because
+	cached vectors may not be assigned and thus are only safe to
+	use with some functions FUN (see ?ctapply and #1). Previous
+	versions behaved like .SAFE=FALSE.
+	
+	Note that .SAFE=FALSE is not supported in R 4.5.x, because
+	SETLENGTH has been declared illegal, but only R 4.6.0 has
+	growable vector support, so use R < 4.5.0 or R >= 4.6.0 if
+	needed.
+	
+	In general, the performance gain from .SAFE=FALSE is only
+	noticeable if X is big (~>1e7), INDEX creates a moderately
+	large number of groups and FUN is fast enough to not dominate
+	the cost. For example, ctapply(x, y, sum, .SAFE=FALSE) on 1e8
+	elements with average group length of 100 is ~25% faster than
+	.SAFE=TRUE, but if the group length is too small or too big
+	then either the call cost dominates or there are not enough
+	allocations to benefit from the cache.
+
+    o	add %!fin% which is the negation of %fin%
+
+
+1.1-6	2024-12-20
+    o	use C99 version of flexible arrays to avoid
+	false-positives in strict array sanitizers.
+
+    o	PROTECT fix when falling back to R's match
+	and coercion happened before.
+
+    o	bugfix: fast.hash returned the result instead of
+	the `table` argument. (#9)
+
+
+1.1-5	2024-02-14
+    o	bug fix: -0 in table= would never be matched,
+	because it was (correctly) hashed as 0, but final
+	comparison was 0 to -0 in the table. (#12)
+
+
+1.1-4	2023-06-13
+    o	use eval(match(...)) instead of match5 for safety
+
+
+1.1-3	2021-07-23
+    o	don't call XLENGTH() on NULL objects
+
+    o	if compiled with -DCHECKHASH fastmatch will re-compute
+	the hash table every time and compare it to the existing
+	table to verify its consistency. This can be used to
+	detect incorrect use of fastmatch, i.e., cases where
+	the object is modified and the hash table is not removed.
+
+
+1.1-2	2021-07-22
+    o	minor change for compatibility with R-devel
+
+
+1.1-1	2019-04-16
+    o	fix protection bug in case when fmatch() falls back to
+	R's match() because of unsupported types (thanks to
+	Tomáš Kalibera)
+
+
+1.1-0	2017-01-28
+    o	add fmatch.hash() which will create a hash table that can
+	be used later with fmatch(). This can be used in cases where
+	attaching the hash to the table implicitly is not reliable.
+
+    o	added ctapply() - a fast version of tapply()
+
+    o	added coalesce() - fast way of grouping unique values into
+	contiguous groups (in linear time).
+
+    o	added %fin% - a fast version of %in%
+
+    o	fastmatch now supports long vectors. Note that the hash
+	function is the same as in R and thus it uses at most 32-bits,
+	hence long vectors can be used, but they must have less than
+	2^32 (~4e9) unique values.
+
+    o	bugfix: matching reals against a table that contains NA or NaNs
+	would not match the position of those but return NA instead.
+
+    o	bugfix: fix crash when a newly unserialized hash table is
+	used (since the table hash is not stored during serialization).
+
+
+1.0-4	2012-01-12
+    o	some R functions (such as subset assignment like x[1] <- 2)
+	can create a new object (with possibly modified content) and
+	copy all attributes including the hash cache. If the original
+	object was used as a table in fmatch(), the hash cache will be
+	copied into the modified object and thus its cache will be
+	possibly out of	sync with the object. fmatch() will now
+	identify such cases and discard the hash to prevent errorneous
+	results.
+
+1.0-3	2011-12-21
+    o	match() coerces POSIXlt objects into characters, but so far 
+	fmatch() performed the match on the actual objects.
+	Now fmatch() coerces POSIXlt object into characters just like
+	match(), but note that you will lose the ability to perform
+	fast lookups if the table is a POSIXlt object -- please use
+	POSIXct objects (much more efficient) or use as.character() on
+	the POSIXlt object to create a table that you want to re-use.
+
+1.0-2	2011-09-14
+    o	bugfix: nomatch was ignored in the fastmatch implementation
+	(thanks to Enrico Schumann for reporting)
+
+1.0-1	2010-12-23
+    o	minor cleanups
+
+1.0-0	2010-12-23
+    o	initial release
+

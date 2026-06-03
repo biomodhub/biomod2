@@ -1,0 +1,42 @@
+check_data_exist        check whether the requested data exist on
+                        Natural Earth
+check_rnaturalearthdata
+                        Check whether to install rnaturalearthdata and
+                        install if necessary
+check_rnaturalearthhires
+                        Check whether to install rnaturalearthhires and
+                        install if necessary
+check_scale             check that this scale is present in Natural
+                        Earth
+convert_spatial_class   Convert from/to sf/sv objects
+countries               world country polygons from Natural Earth
+df_layers_cultural      list of cultural layers available from Natural
+                        Earth
+df_layers_physical      list of physical layers available from Natural
+                        Earth
+get_data                Get data from within the package
+install_rnaturalearthdata
+                        Install the naturalearthdata package after
+                        checking with the user
+install_rnaturalearthhires
+                        Install the naturalearthhires package after
+                        checking with the user
+layer_name              Generate the layer name for a Natural Earth
+                        dataset
+make_dest_path          Create Destination File Path
+ne_coastline            Get natural earth world coastline
+ne_countries            Get natural earth world country polygons
+ne_download             Download data from Natural Earth and
+                        (optionally) read into R
+ne_file_name            return a natural earth filename based on
+                        arguments
+ne_find_vector_data     Return a dataframe of available vector layers
+                        on Natural Earth
+ne_load                 load a Natural Earth vector that has already
+                        been downloaded to R using 'ne_download'
+ne_states               Get natural earth world state (admin level 1)
+                        polygons
+normalize_type          Normalize the type argument for Natural Earth
+                        datasets
+read_spatial_vector     Read Spatial Vector
+sanitize_gdal_url       Extracts the http URL from a VSIZIP URL

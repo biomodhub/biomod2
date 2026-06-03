@@ -52,8 +52,8 @@ install.packages("biomod2", dependencies = TRUE)
 - **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3--4--7-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
-library(devtools)
-devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
+library(pak)
+pak::pak("biomodhub/biomod2", dependencies = TRUE)
 ```
 
 <br/><br/>

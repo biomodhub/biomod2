@@ -1,0 +1,34 @@
+Intervals-class         Classes "Intervals" and "Intervals_full"
+Intervals_virtual-class
+                        Class "Intervals_virtual"
+Intervals_virtual_or_numeric-class
+                        Class "Intervals_virtual_or_numeric"
+as.matrix               Extract matrix of endpoints
+c                       Combine different interval matrix objects
+close_intervals         Re-represent integer intervals with open or
+                        closed endpoints
+clusters                Identify clusters in a collection of positions
+                        or intervals
+distance_to_nearest     Compute distance to nearest position in a set
+                        of intervals
+empty                   Identify empty interval rows
+expand                  Expand or contract intervals
+interval_complement     Compute the complement of a set of intervals
+interval_difference     Compute set difference
+interval_included       Assess inclusion of one set of intervals with
+                        respect to another
+interval_intersection   Compute the intersection of one or more sets of
+                        intervals
+interval_overlap        Assess overlap from one set of intervals to
+                        another
+interval_union          Compute the union of intervals in one or more
+                        interval matrices
+intervals-package       Tools for working with points and intervals
+plot.Intervals          Plotting methods for interval objects
+reduce                  Compactly re-represent the points in a set of
+                        intervals
+sgd                     Yeast gene model sample data
+size                    Compute interval sizes
+split                   Split an intervals object according to a factor
+which_nearest           Identify nearest member(s) in a set of
+                        intervals

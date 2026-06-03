@@ -1,0 +1,34 @@
+Package: rvest
+Title: Easily Harvest (Scrape) Web Pages
+Version: 1.0.5
+Authors@R: c(
+    person("Hadley", "Wickham", , "hadley@posit.co", role = c("aut", "cre")),
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
+  )
+Description: Wrappers around the 'xml2' and 'httr' packages to make it
+    easy to download, then manipulate, HTML and XML.
+License: MIT + file LICENSE
+URL: https://rvest.tidyverse.org/, https://github.com/tidyverse/rvest
+BugReports: https://github.com/tidyverse/rvest/issues
+Depends: R (>= 4.1)
+Imports: cli, glue, httr (>= 0.5), lifecycle (>= 1.0.3), magrittr,
+        rlang (>= 1.1.0), selectr, tibble, xml2 (>= 1.4.0)
+Suggests: chromote, covr, knitr, purrr, R6, readr, repurrrsive,
+        rmarkdown, spelling, stringi (>= 0.3.1), testthat (>= 3.0.2),
+        tidyr, webfakes
+VignetteBuilder: knitr
+Config/Needs/website: tidyverse/tidytemplate
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Encoding: UTF-8
+Language: en-US
+RoxygenNote: 7.3.2
+NeedsCompilation: no
+Packaged: 2025-08-29 12:57:41 UTC; hadleywickham
+Author: Hadley Wickham [aut, cre],
+  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
+Maintainer: Hadley Wickham <hadley@posit.co>
+Repository: CRAN
+Date/Publication: 2025-08-29 14:00:02 UTC
+Built: R 4.6.0; ; 2026-05-22 08:53:10 UTC; unix

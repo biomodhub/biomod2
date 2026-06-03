@@ -1,0 +1,17 @@
+Package: sgeostat
+Title: An Object-Oriented Framework for Geostatistical Modeling in S+
+Version: 1.0-27
+Author: S original by James J. Majure <majure@iastate.edu> Iowa State University, R port + extensions by Albrecht Gebhardt <albrecht.gebhardt@aau.at>
+Maintainer: Albrecht Gebhardt <albrecht.gebhardt@aau.at>
+Description: An Object-oriented Framework for Geostatistical Modeling in S+ 
+  containing functions for variogram estimation, variogram fitting and kriging
+  as well as some plot functions. Written entirely in S, therefore works only
+  for small data sets in acceptable computing time.
+Depends: stats, grDevices, graphics, R (>= 2.0.0)
+License: GPL (>= 2)
+Date: 2016-02-02
+NeedsCompilation: yes
+Packaged: 2016-02-02 20:28:51 UTC; alge
+Repository: CRAN
+Date/Publication: 2016-02-03 01:11:19
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 08:40:13 UTC; unix

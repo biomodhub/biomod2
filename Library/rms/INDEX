@@ -1,0 +1,135 @@
+ExProb                  Function Generators For Exceedance and Survival
+                        Probabilities
+Function.rms            Compose an S Function to Compute X beta from a
+                        Fit
+Glm                     rms Version of glm
+Gls                     Fit Linear Model Using Generalized Least
+                        Squares
+LRupdate                LRupdate
+Ocens                   Censored Ordinal Variable
+Ocens2Surv              Ocens2Surv
+Ocens2ord               Recode Censored Ordinal Variable
+Olinks                  Likehood-Based Statistics for Other Links for
+                        orm Fits
+Predict                 Compute Predicted Values and Confidence Limits
+Punits                  Prepare units for Printing and Plotting
+Rq                      rms Package Interface to quantreg Package
+Surv                    Exported Functions That Were Imported From
+                        Other Packages
+Xcontrast               Xcontrast
+[.Ocens                 Ocens
+adapt_orm               Adaptive orm Fit For a Single Continuous
+                        Predictor
+anova.rms               Analysis of Variance (Wald, LR, and F
+                        Statistics)
+as.data.frame.Ocens     Convert 'Ocens' Object to Data Frame to
+                        Facilitate Subset
+bj                      Buckley-James Multiple Regression Model
+bootBCa                 BCa Bootstrap on Existing Bootstrap Replicates
+bootcov                 Bootstrap Covariance and Distribution for
+                        Regression Coefficients
+bplot                   3-D Plots Showing Effects of Two Continuous
+                        Predictors in a Regression Model Fit
+calibrate               Resampling Model Calibration
+contrast.rms            General Contrasts of Regression Coefficients
+cph                     Cox Proportional Hazards Model and Extensions
+cr.setup                Continuation Ratio Ordinal Logistic Setup
+datadist                Distribution Summaries for Predictor Variables
+fastbw                  Fast Backward Variable Selection
+gIndex                  Calculate Total and Partial g-indexes for an
+                        rms Fit
+gendata                 Generate Data Frame with Predictor Combinations
+ggplot.Predict          Plot Effects of Variables Estimated by a
+                        Regression Model Fit Using ggplot2
+ggplot.npsurv           Title Plot npsurv Nonparametric Survival Curves
+                        Using ggplot2
+groupkm                 Kaplan-Meier Estimates vs. a Continuous
+                        Variable
+hazard.ratio.plot       Hazard Ratio Plot
+ie.setup                Intervening Event Setup
+impactPO                Impact of Proportional Odds Assumpton
+infoMxop                Operate on Information Matrices
+intCalibration          Check Parallelism Assumption of Ordinal
+                        Semiparametric Models
+is.na.Ocens             is.na Method for Ocens Objects
+latex.cph               LaTeX Representation of a Fitted Cox Model
+latexrms                LaTeX Representation of a Fitted Model
+lrm                     Logistic Regression Model
+lrm.fit                 lrm.fit
+matinv                  Total and Partial Matrix Inversion using
+                        Gauss-Jordan Sweep Operator
+nomogram                Draw a Nomogram Representing a Regression Fit
+npsurv                  Nonparametric Survival Estimates for Censored
+                        Data
+ols                     Linear Model Estimation Using Ordinary Least
+                        Squares
+ordESS                  ordESS
+ordParallel             Check Parallelism Assumption of Ordinal
+                        Semiparametric Models
+orm                     Ordinal Regression Model
+orm.fit                 Ordinal Regression Model Fitter
+pentrace                Trace AIC and BIC vs. Penalty
+plot.Predict            Plot Effects of Variables Estimated by a
+                        Regression Model Fit
+plot.contrast.rms       plot.contrast.rms
+plot.rexVar             plot.rexVar
+plot.xmean.ordinaly     Plot Mean X vs. Ordinal Y
+plotIntercepts          Plot Intercepts
+plotp.Predict           Plot Effects of Variables Estimated by a
+                        Regression Model Fit Using plotly
+poma                    Examine proportional odds and parallelism
+                        assumptions of 'orm' and 'lrm' model fits.
+pphsm                   Parametric Proportional Hazards form of AFT
+                        Models
+predab.resample         Predictive Ability using Resampling
+predict.lrm             Predicted Values for Binary and Ordinal
+                        Logistic Models
+predictrms              Predicted Values from Model Fit
+print.Glm               print.glm
+print.Ocens             print Method for Ocens Objects
+print.cph               Print cph Results
+print.impactPO          Print Result from impactPO
+print.ols               Print ols
+print.rexVar            print.rexVar
+prmiInfo                prmiInfo
+processMI               processMI
+processMI.fit.mult.impute
+                        processMI.fit.mult.impute
+psm                     Parametric Survival Model
+recode2integer          recode2integer
+residuals.Glm           residuals.Glm
+residuals.cph           Residuals for a cph Fit
+residuals.lrm           Residuals from an 'lrm' or 'orm' Fit
+residuals.ols           Residuals for ols
+rexVar                  rexVar
+rms                     rms Methods and Generic Functions
+rms.trans               rms Special Transformation Functions
+rmsMisc                 Miscellaneous Design Attributes and Utility
+                        Functions
+rmsOverview             Overview of rms Package
+robcov                  Robust Covariance Matrix Estimates
+sensuc                  Sensitivity to Unmeasured Covariables
+setPb                   Progress Bar for Simulations
+specs.rms               rms Specifications for Models
+summary.rms             Summary of Effects in Model
+survest.cph             Cox Survival Estimates
+survest.orm             Title survest.orm
+survest.psm             Parametric Survival Estimates
+survfit.cph             Cox Predicted Survival
+survplot                Plot Survival Curves and Hazard Functions
+survplot.orm            Title Survival Curve Plotting
+val.prob                Validate Predicted Probabilities
+val.surv                Validate Predicted Probabilities Against
+                        Observed Survival Times
+validate                Resampling Validation of a Fitted Model's
+                        Indexes of Fit
+validate.Rq             Validation of a Quantile Regression Model
+validate.cph            Validation of a Fitted Cox or Parametric
+                        Survival Model's Indexes of Fit
+validate.lrm            Resampling Validation of a Logistic or Ordinal
+                        Regression Model
+validate.ols            Validation of an Ordinary Linear Model
+validate.rpart          Dxy and Mean Squared Error by Cross-validating
+                        a Tree Sequence
+vif                     Variance Inflation Factors
+which.influence         Which Observations are Influential

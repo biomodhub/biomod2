@@ -1,0 +1,78 @@
+* installing *source* package ‘geosphere’ ...
+** this is package ‘geosphere’ version ‘1.6-8’
+** package ‘geosphere’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘cc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+using C++ compiler: ‘g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0’
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c Accumulator.cpp -o Accumulator.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c AuxAngle.cpp -o AuxAngle.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c AuxLatitude.cpp -o AuxLatitude.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c DAuxLatitude.cpp -o DAuxLatitude.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c DST.cpp -o DST.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c EllipticFunction.cpp -o EllipticFunction.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c Geodesic.cpp -o Geodesic.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c GeodesicExact.cpp -o GeodesicExact.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c GeodesicLine.cpp -o GeodesicLine.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c GeodesicLineExact.cpp -o GeodesicLineExact.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c Intersect.cpp -o Intersect.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c Math.cpp -o Math.o
+Math.cpp: In instantiation of ‘static T GeographicLib::Math::sum(T, T, T&) [with T = float]’:
+Math.cpp:338:3:   required from here
+Math.cpp:59:8: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   59 |     up -= u;
+      |     ~~~^~~~
+Math.cpp:60:9: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   60 |     vpp -= v;
+      |     ~~~~^~~~
+Math.cpp: In instantiation of ‘static T GeographicLib::Math::sum(T, T, T&) [with T = double]’:
+Math.cpp:339:3:   required from here
+Math.cpp:59:8: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   59 |     up -= u;
+      |     ~~~^~~~
+Math.cpp:60:9: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   60 |     vpp -= v;
+      |     ~~~~^~~~
+Math.cpp: In instantiation of ‘static T GeographicLib::Math::sum(T, T, T&) [with T = long double]’:
+Math.cpp:342:3:   required from here
+Math.cpp:59:8: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   59 |     up -= u;
+      |     ~~~^~~~
+Math.cpp:60:9: warning: compound assignment with ‘volatile’-qualified left operand is deprecated [-Wvolatile]
+   60 |     vpp -= v;
+      |     ~~~~^~~~
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c OSGB.cpp -o OSGB.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c PolygonArea.cpp -o PolygonArea.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c RcppExports.cpp -o RcppExports.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c Rhumb.cpp -o Rhumb.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c TransverseMercator.cpp -o TransverseMercator.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c TransverseMercatorExact.cpp -o TransverseMercatorExact.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c Utility.cpp -o Utility.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c a_dist.c -o a_dist.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c a_geodesic.cpp -o a_geodesic.o
+g++ -std=gnu++20 -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2   -c a_geolib.cpp -o a_geolib.o
+cc -I"/usr/share/R/include" -DNDEBUG  -I'/home/gueguema/R/x86_64-pc-linux-gnu-library/4.6/Rcpp/include'     -fpic  -g -O2 -ffile-prefix-map=/build/r-base-oO8drT/r-base-4.6.0=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c a_util.c -o a_util.o
+g++ -std=gnu++20 -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -o geosphere.so Accumulator.o AuxAngle.o AuxLatitude.o DAuxLatitude.o DST.o EllipticFunction.o Geodesic.o GeodesicExact.o GeodesicLine.o GeodesicLineExact.o Intersect.o Math.o OSGB.o PolygonArea.o RcppExports.o Rhumb.o TransverseMercator.o TransverseMercatorExact.o Utility.o a_dist.o a_geodesic.o a_geolib.o a_util.o -L/usr/lib/R/lib -lR
+installing to /home/gueguema/Documents/_PACKAGES/biomod2/Library/00LOCK-geosphere/00new/geosphere/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+dans la méthode pour ‘areaPolygon’ avec la signature ‘x="SpatVector"’ : aucune définition de la classe “SpatVector” n'est trouvée
+dans la méthode pour ‘areaPolygon’ avec la signature ‘x="sf"’ : aucune définition de la classe “sf” n'est trouvée
+dans la méthode pour ‘areaPolygon’ avec la signature ‘x="SpatialPolygons"’ : aucune définition de la classe “SpatialPolygons” n'est trouvée
+dans la méthode pour ‘centroid’ avec la signature ‘x="SpatialPolygons"’ : aucune définition de la classe “SpatialPolygons” n'est trouvée
+dans la méthode pour ‘perimeter’ avec la signature ‘x="SpatialPolygons"’ : aucune définition de la classe “SpatialPolygons” n'est trouvée
+dans la méthode pour ‘perimeter’ avec la signature ‘x="SpatialLines"’ : aucune définition de la classe “SpatialLines” n'est trouvée
+dans la méthode pour ‘span’ avec la signature ‘x="SpatialPolygons"’ : aucune définition de la classe “SpatialPolygons” n'est trouvée
+dans la méthode pour ‘span’ avec la signature ‘x="sf"’ : aucune définition de la classe “sf” n'est trouvée
+dans la méthode pour ‘span’ avec la signature ‘x="SpatVector"’ : aucune définition de la classe “SpatVector” n'est trouvée
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (geosphere)

@@ -1,0 +1,25 @@
+Package: adehabitatHR
+Version: 0.4.22
+Date: 2024-09-06
+Depends: R (>= 3.0.1), sp, methods, ade4, adehabitatMA, adehabitatLT
+Suggests: tkrplot, MASS, sf, deldir
+Imports: graphics, grDevices, stats
+Title: Home Range Estimation
+Authors@R: c(person(given = "Clement",
+                      family = "Calenge",
+                      role = c("aut", "cre"),
+                      email = "clement.calenge@ofb.gouv.fr"),
+               person(given = "Scott",
+                      family = "Fortmann-Roe",
+                      role = "ctb"))
+Author: Clement Calenge [aut, cre],
+  Scott Fortmann-Roe [ctb]
+Maintainer: Clement Calenge <clement.calenge@ofb.gouv.fr>
+Description: A collection of tools for the estimation of animals home range.
+VignetteBuilder: utils
+License: GPL (>= 2)
+NeedsCompilation: yes
+Packaged: 2024-09-06 10:45:01 UTC; calenge
+Repository: CRAN
+Date/Publication: 2024-09-06 16:20:09 UTC
+Built: R 4.6.0; x86_64-pc-linux-gnu; 2026-05-22 09:34:50 UTC; unix

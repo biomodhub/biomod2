@@ -1,0 +1,4 @@
+importFrom("stats", "dnorm", "pnorm", "runif", "ppois")
+export(ppoibin, dpoibin, qpoibin, rpoibin)
+useDynLib(poibin, .registration = TRUE)
+

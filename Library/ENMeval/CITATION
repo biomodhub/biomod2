@@ -1,0 +1,19 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "ENMeval 2.0: Redesigned for customizable and reproducible modeling of species' niches and distributions",
+  author   = c(
+  person("Jamie M.","Kass", email = "jamie.m.kass@gmail.com"), 
+  person("Robert","Muscarella"),
+  person("Peter J.","Galante"),
+  person("Corentin","Bohl"),
+  person("Gonzalo E.","Buitrago-Pinilla"),
+  person("Robert A.","Boria"),
+  person("Mariano","Soley-Guardia"),
+  person("Robert P.","Anderson")),
+  journal  = "Methods in Ecology and Evolution",
+  year     = "2021",
+  volume   = "12",
+  number   = "9",
+  pages    = "1602-1608",
+  doi      =  "10.1111/2041-210X.13628"
+)

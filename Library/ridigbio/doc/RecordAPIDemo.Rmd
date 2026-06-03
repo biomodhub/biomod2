@@ -1,0 +1,274 @@
+---
+title: Record API Demo
+output: 
+  rmarkdown::html_vignette: 
+    md_extensions: 
+      - "-autolink_bare_uris"
+vignette: >
+  %\VignetteIndexEntry{Record API Demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Code here written by [Erica Krimmel](https://orcid.org/0000-0003-3192-0080) for a workshop at the [2020 Digital Data conference](https://www.idigbio.org/wiki/index.php/4th_Annual_Digital_Data_Conference,_Indiana_University).
+
+## General Overview
+
+You can use the [iDigBio API](https://github.com/idigbio/idigbio-search-api/wiki) to find specimen records using the same search parameters available in the [iDigBio Portal](https://www.idigbio.org/portal/search). Wrappers like [ridigbio](https://cran.r-project.org/package=ridigbio), which we are covering in this demo, provide a simple way to use the iDigBio API in the context of your research pipeline. If you already use, or are considering using, R for data exploration or analysis, it makes sense to bring data into R directly from iDigBio via the API. In this demo we will cover a brief overview of fundamental functions in the ridigbio package that you can use to make your research pipeline more reproducible.
+
+In this demo we will cover how to:
+
+1.  Write a query to search for specimens using `idig_search_records`
+2.  Quickly get a count of how many specimens match a query using `idig_count_records`
+3.  Discover the most frequent values for a field using `idig_top_records`
+
+## Load Packages
+
+```{r message=FALSE}
+# Load core libraries; install these packages if you have not already
+library(ridigbio)
+library(tidyverse)
+
+# Load library for making nice HTML output
+library(kableExtra)
+```
+
+```{r echo = FALSE}
+verify_records_1A <- FALSE
+
+#Test that examples will run
+tryCatch({
+    # Your code that might throw an error
+  verify_records_1A <- idig_search_records(
+  # `rq` is where you adjust your record query
+  rq = list(genus = "shortia"),
+  # `fields` is where you adjust what fields you want returned by the API
+  fields = c("uuid",
+             "family",
+             "genus",
+             "specificepithet",
+             "scientificname",
+             "stateprovince"),
+  # `limit` is where you can set a limit on the number of records to return in
+  # order to speed up your query; max is 100000
+  limit = 10)
+}, error = function(e) {
+    # Code to run if an error occurs
+    cat("An error occurred during the idig_search_records call: ", e$message, "\n")
+    cat("Vignettes will not be fully generated. Please try again after resolving the issue.")
+    # Optionally, you can return NULL or an empty dataframe
+    verify_records_1A <- FALSE
+})
+```
+
+## Write a query to search for specimens using `idig_search_records`
+
+When you use an interface like the iDigBio Portal, you are already writing a query to search for specimens. If you are new to coding, it can be helpful to begin by figuring out your query in a user-friendly interface such as the Portal, then translating it to code in R once you understand what you want to search for. One of the hardest parts of using ridigbio to search for specimen records is know what the field you want to search is named. The iDigBio API provides a list of field names [here](https://www.idigbio.org/content/idigbio-search-api-fields), but you will need to reference other sources, like [documentation for the Darwin Core standard](https://dwc.tdwg.org/terms/), to understand what kind of information these fields typically contain.
+
+```{r eval=verify_records_1A}
+# Let's start with a simple search introducing the primary arguments for the
+# function `idig_search_records`
+records_1A <- idig_search_records(
+  # `rq` is where you adjust your record query
+  rq = list(genus = "shortia"),
+  # `fields` is where you adjust what fields you want returned by the API
+  fields = c("uuid",
+             "family",
+             "genus",
+             "specificepithet",
+             "scientificname",
+             "stateprovince"),
+  # `limit` is where you can set a limit on the number of records to return in
+  # order to speed up your query; max is 100000
+  limit = 10,
+  # `sort` is where you can specify fields for sorting
+  sort = c("stateprovince",
+           "scientificname"))
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(records_1A) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```
+
+```{r eval=verify_records_1A}
+# Now let's repeat the same search but remove all arguments other than `rq` to
+# see what the defaults for the other arguments look like
+records_1B <- idig_search_records(
+  rq = list(genus = "shortia"))
+
+records_1B$occurrenceid <- if_else(grepl("^http://", records_1B$occurrenceid),
+  gsub("^http://", "", records_1B$occurrenceid),
+  records_1B$occurrenceid
+)
+
+records_1B$occurrenceid <- if_else(grepl("data.biodiversitydata.nl/naturalis", records_1B$occurrenceid),
+  gsub("data.biodiversitydata.nl/naturalis", "bioportal.naturalis.nl/nl", records_1B$occurrenceid),
+  records_1B$occurrenceid
+)
+
+records_1B$occurrenceid <- if_else(grepl("https://grbio.org/cool", records_1B$occurrenceid),
+  gsub("https://grbio.org/cool", "grbio.org/cool", records_1B$occurrenceid),
+  records_1B$occurrenceid
+)
+
+records_1B$occurrenceid <- if_else(grepl("https://biocol.org", records_1B$occurrenceid),
+  gsub("https://biocol.org", "biocol.org", records_1B$occurrenceid),
+  records_1B$occurrenceid
+)
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(records_1B) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```
+
+```{r eval=verify_records_1A}
+# In the example above, we are only using one parameter in `rq` to define our
+# query, but now let's search by multiple parameters
+records_2A <- idig_search_records(
+  rq = list(basisofrecord = "fossilspecimen",
+            # Use `type = "exists"` to search for rows where there is a value
+            # present in this field; the inverse of this is `type = "missing"`
+            geopoint = list(type = "exists")),
+  limit = 10)
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(records_2A) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```
+
+```{r eval=verify_records_1A}
+# What if we wanted to see more fields than the default provides? Using the same
+# search as above, we can retrieve all indexed fields with `fields = "all"`
+records_2B <- idig_search_records(
+  rq = list(basisofrecord = "fossilspecimen",
+          geopoint = list(type="exists")),
+  fields = "all",
+  limit = 10)
+
+records_2B$institutionid <- if_else(grepl("^http://", records_2B$institutionid),
+  gsub("^http://", "https://", records_2B$institutionid),
+  records_2B$institutionid
+)
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(records_2B) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```
+
+```{r eval=verify_records_1A}
+# But wait, there are even more fields available than just those we retrieved
+# in the query above! Using the same search, we can choose exactly what fields
+# to retrieve from indexed and raw data if we call the fields out by name in
+# the `fields` argument; raw data fields are prefaced by "data.dwc:" and use 
+# camelCase in their naming convention (vs. lowercase for iDigBio fields)
+records_2C <- idig_search_records(
+  rq = list(basisofrecord = "fossilspecimen",
+          geopoint = list(type="exists")),
+  # Here is where we are explicitly asking for specific fields
+  fields = c("uuid",
+             "recordset",
+             "institutioncode", "data.dwc:institutionCode",
+             "country", "data.dwc:country",
+             "countrycode", "data.dwc:countryCode",
+             "stateprovince", "data.dwc:stateProvince",
+             "locality", "data.dwc:locality",
+             "geopoint", "data.dwc:decimalLongitude", "data.dwc:decimalLatitude"),
+  limit = 10)
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(records_2C) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```
+
+```{r eval=verify_records_1A}
+# You may be curious what the difference is between indexed and raw data such as
+# that we saw in the search above. Indexed data has been altered by iDigBio
+# (often in an attempt to standardize and/or correct values), and raw data is
+# what was provided to iDigBio by the data provider, i.e. the natural history
+# collection. Here we will do a new search on a data quality flag to view
+# differences between indexed and raw data
+records_3A <- idig_search_records(
+  # Data quality flags are a way for iDigBio to communicate how data was altered
+  # during its quality control process, i.e. how the indexed and raw data differ
+  rq = list(flags = "rev_geocode_lat_sign"),
+  fields = c("uuid",
+             "institutioncode", "data.dwc:institutionCode",
+             "country", "data.dwc:country",
+             "countrycode", "data.dwc:countryCode",
+             "stateprovince", "data.dwc:stateProvince",
+             "locality", "data.dwc:locality",
+             "geopoint", "data.dwc:decimalLongitude", "data.dwc:decimalLatitude"),
+  limit = 10)
+
+# Let's format our results to be more readable by renaming and reordering columns
+records_3A <- records_3A %>% 
+  rename_at(vars(starts_with("data.dwc:")),
+            ~str_replace(., "data.dwc:", "raw_")) %>% 
+  select(uuid,
+         indexed_decimalLatitude = geopoint.lat,
+         raw_decimalLatitude,
+         indexed_decimalLongitude = geopoint.lon,
+         raw_decimalLongitude,
+         everything())
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(records_3A) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```
+
+## Quickly get a count of how many specimens match a query using `idig_count_records`
+
+Sometimes the number of records matching a query is more important to your purposes than the records themselves, for instance if you are trying to calculate how many fossil specimens in iDigBio have geographic coordinate data. You can use the same query format for `idig_count_records` as you can for `idig_search_records` to answer the question "How many records will this query return?" more quickly. This function is also useful when you suspect that your query might return more than 100,000 records, which is the limit for any single iteration of `idig_search_records`.
+
+```{r eval=verify_records_1A}
+# Let's test out a search using parameters we know would retrieve many records
+count_1A <- idig_count_records(
+  rq = list(basisofrecord = "fossilspecimen",
+          geopoint = list(type="exists")))
+
+# We can reformat our result to be more readable
+count_1A <- format(count_1A, big.mark = ",")
+
+# This number shows how many records in iDigBio have a value of "fossilspecimen"
+# as well as geographic coordinate data
+count_1A
+```
+
+## Discover the most frequent values for a field using `idig_top_records`
+
+If you are having trouble understanding what kind of information lives in a particular field, it may be useful to look at some of the most common values that exist in that field. The `idig_top_records` function can show you this. Again, this function uses the same basic `rq` argument to define the query.
+
+```{r eval=verify_records_1A}
+# Let's go back to our first simple search and see what the top values are for
+# `scientificname` where the genus is "shortia"
+top_1A <- idig_top_records(
+  # `rq` is where you adjust your record query
+  rq = list(genus = "shortia"),
+  # `top_fields` is where you adjust what fields you want to see summarized
+  top_fields = "scientificname",
+  # `count` is where you can set a limit on the number of top values to return
+  # in order to speed up your query; max is 1000
+  count = 10)
+
+# We need to convert our results from a nested list into a more readable format
+top_1A <- as_tibble(top_1A$scientificname) %>% 
+  pivot_longer(everything(), names_to = "scientificname", values_to = "count")
+
+# Display the data frame we just created above in a nice pretty table for HTML
+knitr::kable(top_1A) %>% 
+    kable_styling(bootstrap_options = 
+                         c("striped", "hover", "condensed", "responsive")) %>% 
+  scroll_box(height = "300px")
+```

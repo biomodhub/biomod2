@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2024-09-17" />
+
+<title>Markov models and transition rate matrices</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Markov models and transition rate
+matrices</h1>
+<h4 class="author">Klaus Schliep, Iris Bardel-Kahr</h4>
+<address class="author_afil">
+Graz University of Technology, University of
+Graz<br><a class="author_email" href="mailto:#"><a href="mailto:klaus.schliep@gmail.com" class="email">klaus.schliep@gmail.com</a></a>
+</address>
+<h4 class="date">2024-09-17</h4>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This document illustrates some of the <em>phangorn</em> <span class="citation">(Schliep 2011)</span> specialized features which are
+useful but maybe not as well-known or just not (yet) described
+elsewhere. This is mainly interesting for someone who wants to explore
+different models or set up some simulation studies. We show how to
+construct data objects for different character states other than
+nucleotides or amino acids or how to set up different models to estimate
+transition rate.</p>
+<p>The vignettes <em>Estimating phylogenetic trees with phangorn</em>
+and <em>Phylogenetic trees from morphological data</em> describe in
+detail how to estimate phylogenies from nucleotides, amino acids or
+morphological data.</p>
+</div>
+<div id="user-defined-data-formats" class="section level1">
+<h1>User defined data formats</h1>
+<p>To better understand how to define our own data type it is useful to
+know a bit more about the internal representation of <code>phyDat</code>
+objects. The internal representation of <code>phyDat</code> object is
+very similar to <code>factor</code> objects.</p>
+<p>As an example we will show here several possibilities to define
+nucleotide data with gaps defined as a fifth state. Ignoring gaps or
+coding them as ambiguous sites - as it is done in most programs, also in
+phangorn as default - may be misleading (see <span class="citation">(Warnow 2012)</span>). When the number of gaps is low
+and randomly distributed, coding gaps as separate state may be not
+important.</p>
+<p>Let’s assume we have given a matrix where each row contains a
+character vector of a taxonomic unit:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(phangorn)</span></code></pre></div>
+<pre><code>## Lade nötiges Paket: ape</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="st">&quot;r&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;-&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;g&quot;</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="st">&quot;a&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;-&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;a&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="st">&quot;a&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;-&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;?&quot;</span>,<span class="st">&quot;g&quot;</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;t1&quot;</span>, <span class="st">&quot;t2&quot;</span>, <span class="st">&quot;t3&quot;</span>),<span class="cn">NULL</span>), <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>data</span></code></pre></div>
+<pre><code>##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+## t1 &quot;r&quot;  &quot;a&quot;  &quot;y&quot;  &quot;g&quot;  &quot;g&quot;  &quot;a&quot;  &quot;c&quot;  &quot;-&quot;  &quot;c&quot;  &quot;t&quot;   &quot;c&quot;   &quot;g&quot;  
+## t2 &quot;a&quot;  &quot;a&quot;  &quot;t&quot;  &quot;g&quot;  &quot;g&quot;  &quot;a&quot;  &quot;t&quot;  &quot;-&quot;  &quot;c&quot;  &quot;t&quot;   &quot;c&quot;   &quot;a&quot;  
+## t3 &quot;a&quot;  &quot;a&quot;  &quot;t&quot;  &quot;-&quot;  &quot;g&quot;  &quot;a&quot;  &quot;c&quot;  &quot;c&quot;  &quot;c&quot;  &quot;t&quot;   &quot;?&quot;   &quot;g&quot;</code></pre>
+<p>Normally we would transform this matrix into a phyDat object and gaps
+are handled as ambiguous character (like “?”).</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>gapsdata1 <span class="ot">&lt;-</span> <span class="fu">phyDat</span>(data)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>gapsdata1</span></code></pre></div>
+<pre><code>## 3 sequences with 12 character and 11 different site patterns.
+## The states are a c g t</code></pre>
+<p>Now we will define a “USER” defined object and have to supply a
+vector of levels of the character states for the new data – in our case
+the four nucleotide states and the gap. Additionally we can define
+ambiguous states which can be any of the states.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>gapsdata2 <span class="ot">&lt;-</span> <span class="fu">phyDat</span>(data, <span class="at">type=</span><span class="st">&quot;USER&quot;</span>, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;-&quot;</span>),</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>    <span class="at">ambiguity =</span> <span class="fu">c</span>(<span class="st">&quot;?&quot;</span>, <span class="st">&quot;n&quot;</span>))</span></code></pre></div>
+<pre><code>## Warning in phyDat.default(data, levels = levels, return.index = return.index, :
+## Found unknown characters (not supplied in levels). Deleted sites with unknown
+## states.</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>gapsdata2</span></code></pre></div>
+<pre><code>## 3 sequences with 10 character and 9 different site patterns.
+## The states are a c g t -</code></pre>
+<p>This is not yet what we wanted, as two sites of our alignment - which
+contain the ambiguous characters “r” and “y” - got deleted. To define
+ambiguous characters like “r” and “y” explicitly we have to supply a
+contrast matrix similar to contrasts for factors.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>contrast <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="fu">dimnames</span>(contrast) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;c&quot;</span>,<span class="st">&quot;g&quot;</span>,<span class="st">&quot;t&quot;</span>,<span class="st">&quot;r&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;-&quot;</span>,<span class="st">&quot;n&quot;</span>,<span class="st">&quot;?&quot;</span>),</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;g&quot;</span>, <span class="st">&quot;t&quot;</span>, <span class="st">&quot;-&quot;</span>))</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>contrast</span></code></pre></div>
+<pre><code>##   a c g t -
+## a 1 0 0 0 0
+## c 0 1 0 0 0
+## g 0 0 1 0 0
+## t 0 0 0 1 0
+## r 1 0 1 0 0
+## y 0 1 0 1 0
+## - 0 0 0 0 1
+## n 1 1 1 1 0
+## ? 1 1 1 1 1</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>gapsdata3 <span class="ot">&lt;-</span> <span class="fu">phyDat</span>(data, <span class="at">type=</span><span class="st">&quot;USER&quot;</span>, <span class="at">contrast=</span>contrast)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>gapsdata3</span></code></pre></div>
+<pre><code>## 3 sequences with 12 character and 11 different site patterns.
+## The states are a c g t -</code></pre>
+<p>Here we defined “n” as a state which can be any nucleotide, but not a
+gap. And “?” can be any state including a gap.</p>
+<p>These data can be used in all functions available in
+<em>phangorn</em> to compute distance matrices or perform parsimony and
+maximum likelihood analysis.</p>
+</div>
+<div id="markov-models-of-character-evolution" class="section level1">
+<h1>Markov models of character evolution</h1>
+<p>To model nucleotide substitutions across the edges of a tree T we can
+assign a transition matrix. In the case of nucleotides, with four
+character states, each 4 <span class="math inline">\(\times\)</span> 4
+transition matrix has, at most, 12 free parameters.</p>
+<p>Time-reversible Markov models are used to describe how characters
+change over time, and use fewer parameters. Time-reversible means that
+these models need not be directed in time, and the Markov property
+states that these models depend only on the current state. These models
+are used in analyses of phylogenies using maximum likelihood and MCMC,
+computing pairwise distances, as well as in simulating sequence
+evolution.</p>
+<p>We will now describe the General Time-Reversible (GTR) model <span class="citation">(Tavaré 1986)</span>. The parameters of the GTR model
+are the equilibrium frequencies <span class="math inline">\(\pi = (\pi_A
+,\pi_C ,\pi_G ,\pi_T)\)</span> and a rate matrix <span class="math inline">\(Q\)</span> which has the form <span class="math display">\[\begin{equation}
+Q =
+\begin{pmatrix}
+\ast  &amp; \alpha\pi_C &amp; \beta\pi_G &amp; \gamma\pi_T \\
+\alpha\pi_A &amp; \ast &amp; \delta\pi_G &amp; \epsilon\pi_T \\
+\beta\pi_A &amp; \delta\pi_C &amp; \ast &amp; \eta\pi_T \\
+\gamma\pi_A &amp;  \epsilon\pi_C &amp; \eta\pi_G &amp; \ast \\
+\end{pmatrix}
+(1)
+\end{equation}\]</span></p>
+<p>where we need to assign 6 parameters <span class="math inline">\(\alpha, \dots, \eta\)</span>. The elements on the
+diagonal are chosen so that the rows sum to zero. The Jukes-Cantor (JC)
+<span class="citation">(Jukes and Cantor 1969)</span> model can be
+derived as special case from the GTR model, for equal equilibrium
+frequencies <span class="math inline">\(\pi_A = \pi_C = \pi_G = \pi_T =
+0.25\)</span> and equal rates set to <span class="math inline">\(\alpha
+= \beta = \gamma = \delta = \eta\)</span>. Table 2 lists all built-in
+nucleotide models in <em>phangorn</em>. The transition probabilities,
+which describe the probabilities of change from character <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> in time <span class="math inline">\(t\)</span>, are given by the corresponding entries
+of the matrix exponential <span class="math display">\[
+P(t) = (p_{ij}(t)) = e^{Qt}, \qquad \sum_j p_{ij}=1
+\]</span> where <span class="math inline">\(P(t)\)</span> is the
+transition matrix spanning a period of time <span class="math inline">\(t\)</span>.</p>
+</div>
+<div id="estimation-of-non-standard-transition-rate-matrices" class="section level1">
+<h1>Estimation of non-standard transition rate matrices</h1>
+<p>In the section <em>User defined data formats</em> we described how to
+set up user defined data formats. Now we describe how to estimate
+transition matrices with pml.</p>
+<p>Again for nucleotide data the most common models can be called
+directly in the <code>optim.pml</code> function (e.g. “JC69”, “HKY”,
+“GTR” to name a few). Table 2 lists all the available nucleotide models,
+which can estimated directly in <code>optim.pml</code>. For amino acids
+several transition matrices are available (“WAG”, “JTT”, “LG”,
+“Dayhoff”, “cpREV”, “mtmam”, “mtArt”, “MtZoa”, “mtREV24”, “VT”,“RtREV”,
+“HIVw”, “HIVb”, “FLU”, “Blosum62”, “Dayhoff_DCMut” and “JTT-DCMut”) or
+can be estimated with <code>optim.pml</code>. For example <span class="citation">Mathews, Clements, and Beilstein (2010)</span> used
+this function to estimate a phytochrome amino acid transition
+matrix.</p>
+<p>We will now show how to estimate a rate matrix with different
+transition (<span class="math inline">\(\alpha\)</span>) and
+transversion ratio (<span class="math inline">\(\beta\)</span>) and a
+fixed rate to the gap state (<span class="math inline">\(\gamma\)</span>) - a kind of Kimura two-parameter
+model (K81) for nucleotide data with gaps as fifth state (see table
+1).</p>
+<table>
+<caption>Tab 1. Rate matrix with 3 parameters to optimize.</caption>
+<thead>
+<tr class="header">
+<th>a</th>
+<th>c</th>
+<th>g</th>
+<th>t</th>
+<th>-</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>a</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>c</td>
+<td><span class="math inline">\(\beta\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>g</td>
+<td><span class="math inline">\(\alpha\)</span></td>
+<td><span class="math inline">\(\beta\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>t</td>
+<td><span class="math inline">\(\beta\)</span></td>
+<td><span class="math inline">\(\alpha\)</span></td>
+<td><span class="math inline">\(\beta\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>-</td>
+<td><span class="math inline">\(\gamma\)</span></td>
+<td><span class="math inline">\(\gamma\)</span></td>
+<td><span class="math inline">\(\gamma\)</span></td>
+<td><span class="math inline">\(\gamma\)</span></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>If we want to fit a non-standard transition rate matrix, we have to
+tell <code>optim.pml</code> which transitions in Q get the same rate.
+The parameter vector subs accepts a vector of consecutive integers and
+at least one element has to be zero (these get the reference rate of 1).
+Negative values indicate that there is no direct transition possible and
+the rate is set to zero.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">unroot</span>(<span class="fu">rtree</span>(<span class="dv">3</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">pml</span>(tree, gapsdata3)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">optim.pml</span>(fit, <span class="at">optQ=</span><span class="cn">TRUE</span>, <span class="at">subs=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="at">control=</span><span class="fu">pml.control</span>(<span class="at">trace=</span><span class="dv">0</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>fit</span></code></pre></div>
+<pre><code>## model: Mk 
+## loglikelihood: -33.01 
+## unconstrained loglikelihood: -28.43 
+## 
+## Rate matrix:
+##           a         c         g         t      -
+## a 0.000e+00 2.584e-06 1.000e+00 2.584e-06 0.6912
+## c 2.584e-06 0.000e+00 2.584e-06 1.000e+00 0.6912
+## g 1.000e+00 2.584e-06 0.000e+00 2.584e-06 0.6912
+## t 2.584e-06 1.000e+00 2.584e-06 0.000e+00 0.6912
+## - 6.912e-01 6.912e-01 6.912e-01 6.912e-01 0.0000
+## 
+## Base frequencies:  
+##   a   c   g   t   - 
+## 0.2 0.2 0.2 0.2 0.2</code></pre>
+<p>Here are some conventions how the models are estimated:</p>
+<p>If a model is supplied the base frequencies bf and rate matrix Q are
+optimized according to the model (nucleotides) or the adequate rate
+matrix and frequencies are chosen (for amino acids). If optQ=TRUE and
+neither a model nor subs are supplied then a symmetric (optBf=FALSE) or
+reversible model (optBf=TRUE, i.e. the GTR for nucleotides) is
+estimated. This can be slow if the there are many character states,
+e.g. for amino acids. Table 2 shows how parameters are optimized and the
+number of parameters to estimate. The elements of the vector subs
+correspond to <span class="math inline">\(\alpha, \dots, \eta\)</span>
+in equation (1)</p>
+<table>
+<caption>Tab 2. DNA models available in phangorn.</caption>
+<thead>
+<tr class="header">
+<th>model</th>
+<th>optQ</th>
+<th>optBf</th>
+<th>subs</th>
+<th>df</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>JC</td>
+<td>FALSE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(0, 0, 0, 0, 0, 0)\)</span></td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>F81</td>
+<td>FALSE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(0, 0, 0, 0, 0, 0)\)</span></td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>K80</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(0, 1, 0, 0, 1, 0)\)</span></td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>HKY</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(0, 1, 0, 0, 1, 0)\)</span></td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>TrNe</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(0, 1, 0, 0, 2, 0)\)</span></td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>TrN</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(0, 1, 0, 0, 2, 0)\)</span></td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>TPM1</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(0, 1, 2, 2, 1, 0)\)</span></td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>K81</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(0, 1, 2, 2, 1, 0)\)</span></td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>TPM1u</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(0, 1, 2, 2, 1, 0)\)</span></td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>TPM2</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(1, 2, 1, 0, 2, 0)\)</span></td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>TPM2u</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(1, 2, 1, 0, 2, 0)\)</span></td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>TPM3</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(1, 2, 0, 1, 2, 0)\)</span></td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>TPM3u</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(1, 2, 0, 1, 2, 0)\)</span></td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>TIM1e</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(0, 1, 2, 2, 3, 0)\)</span></td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>TIM1</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(0, 1, 2, 2, 3, 0)\)</span></td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>TIM2e</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(1, 2, 1, 0, 3, 0)\)</span></td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>TIM2</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(1, 2, 1, 0, 3, 0)\)</span></td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>TIM3e</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(1, 2, 0, 1, 3, 0)\)</span></td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>TIM3</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(1, 2, 0, 1, 3, 0)\)</span></td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>TVMe</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(1, 2, 3, 4, 2, 0)\)</span></td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td>TVM</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(1, 2, 3, 4, 2, 0)\)</span></td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>SYM</td>
+<td>TRUE</td>
+<td>FALSE</td>
+<td><span class="math inline">\(c(1, 2, 3, 4, 5, 0)\)</span></td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>GTR</td>
+<td>TRUE</td>
+<td>TRUE</td>
+<td><span class="math inline">\(c(1, 2, 3, 4, 5, 0)\)</span></td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<div id="predefined-models-for-user-defined-data" class="section level2">
+<h2>Predefined models for user defined data</h2>
+<p>So far there are 4 models which are just a generalization from
+nucleotide models allowing different number of states. In many cases
+only the equal rates (ER) model will be appropriate.</p>
+<table>
+<caption>Tab 2: Build in models which are available for USER defined
+data.</caption>
+<thead>
+<tr class="header">
+<th>DNA</th>
+<th>USER</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>JC</td>
+<td>ER</td>
+</tr>
+<tr class="even">
+<td>F81</td>
+<td>FREQ</td>
+</tr>
+<tr class="odd">
+<td>SYM</td>
+<td>SYM</td>
+</tr>
+<tr class="even">
+<td>GTR</td>
+<td>GTR</td>
+</tr>
+</tbody>
+</table>
+<p>There is an additional model ORDERED, which assumes ordered
+characters and only allows to switch between neighboring states. Table 3
+show the corresponding rate matrix.</p>
+<table>
+<caption>Tab 3: Rate matrix for “ORDERED” model with 5 states.</caption>
+<thead>
+<tr class="header">
+<th>a</th>
+<th>b</th>
+<th>c</th>
+<th>d</th>
+<th>e</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>a</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>b</td>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>c</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>d</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>e</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="codon-substitution-models" class="section level1">
+<h1>Codon substitution models</h1>
+<p>A special case of the transition rates are codon models.
+<em>phangorn</em> now offers the possibility to estimate the <span class="math inline">\(d_N/d_S\)</span> ratio (sometimes called ka/ks),
+for an overview see <span class="citation">(Yang 2014)</span>. These
+functions extend the option to estimate the <span class="math inline">\(d_N/d_S\)</span> ratio for pairwise sequence
+comparison as it is available through the function <code>kaks</code> in
+<em>seqinr</em>. The transition rate between between codon <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> is defined as follows: <span class="math display">\[\begin{eqnarray}
+q_{ij}=\left\{
+    \begin{array}{l@{\quad}l}
+         0 &amp; \textrm{if i and j differ in more than one position} \\
+         \pi_j &amp; \textrm{for synonymous transversion} \\
+         \pi_j\kappa &amp; \textrm{for synonymous transition} \\
+         \pi_j\omega &amp; \textrm{for non-synonymous transversion} \\
+         \pi_j\omega\kappa &amp; \textrm{for non-synonymous transition}
+    \end{array}
+    \right. \nonumber
+\end{eqnarray}\]</span></p>
+<p>where <span class="math inline">\(\omega\)</span> is the <span class="math inline">\(d_N/d_S\)</span> ratio, <span class="math inline">\(\kappa\)</span> the transition transversion ratio
+and <span class="math inline">\(\pi_j\)</span> is the the equilibrium
+frequency of codon <span class="math inline">\(j\)</span>. For <span class="math inline">\(\omega\sim1\)</span> the amino acid change is
+neutral, for <span class="math inline">\(\omega &lt; 1\)</span>
+purifying selection and <span class="math inline">\(\omega &gt;
+1\)</span> positive selection.</p>
+<p>Here we use a data set from and follow loosely the example in <span class="citation">Bielawski and Yang (2005)</span>. We first read in an
+alignment and phylogenetic tree for 45 sequences of the nef gene in the
+Human HIV-2 Genome using <code>read.phyDat</code> function.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>fdir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata/trees&quot;</span>, <span class="at">package =</span> <span class="st">&quot;phangorn&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>hiv_2_nef <span class="ot">&lt;-</span> <span class="fu">read.phyDat</span>(<span class="fu">file.path</span>(fdir, <span class="st">&quot;seqfile.txt&quot;</span>), <span class="at">format=</span><span class="st">&quot;sequential&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">read.tree</span>(<span class="fu">file.path</span>(fdir, <span class="st">&quot;tree.txt&quot;</span>))</span></code></pre></div>
+<p>With the tree and data set we can estimate currently 3 different site
+models:</p>
+<ol style="list-style-type: decimal">
+<li>The M0 model with a constant <span class="math inline">\(\omega\)</span>, where <span class="math inline">\(\omega\)</span> estimates the average over all
+sites of the alignment. M0 does not allow for distinct <span class="math inline">\(\omega\)</span> and identifies classes, therefore
+we will not retrieve any information regarding positive selection.<br />
+</li>
+<li>The M1a or nearly neutral model estimates two different <span class="math inline">\(\omega\)</span> value classes (<span class="math inline">\(\omega=1\)</span> &amp; <span class="math inline">\(\omega&lt;1\)</span>).</li>
+<li>The M2a or positive selection model estimates three different
+classes of <span class="math inline">\(\omega\)</span> (negative
+selection <span class="math inline">\(\omega&lt;1\)</span>, neutral
+selection <span class="math inline">\(\omega=1\)</span>, positive
+selection <span class="math inline">\(\omega&gt;1\)</span>). One can use
+a likelihood ratio test to compare the M1a and M2a to for positive
+selection.</li>
+</ol>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>cdn <span class="ot">&lt;-</span> <span class="fu">codonTest</span>(tree, hiv_2_nef)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>cdn</span></code></pre></div>
+<pre><code>##   model Frequencies  estimate logLik  df   AIC   BIC  dnds_0 dnds_1 dnds_2
+## 1    M0        F3x4 empirical  -9773  98 19741 20087 0.50486     NA     NA
+## 2   M1a        F3x4 empirical  -9313  99 18824 19168 0.06281      1     NA
+## 3   M2a        F3x4 empirical  -9244 101 18689 19040 0.05551      1  2.469
+##      p_0    p_1    p_2  tstv
+## 1 1.0000     NA     NA 4.418
+## 2 0.5563 0.4437     NA 4.364
+## 3 0.5227 0.3617 0.1156 4.849</code></pre>
+<p>Currently the choice of site models is limited to the three models
+mentioned above and are no branch models implemented so far.</p>
+<p>We can identify sites under positive selection using the Na&quot;ive
+empirical Bayes (NEB) method of <span class="citation">Yang and Nielsen
+(1998)</span>: <span class="math display">\[
+P(\omega|x_h) = \frac{P(X_h|\omega_i)p_i}{P(X_h)} =
+\frac{P(X_h|\omega_i)p_i}{\sum_j P(X_h|\omega_j)p_j}
+\]</span></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">plot</span>(cdn, <span class="st">&quot;M1a&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">plot</span>(cdn, <span class="st">&quot;M2a&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAIAAADK+EpIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAgAElEQVR4nO3df1TU1b7/8T0BOQSYMxxAwvKI8Uty6RV/lFcllt2bCKk3IOuYLK8kKWvVUaIr5NHWzZNWipx+aKKlKXYEy8QQKhWpzFumR0526iYqnMLARIND+QMYmO8fc88svvwYZoaBz976fPzFfPZmf96z+cy85vNjPujMZrMAAEA1N2ldAAAAziDAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASiLAAABKIsAAAEoiwAAASnLXugAo4Pvvv//oo49s9xk4cODDDz/s0LC7d+9+8cUXKyoqxowZs27dutGjRzvUbc+ePQ8++GD7no899tjmzZudbrJHS0vLn//856amJht9dDrdgw8+6Ovra+eYVgcPHrxy5cqMGTMc/UWtlJaWnj171nafqKioqKgoh4Z97bXXduzY8c033wQFBT322GOLFy92d7f1TlVSUtLU1PQf//EflpLuu+++zn0KCwtnzpzpUBmQHwGGnr399tsvLlszSBht9KkWVTNnzvT09LRzzOLi4qSkpIULF/7Xf/3Xm2++OWnSpP/93/+9/fbb7e9WWVnp7+//3HPPWTuHh4db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" /><!-- --></p>
+<p>A lot if implementations differ in the way the codon frequencies are
+derived. The M0 model can be also estimated using <code>pml</code> and
+<code>optim.pml</code> functions. There are several ways to estimate the
+codon frequencies <span class="math inline">\(\pi_j\)</span>. The
+simplest model is to assume they have equal frequencies (=1/61). A
+second is to use the empirical codon frequencies, either computed using
+<code>baseFreq</code> or using the argument <code>bf=&quot;empirical&quot;</code>
+in <code>pml</code>. This is usually not really good as some codons are
+rare and have a high variance. One can estimate the frequencies from
+nucleotide frequencies with the F1x4 model. Last but not least the
+frequencies can be derived from the base frequencies at each codon
+position, the F3x4 model is set by the argument
+<code>bf=&quot;F3x4&quot;</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>treeM0 <span class="ot">&lt;-</span> cdn<span class="sc">$</span>estimates[[<span class="st">&quot;M0&quot;</span>]]<span class="sc">$</span>tree <span class="co"># tree with edge lengths</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>M0 <span class="ot">&lt;-</span> <span class="fu">pml</span>(treeM0, <span class="fu">dna2codon</span>(hiv_2_nef), <span class="at">bf=</span><span class="st">&quot;F3x4&quot;</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>M0 <span class="ot">&lt;-</span> <span class="fu">optim.pml</span>(M0, <span class="at">model=</span><span class="st">&quot;codon1&quot;</span>, <span class="at">control=</span><span class="fu">pml.control</span>(<span class="at">trace=</span><span class="dv">0</span>))</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>M0</span></code></pre></div>
+<pre><code>## model: codon1 
+## loglikelihood: -9773 
+## unconstrained loglikelihood: -1372 
+## dn/ds: 0.5049 
+## ts/tv: 4.418 
+## Freq: F3x4</code></pre>
+<p>For the F3x4 model can optimize the codon frequencies setting the
+option to <code>optBf=TRUE</code> in <code>optim.pml</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>M0_opt <span class="ot">&lt;-</span> <span class="fu">optim.pml</span>(M0, <span class="at">model=</span><span class="st">&quot;codon1&quot;</span>, <span class="at">optBf=</span><span class="cn">TRUE</span>, <span class="at">control=</span><span class="fu">pml.control</span>(<span class="at">trace=</span><span class="dv">0</span>))</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>M0_opt</span></code></pre></div>
+<pre><code>## model: codon1 
+## loglikelihood: -9668 
+## unconstrained loglikelihood: -1372 
+## dn/ds: 0.51 
+## ts/tv: 4.581 
+## Freq: F3x4</code></pre>
+</div>
+<div id="session-info" class="section level1">
+<h1>Session info</h1>
+<pre><code>## R version 4.4.1 (2024-06-14)
+## Platform: x86_64-pc-linux-gnu
+## Running under: Debian GNU/Linux 12 (bookworm)
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.11.0 
+## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.11.0
+## 
+## locale:
+##  [1] LC_CTYPE=de_AT.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=de_AT.UTF-8        LC_COLLATE=C              
+##  [5] LC_MONETARY=de_AT.UTF-8    LC_MESSAGES=de_AT.UTF-8   
+##  [7] LC_PAPER=de_AT.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=de_AT.UTF-8 LC_IDENTIFICATION=C       
+## 
+## time zone: Europe/Vienna
+## tzcode source: system (glibc)
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] phangorn_2.12.1 ape_5.8-0.1    
+## 
+## loaded via a namespace (and not attached):
+##  [1] nlme_3.1-165      cli_3.6.3         knitr_1.48        rlang_1.1.4      
+##  [5] xfun_0.47         highr_0.11        generics_0.1.3    jsonlite_1.8.8   
+##  [9] htmltools_0.5.8.1 sass_0.4.9        rmarkdown_2.28    quadprog_1.5-8   
+## [13] grid_4.4.1        evaluate_0.24.0   jquerylib_0.1.4   fastmap_1.2.0    
+## [17] yaml_2.3.10       lifecycle_1.0.4   compiler_4.4.1    codetools_0.2-20 
+## [21] igraph_2.0.3      pkgconfig_2.0.3   Rcpp_1.0.13       fastmatch_1.1-4  
+## [25] rstudioapi_0.16.0 lattice_0.22-6    digest_0.6.37     R6_2.5.1         
+## [29] parallel_4.4.1    magrittr_2.0.3    bslib_0.8.0       Matrix_1.7-0     
+## [33] tools_4.4.1       cachem_1.1.0</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Bielawski2005" class="csl-entry">
+Bielawski, Joseph P., and Ziheng Yang. 2005. <span>“Maximum Likelihood
+Methods for Detecting Adaptive Protein Evolution.”</span> In
+<em>Statistical Methods in Molecular Evolution</em>, 103–24. New York,
+NY: Springer New York. <a href="https://doi.org/10.1007/0-387-27733-1_5">https://doi.org/10.1007/0-387-27733-1_5</a>.
+</div>
+<div id="ref-Jukes1969" class="csl-entry">
+Jukes, Thomas H., and Charles R. Cantor. 1969. <span>“{CHAPTER} 24 -
+Evolution of Protein Molecules.”</span> In <em>Mammalian Protein
+Metabolism</em>, edited by H. N. Munro, 21–132. Academic Press.
+</div>
+<div id="ref-Mathews2010" class="csl-entry">
+Mathews, S., M. D. Clements, and M. A. Beilstein. 2010. <span>“A
+Duplicate Gene Rooting of Seed Plants and the Phylogenetic Position of
+Flowering Plants.”</span> <em>Phil. Trans. R. Soc. B</em> 365: 383–95.
+</div>
+<div id="ref-Schliep2011" class="csl-entry">
+Schliep, Klaus Peter. 2011. <span>“Phangorn: Phylogenetic Analysis in
+<span>R</span>.”</span> <em>Bioinformatics</em> 27 (4): 592–93. <a href="https://doi.org/10.1093/bioinformatics/btq706">https://doi.org/10.1093/bioinformatics/btq706</a>.
+</div>
+<div id="ref-Tavare1986" class="csl-entry">
+Tavaré, Simon. 1986. <span>“Some Probabilistic and Statistical Problems
+in the Analysis of DNA Sequences.”</span> <em>Lectures on Mathematics in
+the Life Sciences</em>, no. 17: 57–86.
+</div>
+<div id="ref-Warnow2012" class="csl-entry">
+Warnow, Tandy. 2012. <span>“Standard Maximum Likelihood Analyses of
+Alignments with Gaps Can Be Statistically Inconsistent.”</span> <em>PLOS
+Currents Tree of Life</em>.
+</div>
+<div id="ref-Yang2014" class="csl-entry">
+Yang, Ziheng. 2014. <em>Molecular Evolution: A Statistical
+Approach</em>. Oxford: Oxford University Press.
+</div>
+<div id="ref-Yang1998" class="csl-entry">
+Yang, Ziheng, and Rasmus Nielsen. 1998. <span>“Synonymous and
+Nonsynonymous Rate Variation in Nuclear Genes of Mammals.”</span>
+<em>Journal of Molecular Evolution</em> 46 (4): 409–18. <a href="https://doi.org/10.1007/PL00006320">https://doi.org/10.1007/PL00006320</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

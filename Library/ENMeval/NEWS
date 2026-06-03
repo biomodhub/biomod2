@@ -1,0 +1,123 @@
+ENMeval 2.0.5.2
+===========
+o  Fixed an error in maxnet.predictRaster that resulted in ignoring categorical variables when making predictions. This happened because terra::values was converting the cateogrical values to numeric, and the maxnet model had them specified as categorical, so they were ignored. For maxent.jar models, they are specified internally as numeric, unlike for maxnet.
+o  Fixed a small error that resulted in conversion of categorical variable values to numeric for maxnet models for AICc calculation. This conversion was meant only for maxent.jar models, but it should not have affected AIC calculations.
+o  Added a note about the validation.bg option in the documentation for ENMevaluate.
+
+ENMeval 2.0.5.1
+===========
+o  Fixed a typo in maxnet.predictRaster.
+
+ENMeval 2.0.5
+===========
+* This one is kind of a big update, making the switch to terra and predicts*
+o  Updated package and vignette to use terra and predicts functions instead of raster and dismo, which rely on deprecated pkgs sp, rgdal, and rgeos. This includes the multivariate environmental similarity functions originally from rmaxent and the RMM functionality. Thus, in place of dismo::maxent, we now use predicts::MaxEnt, and in place of dismo::bioclim we now use predicts::envelope. As the predict methods for these functions are not currently exported by the current version of the predicts pkg on CRAN, ENMeval currrently loads the predicts pkg when making model predictions for maxent.jar and BIOCLIM models, though this will be phased out once the predicts pkg updates. Please see README for a warning about using categorical predictors with predicts::MaxEnt.
+o  Removed doSNOW functionality because it is deprecated and replaced with a parallelization implementation from the parallel package. In doing so, also removed doParallel functions because they were not necessary. This means the parallelType argument is now gone, which simplifies things a bit, but it also means that parallel processes no longer have a progress bar, which only worked for doSNOW functions.
+o  Fixed the maxent.jar implementation so that it correctly receives extra arguments like jacknife=TRUE or responsecurves=TRUE and produces the html and plot output. To use this, you need to set the path in the parameter "other.settings" -- see the new example in ?ENMevaluate.
+o  Simplified the environmental similarity plotting by removing "most similar" and "most different" options -- these originate from an old function from a different package that is difficult to maintain over time, so we are now using predicts::mess only.
+o  Now when model settings result in a model error for at least one fold during cross-validation, the validation statistics for these settings in the results table are all NA. Previously, the fold with the error was simply removed from the results.partitions table and summary statistics were calculated ignoring these folds. This is a much more cautious approach, as the failure of a model to complete for even one fold may mean those settings are not recommendable given the partition method chosen.
+o  Fixed an issue that made the 'rm' field in the ENMevaluation results table a factor variable, potentially leading to change in the numbers when as.numeric() is used. Now this field is numeric type.
+o  Added new save and load functions for ENMevaluation objects (saveENMevaluation, loadENMevaluation) that write and read .rds files. This was necessary because the terra pkg uses new wrap and unwrap functions to preserve file connections, and these new ENMeval functions do the wrapping and unwrapping automatically.
+o  Added a raster.preds argument that allows users to turn off the generation of model prediction rasters even when inputting them in the envs argument. Rasters were previously input into model tuning functions during parallelization, but as terra objects result in an error for the same reason explained above, now only tabular data is input for model tuning (which includes the parallelization functions) and prediction rasters are generated after model-building and evaluation.
+o  Brought back the maxnet.predictRaster function and simplified it. This can be used to generate raster predictions for maxnet models (the pkg does not currently provide this functionality).
+o  Simplified checkerboard partition functionality to remove numbers from function names (checkerboard1, checkerboard2) and switch from "basic" and "hierarchical" based on parameter inputs. Left the old functions in as well to avoid breaking existing code, but will phase out with next version.
+o  Now you can set addsamplestobackground = FALSE in other.settings for maxnet models.
+o  Now you can set removeduplicates = FALSE in other.settings to turn off the removal of grid-cell duplicates for occurrences.
+o  Removed functionality for deprecated parameters from v1.
+o  Switched to native R pipes instead of magrittr.
+o  Made changes to simplify unit tests.
+o  Added GNU General Public License v3.0.
+o  Changed "niche overlap" to "range overlap" because the overlap is calculated in geographic space.
+
+ENMeval 2.0.4
+===========
+* This update makes a bunch of bug fixes and enhancements brought to me by the user community. Thank you for helping me improve the software!*
+o  Added documentation on the columns of the e@results table to ?ENMevaluation.
+o  Fixed the variable importance slot in ENMevaluation objects. This slot will only be populated for maxent.jar models because maxnet (or BIOCLIM) lack a native function for this. Might add some external function to do this for these models in the future.
+o  Simplified the predict method for maxnet ENMdetails objects and provided an example in ?ENMevaluate. 
+o  Added the ability to turn clamping on or off for maxnet models by specifying doClamp in other.settings, and added a doClamp slot for ENMnull objects.
+o  Fixed a bug that prevented clamping even when doClamp was TRUE for models specified without raster environmental predictor data (species-with-data format). Now models specified without raster data also clamp as expected.
+o  Added a switch that turns on or off ecospat functionality depending on whether it is installed into ENMnulls. This was already present in ENMevaluate.
+o  Added documentation on the other.args option for the other.settings argument in ENMevaluate.
+o  Added a warning message when AIC is unable to be calculated because the number of model non-zero coefficients exceeds the number of occurrence records input. Previously, this resulted in the silent attribution of NAs to the results table without explanation.
+o  Fixed a bug that caused an error when other.settings was specified in ENMevaluate instead of left at the default NULL. Now this list is populated with default fields whether it is left NULL or specified as a list with elements by the user.
+
+ENMeval 2.0.3
+===========
+o  Updated to be compatible with ecospat 3.2.1.
+
+ENMeval 2.0.2
+===========
+o  Fixed a bug that caused an error in the clamp.vars() function when more than one categorical variable was specified for tabular data inputs (which ENMevaluate() uses internally).
+o  Added new unit tests for functionality with multiple categorical variables and clamping, and also fixed some bugs with the tests.
+o  Small changes to the print methods for classes.
+o  Fixed a bug that made ENMnulls() error when the model included user-specified evaluation metrics.
+o  Fixed a warning for clamp.vars() that printed when a data frame with multiple categorical variables was input instead of a raster.
+
+ENMeval 2.0.1
+===========
+o  Fixed the DESCRIPTION file to ensure that all necessary packages are installed with the
+installation of ENMeval.
+o  Addition of ENMevaluation_convert() function to convert old ENMevaluation objects (<=0.3.1) into
+new (>=2.0.0) ones.
+
+
+ENMeval 2.0.0
+===========
+o  Complete redesign of nearly all functionality. Code is now much tidier and readable thanks to dplyr and tidyr, and commented documentation is more prevalent throughout.
+o  New object-oriented algorithm specification for using any algorithm with ENMeval. Implementations of the new ENMdetails object exist for maxent.jar, maxnet, and BIOCLIM as examples of what is possible.
+o  Automated output metadata for tuning analyses which uses the Range Model Metadata Standards (R package rangeModelMetadata).
+o  New function for running null ENM simulations and calculating significance and effect sizes for empirical model performance metrics (Bohl et al. 2019 -- check ?ENMnulls).
+o  New partition schema for fully withheld testing data and evaluation without partitions. Also includes a new option for spatial block partitions to customize the spatial orientation of the blocks.
+o  Now implements continuous Boyce Index for training, validation, and full withheld testing data (via R package ecospat), and allows use of custom evaluation functions with the user.eval argument (see ?ENMevaluate).
+o  A suite of new visualization functions using ggplot2 that map partition groups, plot environmental similarity histograms for partition groups, map environmental similarity for partition groups, and plot histograms or violins for null ENM results. The original evaluation plots were also redone and now use ggplot.
+o  New analysis options for more flexibility (see ?ENMevaluate).
+o  Fully updated and extensive vignette (https://jamiemkass.github.io/ENMeval/articles/ENMeval-2.0-vignette.html) that walks through a full analysis while describing all the new functionality.
+o  Now supports doSNOW parallelization as well as doParallel. The doSNOW option has a functioning progress bar for parallel processes.
+
+ENMeval 0.3.1
+===========
+o  Vignette no longer uses spocc to download occurrences due to intermittent problems downloading from GBIF. This data is now loaded from a RDS file.
+o  Various URL changes in vignette.
+=======
+
+ENMeval 0.3.0
+===========
+o  Changed the default behavior to use the 'maxnet' function of the 'maxnet' package instead of the 'maxent.jar' program, and removed the dependency on the 'rJava' package by default, among others.
+o  Added an algorithm slot to the ENMevaluation object.
+o  Added information on the aggregation factor(s) or number of k folds to the ENMevaluation object when relevant.
+o  Corrected use of 'corrected.var' in the 'tuning' function.
+o  Changed some column names in the @results table to be more intuitive and compatable with the R package, Wallace.
+
+
+ENMeval 0.2.2
+===========
+o  Added a vignette. Type: vignette('ENMeval-vignette', package='ENMeval')
+o  Added an option to pass additional arguments to maxent (e.g., prevalence)
+o  Added a function to extract variable importance for maxent models
+o  Fixed an inconsistency with the AICc columns of the results table when rasterPreds=F
+o  Fixed potential errors in the partitioning methods functions when used independently
+o  Added some progress bar options to increase compatibility with Wallace
+
+
+ENMeval 0.2.1
+===========
+o  Fixed an error in the organization of results table when bin.output=T
+
+
+ENMeval 0.2.0
+===========
+o  Fixed a bug that allowed only a single categorical variable; now multiple categorical variables work.
+o  Added an option to run the tuning function in parallel.
+o  Added a slot in ENMevaluation object class to hold Maxent model objects.  This allows the user to access the lambda values and original results table generated by Maxent.
+o  Added arguments in ENMevaluate function to turn off raster prediction generation to save time.
+
+
+ENMeval 0.1.1
+===========
+o  This version corrects the calc.aicc function that, in version 0.1.0, could give erroneous results when used with multiple models simultaneously.  AICc, delta.AICc, and w.AIC values calculated in v.0.1.0 are potentially flawed!
+
+
+ENMeval 0.1.0
+===========
+o  This is the initial version of ENMeval.  The main function is ENMeval::ENMevaluate().

@@ -1,0 +1,111 @@
+.rhsf2list              Convert right hand sided formula to a list
+add_int                 Add interaction columns to data frame
+add_pred                Add predicted values of different types to
+                        dataframe
+add_resid               Add residuals of different types to dataframe
+align_coefs             Align and combine fixed-effect coefficients
+                        from multiple models
+beets                   beets data
+binomial_to_bernoulli_data
+                        Convert binomial data to bernoulli data
+bquote_fun_list         Backquote a list of functions
+by-lapply               Formula based version of lapply and sapply
+by-lmby                 List of lm objects with a common model
+by-order                Ordering (sorting) rows of a data frame
+by-sample               Sampling from a data frame
+by-split                Split a data frame into groups defined by
+                        variable(s)
+by-subset               Finds subsets of a dataframe which is split by
+                        variables in a formula.
+by-summary              Groupwise summary statistics
+by-transform            Function to make groupwise transformations
+carcass                 Lean meat contents of 344 pig carcasses
+child_growth            Berkeley Growth Study data
+codstom                 Diet of Atlantic cod in the Gulf of St.
+                        Lawrence (Canada)
+crickets                crickets data
+crimeRate               crimeRate
+crime_rate              crimeRate
+cropyield               Yield from Danish agricultural production of
+                        grain and root crop.
+cv_glm_fitlist          Cross-validation for list of glm objects
+data-wine               Chemical composition of wine
+data_breastcancer       Gene expression signatures for p53 mutation
+                        status in 250 breast cancer samples
+data_budworm            Budworm data
+data_cad                Coronary artery disease data
+data_mathmark           Mathematics marks for students
+data_personality        Personality traits
+descStat                Computing simple descriptive statistics of a
+                        numeric vector.
+dietox                  Growth curves of pigs in a 3x3 factorial
+                        experiment
+esticon                 Contrasts for lm, glm, lme, and geeglm objects
+expr_to_fun             Convert expression into function object.
+fatacid                 Fish oil in pig food
+fev                     Forced expiratory volume in children
+firstlastobs            Locate the index of the first/last unique value
+formula_ops             Formula operations and coercion.
+generate_data_list      Generate data list
+get_formulas            Get formulas from model_stability_glm_class
+                        object
+haldCement              Heat development in cement under hardening.
+head_matrix             head and tail for matrices
+income                  Income data, years of educations and ethnicity
+interaction-plot        Two-way interaction plot
+is_estimable            Determines if contrasts are estimable.
+linest                  Compute linear estimates
+linest-get              Auxillary functions for computing lsmeans,
+                        contrasts etc
+linest-matrix           Linear estimates matrix
+ls-means                Compute LS-means (aka population means or
+                        marginal means)
+math_teachers           Height of math teachers
+mb_summary              Fast summary of microbenchmark object
+milkman                 Milk yield data for manually milked cows.
+model_stability_glm     Model stability for glm objects
+nir_milk                Near infra red light (NIR) measurements in milk
+parseGroupFormula       Extract components from a formula with
+                        "conditioning bar"
+pick_elements           Extract (pick) elements without using brackets
+pipe_arithmetic         Pipe-friendly arithmetic helpers
+plot_lm                 Plot linear model object
+potatoes                Weight and size of 20 potatoes
+prostate                Prostate Tumor Gene Expression Dataset
+rbind_list              Bind list of data frames and add list names as
+                        a column
+recodeVar               Recode values of a vector
+recover_pca_data        Recover data from principal component analysis
+renameCol               Rename columns in a matrix or a dataframe.
+response                Get response variable from model
+response_plot           Plot the response variable against the
+                        predictor variables.
+scaleBy                 Group-wise scaling of data
+scale_df                Scale numeric variables in a data frame
+section_fun             Section a function and set default values in
+                        function
+set_default             Set default values in a functions arguments
+set_list_set_matrix     Matrix representatation of list of vectors and
+                        vice versa
+shoes                   Wear of shoes
+split_byrow_bycol       Split matrix or dataframe into list
+sub_seq                 Find sub-sequences of identical elements in a
+                        vector.
+taylor                  Taylor expansion (one dimension)
+tidy-esticon            Tidy an esticon object
+tidy-linest             Tidy a linest object
+time_since_event        Calculate "time since event" in a vector
+transform_forecast      Transform forecasts from model scale to data
+                        scale by simulation
+truncate0               Truncate values in a matrix / vector to zero if
+                        they are below a certain threshold.
+v                       Shorthand for vparse()
+vcheck                  Check if variables exist in a data frame
+vmap                    Apply a function to each parsed variable name
+vparse                  Variable utilities: parse, select, check, map,
+                        rename
+vrename                 Rename columns in a data frame
+vselect                 Select columns from a data frame using flexible
+                        input
+which.maxn              Where are the n largest or n smallest elements
+                        in a numeric vector ?

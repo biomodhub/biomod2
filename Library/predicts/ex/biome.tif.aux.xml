@@ -1,0 +1,20 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>biome</Description>
+    <CategoryNames>
+      <Category>(Sub)tropical Moist Broadleaf Forests</Category>
+      <Category>(Sub)tropical Dry Broadleaf Forests</Category>
+      <Category>(Sub)tropical Coniferous Forests</Category>
+      <Category>Temperate Broadleaf &amp; Mixed Forests</Category>
+      <Category>Temperate Conifer Forests</Category>
+      <Category>(Sub)tropical Grasslands, Savannas &amp; Shrublands</Category>
+      <Category>Temperate Grasslands, Savannas &amp; Shrublands</Category>
+      <Category>Flooded Grasslands &amp; Savannas</Category>
+      <Category>Montane Grasslands &amp; Shrublands</Category>
+      <Category>Tundra</Category>
+      <Category>Mediterranean Forests, Woodlands &amp; Scrub</Category>
+      <Category>Deserts &amp; Xeric Shrublands</Category>
+      <Category>Mangroves</Category>
+    </CategoryNames>
+  </PAMRasterBand>
+</PAMDataset>

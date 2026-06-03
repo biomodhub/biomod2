@@ -1,0 +1,15 @@
+bigsearch               Request to download a large number of VertNet
+                        records.
+rvertnet-defunct        Defunct functions in rvertnet
+rvertnet-package        Search VertNet archives using R
+searchbyterm            Search by term
+simple_dwc_terms        Darwin core terms
+spatialsearch           Find records within some distance of a point
+                        given latitude and longitude.
+traitsearch             Trait focused search
+vert_id                 Search by Vertnet occurrence ID
+vertmap                 Make a simple map to visualize VertNet data.
+vertsearch              Find records using a global full-text search of
+                        VertNet archives.
+vertsummary             Summarize a set of records downloaded from
+                        VertNet.

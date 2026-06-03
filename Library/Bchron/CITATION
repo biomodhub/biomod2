@@ -1,0 +1,11 @@
+bibentry(
+  "Article",
+  title        = "A simple monotone process with application to radiocarbon-dated depth chronologies",
+  author       = "John Haslett, Andrew C Parnell",
+  year         = 2008,
+  journal      = "Journal of the Royal Statistical Society: Series C (Applied Statistics)",
+  volume       = 57,
+  number       = 4,
+  pages        = "399--418",
+  doi          = "10.1111/j.1467-9876.2008.00623.x",
+)

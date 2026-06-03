@@ -1,0 +1,49 @@
+if(!exists("meta") || is.null(meta)) meta <- packageDescription("DEoptim")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste("version", meta$Version)
+
+citHeader("To cite 'DEoptim' in publications use:")
+
+citEntry(entry = "article",
+  title        = "{DEoptim}: An {R} Package for Global Optimization by {D}ifferential {E}volution",
+  author       = personList(as.person("Katharine Mullen"),
+                   as.person("David Ardia"),
+                   as.person("David Gil"),
+                   as.person("Donald Windover"),
+                   as.person("James Cline")),
+  journal      = "Journal of Statistical Software",
+  year         = "2011",
+  volume       = "40",
+  number       = "6",
+  pages        = "1--26",
+  doi          = "10.18637/jss.v040.i06",
+  textVersion  =
+  paste("Katharine Mullen, David Ardia, David Gil, Donald Windover, James Cline (2011).",
+        "'DEoptim': An R Package for Global Optimization by Differential Evolution.",
+        "Journal of Statistical Software, 40(6), 1-26.",
+        "doi:10.18637/jss.v040.i06.")
+)
+
+citEntry(entry = "article",
+	 title = "{D}ifferential {E}volution with {DEoptim}: {A}n Application to Non-Convex Portfolio Optimization",
+	 author = personList(as.person("David Ardia"),
+                         as.person("Kris Boudt"),
+                         as.person("Peter Carl"),
+                         as.person("Katharine M. Mullen"),
+                         as.person("Brian G. Peterson")),
+         journal      = "R Journal",
+  		 year         = "2011",
+         volume       = "3",
+         number       = "1",
+         pages        = "27--34",
+         doi          = "10.32614/RJ-2011-005",
+         textVersion = 
+         paste("Ardia, D., Boudt, K., Carl, P., Mullen, K.M., Peterson, B.G. (2010).",
+               "Differential Evolution with 'DEoptim': An Application to Non-Convex Portfolio Optimization.",
+               "R Journal, 3(1), 27-34.",
+               "doi:10.32614/RJ-2011-005")
+)
+
+citFooter("BibTeX entries for LaTeX users: use\n", 
+sQuote('toBibtex(citation("DEoptim"))'))
+

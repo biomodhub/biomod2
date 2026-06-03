@@ -1,0 +1,11 @@
+Package: RcppProgressETA
+Type: Package
+Title: Example use of the RcppProgress package with an ETAProgressBar
+Version: 0.1
+Date: 2017-11-10
+Author: Karl Forner <karl.forner@quartzbio.com>
+Maintainer: Karl Forner <karl.forner@quartzbio.com>
+Description: Example use of the RcppProgress package with a custom progress bar
+License: GPL (>=3)
+Depends: Rcpp (>= 0.9.10), RcppProgress (>= 0.1)
+LinkingTo: Rcpp, RcppProgress

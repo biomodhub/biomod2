@@ -1,0 +1,73 @@
+DE_RB_2005              Spatio-temporal data set with rural background
+                        PM10 concentrations in Germany 2005
+coalash                 Coal ash samples from a mine in Pennsylvania
+estiStAni               Estimation of the spatio-temporal anisotropy
+extractPar              Extracting parameters and their names from a
+                        spatio-temporal variogram model
+fit.StVariogram         Fit a spatio-temporal sample variogram to a
+                        sample variogram
+fit.lmc                 Fit a Linear Model of Coregionalization to a
+                        Multivariable Sample Variogram
+fit.variogram           Fit a Variogram Model to a Sample Variogram
+fit.variogram.gls       GLS fitting of variogram parameters
+fit.variogram.reml      REML Fit Direct Variogram Partial Sills to Data
+fulmar                  Fulmaris glacialis data
+get.contr               Calculate contrasts from multivariable
+                        predictions
+get_gstat_progress      Get or set progress indicator
+gstat                   Create gstat objects, or subset it
+hscat                   Produce h-scatterplot
+image                   Image Gridded Coordinates in Data Frame
+jura                    Jura data set
+krige                   Simple, Ordinary or Universal, global or local,
+                        Point or Block Kriging, or simulation.
+krige.cv                (co)kriging cross validation, n-fold or
+                        leave-one-out
+krigeST                 Ordinary global Spatio-Temporal Kriging
+krigeSTSimTB            conditional/unconditional spatio-temporal
+                        simulation
+krigeSimCE              Simulation based on circulant embedding
+krigeTg                 TransGaussian kriging using Box-Cox transforms
+map.to.lev              rearrange data frame for plotting with
+                        levelplot
+meuse.all               Meuse river data set - original, full data set
+meuse.alt               Meuse river altitude data set
+ncp.grid                Grid for the NCP, the Dutch part of the North
+                        Sea
+ossfim                  Kriging standard errors as function of grid
+                        spacing and block size
+oxford                  Oxford soil samples
+pcb                     PCB138 measurements in sediment at the NCP, the
+                        Dutch part of the North Sea
+plot.gstatVariogram     Plot a sample variogram, and possibly a fitted
+                        model
+plot.pointPairs         Plot a point pairs, identified from a variogram
+                        cloud
+plot.variogramCloud     Plot and Identify Data Pairs on Sample
+                        Variogram Cloud
+predict                 Multivariable Geostatistical Prediction and
+                        Simulation
+show.vgms               Plot Variogram Model Functions
+sic2004                 Spatial Interpolation Comparison 2004 data set:
+                        Natural Ambient Radioactivity
+sic_obs                 Spatial Interpolation Comparison 1997 data set:
+                        Swiss Rainfall
+spplot.vcov             Plot map matrix of prediction error variances
+                        and covariances
+tull                    Südliche Tullnerfeld data set
+variogram               Calculate Sample or Residual Variogram or
+                        Variogram Cloud
+variogramLine           Semivariance Values For a Given Variogram Model
+variogramST             Calculate Spatio-Temporal Sample Variogram
+variogramSurface        Semivariance values for a given spatio-temporal
+                        variogram model
+vgm                     Generate, or Add to Variogram Model
+vgm.panel.xyplot        panel functions for most of the variogram plots
+                        through lattice
+vgmArea                 point-point, point-area or area-area
+                        semivariance
+vgmAreaST               Function that returns the covariances for areas
+vgmST                   Constructing a spatio-temporal variogram
+vv                      Precomputed variogram for PM10 in data set air
+walker                  Walker Lake sample and exhaustive data sets
+wind                    Ireland wind data, 1961-1978

@@ -1,0 +1,30 @@
+import(methods)
+importFrom(stringr, str_locate, str_match, str_split_fixed, str_trim)
+importFrom(R6, R6Class)
+
+export(css_to_xpath)
+export(querySelector)
+export(querySelectorAll)
+export(querySelectorNS)
+export(querySelectorAllNS)
+
+S3method(querySelector, default)
+S3method(querySelectorAll, default)
+S3method(querySelectorNS, default)
+S3method(querySelectorAllNS, default)
+
+# XML package methods
+S3method(querySelector, XMLInternalNode)
+S3method(querySelector, XMLInternalDocument)
+S3method(querySelectorAll, XMLInternalNode)
+S3method(querySelectorAll, XMLInternalDocument)
+S3method(querySelectorNS, XMLInternalNode)
+S3method(querySelectorNS, XMLInternalDocument)
+S3method(querySelectorAllNS, XMLInternalNode)
+S3method(querySelectorAllNS, XMLInternalDocument)
+
+# xml2 package methods
+S3method(querySelector, xml_node)
+S3method(querySelectorAll, xml_node)
+S3method(querySelectorNS, xml_node)
+S3method(querySelectorAllNS, xml_node)

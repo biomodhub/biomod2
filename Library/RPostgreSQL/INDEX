@@ -1,0 +1,44 @@
+PostgreSQL              Instantiate a PostgreSQL client from the
+                        current R or S-Plus session
+PostgreSQLConnection-class
+                        Class PostgreSQLConnection
+PostgreSQLDriver-class
+                        Class PostgreSQLDriver
+PostgreSQLObject-class
+                        Class PostgreSQLObject
+PostgreSQLResult-class
+                        Class PostgreSQLResult
+SQLKeywords-methods     Make R/S-Plus identifiers into quoted
+                        PostgreSQL identifiers
+dbApply                 Apply R/S-Plus functions to remote groups of
+                        DBMS rows (experimental)
+dbApply-methods         Apply R/S-Plus functions to remote groups of
+                        DBMS rows (experimental)
+dbBegin-method          DBMS Transaction Management
+dbCallProc-methods      Call an SQL stored procedure
+dbConnect-methods       Create a connection object to an PostgreSQL
+                        DBMS
+dbDataType-methods      Determine the SQL Data Type of an S object
+dbDriver-methods        PostgreSQL implementation of the Database
+                        Interface (DBI) classes and drivers
+dbGetInfo               Database interface meta-data
+dbListTables-methods    List items from an PostgreSQL DBMS and from
+                        objects
+dbObjectId-class        Class dbObjectId
+dbReadTable-methods     Convenience functions for Importing/Exporting
+                        DBMS tables
+dbSendQuery-methods     Execute a statement on a given database
+                        connection
+dbSetDataMappings-methods
+                        Set data mappings between PostgreSQL and
+                        R/S-Plus
+fetch-methods           Fetch records from a previously executed query
+isPostgresqlIdCurrent   Check whether a database handle object is valid
+                        or not
+postgresqlBuildTableDefinition
+                        Build the SQL CREATE TABLE definition as a
+                        string
+postgresqlDBApply       Apply R/S-Plus functions to remote groups of
+                        DBMS rows (experimental)
+postgresqlInitDriver    Support Functions
+summary-methods         Summarize an PostgreSQL object

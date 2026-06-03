@@ -1,0 +1,19 @@
+bind                    Bind rows (features) of 'sftime' objects
+geos_binary_ops         Geometric operations on pairs of simple feature
+                        geometry sets (including 'sftime' objects)
+geos_combine            Combine or union feature geometries (including
+                        'sftime' objects)
+plot.sftime             Plots an 'sftime' object
+print.sftime            Prints an 'sftime' object
+st_as_sftime            Convert a foreign object to an 'sftime' object
+st_cast                 Cast geometry to another type: either simplify,
+                        or cast explicitly
+st_crop.sftime          Crop an 'sftime' object to a specific rectangle
+st_geometry             Drops the geometry column of 'sftime' objects
+st_join                 Spatial join, spatial filter for 'sftime'
+                        objects
+st_sftime               Construct an 'sftime' object from all its
+                        components
+st_time                 Get, set, or replace time information
+tidyverse               'tidyverse' methods for 'sftime' objects
+transform.sftime        Transform method for 'sftime' objects

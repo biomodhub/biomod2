@@ -1,0 +1,15 @@
+RcppArmadillo-package   R and Armadillo Integration
+RcppArmadillo.package.skeleton
+                        Create a skeleton for a new package that
+                        intends to use RcppArmadillo
+armadillo_get_number_of_omp_threads
+                        Report (or Set) Maximum Number of OpenMP
+                        Threads
+armadillo_set_seed_random
+                        Set the Armadillo Random Number Generator to
+                        given or random value
+armadillo_throttle_cores
+                        Throttle (or Reset) (Rcpp)Armadillo to Two
+                        Cores
+armadillo_version       Report the version of Armadillo
+fastLm                  Bare-bones linear model fitting function
