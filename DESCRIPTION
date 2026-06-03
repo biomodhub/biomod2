@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.3-4-6
-Date: 2026-05-07
+Version: 4.3-4-7
+Date: 2026-06-03
 Authors@R: c(person("Maya", "Guéguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
              person("Hélène", "Blancheteau", role = "aut"),
@@ -69,7 +69,6 @@ Suggests:
     paletteer,
     viridis
 License: GPL-3
-RoxygenNote: 7.3.3
 Encoding: UTF-8
 VignetteBuilder: knitr
 Collate: 
@@ -113,3 +112,4 @@ Collate:
     'bm_VariablesImportance.R'
     'zzz.R'
 LazyData: true
+Config/roxygen2/version: 8.0.0
