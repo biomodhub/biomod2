@@ -1449,13 +1449,9 @@ setClass('XGBOOST_biomod2_model',
 setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...)
           {
+            reshape <- ifelse(object@model_type %in% c('ordinal', 'multiclass'), 'class', 'response')
             predfun <- function(object, newdata, mod.name) {
-              proj <- predict(newdata,
-                              model = get_formal_model(object),
-                              fun = .xgb_pred,
-                              na.rm = TRUE,
-                              wopt = list(names = mod.name))
-              proj
+              predict(get_formal_model(object), newdata, na.rm = TRUE, wopt = list(names = mod.name), type = reshape)
             }
             # redirect to predict2.biomod2_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
