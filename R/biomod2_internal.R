@@ -1018,7 +1018,7 @@ rast.has.values <- function(x)
 ## used in biomod2_classes_4
 
 .xgb_pred <- function(model, data, ...) {
-  predict(model, newdata = data, ...)
+  predict(model, newdata = xgboost::xgb.DMatrix(data), ...)
 }
 
 
