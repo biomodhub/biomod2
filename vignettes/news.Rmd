@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-7 : 
+    + fix predictions with categorical variables for XGBOOST
     + fix `set_new_dirname` function
     + add check when `CV.do.full.models = NULL` in `BIOMOD_Modeling` function
 - 4.3-4-6 : 
