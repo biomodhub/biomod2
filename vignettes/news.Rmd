@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-7 : 
+    + fix check for `expl.var` when using `data.frame` and asking for pseudo-absences in `BIOMOD_FormatingData` 
     + fix predictions with categorical variables for XGBOOST
     + fix `set_new_dirname` function
     + add check when `CV.do.full.models = NULL` in `BIOMOD_Modeling` function

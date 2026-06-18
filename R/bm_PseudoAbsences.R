@@ -362,9 +362,9 @@ bm_PseudoAbsences <- function(resp.var, expl.var, strategy, nb.rep = NULL, nb.ab
   if (inherits(expl.var, c("matrix", "data.frame"))) {
     .fun_testIfSameSize("resp.var", nrow(resp.var), "expl.var", nrow(expl.var), "number of rows")
     rownames(expl.var) <- NULL
-    expl.var <- vect(cbind(data.frame(x = crds(resp.var)[, 1],
-                                      y = crds(resp.var)[, 2]),
-                           , as.data.frame(expl.var))
+    expl.var <- vect(data.frame(x = crds(resp.var)[, 1]
+                                , y = crds(resp.var)[, 2]
+                                , as.data.frame(expl.var))
                      , geom = c("x", "y"))
   }
   .fun_testIfInherits("expl.var", expl.var, c("SpatVector", "SpatRaster"))
