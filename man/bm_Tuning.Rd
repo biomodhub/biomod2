@@ -6,50 +6,24 @@
 \usage{
 bm_Tuning(
   model,
-  tuning.fun,
-  do.formula = FALSE,
-  do.stepAIC = FALSE,
+  workflow,
   bm.options,
   bm.format,
   calib.lines = NULL,
-  metric.eval = "TSS",
+  do.tuning = TRUE,
+  do.formula = FALSE,
+  do.stepAIC = FALSE,
+  metric.eval = "AUCroc",
   metric.AIC = "AIC",
   weights = NULL,
   ctrl.train = NULL,
-  params.train = list(ANN.size = c(2, 4, 6, 8), ANN.decay = c(0.01, 0.05, 0.1), ANN.bag =
-    FALSE, DNN.hidden = list(depth = 3, width = 100), DNN.bias = TRUE, DNN.lambda =
-    0.001, DNN.alpha = 1, DNN.lr = c(1e-04, 0.1), DNN.batchsize = 100, DNN.epochs = 150,
-    FDA.degree = 1:2, FDA.nprune = 2:25, GAM.select = c(TRUE, FALSE), GAM.method =
-    c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GAM.span = c(0.3, 0.5, 0.7),
-    GAM.degree = 1, GBM.n.trees = c(500, 1000, 2500), GBM.interaction.depth = seq(2, 8,
-    by = 3), GBM.shrinkage = c(0.001, 
-     0.01, 0.1), GBM.n.minobsinnode = 10,
-    MARS.degree = 1:2, MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
-    MAXENT.algorithm = "maxnet", MAXENT.parallel = TRUE, MAXENT.tune.args = list(rm =
-    seq(0.5, 1, 0.5), fc = c("L")), MAXENT.partitions = "randomkfold", MAXENT.kfolds =
-    10, MAXENT.user.grp = NULL, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
-    RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125, 0.025,
-    0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, 
-     XGBOOST.eta = c(0.3,
-    0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6, 0.8),
-    XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
+  params.train = NULL
 )
 }
 \arguments{
 \item{model}{a \code{character} corresponding to the  algorithm to be tuned, must be either 
 \code{ANN}, \code{CTA}, \code{DNN}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
-
-\item{tuning.fun}{a \code{character} corresponding to the model function name to be called 
-through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
-dataset)}
-
-\item{do.formula}{(\emph{optional, default} \code{FALSE}) \cr
-A \code{logical} value defining whether formula is to be optimized or not}
-
-\item{do.stepAIC}{(\emph{optional, default} \code{FALSE}) \cr
-A \code{logical} value defining whether variables selection is to be performed for 
-\code{GLM} and \code{GAM} models or not}
 
 \item{bm.options}{a \code{\link{BIOMOD.options.default}} or \code{\link{BIOMOD.options.dataset}} 
 object returned by the \code{\link{bm_ModelingOptions}} function}
@@ -60,6 +34,13 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 \item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
 A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
 \code{\link{bm_CrossValidation}} functions}
+
+\item{do.formula}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether formula is to be optimized or not}
+
+\item{do.stepAIC}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether variables selection is to be performed for 
+\code{GLM} and \code{GAM} models or not}
 
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
 be either \code{AUC}, \code{Kappa} or \code{TSS} for \code{SRE} only ; \code{auc.val.avg}, 
@@ -78,6 +59,10 @@ A \code{\link[caret]{trainControl}} object}
 
 \item{params.train}{a \code{list} containing values of model parameters to be tested 
 (see Details)}
+
+\item{tuning.fun}{a \code{character} corresponding to the model function name to be called 
+through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
+dataset)}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object (see \code{\link{bm_ModelingOptions}}) with 

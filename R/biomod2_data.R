@@ -273,6 +273,137 @@
 
 
 ###################################################################################################
+#' Tuning
+#'
+#' 
+###################################################################################################
+
+"TuningTable"
+
+# TuningTable = read.csv("test_tuning_caret_tidymodels.csv", header = TRUE, sep = "\t")
+# usethis::use_data(TuningTable, overwrite = TRUE)
+# usethis::use_data(TuningTable, overwrite = TRUE, internal = TRUE)
+
+"TuningMetric"
+
+# TuningMetric <- data.frame(type = c(rep("binary", 11), "class", rep("nonbinary", 3))
+#                            , biomod2 = c("POD", "SR", "ACCURACY", "AUCroc", "AUCrocd", "AUCprg", "KAPPA"
+#                                          , "BOYCE", "ORmtp", "OR10", "AICc"
+#                                          , "Accuracy", "RMSE", "Rsquared", "MAE")
+#                            , MAXENT = c(NA, NA, NA, "auc.val.avg", "auc.diff.avg", NA, NA
+#                                         , "cbi.val.avg", "or.mtp.avg", "or.10p.avg", "AICc"
+#                                         , NA, NA, NA, NA)
+#                            , SRE = c(NA, NA, NA, "AUC", NA, NA, "Kappa", NA, NA, NA, NA, NA, NA, NA, NA)
+#                            # , cito = rep(NA, 15)
+#                            , caret = c(NA, NA, NA, "ROC", NA, NA, "Kappa", NA, NA, NA, NA, "Accuracy", "RMSE", "Rsquared", NA)
+#                            , tidymodels = c("recall", "precision", "accuracy", "roc_auc", NA, "pr_auc", "kap"
+#                                             , NA, NA, NA, NA, "accuracy", "rmse", "rsq", "mae"))
+# usethis::use_data(TuningMetric, overwrite = TRUE)
+# usethis::use_data(TuningMetric, overwrite = TRUE, internal = TRUE)
+
+"TuningParam"
+
+# # TuningParam <- data.frame(model = c(rep("ANN", 7), rep("CTA", 3), rep("FDA", 3)
+# TuningParam <- data.frame(model = c(rep("ANN", 4), rep("CTA", 3), rep("FDA", 3)
+#                                     , rep("GAM", 5), rep("GBM", 6), rep("GLM", 2)
+#                                     , rep("MARS", 3), rep("RF", 3), rep("RFd", 3)
+#                                     , rep("XGBOOST", 11))
+#                           # , caret = c("size", "decay", "maxit", "bag", NA, NA, NA
+#                           , caret = c("size", "decay", "maxit", "bag"
+#                                       # , "control$cp", "control$maxdepth", "control$minsplit" ##notinx3
+#                                       , NA, NA, NA ##notinx3
+#                                       , "nprune", "degree", NA
+#                                       , "select", "method", "span", "degree", NA
+#                                       , "n.trees", "interaction.depth", "shrinkage", "n.minobsinnode", NA, NA
+#                                       , NA, NA
+#                                       , "nprune", "degree", NA
+#                                       , "mtry", "ntree", "nodesize" ##notinx2
+#                                       , "mtry", "ntree", "nodesize" ##notinx2
+#                                       , NA, NA, NA, "max_depth", "eta", "gamma", "subsample", "early_stopping_rounds" ##notinx1
+#                                       , "nrounds", "colsample_bytree", "min_child_weight")
+#                           # , tidymodels = c("hidden_units", "penalty", "epochs", NA, "dropout", "activation", "learn_rate"
+#                           , tidymodels = c("hidden_units", "penalty", "epochs", NA
+#                                            , "cost_complexity", "tree_depth", "min_n"
+#                                            , "num_terms", "prod_degree", "prune_method"
+#                                            , "select_features", NA, NA, NA, "adjust_deg_free"
+#                                            , "trees", "tree_depth", "learn_rate", "min_n", "mtry", "loss_reduction"
+#                                            , "penalty", "mixture"
+#                                            , "num_terms", "prod_degree", "prune_method"
+#                                            , "mtry", "trees", "min_n"
+#                                            , "mtry", "trees", "min_n"
+#                                            , "mtry", "trees", "min_n", "tree_depth", "learn_rate"
+#                                            , "loss_reduction", "sample_size", "stop_iter", NA, NA, NA))
+# usethis::use_data(TuningParam, overwrite = TRUE)
+# usethis::use_data(TuningParam, overwrite = TRUE, internal = TRUE)
+
+"TuningParamTrain"
+
+# TuningParamTrain = list(ANN.size = c(2, 4, 6, 8),
+#                         ANN.decay = c(0.01, 0.05, 0.1),
+#                         ANN.bag = FALSE,
+#                         ANN.maxit = 200, #
+#                         ANN.dropout = 0.5, #
+#                         ANN.activation = c('Rectifier', 'Tanh', 'TanhWithDropout'
+#                                            , 'RectifierWithDropout', 'Maxout', 'MaxoutWithDropout'), #
+#                         # ANN.learn_rate = c(0.001, 0.01, 0.1), # REMOVE ?
+#                         CTA.cost_complexity = 0.001, #CTA.control$cp = 0.001
+#                         CTA.tree_depth = 10, #CTA.control$maxdepth
+#                         CTA.min_n = 5, #CTA.control$minsplit = 5
+#                         DNN.hidden = list(depth = 3, width = 100),
+#                         DNN.bias = TRUE,
+#                         DNN.lambda = 0.001,
+#                         DNN.alpha = 1, 
+#                         DNN.lr = c(0.0001, 0.1), #/!\ range
+#                         DNN.batchsize = 100,
+#                         DNN.epochs = 150,
+#                         FDA.degree = 1:2, 
+#                         FDA.nprune = 2:25,
+#                         FDA.prune_method = 'backward', #
+#                         GAM.select = c(TRUE, FALSE),
+#                         GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+#                         GAM.span = c(0.3, 0.5, 0.7),
+#                         GAM.degree = 1,
+#                         GAM.adjust_deg_free = NULL, #
+#                         GBM.n.trees = c(500, 1000, 2500),
+#                         GBM.interaction.depth = seq(2, 8, by = 3),
+#                         GBM.shrinkage = c(0.001, 0.01, 0.1),
+#                         GBM.n.minobsinnode = 10,
+#                         GBM.mtry = NULL, #
+#                         GBM.loss_reduction = NULL, #
+#                         GLM.penalty = NULL, #??
+#                         GLM.mixture = NULL, #??
+#                         MARS.degree = 1:2, 
+#                         MARS.nprune = 2:10, ##2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
+#                         MARS.prune_method = 'backward', #
+#                         MAXENT.algorithm = 'maxnet',
+#                         MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
+#                         MAXENT.parallel = TRUE,
+#                         MAXENT.partitions = 'randomkfold',
+#                         MAXENT.kfolds = 10,
+#                         MAXENT.user.grp = NULL,
+#                         RF.mtry = 1:10, ##1:min(10, ncol(bm.format@data.env.var)),
+#                         RF.ntree = 500, #RF.ntree = 500
+#                         RF.nodesize = 5, #RF.nodesize = 5
+#                         RFd.mtry = 1:10, ##1:min(10, ncol(bm.format@data.env.var)),
+#                         RFd.ntree = 500, #RFd.ntree = 500
+#                         RFd.nodesize = 5, #RFd.nodesize = 5
+#                         SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
+#                         XGBOOST.nrounds = 50,
+#                         XGBOOST.max_depth = 1,
+#                         XGBOOST.eta = c(0.3, 0.4),
+#                         XGBOOST.gamma = 0,
+#                         XGBOOST.colsample_bytree = c(0.6, 0.8),
+#                         XGBOOST.min_child_weight = 1,
+#                         XGBOOST.subsample = 0.5,
+#                         XGBOOST.mtry = NULL, #??
+#                         XGBOOST.trees = NULL, #??
+#                         XGBOOST.min_n = NULL, #??
+#                         XGBOOST.stop_iter = NULL ##early_stopping_rounds
+# )
+# usethis::use_data(TuningParamTrain, overwrite = TRUE)
+# usethis::use_data(TuningParamTrain, overwrite = TRUE, internal = TRUE)
+
+###################################################################################################
 #' Presence-Absence data to build test SDM
 #'
 #' A dataset covering all the continent with presence/absence data for 6 mammal
