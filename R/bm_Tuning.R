@@ -256,41 +256,19 @@ bm_Tuning <- function(model,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  ## LOOP OVER CALIB LINES 
+  ## GET WANTED COMBINATIONS
+  expected_CVnames <- .expected_calib.lines_names(bm.format, calib.lines)
+  combi <- expand.grid(PA = NA, calib = expected_CVnames, stringsAsFactors = FALSE)
+  combi$PA <- sapply(combi$calib, function(ii) strsplit(ii, "_")[[1]][2])
+  if (any(grepl("allData", combi$PA))) {
+    combi$PA[which(combi$PA == "allData")] <- "_allData_allRun"
+  }
+  combi$name_dataset <- combi$calib
+  
+  ## KEEP ALL LINES if not calib.lines provided
   if (is.null(calib.lines)) {
     calib.lines <- data.frame(rep(TRUE, length(bm.format@data.species)))
     colnames(calib.lines) <- "_allData_allRun"
-  }
-  ## LOOP OVER PA DATASETS
-  if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-    PA.lines <- colnames(bm.format@PA.table)
-  } else {
-    PA.lines <- "_allData_allRun"
-  }
-  ## LOOP OVER ALL COMBINED
-  test_forPA <- sapply(PA.lines, function(xx) any(grepl(xx, colnames(calib.lines))))
-  if (inherits(bm.format, "BIOMOD.formated.data.PA") && 
-      sum(test_forPA) == length(PA.lines)) {
-    combi <- expand.grid(PA = NA, calib = colnames(calib.lines), stringsAsFactors = FALSE)
-    combi$PA <- sapply(combi$calib, function(ii) strsplit(ii, "_")[[1]][2])
-    if (length(which(combi$calib == "_allData_allRun")) > 0) {
-      combi$PA[which(combi$calib == "_allData_allRun")] <- "_allData_allRun"
-    }
-    combi$name_dataset <- combi$calib
-  } else {
-    combi <- expand.grid(PA = PA.lines, calib = colnames(calib.lines), stringsAsFactors = FALSE)
-    combi$name_dataset <- sapply(1:nrow(combi), function(ii) {
-      tmp1 <- combi$PA[ii]
-      tmp2 <- combi$calib[ii]
-      if (!grepl("PA", tmp2) || (grepl("PA", tmp2) && grepl(tmp1, tmp2))) {
-        if (tmp1 == "_allData_allRun") tmp1 <- "allData"
-        tmp2 <- strsplit(tmp2, "_")[[1]][3]
-        return(paste0("_", tmp1, "_", tmp2))
-      } else {
-        return(NA)
-      }
-    })
-    combi <- na.exclude(combi)
   }
   
   

@@ -386,29 +386,7 @@ setGeneric("BIOMOD.options.dataset",
   if (!is.null(bm.format)) {
     .fun_testIfInherits("bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
-  expected_CVnames <- c("_allData_allRun")
-  if (!is.null(calib.lines)) {
-    .fun_testIfInherits("calib.lines", calib.lines, c("matrix", "data.frame"))
-    if (inherits(calib.lines, "data.frame")) {
-      calib.lines <- as.matrix(calib.lines)
-    }
-    
-    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), expected_CVnames)
-    if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
-      expected_CVnames <- c(expected_CVnames
-                            , sapply(1:ncol(bm.format@PA.table)
-                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                           , paste0("_PA", this_PA, "_allRun"))))
-    } 
-    .fun_testIfIn("colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
-    expected_CVnames <- colnames(calib.lines)
-  } else {
-    if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
-      expected_CVnames <- c(expected_CVnames
-                            , sapply(1:ncol(bm.format@PA.table)
-                                     , function(this_PA) paste0("_PA", this_PA, "_allRun")))
-    }
-  }
+  expected_CVnames <- .expected_calib.lines_names(bm.format, calib.lines)
   
   ## TUNING parameterisation --------------------
   if (strategy == "tuned") {

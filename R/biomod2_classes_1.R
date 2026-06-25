@@ -1114,26 +1114,14 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   # find possible dataset
   allPA <- allrun <- NA
   if (!is.null(calib.lines)) {
-    .fun_testIfInherits("calib.lines", calib.lines, c("matrix", "data.frame"))
-    if (inherits(calib.lines, "data.frame")) {
-      calib.lines <- as.matrix(calib.lines)
-    }
-    
-    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
-    if (inherits(x, "BIOMOD.formated.data.PA")) {
-      expected_CVnames <- c(expected_CVnames
-                            , sapply(1:ncol(x@PA.table)
-                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                           , paste0("_PA", this_PA, "_allRun"))))
-    } 
-    .fun_testIfIn("colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
-    
-    allPA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
-    allrun <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
+    expected_CVnames <- .expected_calib.lines_names(x, calib.lines)
+    allPA <- sapply(expected_CVnames, function(xx) strsplit(xx, "_")[[1]][2])
+    allrun <- sapply(expected_CVnames, function(xx) strsplit(xx, "_")[[1]][3])
   } else if (inherits(x, "BIOMOD.formated.data.PA")) {
     allPA <- colnames(x@PA.table)
     allrun <- rep(NA, length(allPA))
   }
+  
   
   # default value for PA and run
   if (missing(PA)) {
@@ -1462,10 +1450,13 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                 rbind(
                   output,
                   foreach(this_run = run, this_PA = PA, .combine = 'rbind')  %do% {
-                    if (is.na(this_PA) || this_PA == 'allData') { # run only
+                    
+                    if (is.na(this_PA) || this_PA == "allData") { # run only
                       this_name <- paste0("_", this_PA, "_", this_run)
                       this_calib <- calib.lines[ , this_name]
-                      this_valid <- ! calib.lines[ , this_name]
+                      if (this_run != "allRun") {
+                        this_valid <- ! calib.lines[ , this_name]
+                      }
                     } else if (is.na(this_run)) { # PA only
                       this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, object@PA.table[ , this_PA])
                     } else { # PA+run
@@ -1482,7 +1473,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                       "Pseudo_Absences" = length(which(is.na(calib.resp))),
                                       "Undefined" = NA)
                     
-                    if (!is.na(this_run)) { 
+                    if (!is.na(this_run) && !(this_PA == "allData" && this_run == "allRun")) { 
                       valid.resp <- object@data.species[this_valid]
                       tmp <- rbind(tmp,
                                    data.frame("dataset" = "validation",
@@ -1506,20 +1497,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 .summary.BIOMOD.formated.data.check.args <- function(object, calib.lines)
 {
   if (!is.null(calib.lines)) {
-    .fun_testIfInherits("calib.lines", calib.lines, c("matrix", "data.frame"))
-    if (inherits(calib.lines, "data.frame")) {
-      calib.lines <- as.matrix(calib.lines)
-    }
-    
-    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
-    if (inherits(object, "BIOMOD.formated.data.PA")) {
-      .fun_testIfSameSize("calib.lines", nrow(calib.lines), "PA.table", nrow(object@PA.table), "number of rows")
-      expected_CVnames <- c(expected_CVnames
-                            , sapply(1:ncol(object@PA.table)
-                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                           , paste0("_PA", this_PA, "_allRun"))))
-    }
-    .fun_testIfIn("colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    expected_CVnames <- .expected_calib.lines_names(object, calib.lines)
   }
   return(list(object = object, calib.lines = calib.lines))
 }

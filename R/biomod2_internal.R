@@ -284,6 +284,40 @@
 ## CHECK calib.lines names ------------------------------------------------------------------------
 ## used in bm_CrossValidation
 
+.expected_calib.lines_names <- function(bm.format = NULL, calib.lines = NULL)
+{
+  expected_CVnames <- c("_allData_allRun")
+  if (!is.null(calib.lines)) {
+    .fun_testIfInherits("calib.lines", calib.lines, c("matrix", "data.frame"))
+    if (inherits(calib.lines, "data.frame")) {
+      calib.lines <- as.matrix(calib.lines)
+    }
+    
+    if (any(grepl("_PA", colnames(calib.lines))) && !inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      err.msg <- "colnames(calib.lines) must have the following format : '_allData_allRun' or '_allData_RUNy' with y integer (no PA dataset provided)"
+      stop(err.msg)
+    }
+    
+    # expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), expected_CVnames)
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(100)), expected_CVnames)
+    if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(bm.format@PA.table)
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
+    } 
+    .fun_testIfIn("colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    expected_CVnames <- colnames(calib.lines)
+  } else {
+    if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(bm.format@PA.table)
+                                     , function(this_PA) paste0("_PA", this_PA, "_allRun")))
+    }
+  }
+  return(expected_CVnames)
+}
+
 .check_calib.lines_names <- function(calib.lines, expected_PA.names)
 {
   full.names <- colnames(calib.lines)
@@ -293,13 +327,13 @@
   } else {
     err.msg <- "colnames(calib.lines) must have the following format : '_PAx_RUNy' with x and y integer"
     # check for beginning '_'
-    if (!all( substr(full.names, 1, 1) == "_")) {
+    if (!all(substr(full.names, 1, 1) == "_")) {
       stop(err.msg)
     }
     PA.names <- sapply(strsplit(full.names, split = "_"), function(x) x[2])
     CV.names <- sapply(strsplit(full.names, split = "_"), function(x) x[3])
     .fun_testIfIn("Pseudo-absence dataset in colnames(calib.lines)", PA.names, expected_PA.names)
-    if (!all( substr(CV.names, 1, 3) == "RUN")) {
+    if (!all(substr(CV.names, 1, 3) == "RUN")) {
       stop(err.msg)
     }
     CV.num <- sapply(strsplit(CV.names, split = "RUN"), function(x) x[2])

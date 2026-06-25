@@ -385,26 +385,12 @@ bm_ModelingOptions <- function(data.type = "binary", models, strategy
       stop("data.type should match bm.format@data.type")
     }
   }
-  expected_CVnames <- c("_allData_allRun")
-  if (!is.null(calib.lines)) {
-    .fun_testIfNULL("bm.format", bm.format)
-    .fun_testIfInherits("calib.lines", calib.lines, c("matrix", "data.frame"))
-    if (inherits(calib.lines, "data.frame")) {
-      calib.lines <- as.matrix(calib.lines)
-    }
-    .fun_testIfSameSize("calib.lines", nrow(calib.lines), "bm.format@data.species", length(bm.format@data.species), "number of rows/size")
-    
-    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), expected_CVnames)
-    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-      expected_CVnames <- c(expected_CVnames
-                            , sapply(1:ncol(bm.format@PA.table)
-                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                           , paste0("_PA", this_PA, "_allRun"))))
-    }
-    .fun_testIfNULL("colnames(calib.lines)", colnames(calib.lines))
-    .fun_testIfIn("colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
-    expected_CVnames <- colnames(calib.lines)
-  }
+  
+  # expected_CVnames <- c("_allData_allRun")
+  # if (!is.null(calib.lines)) {
+  #   expected_CVnames <- .expected_calib.lines_names(bm.format, calib.lines)
+  # }
+  expected_CVnames <- .expected_calib.lines_names(bm.format, calib.lines)
   
   ## 4.b Check user.base / user.val arguments ---------------------------------
   if (strategy == "user.defined") {
