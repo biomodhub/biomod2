@@ -322,7 +322,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     
     ## d. SRC mean maps per group.level ---------------------------------------
     if (do.mean) {
-      if (!requireNamespace('ggpubr', quietly = TRUE)) stop("Package 'ggpubr' not found")
+      .fun_testIfNamespace("ggpubr")
       
       corres <- data.frame(full.name = names(ggdat))
       for (ii in 1:length(row.names)) {

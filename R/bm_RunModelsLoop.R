@@ -128,9 +128,7 @@ bm_RunModelsLoop <- function(bm.format,
 {
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
-      if (!isNamespaceLoaded("doParallel")) {
-        if (!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
-      }
+      .fun_testIfNamespace("doParallel")
       doParallel::registerDoParallel(cores = nb.cpu)
     } else {
       .message("Parallelisation with foreach is not available for Windows. Sorry.")
@@ -693,11 +691,7 @@ bm_RunModel <- function(model, run.name
                                     , weights.vec, scale.models)
 {
   ## check namespace ----------------------------------------------------------
-  if (model == "XGBOOST") {
-    if (!isNamespaceLoaded("xgboost")) { 
-      if (!requireNamespace('xgboost', quietly = TRUE)) stop("Package 'xgboost' not found")
-    }
-  }
+  if (model == "XGBOOST") { .fun_testIfNamespace("xgboost") }
   
   ## 0. Do some cleaning over Data argument -----------------------------------
   data_sp <- Data[, 1]

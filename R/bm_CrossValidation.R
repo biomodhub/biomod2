@@ -642,9 +642,7 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
           function(bm.format, nb.rep, k)
           {
             cat("\n\t + k-fold cross-validation selection")
-            if (!isNamespaceLoaded("dismo")) { 
-              if (!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
-            }
+            .fun_testIfNamespace("dismo")
             
             ind.NA  <- which(is.na(bm.format@data.species))
             tmp  <- bm.format@data.species
@@ -686,9 +684,7 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
           function(bm.format, nb.rep, k)
           {
             cat("\n\t + k-fold cross-validation selection")
-            if (!isNamespaceLoaded("dismo")) {
-              if (!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
-            }
+            .fun_testIfNamespace("dismo")
             
             ind.NA  <- which(is.na(bm.format@data.species))
             tmp  <- bm.format@data.species
@@ -744,9 +740,7 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
           function(bm.format)
           {
             cat("\n\t + Block cross-validation selection")
-            if (!isNamespaceLoaded("ENMeval")) { 
-              if (!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
-            }
+            .fun_testIfNamespace("ENMeval")
             
             ind.NA  <- which(is.na(bm.format@data.species))
             tmp  <- bm.format@data.species
@@ -787,9 +781,7 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
           function(bm.format)
           {
             cat("\n\t + Block cross-validation selection")
-            if (!isNamespaceLoaded("ENMeval")) { 
-              if (!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
-            }
+            .fun_testIfNamespace("ENMeval")
             
             ind.NA  <- which(is.na(bm.format@data.species))
             tmp  <- bm.format@data.species

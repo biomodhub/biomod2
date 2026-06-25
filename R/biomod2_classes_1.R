@@ -1185,9 +1185,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   } else {
     has.mask.eval <- FALSE
   }
-  if (has.mask | has.mask.eval) {
-    if (!requireNamespace('tidyterra', quietly = TRUE)) stop("Package 'tidyterra' not found")
-  } 
+  if (has.mask | has.mask.eval) { .fun_testIfNamespace("tidyterra") }
   ## 5 - check plot.type  ----------------------
   if (missing(plot.type)) {
     plot.type <- "points"
@@ -1206,9 +1204,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     .fun_testIfIn("plot.output", plot.output, c("facet", "list"))
   }
   
-  if (plot.output == "facet") {
-    if (!requireNamespace('ggtext', quietly = TRUE)) stop("Package 'ggtext' not found")
-  }
+  if (plot.output == "facet") { .fun_testIfNamespace("ggtext") }
   
   ## 7 - do.plot ----------------------
   # do.plot

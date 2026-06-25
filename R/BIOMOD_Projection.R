@@ -303,9 +303,7 @@ BIOMOD_Projection <- function(bm.mod,
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
-      if (!isNamespaceLoaded("doParallel")) { 
-        if (!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
-      }
+      .fun_testIfNamespace("doParallel")
       doParallel::registerDoParallel(cores = nb.cpu)
     } else {
       .message("Parallelisation with foreach is not available for Windows. Sorry.")

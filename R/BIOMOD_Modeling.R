@@ -619,9 +619,7 @@ BIOMOD_Modeling <- function(bm.format,
   .fun_testIfIn(paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
   
   ## 3.a Specific case of cito
-  if ("DNN" %in% models) {
-    if (!requireNamespace('torch', quietly = TRUE)) stop("Package 'torch' not found")
-  }
+  if ("DNN" %in% models) { .fun_testIfNamespace("torch") }
   
   ## 3.b Specific case of one variable with GBM / MAXNET
   if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {

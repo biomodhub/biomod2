@@ -75,11 +75,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
 {
   ## check namespace
-  if (mod == "XGBOOST") {
-    if (!isNamespaceLoaded("xgboost")) { 
-      if (!requireNamespace('xgboost', quietly = TRUE)) stop("Package 'xgboost' not found")
-    }
-  }
+  if (mod == "XGBOOST") { .fun_testIfNamespace("xgboost") }
   
   ## check if model is supported
   avail.models.list <- c('ANN', 'CTA', 'DNN', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')

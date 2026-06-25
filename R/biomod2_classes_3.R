@@ -917,9 +917,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
   proj <- get_predictions(x, ...)
   
   ## 1 - check for tidyterra ----------------------
-  if (inherits(proj, "SpatRaster")) {
-    if (!requireNamespace('tidyterra', quietly = TRUE)) stop("Package 'tidyterra' not found")
-  }
+  if (inherits(proj, "SpatRaster")) { .fun_testIfNamespace("tidyterra") }
   
   ## 2 - plot.output----------------------
   if (missing(plot.output)) {

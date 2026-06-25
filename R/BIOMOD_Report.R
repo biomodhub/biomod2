@@ -297,10 +297,7 @@ BIOMOD_Report <- function(bm.out
 .BIOMOD_Report.check.args <- function(bm.out, strategy, params.color, params.ODMAP)
 {
   ## check namespace ----------------------------------------------------------
-  if (!isNamespaceLoaded("rmarkdown")) { 
-    if (!requireNamespace('rmarkdown', quietly = TRUE)) stop("Package 'rmarkdown' not found")
-  }
-  
+  .fun_testIfNamespace("rmarkdown")
   
   sp.name <- dir.name <- name.bm.mod <- bm.form <- NA
   

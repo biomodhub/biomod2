@@ -277,14 +277,8 @@ bm_ModelAnalysis <- function(bm.mod,
 .bm_ModelAnalysis.check.args <- function(bm.mod, models.chosen, color.by, do.plot)
 {
   ## check namespace ----------------------------------------------------------
-  if (!isNamespaceLoaded("paletteer")) {
-    if (!requireNamespace('paletteer', quietly = TRUE)) stop("Package 'paletteer' not found")
-  }
-  if(do.plot) {
-    if (!isNamespaceLoaded("patchwork")) {
-      if (!requireNamespace('patchwork', quietly = TRUE)) stop("Package 'patchwork' not found")
-    }
-  }
+  .fun_testIfNamespace("paletteer")
+  .fun_testIfNamespace("patchwork")
   
   
   ## 1. Check bm.mod argument -------------------------------------------------
