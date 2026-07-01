@@ -75,7 +75,7 @@
 ##'   \item{GAM.mgcv}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
-##'   \item{MAXENT}{\code{algorithm},\code{tune.args}, \code{parallel}, \code{partitions}, \code{kfolds}, 
+##'   \item{MAXENT}{\code{algorithm},\code{tune.args}, \code{parallel}, \code{partitions}, \code{partition.settings}, 
 ##'   \code{user.grp}}
 ##'   \item{RF}{\code{mtry}}
 ##'   \item{RFd}{\code{mtry}}
@@ -234,7 +234,9 @@ bm_Tuning <- function(model,
                                           MAXENT.parallel = TRUE,
                                           MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c('L')),
                                           MAXENT.partitions = 'randomkfold',
-                                          MAXENT.kfolds = 10,
+                                          MAXENT.partition.settings = list(orientation = 'lat_lon'
+                                                                           , aggregation.factor = 2
+                                                                           , kfolds = 10),
                                           MAXENT.user.grp = NULL,
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
@@ -340,7 +342,7 @@ bm_Tuning <- function(model,
                                                     tune.args = params.train$MAXENT.tune.args,
                                                     algorithm = params.train$MAXENT.algorithm,
                                                     partitions = params.train$MAXENT.partitions,
-                                                    partition.settings = list(kfolds = params.train$MAXENT.kfolds),
+                                                    partition.settings = params.train$MAXENT.partition.settings,
                                                     user.grp = params.train$MAXENT.user.grp,
                                                     doClamp = TRUE, ## allow to change or not ?
                                                     parallel = params.train$MAXENT.parallel,
@@ -716,7 +718,9 @@ bm_Tuning <- function(model,
                             MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
                             MAXENT.parallel = TRUE,
                             MAXENT.partitions = 'randomkfold',
-                            MAXENT.kfolds = 10,
+                            MAXENT.partition.settings = list(orientation = "lat_lon"
+                                                             , aggregation.factor = 2
+                                                             , kfolds = 10),
                             MAXENT.user.grp = NULL,
                             RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                             RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
