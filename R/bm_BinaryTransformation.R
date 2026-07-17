@@ -199,6 +199,6 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
 
 .convert_bin.array.filt <- function(x, y)
 {
-  x[x <= y] <- 0
+  x[x < y] <- 0
   return(x)
 }
