@@ -54,6 +54,8 @@ bm_SampleBinaryVector <- function(obs, ratio, as.logical = FALSE, seedval = NULL
   ## (issue when CTA is involved and seed needs to be set to a fix number)
   if (is.null(seedval)) {
     set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
+  } else {
+    set.seed(seedval)
   }
   
   ntot <- length(obs)

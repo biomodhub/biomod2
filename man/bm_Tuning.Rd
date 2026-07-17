@@ -27,7 +27,7 @@ bm_Tuning(
     MARS.degree = 1:2, MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
     MAXENT.algorithm = "maxnet", MAXENT.parallel = TRUE, MAXENT.tune.args = list(rm =
     seq(0.5, 1, 0.5), fc = c("L")), MAXENT.partitions = "randomkfold",
-    MAXENT.partitions.settings = list(orientation = "lat_lon", aggregation.factor = 2,
+    MAXENT.partition.settings = list(orientation = "lat_lon", aggregation.factor = 2,
     kfolds = 10), MAXENT.user.grp = NULL, RF.mtry = 1:min(10,
     ncol(bm.format@data.env.var)), RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
     SRE.quant = c(0, 
@@ -116,7 +116,7 @@ Currently, the available parameters to be tuned are the following :
   \item{GAM.mgcv}{\code{select}, \code{method}}
   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
   \item{MARS}{\code{degree}, \code{nprune}}
-  \item{MAXENT}{\code{algorithm},\code{tune.args}, \code{parallel}, \code{partitions}, \code{partitions.settings}, 
+  \item{MAXENT}{\code{algorithm},\code{tune.args}, \code{parallel}, \code{partitions}, \code{partition.settings}, 
   \code{user.grp}}
   \item{RF}{\code{mtry}}
   \item{RFd}{\code{mtry}}

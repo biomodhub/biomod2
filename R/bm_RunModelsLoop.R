@@ -330,9 +330,9 @@ bm_RunModel <- function(model, run.name
     }
     
     ## FILL weights parameter ---------------------------------------
-    if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS")) { #, "RF")) { ## TO BE ADDED RF ??
+    if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS")) {
       bm.opt.val$weights <- quote(weights)
-    } else if (model %in% c("FDA", "GAM")) {
+    } else if (model %in% c("FDA", "GAM", "RF", "RFd")) {
       bm.opt.val$weights <- weights.vec[calib.lines.vec]
     }
     
@@ -756,7 +756,7 @@ bm_RunModel <- function(model, run.name
   ## 4. Check weights.vec argument --------------------------------------------
   if (is.null(weights.vec)) { weights.vec <- rep(1, nrow(Data)) }
   ## These models require data and weights to be in the same dataset
-  if (model %in% c('ANN', 'MARS', 'CTA', 'GBM')) { ## TO BE ADDED RF ??
+  if (model %in% c("ANN", "CTA", "GBM", "MARS", "RF", "RFd")) {
     data_env_w <- cbind(data_env, weights.vec)
     colnames(data_env_w) <- c(colnames(data_env), "weights")
   } else {

@@ -455,8 +455,8 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 
   <dt>weights &amp; prevalence</dt>
 <dd><p>More or less weight can be given to some specific observations. <br> Automatically created
-  <code>weights</code> will be <code>integer</code> values to prevent some modeling issues. <br><em>Note that <code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code> and <code>SRE</code> models
-  do not take weights into account.</em></p><ul><li><p>If <code>prevalence = 0.5</code> (the default), presences and absences will be weighted equally
+  <code>weights</code> will be <code>integer</code> values to prevent some modeling issues. <br><em>Note that <code>MAXENT</code>, <code>MAXNET</code> and <code>SRE</code> models do not take weights into
+  account.</em></p><ul><li><p>If <code>prevalence = 0.5</code> (the default), presences and absences will be weighted equally
     (<em>i.e. the weighted sum of presences equals the weighted sum of absences</em>).</p></li>
 <li><p>If <code>prevalence</code> is set below (<em>above</em>) <code>0.5</code>, more weight will be
     given to absences (<em>presences</em>).</p></li>

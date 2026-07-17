@@ -297,8 +297,8 @@ metrics (see Details).
   \item{weights & prevalence}{
   More or less weight can be given to some specific observations. \cr Automatically created 
   \code{weights} will be \code{integer} values to prevent some modeling issues. \cr 
-  \emph{Note that \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd} and \code{SRE} models 
-  do not take weights into account.}
+  \emph{Note that \code{MAXENT}, \code{MAXNET} and \code{SRE} models do not take weights into 
+  account.}
   \itemize{
     \item If \code{prevalence = 0.5} (the default), presences and absences will be weighted equally 
     (\emph{i.e. the weighted sum of presences equals the weighted sum of absences}). 

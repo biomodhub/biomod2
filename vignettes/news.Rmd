@@ -17,6 +17,9 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-7 : 
+    + in `BIOMOD_Modeling` :
+        * authorize the use of `prevalence` for RF and RFd
+        * fix `.automatic_weights_creation` : round(w * 10) instead of round(w) for small prevalence
     + in `bm_Tuning` :
         * replace `MAXENT.kfolds` by `MAXENT.partition.settings`
         * add `.expected_calib.lines_names` function and improve `calib.lines` management

@@ -461,7 +461,7 @@ rast.has.values <- function(x)
   } else { # code presences as 1
     weights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbs)
   }
-  weights <- round(weights[]) # to remove glm & gam warnings
+  weights <- round(weights[] * 10) # to remove glm & gam warnings
   weights[!subset] <- 0
   
   return(weights)
