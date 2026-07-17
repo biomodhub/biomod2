@@ -309,8 +309,7 @@ bm_RunModel <- function(model, run.name
                                as.data.frame(scale_data),                                  #standardize values
                                data_mod[calib.lines.vec, categorical_var, drop = FALSE] )  #categorical data
     } else if (model == "GLM") {
-      bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
-                               data.frame("weights" = weights.vec[calib.lines.vec]))
+      bm.opt.val$data <- data_mod[calib.lines.vec, , drop = FALSE]
       if ("mustart" %in% names(bm.opt.val) &&
           (length(bm.opt.val$mustart) > 0 && nchar(bm.opt.val$mustart) > 0) &&
           length(bm.opt.val$mustart) < nrow(bm.opt.val$data)) {
@@ -756,7 +755,7 @@ bm_RunModel <- function(model, run.name
   ## 4. Check weights.vec argument --------------------------------------------
   if (is.null(weights.vec)) { weights.vec <- rep(1, nrow(Data)) }
   ## These models require data and weights to be in the same dataset
-  if (model %in% c("ANN", "CTA", "GBM", "MARS", "RF", "RFd")) {
+  if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS")) {
     data_env_w <- cbind(data_env, weights.vec)
     colnames(data_env_w) <- c(colnames(data_env), "weights")
   } else {
