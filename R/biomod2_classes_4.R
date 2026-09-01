@@ -367,7 +367,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
                 
                 # save raster on hard drive ?
                 if (!is.null(filename)) {
-                  cat("\n\t\tWriting projection on hard drive...") ## Happening ?
+                  cat("\n\t\tWriting projection on hard drive...")
                   if (on_0_1000) { ## projections are stored as positive integer
                     writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
                   } else { ## keep default data format for saved raster

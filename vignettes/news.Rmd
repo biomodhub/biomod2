@@ -17,6 +17,10 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-7 : 
+    + in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` :
+        * fix path for `individual_projections` folder
+        * add re-writing if `do.stack = FALSE` and post-prediction modifications
+        * deal with datatype and output format
     + in `BIOMOD_Modeling` :
         * authorize the use of `prevalence` for RF and RFd
         * fix `.automatic_weights_creation` : round(w * 10) instead of round(w) for small prevalence

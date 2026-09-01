@@ -268,10 +268,6 @@ BIOMOD_Projection <- function(bm.mod,
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", bm.mod@sp.name)
   namePath <- file.path(bm.mod@dir.name, bm.mod@sp.name, nameProj)
-  if (!do.stack) {
-    namePath <- file.path(namePath, "individual_projections")
-  }
-  dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
   
   ## 3. Define the clamping mask ------------------------------------------------------------------
   if (build.clamping.mask) {
@@ -282,14 +278,11 @@ BIOMOD_Projection <- function(bm.mod,
     
     if (output.format == '.RData') {
       if (proj_is_raster) {
-        save(list = wrap(nameMask),
-             file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
-             compress = compress)
-      } else {
-        save(list = nameMask,
-             file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
-             compress = compress)
+        assign(x = nameMask, value = wrap(get(nameMask)))
       }
+      save(list = nameMask,
+           file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
+           compress = compress)
     } else {
       writeRaster(x = get(nameMask),
                   filename = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
@@ -301,6 +294,11 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
+  if (!do.stack) {
+    namePath <- file.path(namePath, "individual_projections")
+    dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
+  }
+  
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
       if (!isNamespaceLoaded("doParallel")) { 
@@ -319,18 +317,21 @@ BIOMOD_Projection <- function(bm.mod,
   proj <- foreach(mod.name = models.chosen) %dopar%
     {
       cat("\n\t +", mod.name)
+      
       if (proj_is_raster) {
         new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
         names(new.env) <- bm.mod@expl.var.names
       }
+      
       if (do.stack) {
         filename <- NULL
       } else {
-        filename <- file.path(namePath, "individual_projections",
+        filename <- file.path(namePath,
                               paste0(nameProj, "_", mod.name, 
                                      ifelse(output.format == ".RData"
                                             , ".tif", output.format)))
       }
+      
       mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
       temp_workdir <- NULL
       if (length(grep("MAXENT$", mod.name)) == 1) {
@@ -350,35 +351,40 @@ BIOMOD_Projection <- function(bm.mod,
       }
       
       ## Cleaning 
+      do.rewrite <- FALSE
       if (bm.mod@data.type %in% c("count", "abundance")) {
         pred.tmp[pred.tmp < 0] <- 0
-        pred.tmp <- round(pred.tmp,digits = digits)
+        pred.tmp <- round(pred.tmp, digits = digits)
+        if (!do.stack) { do.rewrite <- TRUE }
         
       } else if (bm.mod@data.type %in% c("ordinal", "multiclass")) {
         data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
-        #nblevels <- length(levels(data_sp))
         if (length(grep("GAM$|GLM$|XGBOOST$", mod.name)) == 1) {
-          # pred.tmp[pred.tmp < 1] <- 1
-          # pred.tmp[pred.tmp > nblevels] <- nblevels
-          # pred.tmp <- round(as.numeric(pred.tmp))
-          # if (inherits(pred.tmp, "SpatRaster")){
-          #   pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
-          # } else {
-          #   pred.tmp <- factor(pred.tmp, labels = levels(data_sp))
-          # }
           pred.tmp <- .numeric2factor(pred.tmp, data_sp, ordered = (bm.mod@data.type == "ordinal"))
+          if (!do.stack) { do.rewrite <- TRUE }
         } else if ((length(grep("MARS$", mod.name)) == 1)){
           if (!inherits(pred.tmp, "SpatRaster")){
             pred.tmp <- factor(pred.tmp, levels = levels(data_sp))
           } else {
             pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
           }
+          if (!do.stack) { do.rewrite <- TRUE }
         } else {
           if (!inherits(pred.tmp, "SpatRaster")){
             pred.tmp <- factor(pred.tmp, levels = 1:length(levels(data_sp)), labels = levels(data_sp),
                                ordered = ifelse(bm.mod@data.type == "ordinal", TRUE, FALSE))
+            if (!do.stack) { do.rewrite <- TRUE }
           }
         }
+      }
+      
+      if (do.rewrite && output.format != '.RData') { ## if do.rewrite, output.format should never be .RData (as do.stack always TRUE for RData)
+        cat("\n\t\tRe-writing projection on hard drive...")
+        writeRaster(x = pred.tmp, filename = filename
+                    , overwrite = TRUE, NAflag = -9999
+                    , datatype = ifelse(bm.mod@data.type == "binary"
+                                        , ifelse(on_0_1000, "INT2S", "FLT4S")
+                                        , ifelse(digits == 0, "INT2S", "FLT4S")))
       }
       
       
@@ -389,7 +395,7 @@ BIOMOD_Projection <- function(bm.mod,
           return(pred.tmp)
         }
       } else {
-        cat("\n\t\t", filename) ## Happening ?
+        cat("\n\t\t", filename)
         return(filename)
       }
     }
@@ -432,12 +438,11 @@ BIOMOD_Projection <- function(bm.mod,
     if (output.format == '.RData') {
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else {
-      save.type <- ifelse(bm.mod@data.type == "binary"
-                          , ifelse(on_0_1000, "INT2S", "FLT4S")
-                          , ifelse(digits == 0, "INT2S", "FLT4S"))
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files
-                  , overwrite = TRUE, datatype = save.type
-                  , NAflag = -9999)
+                  , overwrite = TRUE, NAflag = -9999
+                  , datatype = ifelse(bm.mod@data.type == "binary"
+                                      , ifelse(on_0_1000, "INT2S", "FLT4S")
+                                      , ifelse(digits == 0, "INT2S", "FLT4S")))
     }
   }
   proj_out@proj.out@link <- saved.files
@@ -563,6 +568,7 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   nameOut <- paste0(bm.mod@sp.name, ".", proj.name, ".projection.out")
+  if (!do.stack) { nameOut <- paste0("../", nameOut) }
   if (!keep.in.memory) { proj_out <- free(proj_out) }
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))

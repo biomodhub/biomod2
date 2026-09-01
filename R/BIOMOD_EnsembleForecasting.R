@@ -343,10 +343,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   proj.em <- foreach(em.name = models.chosen) %dopar%
     {
       cat("\n\t +", em.name)
+      
       if (do.stack) {
         filename <- NULL
       } else {
-        filename <- file.path(namePath, paste0(em.name, output.format))
+        filename <- file.path(namePath
+                              , paste0(em.name, ifelse(output.format == ".RData", ".tif", output.format)))
       }
       
       mod <- get(BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name))
@@ -360,19 +362,28 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , na.rm = na.rm)
       
       ## cleaning 
+      do.rewrite <- FALSE
       if (bm.em@data.type %in% c("count", "abundance")) {
         ef.tmp[ef.tmp < 0] <- 0
         ef.tmp <- round(ef.tmp, digits = digits)
-      }
-      
-      if(bm.em@data.type == "ordinal" && !grepl("EMfreq|EMcv", em.name)){
+        if (!do.stack) { do.rewrite <- TRUE }
+      } else if(bm.em@data.type == "ordinal" && !grepl("EMfreq|EMcv", em.name)){
         data_sp <- get_formal_data(bm.em, subinfo = "resp.var")
         if(proj_is_raster){
           ef.tmp <- terra::subst(ef.tmp, 1:length(levels(data_sp)), levels(data_sp))
         } else {
           ef.tmp <- factor(ef.tmp, levels = levels(data_sp))
         }
+        if (!do.stack) { do.rewrite <- TRUE }
       }
+      
+      if (do.rewrite && output.format != '.RData') { ## if do.rewrite, output.format should never be .RData (as do.stack always TRUE for RData)
+        cat("\n\t\tRe-writing projection on hard drive...")
+        writeRaster(x = ef.tmp, filename = filename
+                    , overwrite = TRUE, NAflag = -9999
+                    , datatype = ifelse(any(grepl("EMcv", em.name) | digits != 0), "FLT4S", "INT2S"))
+      }
+      
       
       if (do.stack) {
         if (proj_is_raster) {
@@ -381,6 +392,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           return(ef.tmp)
         }
       } else {
+        cat("\n\t\t", filename)
         return(filename)
       }
     }
@@ -561,6 +573,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------------------
   nameOut <- paste0(bm.em@sp.name, ".", proj.name, ".ensemble.projection.out")
+  if (!do.stack) { nameOut <- paste0("../", nameOut) }
   if (!keep.in.memory) { proj_out <- free(proj_out) }
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
@@ -685,12 +698,18 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 7. Check output.format ---------------------------------------------------
   output.format <- args$output.format
-  if (is.null(output.format)) {
-    if (length(bm.proj) > 0) {
-      output.format <- ifelse(bm.proj@type != 'SpatRaster', ".RData", ".tif")
-    } else {
-      output.format <- ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".tif")
+  if (!is.null(output.format)) {
+    .fun_testIfIn("output.format", output.format, c(".RData", ".grd", ".tif", ".img"))
+    if (output.format %in% c(".grd", ".tif", ".img") && !inherits(new.env, "SpatRaster")) {
+      .message("output.format set to .RData (new.env is not a raster object)")
     }
+  } else {
+    if (length(bm.proj) > 0) {
+      output.format <- ifelse(bm.proj@type != "SpatRaster", ".RData", ".tif")
+    } else {
+      output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".tif")
+    }
+    .message("output.format set to ", output.format)
   }
   
   ## 8. Check do.stack --------------------------------------------------------
