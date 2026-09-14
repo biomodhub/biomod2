@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-7 : 
+    + fix different configurations in `BIOMOD_FormatingData` (env as _SpatialPointsDataFrame_ for example)
     + in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` :
         * fix path for `individual_projections` folder
         * add re-writing if `do.stack = FALSE` and post-prediction modifications

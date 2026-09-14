@@ -191,11 +191,14 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
   .fun_testIfInherits(ifelse(is.eval == TRUE, "eval.sp", "sp"), sp, available.types.resp)
   
+  ## CHECK resp.var -------------------------------------------------
   ## SpatialPoints, SpatialPointsDataFrame, SpatVector
   if (inherits(sp, c('SpatialPoints', 'SpatVector'))) {
+    if (!is.null(xy)) {
+      .message("resp.xy will be ignored (resp.var is a spatial object)")
+    }
     .tmp <- .check_formating_spatial(resp.var = sp,
                                      expl.var = env,
-                                     resp.xy = xy,
                                      is.eval = is.eval)
     sp <- .tmp$resp.var
     xy <- .tmp$resp.xy
@@ -207,7 +210,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     sp <- .check_formating_table(sp)
   }
   
-  ## Check data.type
+  ## CHECK data.type ------------------------------------------------
   if (is.eval == FALSE) {
     presumed.data.type <- .which.data.type(sp)
     
@@ -230,7 +233,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     }
   }
   
-  ## Check sp
+  ## CHECK resp.var in function of data.type ------------------------
   if (data.type == "binary") {
     sp <- .check_formating_resp.var.bin(resp.var = sp, is.eval = is.eval)
   } else {
@@ -248,6 +251,9 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
       xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp), env.as.df = env.as.df)
     } else if (inherits(env, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
       .fun_testIfNULL("resp.xy", xy)
+    } else if (inherits(env, "SpatialPointsDataFrame")) {
+      xy <- data.matrix(sp::coordinates(env))
+      xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp), env.as.df = TRUE)
     } else {
       xy <- data.frame("x" = numeric(), "y" = numeric())
     }
@@ -473,29 +479,33 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             names(tmp) <- "Environmental Mask"
             data.mask <- list("calibration" = wrap(tmp))
             
-            env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
-            
             ## IF eval.sp but eval.env == NULL, keep same env variable for eval than calib
             if (!is.null(eval.sp)) {
               ## Check for duplicated cells over env data
               cat("\n > Checking duplicated cells (evaluation)...")
+              output <- NULL
               if (is.null(eval.env)) {
                 output <- .check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
                 data.mask[["evaluation"]] <- data.mask[["calibration"]]
                 eval.env <- env
-              } else {
+              } else if (inherits(eval.env, "SpatRaster")) {
                 output <- .check_duplicated_cells(eval.env, eval.xy, eval.sp, filter.raster)
                 tmp <- prod(classify(eval.env, matrix(c(-Inf, Inf, 1), nrow = 1)))
                 names(tmp) <- "Environmental Mask"
                 data.mask[["evaluation"]] <- wrap(tmp)
-                if (inherits(eval.env, "SpatRaster")) {
-                  eval.env <- as.data.frame(extract(eval.env, eval.xy, factors = TRUE, ID = FALSE))
-                }
+              } else {
+                .message("no check for evaluation data (expl.var and eval.expl.var are not SpatRaster objects)")
               }
               eval.xy <- output$xy
               eval.sp <- output$sp
               rm(output)
+              
+              if (inherits(eval.env, "SpatRaster")) {
+                eval.env <- as.data.frame(extract(eval.env, eval.xy, factors = TRUE, ID = FALSE))
+              }
             }
+            
+            env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, data.type, sp.name, 
                                         eval.sp, eval.env, eval.xy,

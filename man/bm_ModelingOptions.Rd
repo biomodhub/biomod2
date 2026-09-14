@@ -9,7 +9,7 @@ bm_ModelingOptions(
   models,
   strategy,
   user.val = NULL,
-  user.base = "bigboss",
+  user.base = NULL,
   bm.format = NULL,
   calib.lines = NULL
 )
@@ -29,7 +29,7 @@ values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \cod
 \item{user.val}{(\emph{optional, default} \code{NULL}) \cr
 A \code{list} containing parameters values for some (all) models}
 
-\item{user.base}{(\emph{optional, default} \code{bigboss}) \cr
+\item{user.base}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{character} corresponding to the basic set of 
 options to be modified by user defined values, must be either \code{default} or \code{bigboss} 
 (see Details)}
@@ -251,6 +251,7 @@ user.val <- list(SRE.binary.biomod2.bm_SRE = user.SRE
 opt.u <- bm_ModelingOptions(data.type = 'binary',
                             models = c('SRE', 'XGBOOST'),
                             strategy = 'user.defined',
+                            user.base = 'bigboss',
                             user.val = user.val)
 
 opt.b

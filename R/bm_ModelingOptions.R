@@ -17,7 +17,7 @@
 ##' (see Details)
 ##' @param user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
-##' @param user.base (\emph{optional, default} \code{bigboss}) \cr
+##' @param user.base (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{character} corresponding to the basic set of 
 ##' options to be modified by user defined values, must be either \code{default} or \code{bigboss} 
 ##' (see Details)
@@ -248,6 +248,7 @@
 ##' opt.u <- bm_ModelingOptions(data.type = 'binary',
 ##'                             models = c('SRE', 'XGBOOST'),
 ##'                             strategy = 'user.defined',
+##'                             user.base = 'bigboss',
 ##'                             user.val = user.val)
 ##' 
 ##' opt.b
@@ -274,7 +275,7 @@
 
 
 bm_ModelingOptions <- function(data.type = "binary", models, strategy
-                               , user.val = NULL, user.base = "bigboss"
+                               , user.val = NULL, user.base = NULL
                                , bm.format = NULL, calib.lines = NULL)
 {
   .bm_cat2("[bm] Modeling options")
@@ -394,6 +395,7 @@ bm_ModelingOptions <- function(data.type = "binary", models, strategy
   
   ## 4.b Check user.base / user.val arguments ---------------------------------
   if (strategy == "user.defined") {
+    .fun_testIfNULL("user.base", user.base)
     .fun_testIfIn("user.base", user.base, c('default', 'bigboss'))
     
     .fun_testIfInherits("user.val", user.val, "list")

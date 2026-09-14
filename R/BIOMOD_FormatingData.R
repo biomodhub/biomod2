@@ -372,7 +372,8 @@ BIOMOD_FormatingData <- function(resp.name,
   
   ## 1. check args ------------------------------------------------------------
   cat("\nChecking arguments...")
-  args <- .BIOMOD_FormatingData.check.args(resp.name, dir.name)
+  args <- .BIOMOD_FormatingData.check.args(resp.name, dir.name, resp.var, resp.xy
+                                           , expl.var, data.type, PA.strategy)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   cat("\n")
@@ -424,7 +425,8 @@ BIOMOD_FormatingData <- function(resp.name,
 
 ###################################################################################################
 
-.BIOMOD_FormatingData.check.args <- function(resp.name, dir.name)
+.BIOMOD_FormatingData.check.args <- function(resp.name, dir.name, resp.var, resp.xy
+                                             , expl.var, data.type, PA.strategy)
 {
   ## 1. Check resp.name argument ----------------------------------------------
   .fun_testIfNULL("resp.name", resp.name)
@@ -442,5 +444,10 @@ BIOMOD_FormatingData <- function(resp.name,
     stop("Modeling folder '", dir.name, "' does not exist. Please check.")
   }
   
-  return(list(resp.name = resp.name, dir.name = dir.name))
+  ## 3. Check combination of data arguments -----------------------------------
+  .tmp <- .BIOMOD.formated.data.check_data(sp = resp.var, env = expl.var, xy = resp.xy, is.eval = FALSE
+                                           , data.type = data.type, PA.strategy = PA.strategy)
+  
+  return(list(resp.name = resp.name, dir.name = dir.name, data.type = .tmp$data.type
+              , resp.var = .tmp$sp, resp.xy = .tmp$xy, expl.var = .tmp$env))
 }

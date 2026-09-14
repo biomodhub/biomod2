@@ -128,7 +128,7 @@
 <span>  <span class="va">models</span>,</span>
 <span>  <span class="va">strategy</span>,</span>
 <span>  user.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  user.base <span class="op">=</span> <span class="st">"bigboss"</span>,</span>
+<span>  user.base <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bm.format <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  calib.lines <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -161,7 +161,7 @@ A <code>list</code> containing parameters values for some (all) models</p></dd>
 
 
 <dt id="arg-user-base">user.base<a class="anchor" aria-label="anchor" href="#arg-user-base"></a></dt>
-<dd><p>(<em>optional, default</em> <code>bigboss</code>) <br>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'user.defined'</code>, a <code>character</code> corresponding to the basic set of
 options to be modified by user defined values, must be either <code>default</code> or <code>bigboss</code>
 (see Details)</p></dd>
@@ -379,6 +379,7 @@ default parameters, and their values, are the following : <br><br></p>
 <span><span class="va">opt.u</span> <span class="op">&lt;-</span> <span class="fu">bm_ModelingOptions</span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
 <span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
 <span>                            strategy <span class="op">=</span> <span class="st">'user.defined'</span>,</span>
+<span>                            user.base <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                            user.val <span class="op">=</span> <span class="va">user.val</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">opt.b</span></span>

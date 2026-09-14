@@ -150,12 +150,8 @@
 ## CHECK formated data ----------------------------------------------------------------------------
 ## used in biomod2_classes_1
 
-.check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, is.eval = FALSE)
+.check_formating_spatial <- function(resp.var, expl.var = NULL, is.eval = FALSE)
 {
-  if (!is.null(resp.xy)) {
-    .message("resp.xy will be ignored (resp.var is a spatial object)")
-  }
-  
   if (inherits(resp.var, 'SpatialPoints')) { 
     resp.xy <- data.matrix(sp::coordinates(resp.var))
     if (inherits(resp.var, 'SpatialPointsDataFrame')) {
@@ -234,7 +230,7 @@
   .fun_testIfSize("resp.var", ncol(resp.var), 1)
   if (is.ordered(resp.var[, 1])) {
     levels <- levels(resp.var[, 1])
-    resp.var <- factor(resp.var[, 1], levels = levels, ordered = T)
+    resp.var <- factor(resp.var[, 1], levels = levels, ordered = TRUE)
   } else {
     resp.var <- as.numeric(resp.var[, 1])
   }
