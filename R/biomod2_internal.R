@@ -501,7 +501,7 @@ rast.has.values <- function(x)
 {
   ## 0. CHECK object type ---------------------------------------------------------------
   .fun_testIfIn("obj.type", obj.type, c("mod", "em"))
-  .fun_testIfIn("out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
+  .fun_testIfIn("out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import", "options"))
   
   if (obj.type == "mod") {
     dim_names <- c("PA", "run", "algo")
@@ -511,30 +511,42 @@ rast.has.values <- function(x)
   }
   
   if (obj.type == "mod") {
-    output <- foreach(i.dim1 = 1:length(obj.out), .combine = "rbind") %do%
-      {
-        res <- obj.out[[i.dim1]][[out]]
-        if (!is.null(res) && length(res) > 0) {
-          res <- as.data.frame(res)
-          if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
-            colnames(res) <- out
-            res[["points"]] <- 1:nrow(res)
-            res <- res[, c("points", out)]
-          }
-          col_names <- colnames(res)
-          tmp.full.name <- obj.out[[i.dim1]][["model"]]
-          if(out == "calib.failure" | is.null(tmp.full.name)){
-            res[["full.name"]] <- NA
-            return(res[, c("full.name", col_names)])
-          } else {
-            res[["full.name"]] <- tmp.full.name
-            res[[dim_names[1]]] <- strsplit(tmp.full.name, "_")[[1]][2]
-            res[[dim_names[2]]] <- strsplit(tmp.full.name, "_")[[1]][3]
-            res[[dim_names[3]]] <- strsplit(tmp.full.name, "_")[[1]][4]
-            return(res[, c("full.name", dim_names, col_names)])
+    if (out == "options") {
+      output <- foreach(i.dim1 = 1:length(obj.out), .combine = "c") %do%
+        {
+          res <- obj.out[[i.dim1]][[out]]
+          if (!is.null(res) && length(res) > 0) {
+            res <- list(res)
+            names(res) <- obj.out[[i.dim1]][["model"]]
+            return(res)
           }
         }
-      }
+    } else {
+      output <- foreach(i.dim1 = 1:length(obj.out), .combine = "rbind") %do%
+        {
+          res <- obj.out[[i.dim1]][[out]]
+          if (!is.null(res) && length(res) > 0) {
+            res <- as.data.frame(res)
+            if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
+              colnames(res) <- out
+              res[["points"]] <- 1:nrow(res)
+              res <- res[, c("points", out)]
+            }
+            col_names <- colnames(res)
+            tmp.full.name <- obj.out[[i.dim1]][["model"]]
+            if(out == "calib.failure" | is.null(tmp.full.name)){
+              res[["full.name"]] <- NA
+              return(res[, c("full.name", col_names)])
+            } else {
+              res[["full.name"]] <- tmp.full.name
+              res[[dim_names[1]]] <- strsplit(tmp.full.name, "_")[[1]][2]
+              res[[dim_names[2]]] <- strsplit(tmp.full.name, "_")[[1]][3]
+              res[[dim_names[3]]] <- strsplit(tmp.full.name, "_")[[1]][4]
+              return(res[, c("full.name", dim_names, col_names)])
+            }
+          }
+        }
+    }
   } else if (obj.type == "em") {
     
     ## 1. GET dimension names -------------------------------------------------------------

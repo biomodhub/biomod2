@@ -559,6 +559,7 @@ bm_Tuning <- function(model,
               data <- data %>% mutate_at("resp", factor)
               argstmp$strata <- data[, "resp"]
               argstmp$sampsize <- unlist(ifelse(!is.null(argstmp$sampsize), list(argstmp$sampsize), nrow(data)))
+              .message("sampsize set to ", toString(argstmp$sampsize))
             }
             argstmp$data <- data
             

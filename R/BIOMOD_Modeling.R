@@ -551,6 +551,21 @@ BIOMOD_Modeling <- function(bm.format,
     return(models.out)
   }
   
+  ## Update and save again modeling options
+  models.options <- .transform_outputs_list("mod", mod.out, out = "options")
+  bm.options.updated <- bm.options
+  mod <- sort(unique(sapply(names(models.options), function(x) strsplit(x, "_")[[1]][4])))
+  for (mod.i in mod) {
+    opt.i <- models.options[grep(paste0(mod.i, "$"), names(models.options))]
+    names(opt.i) <- sapply(names(opt.i), function(x) sub(bm.format@sp.name, "", sub(paste0("_", mod.i, "$"), "", x)))
+    nam <- grep(paste0("^", mod.i, "[.]"), names(bm.options.updated@options), value = TRUE)
+    for (run.i in names(opt.i)) {
+      bm.options.updated@options[[nam]]@args.values[[run.i]] <- opt.i[[run.i]]
+    }
+  }
+  models.out <- .fill_BIOMOD.models.out("models.options", bm.options.updated, models.out
+                                        , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (length(metric.eval) > 0) {

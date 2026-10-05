@@ -17,6 +17,8 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-7 : 
+    + update modeling options in `BIOMOD.models.out` object with changes made right prior modeling
+    + add message for `sampsize` parameter (RF and RFd models)
     + fix different configurations in `BIOMOD_FormatingData` (env as _SpatialPointsDataFrame_ for example)
     + in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` :
         * fix path for `individual_projections` folder

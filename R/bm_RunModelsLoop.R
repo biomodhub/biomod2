@@ -285,16 +285,25 @@ bm_RunModel <- function(model, run.name
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
       
       if (model == "RF" && data.type == "binary") {
-        bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize)
+        isNull <- is.null(bm.opt.val$sampsize)
+        bm.opt.val$sampsize <- unlist(ifelse(!isNull
                                              , list(bm.opt.val$sampsize)
-                                             , length(data_sp[calib.lines.vec]))) ## TOCHECK !!
+                                             , length(data_sp[calib.lines.vec])))
+        .message("sampsize set to ", toString(bm.opt.val$sampsize), " ("
+                 , ifelse(!isNull, "user provided", "nb presences + nb absences"), ")")
       }
       if (model == "RFd" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
+        isNull <- is.null(bm.opt.val$sampsize)
         nb_presences <- summary(data_mod[calib.lines.vec, resp_name])[["1"]]
-        bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize)
+        nb_absences <- summary(data_mod[calib.lines.vec, resp_name])[["0"]]
+        bm.opt.val$sampsize <- unlist(ifelse(!isNull
                                              , list(bm.opt.val$sampsize)
-                                             , list(c("0" = nb_presences, "1" = nb_presences))))
+                                             , list(c("0" = min(nb_presences, nb_absences)
+                                                      , "1" = min(nb_presences, nb_absences)))))
         bm.opt.val$replace <- unlist(ifelse(!is.null(bm.opt.val$replace), list(bm.opt.val$replace), TRUE))
+        .message("sampsize set to ", toString(bm.opt.val$sampsize), " ("
+                 , ifelse(!isNull, "user provided", ifelse(nb_absences < nb_presences, "nb absences", "nb presences")), ")")
+        .message("replace set to ", bm.opt.val$replace)
       }
     }
     
@@ -365,12 +374,15 @@ bm_RunModel <- function(model, run.name
         best.iter <- try(gbm.perf(model.sp, method = "cv" , plot.it = FALSE)) ## c('OOB', 'test', 'cv')
       }
       
+      ## Update modeling options BUT only for this dataset, while all datasets will still be saved and not updated
+      bm.opt@args.values[[dataset_name]] <- bm.opt.val
+      
       model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
                       model = model.sp,
                       model_name = model_name,
                       model_class = bm.opt@model,
                       model_type = data.type,
-                      model_options = bm.opt, ## bm.opt.val ??
+                      model_options = bm.opt,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
@@ -491,7 +503,8 @@ bm_RunModel <- function(model, run.name
                   pred = NULL,
                   pred.eval = NULL,
                   evaluation = NULL,
-                  var.import = NULL)
+                  var.import = NULL,
+                  options = bm.opt.val)
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   temp_workdir = NULL
