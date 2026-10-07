@@ -1,0 +1,24 @@
+bibentry(
+  bibtype = "Article",
+  header = "To cite biomod2 in publications, please use (and check your version):",
+  author = c(person("Maya", "Guéguen", role = c("aut", "cre")
+                    , email = "maya.gueguen@univ-grenoble-alpes.fr"
+                    , comment = c(ORCID = "0000-0002-1045-2997")),
+             person("Hélène", "Blancheteau", role = "aut"),
+             person("Rémi", "Lemaire-Patin", role = "aut"),
+             person("Wilfried", "Thuiller", role = "aut"
+                    , email = "wilfried.thuiller@univ-grenoble-alpes.fr"
+                    , comment = c(ORCID = "0000-0002-5388-5274"))),
+  title = "'biomod2' - extending presence-absence species distribution models to multiple data types",
+  journal = "Ecography",
+  volume = "2026",
+  number = "9",
+  pages = "e08588",
+  year = "2026",
+  doi = "https://doi.org/10.1002/ecog.08588",
+  url = "https://biomodhub.github.io/biomod2/",
+  note = paste0("R package version ", meta$Version, " (", meta$Date, ")"),
+  keywords = "abundance, habitat distribution model, reproducibility, species distribution model",
+  abstract = "The R package 'biomod2' is one of the most widely used and versatile tools for species distribution modelling (SDM), enabling ecologists to calibrate, evaluate, and project species-environment relationships across space and time using multiple modelling algorithms and ensemble forecasting. Here, we present its latest and most comprehensive version, which substantially expands its scope by accommodating diverse ecological data types within a unified modelling workflow. Importantly, 'biomod2' is designed to handle each data type (e.g. presence-only, presence-absence, counts, multi-class abundance, or relative/absolute abundance) independently, ensuring methodological rigor and avoiding the integration of incompatible data formats or model types. This approach allows users to model biomass, land cover, habitat suitability, and other ecological metrics without conflating distinct data streams or analytical frameworks. 
+  We have fully restructured the workflow to improve usability and reproducibility, introducing clearer function organization, standardized parameter names, and substantially revised documentation. The update also includes new methodological features such as enhanced cross-validation schemes, improved pseudo-absence selection strategies, expanded model parametrization options, additional algorithms, and new tools for exploring and visualizing outputs. Together, these developments provide a more flexible, transparent, and easily shareable framework for SDM, supporting comparison, uncertainty analyses, and ensemble predictions across a broad range of ecological questions."
+)

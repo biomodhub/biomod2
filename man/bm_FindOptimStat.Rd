@@ -79,8 +79,8 @@ convert continuous values into binary ones leading to the best score for a given
 metric.
 }
 \details{
-\emph{Please refer to \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
-("Methods for dichotomous forecasts")} to get detailed description (simple/complex metrics).} \cr
+\emph{Please refer to \href{https://jwgfvr.github.io/forecastverification/}{JWGFVR website 
+("Forecast verification - methods, issues and FAQ")} to get detailed description (simple/complex metrics).} \cr
 Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function.
 
 \describe{

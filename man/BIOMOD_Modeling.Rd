@@ -226,8 +226,9 @@ metrics (see Details).
 
   \item{metric.eval}{
   \emph{Please refer to  
-  \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website ("Methods for 
-  dichotomous forecasts")} to get detailed description (simple/complex metrics).} \cr
+  \href{https://jwgfvr.github.io/forecastverification/}{JWGFVR website ("Forecast 
+  verification - methods, issues and FAQ")} to get detailed description 
+  (simple/complex metrics).} \cr
   Several evaluation metrics can be selected. \cr
   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
   function.
