@@ -286,10 +286,12 @@ setMethod('show', signature('biomod2_model'), function(object)
 
 NULL
 
+setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
+
+##' @export
+
 setMethod('predict', signature(object = 'biomod2_model'),
           function(object, newdata, ...) { predict2(object, newdata, ...) })
-
-setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
 
 ##' 
 ##' @rdname predict2.bm
