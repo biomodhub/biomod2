@@ -1,30 +1,4 @@
 
-##' @name predict.em
-##' @author Damien Georges
-##' 
-##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
-##' 
-##' @description This function allows the user to predict single models from 
-##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
-##' 
-##' 
-##' @param object a \code{\link{biomod2_ensemble_model}} object
-##' @param newdata a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} object 
-##' containing data for new predictions
-##' @param \ldots (\emph{optional}) 
-##' 
-##' 
-##' @seealso \code{\link{biomod2_ensemble_model}}
-##' @family Toolbox functions
-##' 
-##' 
-##' @importFrom terra app classify nlyr
-##' @importFrom stats qt sd
-##' 
-NULL
-
-#setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
-
 # ---------------------------------------------------------------------------- #
 # 9. biomod2_ensemble_model --------------------------------------------------
 # ---------------------------------------------------------------------------- #
@@ -170,6 +144,7 @@ setMethod('show', signature('biomod2_ensemble_model'), function(object) { callNe
 ##' 
 ##' 
 ##' @importFrom terra rast app classify writeRaster
+##' @importFrom stats qt sd
 ##' @keywords internal
 
 NULL

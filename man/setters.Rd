@@ -35,8 +35,6 @@ Other Toolbox functions:
 \code{\link{getters.bm}},
 \code{\link{getters.out}},
 \code{\link[=load_stored_object]{load_stored_object()}},
-\code{\link{predict.bm}},
-\code{\link{predict.em}},
 \code{\link{predict2.bm}},
 \code{\link{predict2.em}}
 }

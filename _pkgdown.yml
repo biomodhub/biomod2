@@ -121,8 +121,8 @@ reference:
       - "getters.bm"
       - "getters.out"
       - "setters"
-      - "predict.bm"
-      - "predict.em"
+      - "predict2.bm"
+      - "predict2.em"
   - title: Data
   - subtitle: Models options
     contents:
