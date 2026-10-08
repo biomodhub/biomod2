@@ -3,6 +3,7 @@
 \name{predict2.bm}
 \alias{predict2.bm}
 \alias{predict2}
+\alias{predict.biomod2_model}
 \alias{predict2.biomod2_model.SpatRaster}
 \alias{predict2.biomod2_model.data.frame}
 \alias{predict2.ANN_biomod2_model.SpatRaster}
@@ -30,6 +31,7 @@
 \alias{predict2.RFd_biomod2_model.data.frame}
 \alias{predict2.SRE_biomod2_model.SpatRaster}
 \alias{predict2.SRE_biomod2_model.data.frame}
+\alias{predict,biomod2_model-method}
 \alias{predict2,biomod2_model,SpatRaster-method}
 \alias{predict2,biomod2_model,data.frame-method}
 \alias{predict2,ANN_biomod2_model,SpatRaster-method}
@@ -62,6 +64,10 @@
 \alias{predict2,XGBOOST_biomod2_model,data.frame-method}
 \title{Functions to get predictions from \code{\link{biomod2_model}} objects}
 \usage{
+predict2(object, newdata, ...)
+
+\S4method{predict}{biomod2_model}(object, newdata, ...)
+
 \S4method{predict2}{biomod2_model,SpatRaster}(object, newdata, predfun, seedval = NULL, ...)
 
 \S4method{predict2}{biomod2_model,data.frame}(object, newdata, predfun, seedval = NULL, ...)

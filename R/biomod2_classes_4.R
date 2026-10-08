@@ -227,6 +227,7 @@ setMethod('show', signature('biomod2_model'), function(object)
 ### predict2.bm doc ----------------------------------------------------------
 ##' @name predict2.bm
 ##' @aliases predict2
+##' @aliases predict.biomod2_model
 ##' @aliases predict2.biomod2_model.SpatRaster
 ##' @aliases predict2.biomod2_model.data.frame
 ##' @aliases predict2.ANN_biomod2_model.SpatRaster
@@ -284,11 +285,12 @@ setMethod('show', signature('biomod2_model'), function(object)
 ##' @importFrom methods callNextMethod
 ##' @keywords internal
 
-NULL
-
 setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
 
+##' 
+##' @rdname predict2.bm
 ##' @export
+##' 
 
 setMethod('predict', signature(object = 'biomod2_model'),
           function(object, newdata, ...) { predict2(object, newdata, ...) })
