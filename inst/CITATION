@@ -15,7 +15,7 @@ bibentry(
   number = "9",
   pages = "e08588",
   year = "2026",
-  doi = "https://doi.org/10.1002/ecog.08588",
+  doi = "10.1002/ecog.08588",
   url = "https://biomodhub.github.io/biomod2/",
   note = paste0("R package version ", meta$Version, " (", meta$Date, ")"),
   keywords = "abundance, habitat distribution model, reproducibility, species distribution model",
