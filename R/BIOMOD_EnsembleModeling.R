@@ -718,7 +718,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                         bm_FindOptimStat(metric.eval = xx,
                                          obs = obs[eval.lines],
                                          fit = pred.bm[eval.lines],
-                                         threshold = cross.validation["cutoff", xx],
+                                         threshold = cross.validation$cutoff[which(cross.validation$metric.eval == xx)],
                                          k = k)
                       }
                       cross.validation$validation <- stat.validation$best.stat
@@ -744,7 +744,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                         bm_FindOptimStat(metric.eval = xx,
                                          obs = eval.obs,
                                          fit = eval_pred.bm,
-                                         threshold = cross.validation["cutoff", xx],
+                                         threshold = cross.validation$cutoff[which(cross.validation$metric.eval == xx)],
                                          k = k)
                       }
                       cross.validation$evaluation <- stat.evaluation$best.stat

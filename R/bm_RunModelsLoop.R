@@ -658,7 +658,7 @@ bm_RunModel <- function(model, run.name
         bm_FindOptimStat(metric.eval = xx,
                          obs = eval.data[, 1],
                          fit = g.pred.eval.without.na,
-                         threshold = cross.validation["cutoff", xx],
+                         threshold = cross.validation$cutoff[which(cross.validation$metric.eval == xx)],
                          k = length(expl_var_names))
       }
       cross.validation$evaluation <- stat.evaluation$best.stat
