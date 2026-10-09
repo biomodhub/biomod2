@@ -238,7 +238,8 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
         } else { ## SEVERAL VALUES predicted
           mini <- max(min(fit, na.rm = TRUE), fit.scale["min"], na.rm = TRUE)
           maxi <- min(max(fit, na.rm = TRUE), fit.scale["max"], na.rm = TRUE)
-          valToTest <- try(unique(round(c(seq(mini, maxi, length.out = nb.thresh), mini, maxi))))
+          valToTest <- try(unique(round(c(seq(mini, maxi, length.out = nb.thresh), mini, maxi)
+                                        , digits = ifelse(fit.scale["max"] > 1, 0, 3))))
           if (inherits(valToTest, "try-error")) {
             valToTest <- seq(fit.scale["min"], fit.scale["max"], length.out = nb.thresh)
           }
