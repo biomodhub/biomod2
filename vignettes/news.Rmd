@@ -14,8 +14,14 @@ vignette: >
 
 ### <i class="fa-solid fa-chess-rook"></i> 2026
 
+- 4.3-5-0 : 
+
+
 ##### Bugfix
 
+- 4.3-4-8 : 
+    + fix retrieval of thresholds to compute metrics over validation (ensemble) and evaluation (single, ensemble) parts
+    + fix round digits to scan thresholds in `bm_FindOptimStat` (0-1 scale VS 0-1000)
 - 4.3-4-7 : 
     + update modeling options in `BIOMOD.models.out` object with changes made right prior modeling
     + add message for `sampsize` parameter (RF and RFd models)

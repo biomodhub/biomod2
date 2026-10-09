@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-5-0</span>
       </span>
     </div>
 
@@ -159,10 +159,21 @@
 <h3 id="section">
 <i class="fa-solid fa-chess-rook"></i> 2026<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
+<ul>
+<li>4.3-5-0 :</li>
+</ul>
 <div class="section level5">
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
 <ul>
+<li>4.3-4-8 :
+<ul>
+<li>fix retrieval of thresholds to compute metrics over validation
+(ensemble) and evaluation (single, ensemble) parts</li>
+<li>fix round digits to scan thresholds in <code>bm_FindOptimStat</code>
+(0-1 scale VS 0-1000)</li>
+</ul>
+</li>
 <li>4.3-4-7 :
 <ul>
 <li>update modeling options in <code>BIOMOD.models.out</code> object
