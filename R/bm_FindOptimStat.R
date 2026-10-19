@@ -245,7 +245,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
           }
           # deal with unique value to test case
           if (length(valToTest) < 3) {
-            valToTest <- round(c(mean(fit.scale["min"], mini), valToTest, mean(fit.scale["max"], maxi)))
+            valToTest <- round(c(mean(c(fit.scale["min"], mini)), valToTest, mean(c(fit.scale["max"], maxi))))
           }
         }
       } else { # test only one value
@@ -268,7 +268,9 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
       boy <- ecospat.boyce(obs = fit[which(obs == 1)], fit = fit, PEplot = FALSE)
       best.stat <- boy$cor
       if (sum(boy$F.ratio < 1, na.rm = TRUE) > 0) {
-        cutoff <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
+        fit.scale <- .guess_scale(fit)
+        cutoff <- round(boy$HS[max(which(boy$F.ratio < 1))]
+                        , digits = ifelse(fit.scale["max"] > 1, 0, 3))
       }
     } else if (metric.eval == "MPA") ## MPA -------------------------------------------------------
     {
@@ -453,8 +455,8 @@ bm_CalculateStatBin <- function(misc, metric.eval = 'TSS')
   
   ## calculate basic classification information -------------------------------
   hits <- misc['TRUE', '1'] ## true positives
-  misses <- misc['FALSE', '1'] ##  false positives
-  false_alarms <- misc['TRUE', '0'] ## false negatives 
+  misses <- misc['FALSE', '1'] ##  false negatives
+  false_alarms <- misc['TRUE', '0'] ## false positives 
   correct_negatives <- misc['FALSE', '0'] ## true negatives
   
   total <- sum(misc)
@@ -509,8 +511,8 @@ bm_CalculateStatAbun <- function(metric.eval, obs, fit, k)
                 , 'Rsquared_aj' = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
                 , 'Max_error' = max(abs(obs - fit), na.rm = TRUE)
                 , 'Accuracy' = sum(diag(m)) / sum(m)
-                , 'Recall' = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
-                , 'Precision' = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
+                , 'Recall' = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
+                , 'Precision' = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
                 , 'F1' = {
                   p <- sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
                   r <- sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
