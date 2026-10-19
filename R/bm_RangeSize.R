@@ -16,32 +16,39 @@
 ##' @param proj.future a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param ordinal a \code{logical} indicating whether or not the projections should be considered as ordinal data
+##' @param ordinal (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether the projections are to be considered as ordinal data 
+##' or not
 ##' 
 ##' 
 ##' @return
 ##' 
 ##' A \code{list} containing two objects :
 ##' \describe{
-##'   \item{Compt.By.Species}{a \code{data.frame} containing the summary of range change for each 
+##'   \item{Compt.By.Models}{a \code{data.frame} containing the summary of range change for each 
 ##'   comparison
 ##'   \itemize{
 ##'     \item \code{Loss} : number of pixels predicted to be lost
 ##'     \item \code{Stable_Abs} : number of pixels not currently occupied and not predicted to be
 ##'     \item \code{Stable_Pres} : number of pixels currently occupied and predicted to remain 
 ##'     occupied
-##'     \item \code{Gain} : number of pixels predicted to be gained
+##'     \item \code{Gain} : number of pixels predicted to be gained \cr\cr
 ##'     \item \code{PercLoss} : percentage of pixels currently occupied and predicted to be lost 
-##'     (\code{Loss / (Loss + Stable_Pres)})
+##'     \cr (\code{Loss / (Loss + Stable_Pres)})
 ##'     \item \code{PercGain} : percentage of pixels predicted to be gained compare to the 
-##'     number of pixels currently occupied (\code{Gain / (Loss + Stable_Pres)})
-##'     \item \code{SpeciesRangeChange} : percentage of pixels predicted to change (loss or gain) 
-##'     compare to the number of pixels currently occupied (\code{PercGain - PercLoss})
-##'     \item \code{CurrentRangeSize} : number of pixels currently occupied
-##'     \item \code{FutureRangeSize0Disp} : number of pixels predicted to be occupied, assuming 
-##'     no migration
-##'     \item \code{FutureRangeSize1Disp} : number of pixels predicted to be occupied, assuming 
-##'     migration
+##'     number of pixels currently occupied 
+##'     \cr (\code{Gain / (Loss + Stable_Pres)})
+##'     \item \code{SpeciesRangeChange} : percentage of pixels predicted to change compare to the 
+##'     number of pixels currently occupied 
+##'     \cr (\code{PercGain - PercLoss}) \cr\cr
+##'     \item \code{CurrentRangeSize} : number of pixels currently occupied 
+##'     \cr (\code{Loss + Stable_Pres})
+##'     \item \code{FutureRangeSize.NoDisp} : number of pixels predicted to be occupied, assuming 
+##'     no migration 
+##'     \cr (\code{CurrentRangeSize})
+##'     \item \code{FutureRangeSize.FullDisp} : number of pixels predicted to be occupied, 
+##'     assuming migration 
+##'     \cr (\code{Gain + Stable_Pres})
 ##'   }
 ##'   }
 ##'   \item{loss.gain}{an object in the same form than the input data (\code{proj.current} and 
@@ -68,13 +75,23 @@
 ##' Note that \bold{this function is only relevant to compare binary projections, made on the 
 ##' same area with the same resolution}. \cr
 ##' 
-##' Comparison between \code{proj.current} and \code{proj.future} depends 
-##' on the number of projection in both objects:
-##'| \code{proj.current}   | \code{proj.future} | \bold{Comparison}  |
-##'| ------------------------- | ---------------------- | --------------------  |
-##'| \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) | \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})  | comparison of both projection  (\emph{e.g. current vs future conditions for the same model ; current vs current condition for two different models}) |
-##'| \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection \code{i} in \code{proj.current} to projection \code{i} in \code{proj.future}  (\emph{e.g. comparing current vs future condition for n models}) |
-##'| \bold{\code{1} projection}   (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection in \code{proj.current} to each projection in \code{proj.future}  (\emph{e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model}) |
+##' Comparison between \code{proj.current} and \code{proj.future} depends on the number of 
+##' projection columns/layers in both objects :
+##' \tabular{ccc}{
+##' \code{proj.current} \tab \code{proj.future} \tab \bold{Comparison} \cr
+##' \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})
+##'  \tab \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})
+##'  \tab comparison of both projection  (\emph{e.g. current vs future conditions for the 
+##'  same model ; current vs current condition for two different models}) \cr
+##' \bold{\code{n} projections} (\emph{e.g. data.frame with n columns, SpatRaster with n layers})
+##'  \tab \bold{\code{n} projections}  (\emph{e.g. data.frame with n columns, SpatRaster with n layers})
+##'  \tab comparing projection \code{i} in \code{proj.current} to projection \code{i} in \code{proj.future} 
+##'  (\emph{e.g. comparing current vs future condition for n models}) \cr
+##' \bold{\code{1} projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})
+##'  \tab \bold{\code{n} projections} (\emph{e.g. data.frame with n columns, SpatRaster with n layers})
+##'  \tab comparing projection in \code{proj.current} to each projection in \code{proj.future} 
+##'  (\emph{e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model})
+##'}
 ##' 
 ##' For binary data,\code{Diff.By.Pixel} object is obtained by applying the simple following formula :
 ##' \deqn{proj.future - 2 * proj.current}  
@@ -225,76 +242,72 @@ setMethod('bm_RangeSize', signature(proj.current = 'data.frame', proj.future = '
             cat("\n")
             
             if (ncol(proj.future) != ncol(proj.current)) {
-              proj_current <- matrix(rep(proj.current[, 1], ncol(proj.future)),
-                                     ncol = ncol(proj.future),
-                                     dimnames = ) ##TODO
-              proj_current <- as.data.frame(proj_current)
-              colnames(proj_current) <- colnames(proj.future)
-            }  
+              proj.current <- matrix(rep(proj.current[, 1], ncol(proj.future)), ncol = ncol(proj.future))
+              proj.current <- as.data.frame(proj.current)
+              colnames(proj.current) <- colnames(proj.future)
+            }
             
-            ## DiffByPixel
-            if (nonbinary && !ordinal) {
+            ## Diff.By.Pixel
+            if (nonbinary && !ordinal) { ## abundance / relative / multiclass / count
               cat(" > Rescaling non-binary data...")
               rescale_df <- rbind(proj.current, proj.future)
-              rescale_df <- apply(rescale_df, 2, FUN = rescale, to = c(0,1))
+              rescale_df <- apply(rescale_df, 2, FUN = rescale, to = c(0, 1))
               
               mid <- nrow(proj.current)
               end <- nrow(rescale_df)
               
-              Diff.By.Pixel <- as.data.frame(rescale_df[(mid+1):end,] - rescale_df[1:mid,])
+              Diff.By.Pixel <- as.data.frame(rescale_df[(mid+1):end, ] - rescale_df[1:mid, ])
               loss.gain <- .loss.gain.nonbinary(current = proj.current, future = proj.future)
-            } else if (!ordinal) {
+            } else if (!ordinal) { ## binary
               Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
-            } else {
-              proj.future <- apply(proj.future, 2, as.numeric)
-              proj.current <- apply(proj.current, 2, as.numeric)
+            } else { ## nonbinary + ordinal
+              for (i in 1:ncol(proj.current)) proj.current[, i] <- as.numeric(proj.current[, i])
+              for (i in 1:ncol(proj.future)) proj.future[, i] <- as.numeric(proj.future[, i])
               Diff.By.Pixel <- as.data.frame(proj.future - proj.current)
-              loss.gain <- .loss.gain.nonbinary(current = (proj.current - 1), future = (proj.future -1))
+              loss.gain <- .loss.gain.nonbinary(current = (proj.current - 1), future = (proj.future - 1))
             }
-            this_rownames <- colnames(proj.future)
-            # } else {
-            #   Diff.By.Pixel <- foreach(thiscol = seq_len(ncol(proj.future)), .combine = 'cbind') %do% {
-            #     if (nonbinary && !ordinal){
-            #       tmp <- as.data.frame(proj.future[,thiscol] - proj.current[,1])
-            #       loss.gain <- .loss.gain.nonbinary(current = proj.current[,1], future = proj.future[,thiscol])
-            #     } else if (!ordinal) {
-            #       tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
-            #     } else {
-            #       tmp <- as.data.frame(proj.future[,thiscol] - proj.current[,1])
-            #       loss.gain <- .loss.gain.nonbinary(current = (proj.current[,1] - 1), future = (proj.future[,thiscol] -1))
-            #     }
-            #     colnames(tmp) <- colnames(proj.future)[thiscol]
-            #     tmp
-            #   }
-            #   this_rownames <- colnames(proj.future)
-            # }
-            # 
             
-            if(nonbinary){
-              comp <- as.data.frame(loss.gain)
+            ## loss.gain
+            if (nonbinary) {
+              loss.gain <- as.data.frame(loss.gain)
             } else {
-              comp <- Diff.By.Pixel
+              loss.gain <- Diff.By.Pixel
             }
+            
             
             ## Compt.By.Models
-            Compt.By.Models <- as.data.frame(.CompteurSp(comp, c(-2, 0, -1, 1)))
-            Compt.By.Models[, seq(5, 10)] <- NA
-            Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
-            Compt.By.Models[, 9] <- Compt.By.Models[, 3]
-            Compt.By.Models[, 10] <- Compt.By.Models[, 4] + Compt.By.Models[, 3]
+            names.res <- c("Loss", "Stable_Abs", "Stable_Pres", "Gain"
+                           , "PercLoss", "PercGain", "SpeciesRangeChange"
+                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
+
+            if (ncol(proj.current) > 1) {
+              CBM <- matrix(ncol = length(names.res), nrow = ncol(proj.current),
+                            dimnames = list(colnames(proj.current), names.res))
+            } else {
+              CBM <- matrix(ncol = length(names.res), nrow = ncol(proj.future),
+                            dimnames = list(colnames(proj.future), names.res))
+            }
             
-            Compt.By.Models[, 5] <- (100 * Compt.By.Models[, 1]) / Compt.By.Models[, 8]
-            Compt.By.Models[, 6] <- (100 * Compt.By.Models[, 4]) / Compt.By.Models[, 8]
-            Compt.By.Models[, 7] <- Compt.By.Models[, 6] - Compt.By.Models[, 5]
+            for (i in 1:ncol(loss.gain)) {
+              CBM[i, 1] <- length(which(loss.gain[, i] == -2))
+              CBM[i, 2] <- length(which(loss.gain[, i] == 0))
+              CBM[i, 3] <- length(which(loss.gain[, i] == -1))
+              CBM[i, 4] <- length(which(loss.gain[, i] == 1))
+            }
             
-            dimnames(Compt.By.Models) <- list(this_rownames, c("Loss", "Stable_Abs", "Stable_Pres", "Gain"
-                                                               , "PercLoss", "PercGain", "SpeciesRangeChange"
-                                                               , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
+            CBM[, 8] <- CBM[, 1] + CBM[, 3]
+            CBM[, 9] <- CBM[, 3]
+            CBM[, 10] <- CBM[, 3] + CBM[, 4]
             
+            CBM[, 5] <- round(CBM[, 1] / CBM[, 8] * 100, digits = 3)
+            CBM[, 6] <- round(CBM[, 4] / CBM[, 8] * 100, digits = 3)
+            CBM[, 7] <- round(CBM[, 10] / CBM[, 8] * 100 - 100, digits = 3)
+            # CBM[, 7] <- round(CBM[, 6] - CBM[, 5], digits = 3) ## similar
+
             cat("\n")
-            Output <- list(Compt.By.Models = Compt.By.Models,
+            Output <- list(Compt.By.Models = as.data.frame(CBM),
                            Diff.By.Pixel = Diff.By.Pixel,
-                           loss.gain = comp,
+                           loss.gain = loss.gain,
                            data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary"))
             invisible(Output)
           })
@@ -319,20 +332,22 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
             rm(args)
             cat("\n")
             
+            
+            ## Compt.By.Models
             names.res <- c("Loss", "Stable_Abs", "Stable_Pres", "Gain"
                            , "PercLoss", "PercGain", "SpeciesRangeChange"
                            , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
             
-            
             if (nlyr(proj.current) > 1) {
-              CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.current),
+              CBM <- matrix(ncol = length(names.res), nrow = nlyr(proj.current),
                             dimnames = list(names(proj.current), names.res))
             } else {
-              CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.future),
+              CBM <- matrix(ncol = length(names.res), nrow = nlyr(proj.future),
                             dimnames = list(names(proj.future), names.res))
             }
             
-            sp.rast <- rast()
+            
+            Diff.By.Pixel_rast <- rast()
             loss.gain_rast <- rast()
             Cur <- proj.current[[1]]
             for (i in seq_len(nlyr(proj.future))) {
@@ -341,49 +356,49 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
               }
               Fut <- proj.future[[i]]
               
-              ## DiffByPixel
-              if (nonbinary && !ordinal) {
+              ## Diff.By.Pixel
+              if (nonbinary && !ordinal) { ## abundance / relative / multiclass / count
                 cat(" > Rescaling non-binary data...")
-                
                 rescale_map <- c(Cur, Fut)
-                values(rescale_map) <- rescale(values(rescale_map), to = c(0,1))
-                Ras <- rescale_map[[2]] - rescale_map[[1]]
-                add(sp.rast) <- Ras
+                values(rescale_map) <- rescale(values(rescale_map), to = c(0, 1))
                 
-                loss.gain <- .loss.gain.nonbinary(current = Cur - 1, future = Fut - 1)
-                add(loss.gain_rast) <- loss.gain 
-              } else if (!ordinal) {
-                Ras <- Fut - (Cur + Cur)
-                add(sp.rast) <- Ras
-                loss.gain <- Ras
-                add(loss.gain_rast) <- loss.gain 
-              } else {
-                Ras <- Fut - Cur
-                add(sp.rast) <- Ras
-                loss.gain <- .loss.gain.nonbinary(current = proj.current, future = proj.future)
-                add(loss.gain_rast) <- loss.gain 
+                Diff.By.Pixel <- rescale_map[[2]] - rescale_map[[1]]
+                loss.gain <- .loss.gain.nonbinary(current = Cur, future = Fut)
+              } else if (!ordinal) { ## binary
+                Diff.By.Pixel <- Fut - 2 * Cur
+                loss.gain <- Diff.By.Pixel
+              } else { ## nonbinary + ordinal
+                Cur[] <- as.factor(Cur[])
+                Fut[] <- as.factor(Fut[])
+                Diff.By.Pixel <- Fut - Cur
+                loss.gain <- .loss.gain.nonbinary(current = (Cur - 1), future = (Fut - 1))
               }
+              add(Diff.By.Pixel_rast) <- Diff.By.Pixel
+              add(loss.gain_rast) <- loss.gain 
               
-              ## ComptBySpecies
-              CBS[i, 1] <- length(which(loss.gain[] == -2))
-              CBS[i, 2] <- length(which(loss.gain[] == 0))
-              CBS[i, 3] <- length(which(loss.gain[] == -1))
-              CBS[i, 4] <- length(which(loss.gain[] == 1))
-              
-              CBS[i, 8] <- CBS[i, 1] + CBS[i, 3]
-              CBS[i, 9] <- CBS[i, 3]
-              CBS[i, 10] <- CBS[i, 3] + CBS[i, 4]
-              
-              CBS[i, 5] <- round(CBS[i, 1] / CBS[i, 8] * 100, digits = 3)
-              CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
-              CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
-            } 
+              ## Compt.By.Models
+              CBM[i, 1] <- length(which(loss.gain[] == -2))
+              CBM[i, 2] <- length(which(loss.gain[] == 0))
+              CBM[i, 3] <- length(which(loss.gain[] == -1))
+              CBM[i, 4] <- length(which(loss.gain[] == 1))
+            }
             
-            names(sp.rast) <- rownames(CBS)
+            ## Compt.By.Models
+            CBM[, 8] <- CBM[, 1] + CBM[, 3]
+            CBM[, 9] <- CBM[, 3]
+            CBM[, 10] <- CBM[, 3] + CBM[, 4]
+            
+            CBM[, 5] <- round(CBM[, 1] / CBM[, 8] * 100, digits = 3)
+            CBM[, 6] <- round(CBM[, 4] / CBM[, 8] * 100, digits = 3)
+            CBM[, 7] <- round(CBM[, 10] / CBM[, 8] * 100 - 100, digits = 3)
+            
+            
+            names(Diff.By.Pixel_rast) <- rownames(CBM)
+            names(loss.gain_rast) <- rownames(CBM)
             
             cat("\n")
-            Output <- list(Compt.By.Models = as.data.frame(CBS),
-                           Diff.By.Pixel = sp.rast,
+            Output <- list(Compt.By.Models = as.data.frame(CBM),
+                           Diff.By.Pixel = Diff.By.Pixel_rast,
                            loss.gain = loss.gain_rast,
                            data.type = ifelse(nonbinary, ifelse(ordinal, "ordinal", "nonbinary"), "binary"))
             return(Output)
@@ -454,24 +469,6 @@ setMethod('bm_RangeSize', signature(proj.current = 'SpatRaster', proj.future = '
 
 
 ###################################################################################################
-
-.CompteurSp <- function(Data, Value)
-{
-  if (is.data.frame(Data)) {
-    N <- dim(Data)[2]
-    Compt <- as.data.frame(matrix(0, ncol = 4, nrow = dim(Data)[2]))
-    i <- 1
-    while(i <= N) {
-      Compt[i, 1] <- length(Data[Data[, i] == Value[1], i])
-      Compt[i, 2] <- length(Data[Data[, i] == Value[2], i])
-      Compt[i, 3] <- length(Data[Data[, i] == Value[3], i])
-      Compt[i, 4] <- length(Data[Data[, i] == Value[4], i])
-      i <- i + 1
-    }
-    return(Compt)
-  }
-}
-
 
 .loss.gain.nonbinary <- function(current, future)
 {
