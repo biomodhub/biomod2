@@ -20,6 +20,18 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-8 : 
+    + in `bm_RangeSize` :
+        * fix case 1 `proj.current` * several `proj.future` (_data.frame_ method)
+        * fix case ordinal conversion to numeric (_data.frame_ and _rast_ methods)
+        * fix case (nonbinary & !ordinal) and (ordinal) `loss.gain` computation (_rast_ method)
+        * standardize code between _data.frame_ and _rast_ methods
+        * remove _.CompteurSp_ internal function
+    + in `bm_VariablesImportance` :
+        * activate the use of `seed.val` correctly
+        * fix correlation method used depending on data type (Spearman for _ordinal_ or _multiclass_, Pearson for the rest)
+    + in `bm_FindOptimStat` :
+        * fix use of `mean` and `round` functions
+        * for abundance data, computation of _Recall_ and _Precision_ metrics were swapped
     + fix retrieval of thresholds to compute metrics over validation (ensemble) and evaluation (single, ensemble) parts
     + fix round digits to scan thresholds in `bm_FindOptimStat` (0-1 scale VS 0-1000)
 - 4.3-4-7 : 

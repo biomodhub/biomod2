@@ -21,30 +21,37 @@ of the (ensemble) species distribution model(s)}
 or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 of the (ensemble) species distribution model(s)}
 
-\item{ordinal}{a \code{logical} indicating whether or not the projections should be considered as ordinal data}
+\item{ordinal}{(\emph{optional, default} \code{FALSE}) \cr 
+A \code{logical} value defining whether the projections are to be considered as ordinal data 
+or not}
 }
 \value{
 A \code{list} containing two objects :
 \describe{
-  \item{Compt.By.Species}{a \code{data.frame} containing the summary of range change for each 
+  \item{Compt.By.Models}{a \code{data.frame} containing the summary of range change for each 
   comparison
   \itemize{
     \item \code{Loss} : number of pixels predicted to be lost
     \item \code{Stable_Abs} : number of pixels not currently occupied and not predicted to be
     \item \code{Stable_Pres} : number of pixels currently occupied and predicted to remain 
     occupied
-    \item \code{Gain} : number of pixels predicted to be gained
+    \item \code{Gain} : number of pixels predicted to be gained \cr\cr
     \item \code{PercLoss} : percentage of pixels currently occupied and predicted to be lost 
-    (\code{Loss / (Loss + Stable_Pres)})
+    \cr (\code{Loss / (Loss + Stable_Pres)})
     \item \code{PercGain} : percentage of pixels predicted to be gained compare to the 
-    number of pixels currently occupied (\code{Gain / (Loss + Stable_Pres)})
-    \item \code{SpeciesRangeChange} : percentage of pixels predicted to change (loss or gain) 
-    compare to the number of pixels currently occupied (\code{PercGain - PercLoss})
-    \item \code{CurrentRangeSize} : number of pixels currently occupied
-    \item \code{FutureRangeSize0Disp} : number of pixels predicted to be occupied, assuming 
-    no migration
-    \item \code{FutureRangeSize1Disp} : number of pixels predicted to be occupied, assuming 
-    migration
+    number of pixels currently occupied 
+    \cr (\code{Gain / (Loss + Stable_Pres)})
+    \item \code{SpeciesRangeChange} : percentage of pixels predicted to change compare to the 
+    number of pixels currently occupied 
+    \cr (\code{PercGain - PercLoss}) \cr\cr
+    \item \code{CurrentRangeSize} : number of pixels currently occupied 
+    \cr (\code{Loss + Stable_Pres})
+    \item \code{FutureRangeSize.NoDisp} : number of pixels predicted to be occupied, assuming 
+    no migration 
+    \cr (\code{CurrentRangeSize})
+    \item \code{FutureRangeSize.FullDisp} : number of pixels predicted to be occupied, 
+    assuming migration 
+    \cr (\code{Gain + Stable_Pres})
   }
   }
   \item{loss.gain}{an object in the same form than the input data (\code{proj.current} and 
@@ -75,13 +82,23 @@ time scales or environmental scenarios for example}).
 Note that \bold{this function is only relevant to compare binary projections, made on the 
 same area with the same resolution}. \cr
 
-Comparison between \code{proj.current} and \code{proj.future} depends 
-on the number of projection in both objects:
-| \code{proj.current}   | \code{proj.future} | \bold{Comparison}  |
-| ------------------------- | ---------------------- | --------------------  |
-| \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) | \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})  | comparison of both projection  (\emph{e.g. current vs future conditions for the same model ; current vs current condition for two different models}) |
-| \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection \code{i} in \code{proj.current} to projection \code{i} in \code{proj.future}  (\emph{e.g. comparing current vs future condition for n models}) |
-| \bold{\code{1} projection}   (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection in \code{proj.current} to each projection in \code{proj.future}  (\emph{e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model}) |
+Comparison between \code{proj.current} and \code{proj.future} depends on the number of 
+projection columns/layers in both objects :
+\tabular{ccc}{
+\code{proj.current} \tab \code{proj.future} \tab \bold{Comparison} \cr
+\bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})
+ \tab \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})
+ \tab comparison of both projection  (\emph{e.g. current vs future conditions for the 
+ same model ; current vs current condition for two different models}) \cr
+\bold{\code{n} projections} (\emph{e.g. data.frame with n columns, SpatRaster with n layers})
+ \tab \bold{\code{n} projections}  (\emph{e.g. data.frame with n columns, SpatRaster with n layers})
+ \tab comparing projection \code{i} in \code{proj.current} to projection \code{i} in \code{proj.future} 
+ (\emph{e.g. comparing current vs future condition for n models}) \cr
+\bold{\code{1} projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})
+ \tab \bold{\code{n} projections} (\emph{e.g. data.frame with n columns, SpatRaster with n layers})
+ \tab comparing projection in \code{proj.current} to each projection in \code{proj.future} 
+ (\emph{e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model})
+}
 
 For binary data,\code{Diff.By.Pixel} object is obtained by applying the simple following formula :
 \deqn{proj.future - 2 * proj.current}  

@@ -20,7 +20,7 @@ time scales or environmental scenarios for example)."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-5-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-8</span>
       </span>
     </div>
 
@@ -155,29 +155,36 @@ of the (ensemble) species distribution model(s)</p></dd>
 
 
 <dt id="arg-ordinal">ordinal<a class="anchor" aria-label="anchor" href="#arg-ordinal"></a></dt>
-<dd><p>a <code>logical</code> indicating whether or not the projections should be considered as ordinal data</p></dd>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br>
+A <code>logical</code> value defining whether the projections are to be considered as ordinal data
+or not</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing two objects :</p><dl><dt>Compt.By.Species</dt>
+    <p>A <code>list</code> containing two objects :</p><dl><dt>Compt.By.Models</dt>
 <dd><p>a <code>data.frame</code> containing the summary of range change for each
   comparison</p><ul><li><p><code>Loss</code> : number of pixels predicted to be lost</p></li>
 <li><p><code>Stable_Abs</code> : number of pixels not currently occupied and not predicted to be</p></li>
 <li><p><code>Stable_Pres</code> : number of pixels currently occupied and predicted to remain
     occupied</p></li>
-<li><p><code>Gain</code> : number of pixels predicted to be gained</p></li>
+<li><p><code>Gain</code> : number of pixels predicted to be gained <br><br></p></li>
 <li><p><code>PercLoss</code> : percentage of pixels currently occupied and predicted to be lost
-    (<code>Loss / (Loss + Stable_Pres)</code>)</p></li>
+    <br> (<code>Loss / (Loss + Stable_Pres)</code>)</p></li>
 <li><p><code>PercGain</code> : percentage of pixels predicted to be gained compare to the
-    number of pixels currently occupied (<code>Gain / (Loss + Stable_Pres)</code>)</p></li>
-<li><p><code>SpeciesRangeChange</code> : percentage of pixels predicted to change (loss or gain)
-    compare to the number of pixels currently occupied (<code>PercGain - PercLoss</code>)</p></li>
-<li><p><code>CurrentRangeSize</code> : number of pixels currently occupied</p></li>
-<li><p><code>FutureRangeSize0Disp</code> : number of pixels predicted to be occupied, assuming
-    no migration</p></li>
-<li><p><code>FutureRangeSize1Disp</code> : number of pixels predicted to be occupied, assuming
-    migration</p></li>
+    number of pixels currently occupied
+    <br> (<code>Gain / (Loss + Stable_Pres)</code>)</p></li>
+<li><p><code>SpeciesRangeChange</code> : percentage of pixels predicted to change compare to the
+    number of pixels currently occupied
+    <br> (<code>PercGain - PercLoss</code>) <br><br></p></li>
+<li><p><code>CurrentRangeSize</code> : number of pixels currently occupied
+    <br> (<code>Loss + Stable_Pres</code>)</p></li>
+<li><p><code>FutureRangeSize.NoDisp</code> : number of pixels predicted to be occupied, assuming
+    no migration
+    <br> (<code>CurrentRangeSize</code>)</p></li>
+<li><p><code>FutureRangeSize.FullDisp</code> : number of pixels predicted to be occupied,
+    assuming migration
+    <br> (<code>Gain + Stable_Pres</code>)</p></li>
 </ul><p></p></dd>
 
   <dt>loss.gain</dt>
@@ -200,14 +207,11 @@ of the (ensemble) species distribution model(s)</p></dd>
     <h2>Details</h2>
     <p>Note that <b>this function is only relevant to compare binary projections, made on the
 same area with the same resolution</b>. <br></p>
-<p>Comparison between <code>proj.current</code> and <code>proj.future</code> depends
-on the number of projection in both objects:
-| <code>proj.current</code>   | <code>proj.future</code> | <b>Comparison</b>  |
-| ————————- | ———————- | ——————–  |
-| <b>1 projection</b> (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>) | <b>1 projection</b>  (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)  | comparison of both projection  (<em>e.g. current vs future conditions for the same model ; current vs current condition for two different models</em>) |
-| <b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>) |  <b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>) |  comparing projection <code>i</code> in <code>proj.current</code> to projection <code>i</code> in <code>proj.future</code>  (<em>e.g. comparing current vs future condition for n models</em>) |
-| <b><code>1</code> projection</b>   (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>) |  <b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>) |  comparing projection in <code>proj.current</code> to each projection in <code>proj.future</code>  (<em>e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model</em>) |</p>
-<p>For binary data,<code>Diff.By.Pixel</code> object is obtained by applying the simple following formula :
+<p>Comparison between <code>proj.current</code> and <code>proj.future</code> depends on the number of
+projection columns/layers in both objects :</p><table class="table table"><tr><td><code>proj.current</code></td><td><code>proj.future</code></td><td><b>Comparison</b></td></tr><tr><td><b>1 projection</b> (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td><b>1 projection</b>  (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td>comparison of both projection  (<em>e.g. current vs future conditions for the
+ same model ; current vs current condition for two different models</em>)</td></tr><tr><td><b><code>n</code> projections</b> (<em>e.g. data.frame with n columns, SpatRaster with n layers</em>)</td><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n columns, SpatRaster with n layers</em>)</td><td>comparing projection <code>i</code> in <code>proj.current</code> to projection <code>i</code> in <code>proj.future</code>
+ (<em>e.g. comparing current vs future condition for n models</em>)</td></tr><tr><td><b><code>1</code> projection</b> (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td><b><code>n</code> projections</b> (<em>e.g. data.frame with n columns, SpatRaster with n layers</em>)</td><td>comparing projection in <code>proj.current</code> to each projection in <code>proj.future</code>
+ (<em>e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model</em>)</td></tr></table><p>For binary data,<code>Diff.By.Pixel</code> object is obtained by applying the simple following formula :
 $$proj.future - 2 * proj.current$$</p>
 <p>For non binary data, <code>Diff.By.Pixel</code> object is obtained by rescaling the two projection to a 0 to 1 scale
 and applying the simple following formula :

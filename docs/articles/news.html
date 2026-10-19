@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-5-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-4-8</span>
       </span>
     </div>
 
@@ -168,6 +168,33 @@
 <ul>
 <li>4.3-4-8 :
 <ul>
+<li>in <code>bm_RangeSize</code> :
+<ul>
+<li>fix case 1 <code>proj.current</code> * several
+<code>proj.future</code> (<em>data.frame</em> method)</li>
+<li>fix case ordinal conversion to numeric (<em>data.frame</em> and
+<em>rast</em> methods)</li>
+<li>fix case (nonbinary &amp; !ordinal) and (ordinal)
+<code>loss.gain</code> computation (<em>rast</em> method)</li>
+<li>standardize code between <em>data.frame</em> and <em>rast</em>
+methods</li>
+<li>remove <em>.CompteurSp</em> internal function</li>
+</ul>
+</li>
+<li>in <code>bm_VariablesImportance</code> :
+<ul>
+<li>activate the use of <code>seed.val</code> correctly</li>
+<li>fix correlation method used depending on data type (Spearman for
+<em>ordinal</em> or <em>multiclass</em>, Pearson for the rest)</li>
+</ul>
+</li>
+<li>in <code>bm_FindOptimStat</code> :
+<ul>
+<li>fix use of <code>mean</code> and <code>round</code> functions</li>
+<li>for abundance data, computation of <em>Recall</em> and
+<em>Precision</em> metrics were swapped</li>
+</ul>
+</li>
 <li>fix retrieval of thresholds to compute metrics over validation
 (ensemble) and evaluation (single, ensemble) parts</li>
 <li>fix round digits to scan thresholds in <code>bm_FindOptimStat</code>

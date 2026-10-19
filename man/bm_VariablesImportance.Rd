@@ -60,7 +60,8 @@ For each variable to be evaluated :
 \enumerate{
   \item shuffle the original variable
   \item compute model prediction with shuffled variable
-  \item calculate Pearson's correlation between reference and shuffled predictions
+  \item calculate Pearson's correlation (Spearman for \code{ordinal} or 
+  \code{multiclass} data) between reference and shuffled predictions
   \item return score as \code{1 - cor}
 }
 The highest the value, the less reference and shuffled predictions are correlated, and the 
@@ -118,6 +119,7 @@ Damien Georges
 }
 \concept{Secondary functions}
 \keyword{"Pearson}
+\keyword{"Spearman}
 \keyword{correlation"}
 \keyword{importance}
 \keyword{random}
