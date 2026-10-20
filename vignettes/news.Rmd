@@ -14,8 +14,6 @@ vignette: >
 
 ### <i class="fa-solid fa-chess-rook"></i> 2026
 
-- 4.3-5-0 : 
-
 
 ##### Bugfix
 
@@ -26,8 +24,11 @@ vignette: >
         * fix case (nonbinary & !ordinal) and (ordinal) `loss.gain` computation (_rast_ method)
         * standardize code between _data.frame_ and _rast_ methods
         * remove _.CompteurSp_ internal function
+    + in `bm_CrossValidation` :
+        * provide `seed.val` to the function when called directly from `BIOMOD_Modeling`
+        * remove `set.seed` in both _.sample_num_ and _.sample_class_ internal functions
     + in `bm_VariablesImportance` :
-        * activate the use of `seed.val` correctly and move it to `.bm_VariablesImportance.check.args`
+        * correct the use of `seed.val` (_seed.val + r_ for each repetition, set in `.full_shuffling` ; remove CTA special case)
         * fix correlation method used depending on data type (Spearman for _ordinal_ or _multiclass_, Pearson for the rest)
     + in `bm_FindOptimStat` :
         * fix use of `mean` and `round` functions

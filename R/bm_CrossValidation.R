@@ -414,10 +414,10 @@ bm_CrossValidation <- function(bm.format, strategy, nb.rep = NULL, perc = NULL, 
               perc = perc,
               k = k,
               balance = balance,
-              env.var = env.var,
               strat = strat,
-              do.full.models = do.full.models,
-              user.table = user.table))
+              env.var = env.var,
+              user.table = user.table,
+              do.full.models = do.full.models))
 }
 
 
@@ -436,7 +436,6 @@ bm_CrossValidation <- function(bm.format, strategy, nb.rep = NULL, perc = NULL, 
   mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
   colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
   
-  set.seed(seed.val)
   for (i in 1:ncol(mat.out)) {
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL
@@ -464,7 +463,6 @@ bm_CrossValidation <- function(bm.format, strategy, nb.rep = NULL, perc = NULL, 
   mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
   colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
   
-  set.seed(seed.val)
   for (i in 1:ncol(mat.out)) {
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL

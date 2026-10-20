@@ -159,9 +159,6 @@
 <h3 id="section">
 <i class="fa-solid fa-chess-rook"></i> 2026<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
-<ul>
-<li>4.3-5-0 :</li>
-</ul>
 <div class="section level5">
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
@@ -181,11 +178,20 @@ methods</li>
 <li>remove <em>.CompteurSp</em> internal function</li>
 </ul>
 </li>
+<li>in <code>bm_CrossValidation</code> :
+<ul>
+<li>provide <code>seed.val</code> to the function when called directly
+from <code>BIOMOD_Modeling</code>
+</li>
+<li>remove <code>set.seed</code> in both <em>.sample_num</em> and
+<em>.sample_class</em> internal functions</li>
+</ul>
+</li>
 <li>in <code>bm_VariablesImportance</code> :
 <ul>
-<li>activate the use of <code>seed.val</code> correctly and move it to
-<code>.bm_VariablesImportance.check.args</code>
-</li>
+<li>correct the use of <code>seed.val</code> (<em>seed.val + r</em> for
+each repetition, set in <code>.full_shuffling</code> ; remove CTA
+special case)</li>
 <li>fix correlation method used depending on data type (Spearman for
 <em>ordinal</em> or <em>multiclass</em>, Pearson for the rest)</li>
 </ul>

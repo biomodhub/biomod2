@@ -451,16 +451,17 @@ BIOMOD_Modeling <- function(bm.format,
                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.2 Get and save calibration lines ---------------------------------------
-  calib.lines <- bm_CrossValidation(bm.format = bm.format,
-                                    strategy = CV.strategy,
-                                    nb.rep = CV.nb.rep,
-                                    perc = CV.perc,
-                                    k = CV.k,
-                                    balance = ifelse(!is.null(CV.balance), CV.balance, "presences"),
-                                    env.var = CV.env.var,
-                                    strat = ifelse(!is.null(CV.strat), CV.strat, "both"),
-                                    user.table = CV.user.table,
-                                    do.full.models = CV.do.full.models)
+  calib.lines <- bm_CrossValidation(bm.format = bm.format
+                                    , strategy = CV.strategy
+                                    , nb.rep = CV.nb.rep
+                                    , perc = CV.perc
+                                    , k = CV.k
+                                    , balance = ifelse(!is.null(CV.balance), CV.balance, "presences")
+                                    , strat = ifelse(!is.null(CV.strat), CV.strat, "both")
+                                    , env.var = CV.env.var
+                                    , user.table = CV.user.table
+                                    , do.full.models = CV.do.full.models
+                                    , seed.val = seed.val)
   models.out <- .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
