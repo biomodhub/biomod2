@@ -104,7 +104,7 @@ bm_VariablesImportance <- function(bm.model,
                                    do.progress = TRUE,
                                    temp.workdir = NULL)
 {
-  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, temp.workdir)
+  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, seed.val, temp.workdir)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -139,7 +139,7 @@ bm_VariablesImportance <- function(bm.model,
   out <- foreach (r = 1:nb.rep, .combine = "rbind") %:%
     foreach (v = variables, .combine = "rbind") %do%
     {
-      data_rand <- .randomise_data(expl.var, v, method, seedval = seed.val)
+      data_rand <- .randomise_data(expl.var, v, method)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp.workdir, seedval = seed.val)
       
       if (model_type == "ordinal") {
@@ -170,7 +170,7 @@ bm_VariablesImportance <- function(bm.model,
 
 ###################################################################################################
 
-.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, temp.workdir)
+.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, seed.val = NULL, temp.workdir)
 {
   # test that input data is supported
   .fun_testIfInherits("bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
@@ -184,6 +184,14 @@ bm_VariablesImportance <- function(bm.model,
   # test method is supported
   .fun_testIfIn("method", method, "full_rand")
   
+  ## Set a new random seed to ensure that sampling is random
+  ## (issue when CTA is involved and seed needs to be set to a fix number)
+  if (is.null(seed.val)) {
+    seed.val <- as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000
+  }
+  set.seed(seed.val)
+  
+  ## test
   if(missing(temp.workdir)){ temp.workdir <- NULL }
   
   return(list(bm.model = bm.model
@@ -197,25 +205,18 @@ bm_VariablesImportance <- function(bm.model,
 
 ###################################################################################################
 
-.randomise_data <- function(expl.var, variable, method, seedval = NULL)
+.randomise_data <- function(expl.var, variable, method)
 {
   if (method == 'full_rand') {
-    return(.full_shuffling(expl.var, variable, seedval))
+    return(.full_shuffling(expl.var, variable))
   }
 }
 
-.full_shuffling <- function(x, id = NULL, seedval = NULL)
+.full_shuffling <- function(x, id = NULL)
 {
   if (!(is.data.frame(x) || is.matrix(x) || is.vector(x))) {
     stop("x must be a vector, matrix or data.frame object")
   }
-  
-  ## Set a new random seed to ensure that sampling is random
-  ## (issue when CTA is involved and seed needs to be set to a fix number)
-  if (is.null(seedval)) {
-    seedval <- as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000
-  }
-  set.seed(seedval)
   
   out <- NULL
   if (is.null(id)) {

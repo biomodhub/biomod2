@@ -27,7 +27,7 @@ vignette: >
         * standardize code between _data.frame_ and _rast_ methods
         * remove _.CompteurSp_ internal function
     + in `bm_VariablesImportance` :
-        * activate the use of `seed.val` correctly
+        * activate the use of `seed.val` correctly and move it to `.bm_VariablesImportance.check.args`
         * fix correlation method used depending on data type (Spearman for _ordinal_ or _multiclass_, Pearson for the rest)
     + in `bm_FindOptimStat` :
         * fix use of `mean` and `round` functions
