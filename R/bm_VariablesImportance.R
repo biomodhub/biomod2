@@ -140,7 +140,7 @@ bm_VariablesImportance <- function(bm.model,
     foreach (v = variables, .combine = "rbind") %do%
     {
       seed.rep <- NULL
-      if (!is.null(seed.val)) { seed.rep <- seed.val + r }
+      if (!is.null(seed.val)) { seed.rep <- seed.val + r + which(variables == v) }
       data_rand <- .randomise_data(expl.var, v, method, seedval = seed.rep)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp.workdir, seedval = seed.val)
       
@@ -213,7 +213,7 @@ bm_VariablesImportance <- function(bm.model,
     stop("x must be a vector, matrix or data.frame object")
   }
   
-  set.seed(seedval)
+  if (!is.null(seedval)) set.seed(seedval)
   
   out <- NULL
   if (is.null(id)) {

@@ -314,8 +314,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
             if (!overwrite && file.exists(filename)){
               proj <- rast(filename)
             } else {
-              set.seed(seedval)
-              
+              if (!is.null(seedval)) set.seed(seedval)
               proj <- try(predfun(object, newdata, mod.name))
               
               if (!inherits(proj, 'try-error')) {
@@ -371,7 +370,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"
               not_na_rows <- rep(TRUE, nrow(newdata))
             }
             
-            set.seed(seedval)
+            if (!is.null(seedval)) set.seed(seedval)
             # eval(parse(text = paste0("proj <- ", predcommand)))
             proj <- try(predfun(object, newdata, not_na_rows))
             
@@ -1136,7 +1135,6 @@ setMethod('predict2', signature(object = 'MAXNET_biomod2_model', newdata = "Spat
                 newdata.df[, this_var] <- factor(newdata.df[, this_var], levels = this_levels)
               }
             }
-            set.seed(seedval)
             proj <- predict(object = get_formal_model(object), newdata = newdata.df, clamp = FALSE, type = 'logistic')[, 1]
             
             if (length(get_scaling_model(object)) > 0) {
@@ -1380,7 +1378,6 @@ setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "data.fr
             seedval <- args$seedval
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             
-            set.seed(seedval)
             proj <- .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
             if (on_0_1000) { proj <- round(proj * 1000) }
             return(proj)

@@ -264,7 +264,7 @@ bm_RunModel <- function(model, run.name
   
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
-  set.seed(seed.val)
+  if (!is.null(seed.val)) set.seed(seed.val)
   
   cat("\n Running model...")
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------

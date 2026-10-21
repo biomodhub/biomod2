@@ -18,6 +18,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-4-8 : 
+    + generalize the use of `set.seed` only if `!is.null(seed.val)`
     + in `bm_RangeSize` :
         * fix case 1 `proj.current` * several `proj.future` (_data.frame_ method)
         * fix case ordinal conversion to numeric (_data.frame_ and _rast_ methods)
@@ -28,7 +29,7 @@ vignette: >
         * provide `seed.val` to the function when called directly from `BIOMOD_Modeling`
         * remove `set.seed` in both _.sample_num_ and _.sample_class_ internal functions
     + in `bm_VariablesImportance` :
-        * correct the use of `seed.val` (_seed.val + r_ for each repetition, set in `.full_shuffling` ; remove CTA special case)
+        * correct the use of `seed.val` (_seed.val + r + v_ for each repetition, set in `.full_shuffling` ; remove CTA special case)
         * fix correlation method used depending on data type (Spearman for _ordinal_ or _multiclass_, Pearson for the rest)
     + in `bm_FindOptimStat` :
         * fix use of `mean` and `round` functions

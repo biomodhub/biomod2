@@ -165,6 +165,9 @@
 <ul>
 <li>4.3-4-8 :
 <ul>
+<li>generalize the use of <code>set.seed</code> only if
+<code>!is.null(seed.val)</code>
+</li>
 <li>in <code>bm_RangeSize</code> :
 <ul>
 <li>fix case 1 <code>proj.current</code> * several
@@ -189,8 +192,8 @@ from <code>BIOMOD_Modeling</code>
 </li>
 <li>in <code>bm_VariablesImportance</code> :
 <ul>
-<li>correct the use of <code>seed.val</code> (<em>seed.val + r</em> for
-each repetition, set in <code>.full_shuffling</code> ; remove CTA
+<li>correct the use of <code>seed.val</code> (<em>seed.val + r + v</em>
+for each repetition, set in <code>.full_shuffling</code> ; remove CTA
 special case)</li>
 <li>fix correlation method used depending on data type (Spearman for
 <em>ordinal</em> or <em>multiclass</em>, Pearson for the rest)</li>
