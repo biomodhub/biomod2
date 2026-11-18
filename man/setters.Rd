@@ -6,10 +6,9 @@
 \alias{set_new_dirname,BIOMOD.models.out-method}
 \alias{set_new_dirname,BIOMOD.ensemble.models.out-method}
 \alias{set_new_dirname,BIOMOD.projection.out-method}
-\title{Functions to change the place of the different biomod2 objects}
+\title{Functions to update links from \code{\link{BIOMOD.models.out}}, 
+\code{\link{BIOMOD.projection.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects}
 \usage{
-set_new_dirname(obj, new.dir.name)
-
 \S4method{set_new_dirname}{BIOMOD.models.out}(obj, new.dir.name)
 
 \S4method{set_new_dirname}{BIOMOD.ensemble.models.out}(obj, new.dir.name)
@@ -17,15 +16,15 @@ set_new_dirname(obj, new.dir.name)
 \S4method{set_new_dirname}{BIOMOD.projection.out}(obj, new.dir.name)
 }
 \arguments{
-\item{obj}{a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
-\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+\item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 \code{\link{BIOMOD.ensemble.models.out}} object}
 
 \item{new.dir.name}{a \code{character} corresponding to the new folder path}
 }
 \description{
-This function allow the user to change the folder where
-the modelling of biomod2 have been done.
+These functions allow the user to update the links contained 
+in biomod2 objects, either by copying them into a new directory, or directly 
+update in the current directory whose name has changed.
 }
 \seealso{
 \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
@@ -39,6 +38,6 @@ Other Toolbox functions:
 \code{\link{predict2.em}}
 }
 \author{
-Hélène Blancheteau
+Hélène Blancheteau, Maya Guéguen
 }
 \concept{Toolbox functions}

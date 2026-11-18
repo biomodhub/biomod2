@@ -17,6 +17,8 @@ vignette: >
 
 ##### Bugfix
 
+- 4.3-4-9 : 
+    + fix `set_new_dirname` function and generalize code for _models.out_, _ensemble.models.out_ and _projection.out_ objects
 - 4.3-4-8 : 
     + generalize the use of `set.seed` only if `!is.null(seed.val)`
     + in `bm_RangeSize` :
